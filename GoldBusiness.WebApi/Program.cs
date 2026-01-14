@@ -98,11 +98,27 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// Autorización global
-builder.Services.AddAuthorizationBuilder()
-    .SetFallbackPolicy(new AuthorizationPolicyBuilder()
+// Autorización por por policy
+builder.Services.AddAuthorization(options =>
+{
+    // Políticas basadas en los claims de rol
+    options.AddPolicy("ERPFullAccess", policy =>
+        policy.RequireClaim("permission", "ERP:FullAccess"));
+
+    options.AddPolicy("ERPAdminAccess", policy =>
+        policy.RequireClaim("permission", "ERP:AdminAccess"));
+
+    options.AddPolicy("ERPFinanceAccess", policy =>
+        policy.RequireClaim("permission", "ERP:FinanceAccess"));
+
+    options.AddPolicy("ERPAccountingAccess", policy =>
+        policy.RequireClaim("permission", "ERP:AccountingAccess"));
+
+    // Si quieres mantener el fallback global (todos deben estar autenticados)
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
         .RequireAuthenticatedUser()
-        .Build());
+        .Build();
+});
 
 // CORS
 builder.Services.AddCors(options =>
@@ -143,7 +159,7 @@ builder.Services.AddSwaggerGen(c =>
                     Id = "Bearer"
                 }
             },
-            Array.Empty<string>() // 👈 más limpio que new List<string>()
+            Array.Empty<string>()
         }
     });
 });
@@ -170,13 +186,35 @@ using (var scope = app.Services.CreateScope())
         }
     }
 
+    // Claims por rol
+    var roleClaimsMap = new Dictionary<string, string>
+    {
+        { "DESARROLLADOR", "ERP:FullAccess" },
+        { "ADMINISTRADDR", "ERP:AdminAccess" },
+        { "ECONOMICO", "ERP:FinanceAccess" },
+        { "CONTADOR", "ERP:AccountingAccess" }
+    };
+
+    foreach (var kvp in roleClaimsMap)
+    {
+        var role = await roleManager.FindByNameAsync(kvp.Key);
+        if (role != null)
+        {
+            var claims = await roleManager.GetClaimsAsync(role);
+            if (!claims.Any(c => c.Type == "permission" && c.Value == kvp.Value))
+            {
+                await roleManager.AddClaimAsync(role, new Claim("permission", kvp.Value));
+            }
+        }
+    }
+
     var user = await userManager.FindByNameAsync("fragela");
     if (user == null)
     {
         var newUser = new ApplicationUser
         {
             UserName = "fragela",
-            Email = "fragela@empresa.com",
+            Email = "chokisoft@gmail.com",
             EmailConfirmed = true,
             IsActive = true
         };
@@ -185,14 +223,14 @@ using (var scope = app.Services.CreateScope())
         if (result.Succeeded)
         {
             var addRolesResult = await userManager.AddToRolesAsync(newUser, new[] { "DESARROLLADOR" });
-            if (!addRolesResult.Succeeded)
+
+            if (addRolesResult.Succeeded)
             {
-                logger.LogError("Error assigning roles to new user: {Errors}", string.Join(", ", addRolesResult.Errors.Select(e => e.Description)));
+                // UserClaims personales
+                await userManager.AddClaimAsync(newUser, new Claim("fullName", "Rolando Fragela Herva"));
+                await userManager.AddClaimAsync(newUser, new Claim("permission", "ERP:FullAccess")); // opcional, ya lo hereda del rol
+                await userManager.AddClaimAsync(newUser, new Claim("accessLevel", "*")); // opcional, ya lo hereda del rol
             }
-        }
-        else
-        {
-            logger.LogError("Error creating user fragela: {Errors}", string.Join(", ", result.Errors.Select(e => e.Description)));
         }
     }
     else
@@ -200,28 +238,28 @@ using (var scope = app.Services.CreateScope())
         if (!await userManager.IsInRoleAsync(user, "DESARROLLADOR"))
         {
             var addRoleResult = await userManager.AddToRoleAsync(user, "DESARROLLADOR");
-            if (!addRoleResult.Succeeded)
+
+            if (addRoleResult.Succeeded)
             {
-                logger.LogError("Error assigning Desarrollador to existing user: {Errors}", string.Join(", ", addRoleResult.Errors.Select(e => e.Description)));
+                // UserClaims personales
+                await userManager.AddClaimAsync(user, new Claim("FullName", "Rolando Fragela Herva"));
+                await userManager.AddClaimAsync(user, new Claim("permission", "ERP:FullAccess")); // opcional
             }
         }
     }
 
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-    // GrupoCuenta: si no tiene traducciones, copiar Descripcion -> 'es'
     foreach (var g in db.GrupoCuenta.Where(x => !x.Translations.Any()))
     {
         db.GrupoCuentaTranslation.Add(new GrupoCuentaTranslation(g.Id, "es", g.Descripcion, "system"));
     }
 
-    // SubGrupoCuenta
     foreach (var s in db.SubGrupoCuenta.Where(x => !x.Translations.Any()))
     {
         db.SubGrupoCuentaTranslation.Add(new SubGrupoCuentaTranslation(s.Id, "es", s.Descripcion, "system"));
     }
 
-    // Cuenta
     foreach (var c in db.Cuenta.Where(x => !x.Translations.Any()))
     {
         db.CuentaTranslation.Add(new CuentaTranslation(c.Id, "es", c.Descripcion, "system"));
@@ -230,14 +268,13 @@ using (var scope = app.Services.CreateScope())
     await db.SaveChangesAsync();
 }
 
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
-    app.UseStaticFiles(); // sirve wwwroot
+    app.UseStaticFiles();
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v2/swagger.json", "GoldBusiness API v2");
-        // añadir versión para evitar caché del navegador
         c.InjectStylesheet("/swagger-ui/swagger.css?v=1");
     });
 }

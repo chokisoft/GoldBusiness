@@ -7,7 +7,7 @@ namespace GoldBusiness.WebApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "DESARROLLADOR")]
+    [Authorize(Policy = "ERPFullAccess")]
     public class SubGrupoCuentaController : ControllerBase
     {
         private readonly ISubGrupoCuentaService _service;
