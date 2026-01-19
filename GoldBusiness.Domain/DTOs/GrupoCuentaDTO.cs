@@ -17,54 +17,93 @@ namespace GoldBusiness.Domain.DTOs
         /// Código del grupo (2 dígitos exactos).
         /// Ejemplos: "01" = ACTIVO, "02" = PASIVO, "03" = PATRIMONIO.
         /// </summary>
-        [Required(ErrorMessage = "El código es obligatorio")]
-        [Display(Name = "Código")]
-        [StringLength(2, MinimumLength = 2, ErrorMessage = "El código debe tener exactamente 2 caracteres")]
-        [RegularExpression(@"^\d{2}$", ErrorMessage = "El código debe contener solo números (00-99)")]
+        [Required(
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.CodigoObligatorio)
+        )]
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Codigo),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
+        [StringLength(2, MinimumLength = 2,
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.CodigoLongitud)
+        )]
+        [RegularExpression(@"^\d{2}$",
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.CodigoFormato)
+        )]
         public string Codigo { get; set; } = string.Empty;
 
         /// <summary>
         /// Descripción del grupo de cuenta.
         /// </summary>
-        [Required(ErrorMessage = "La descripción es obligatoria")]
-        [Display(Name = "Descripción")]
-        [StringLength(256, ErrorMessage = "La descripción no puede exceder 256 caracteres")]
+        [Required(
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.DescripcionObligatoria)
+        )]
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Descripcion),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
+        [StringLength(256,
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.StringLengthMax)
+        )]
         public string Descripcion { get; set; } = string.Empty;
 
         /// <summary>
         /// Indica si el grupo está cancelado/inactivo.
         /// </summary>
-        [Display(Name = "Cancelado")]
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Cancelado),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
         public bool Cancelado { get; set; }
 
         /// <summary>
         /// Usuario que creó el registro.
         /// </summary>
-        [Display(Name = "Creado Por")]
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_CreadoPor),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
         public string CreadoPor { get; set; } = string.Empty;
 
         /// <summary>
         /// Fecha y hora de creación.
         /// </summary>
-        [Display(Name = "Fecha Creación")]
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_FechaCreacion),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
         public DateTime FechaHoraCreado { get; set; }
 
         /// <summary>
         /// Usuario que modificó el registro.
         /// </summary>
-        [Display(Name = "Modificado Por")]
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_ModificadoPor),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
         public string? ModificadoPor { get; set; }
 
         /// <summary>
         /// Fecha y hora de modificación.
         /// </summary>
-        [Display(Name = "Fecha Modificación")]
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_FechaModificacion),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
         public DateTime? FechaHoraModificado { get; set; }
 
         /// <summary>
         /// Cantidad de subgrupos asociados.
         /// </summary>
-        [Display(Name = "Subgrupos")]
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Subgrupos),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
         public int CantidadSubGrupos { get; set; }
 
         /// <summary>

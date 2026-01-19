@@ -79,11 +79,128 @@ namespace GoldBusiness.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to El código debe contener solo números (00-99).
+        /// </summary>
+        public static string CodigoFormato {
+            get {
+                return ResourceManager.GetString("CodigoFormato", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El código debe tener exactamente 2 caracteres.
+        /// </summary>
+        public static string CodigoLongitud {
+            get {
+                return ResourceManager.GetString("CodigoLongitud", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El código es obligatorio.
+        /// </summary>
+        public static string CodigoObligatorio {
+            get {
+                return ResourceManager.GetString("CodigoObligatorio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to La descripción no puede exceder {0} caracteres.
+        /// </summary>
+        public static string DescripcionLongitud {
+            get {
+                return ResourceManager.GetString("DescripcionLongitud", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to La descripción es obligatoria.
+        /// </summary>
+        public static string DescripcionObligatoria {
+            get {
+                return ResourceManager.GetString("DescripcionObligatoria", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancelado.
+        /// </summary>
+        public static string Field_Cancelado {
+            get {
+                return ResourceManager.GetString("Field_Cancelado", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El código.
+        /// </summary>
+        public static string Field_Codigo {
+            get {
+                return ResourceManager.GetString("Field_Codigo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creado por.
+        /// </summary>
+        public static string Field_CreadoPor {
+            get {
+                return ResourceManager.GetString("Field_CreadoPor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to La descripción.
+        /// </summary>
+        public static string Field_Descripcion {
+            get {
+                return ResourceManager.GetString("Field_Descripcion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fecha de creación.
+        /// </summary>
+        public static string Field_FechaCreacion {
+            get {
+                return ResourceManager.GetString("Field_FechaCreacion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fecha de modificación.
+        /// </summary>
+        public static string Field_FechaModificacion {
+            get {
+                return ResourceManager.GetString("Field_FechaModificacion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Modificado por.
+        /// </summary>
+        public static string Field_ModificadoPor {
+            get {
+                return ResourceManager.GetString("Field_ModificadoPor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to La contraseña.
         /// </summary>
         public static string Field_Password {
             get {
                 return ResourceManager.GetString("Field_Password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Subgrupos.
+        /// </summary>
+        public static string Field_Subgrupos {
+            get {
+                return ResourceManager.GetString("Field_Subgrupos", resourceCulture);
             }
         }
         

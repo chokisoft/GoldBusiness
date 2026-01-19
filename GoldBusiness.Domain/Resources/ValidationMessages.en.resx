@@ -147,4 +147,43 @@
   <data name="AccountDisabled" xml:space="preserve">
     <value>Account disabled</value>
   </data>
+  <data name="Field_Codigo" xml:space="preserve">
+    <value>Code</value>
+</data>
+	<data name="Field_Descripcion" xml:space="preserve">
+  <value>Description</value>
+</data>
+	<data name="Field_Cancelado" xml:space="preserve">
+  <value>Cancelled</value>
+</data>
+	<data name="Field_CreadoPor" xml:space="preserve">
+  <value>Created by</value>
+</data>
+	<data name="Field_FechaCreacion" xml:space="preserve">
+  <value>Creation date</value>
+</data>
+	<data name="Field_ModificadoPor" xml:space="preserve">
+  <value>Modified by</value>
+</data>
+	<data name="Field_FechaModificacion" xml:space="preserve">
+  <value>Modification date</value>
+</data>
+	<data name="Field_Subgrupos" xml:space="preserve">
+  <value>Subgroups</value>
+</data>
+	<data name="CodigoObligatorio" xml:space="preserve">
+  <value>Code is required</value>
+</data>
+	<data name="CodigoLongitud" xml:space="preserve">
+  <value>Code must be exactly 2 characters</value>
+</data>
+	<data name="CodigoFormato" xml:space="preserve">
+  <value>Code must contain only numbers (00-99)</value>
+</data>
+	<data name="DescripcionObligatoria" xml:space="preserve">
+  <value>Description is required</value>
+</data>
+	<data name="DescripcionLongitud" xml:space="preserve">
+  <value>Description cannot exceed {0} characters</value>
+</data> 
 </root>

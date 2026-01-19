@@ -147,4 +147,43 @@
   <data name="AccountDisabled" xml:space="preserve">
     <value>Compte désactivé</value>
   </data>
+	<data name="Field_Codigo" xml:space="preserve">
+  <value>Le code</value>
+</data>
+	<data name="Field_Descripcion" xml:space="preserve">
+  <value>La description</value>
+</data>
+	<data name="Field_Cancelado" xml:space="preserve">
+  <value>Annulé</value>
+</data>
+	<data name="Field_CreadoPor" xml:space="preserve">
+  <value>Créé par</value>
+</data>
+	<data name="Field_FechaCreacion" xml:space="preserve">
+  <value>Date de création</value>
+</data>
+	<data name="Field_ModificadoPor" xml:space="preserve">
+  <value>Modifié par</value>
+</data>
+	<data name="Field_FechaModificacion" xml:space="preserve">
+  <value>Date de modification</value>
+</data>
+	<data name="Field_Subgrupos" xml:space="preserve">
+  <value>Sous-groupes</value>
+</data>
+	<data name="CodigoObligatorio" xml:space="preserve">
+  <value>Le code est obligatoire</value>
+</data>
+	<data name="CodigoLongitud" xml:space="preserve">
+  <value>Le code doit contenir exactement 2 caractères</value>
+</data>
+	<data name="CodigoFormato" xml:space="preserve">
+  <value>Le code ne doit contenir que des chiffres (00-99)</value>
+</data>
+	<data name="DescripcionObligatoria" xml:space="preserve">
+  <value>La description est obligatoire</value>
+</data>
+	<data name="DescripcionLongitud" xml:space="preserve">
+  <value>La description ne peut pas dépasser {0} caractères</value>
+</data>	
 </root>
