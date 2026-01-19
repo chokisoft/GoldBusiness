@@ -1,4 +1,4 @@
-using GoldBusiness.Application.Interfaces;
+﻿using GoldBusiness.Application.Interfaces;
 using GoldBusiness.Domain.DTOs;
 using GoldBusiness.Domain.Entities;
 using GoldBusiness.Infrastructure.Repositories;
@@ -27,7 +27,8 @@ namespace GoldBusiness.Application.Services
         public async Task<SubGrupoCuentaDTO> CreateAsync(SubGrupoCuentaDTO dto, string user, string lang = "es")
         {
             var creador = user ?? "system";
-            var entity = new SubGrupoCuenta(dto.Codigo, dto.GrupoCuenta, dto.Descripcion, dto.Deudora, creador);
+            // ✅ Ahora usa dto.Deudora
+            var entity = new SubGrupoCuenta(dto.Codigo, dto.GrupoCuentaId, dto.Descripcion, dto.Deudora, creador);
 
             await _repo.AddAsync(entity);
 
@@ -42,7 +43,8 @@ namespace GoldBusiness.Application.Services
             var entity = await _repo.GetByIdAsync(id);
             if (entity == null) throw new KeyNotFoundException();
 
-            entity.Update(dto.Descripcion, dto.GrupoCuenta, dto.Deudora, user);
+            // ✅ Ahora usa dto.Deudora
+            entity.Update(dto.Descripcion, dto.GrupoCuentaId, dto.Deudora, user);
 
             entity.AddOrUpdateTranslation(lang, dto.Descripcion, user ?? "system");
 
@@ -64,7 +66,7 @@ namespace GoldBusiness.Application.Services
         public async Task AddOrUpdateTranslationAsync(int id, string lang, string descripcion, string user)
         {
             if (string.IsNullOrWhiteSpace(lang)) lang = "es";
-            if (string.IsNullOrWhiteSpace(descripcion)) throw new ArgumentException("Descripci�n requerida.", nameof(descripcion));
+            if (string.IsNullOrWhiteSpace(descripcion)) throw new ArgumentException("Descripción requerida.", nameof(descripcion));
 
             var entity = await _repo.GetByIdAsync(id);
             if (entity == null) throw new KeyNotFoundException();
@@ -81,10 +83,11 @@ namespace GoldBusiness.Application.Services
             {
                 Id = s.Id,
                 Codigo = s.Codigo,
-                GrupoCuenta = s.GrupoCuentaId,
-                GrupoCuentaDescripcion = s.GrupoCuenta?.GetDescripcion(lang),
+                GrupoCuentaId = s.GrupoCuentaId,
+                GrupoCuentaCodigo = s.GrupoCuenta?.Codigo ?? string.Empty,
+                GrupoCuentaDescripcion = s.GrupoCuenta?.GetDescripcion(lang) ?? string.Empty,
                 Descripcion = s.GetDescripcion(lang),
-                Deudora = s.Deudora,
+                Deudora = s.Deudora,  // ✅ AGREGADO
                 Cancelado = s.Cancelado,
                 CreadoPor = s.CreadoPor,
                 FechaHoraCreado = s.FechaHoraCreado,

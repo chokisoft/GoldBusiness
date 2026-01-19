@@ -1,10 +1,40 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <OutputType>Library</OutputType>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<LangVersion>14.0</LangVersion>
+	</PropertyGroup>
+
+	<!-- ✅ AGREGAR ESTA REFERENCIA SI NO EXISTE -->
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.0" />
+	</ItemGroup>
+
+	<!-- Configuración de recursos -->
+	<ItemGroup>
+		<Compile Update="Resources\ValidationMessages.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>ValidationMessages.resx</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Update="Resources\ValidationMessages.resx">
+			<Generator>PublicResXFileCodeGenerator</Generator>
+			<LastGenOutput>ValidationMessages.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+
+		<EmbeddedResource Update="Resources\ValidationMessages.en.resx">
+			<DependentUpon>ValidationMessages.resx</DependentUpon>
+		</EmbeddedResource>
+
+		<EmbeddedResource Update="Resources\ValidationMessages.fr.resx">
+			<DependentUpon>ValidationMessages.resx</DependentUpon>
+		</EmbeddedResource>
+	</ItemGroup>
 
 </Project>

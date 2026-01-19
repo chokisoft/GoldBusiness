@@ -1,108 +1,149 @@
-﻿using GoldBusiness.Domain.Exceptions;
-using System.Linq;
+﻿    using GoldBusiness.Domain.Exceptions;
+    using GoldBusiness.Domain.Translation;
 
-namespace GoldBusiness.Domain.Entities
-{
-    public class Cuenta
+    namespace GoldBusiness.Domain.Entities
     {
-        private readonly HashSet<CuentaTranslation> _translations = new();
+        public class Cuenta
+        {
+            private readonly HashSet<CuentaTranslation> _translations = new();
 
-        public int Id { get; private set; }
-        public string Codigo { get; private set; } = string.Empty;
-        public string Descripcion { get; private set; } = string.Empty;
-        public int SubGrupoCuentaId { get; private set; }
-        public SubGrupoCuenta SubGrupoCuenta { get; private set; } = null!;
-        public bool Cancelado { get; private set; }
-        public string CreadoPor { get; private set; } = string.Empty;
-        public DateTime FechaHoraCreado { get; private set; }
-        public string ModificadoPor { get; private set; } = string.Empty;
-        public DateTime? FechaHoraModificado { get; private set; }
+            public int Id { get; private set; }
+            public string Codigo { get; private set; } = string.Empty;
+            public string Descripcion { get; private set; } = string.Empty;
+            public int SubGrupoCuentaId { get; private set; }
+            public SubGrupoCuenta SubGrupoCuenta { get; private set; } = null!;
+            public bool Cancelado { get; private set; }
+            public string CreadoPor { get; private set; } = string.Empty;
+            public DateTime FechaHoraCreado { get; private set; }
+            public string ModificadoPor { get; private set; } = string.Empty;
+            public DateTime? FechaHoraModificado { get; private set; }
 
-        public IReadOnlyCollection<CuentaTranslation> Translations => _translations;
+            public IReadOnlyCollection<CuentaTranslation> Translations => _translations;
+            public IReadOnlyCollection<Localidad> LocalidadCuentaInventarioNavigation { get; } = new HashSet<Localidad>();
+            public IReadOnlyCollection<Localidad> LocalidadCuentaCostoNavigation { get; } = new HashSet<Localidad>();
+            public IReadOnlyCollection<Localidad> LocalidadCuentaVentaNavigation { get; } = new HashSet<Localidad>();
+            public IReadOnlyCollection<Localidad> LocalidadCuentaDevolucionNavigation { get; } = new HashSet<Localidad>();
+            public IReadOnlyCollection<Configuracion> ConfiguracionCuentaPagarNavigation { get; } = new HashSet<Configuracion>();
+            public IReadOnlyCollection<Configuracion> ConfiguracionCuentaCobrarNavigation { get; } = new HashSet<Configuracion>();
 
+        // Constructor protegido para EF Core
         protected Cuenta() { }
 
-        public Cuenta(string codigo, string descripcion, int subGrupoCuentaId, string creadoPor)
-        {
-            SetCodigo(codigo);
-            SetDescripcion(descripcion);
-
-            SubGrupoCuentaId = subGrupoCuentaId;
-            CreadoPor = creadoPor ?? throw new ArgumentNullException(nameof(creadoPor));
-            FechaHoraCreado = DateTime.UtcNow;
-            Cancelado = false;
-        }
-
-        public void SetCodigo(string codigo)
-        {
-            if (string.IsNullOrWhiteSpace(codigo) || codigo.Length > 8)
-                throw new DomainException("El código es obligatorio y debe tener hasta 8 caracteres.");
-
-            Codigo = codigo;
-        }
-
-        public void SetDescripcion(string descripcion)
-        {
-            if (string.IsNullOrWhiteSpace(descripcion))
-                throw new DomainException("La descripción es obligatoria.");
-
-            Descripcion = descripcion;
-        }
-
-        // Traducciones: añadir/actualizar
-        public void AddOrUpdateTranslation(string language, string descripcion, string usuario)
-        {
-            var lang = NormalizeLang(language);
-            var existing = _translations.FirstOrDefault(t => string.Equals(t.Language, lang, StringComparison.OrdinalIgnoreCase));
-            if (existing != null)
+            // Constructor con validaciones
+            public Cuenta(string codigo, string descripcion, int subGrupoCuentaId, string creadoPor)
             {
-                existing.SetDescripcion(descripcion, usuario);
+                SetCodigo(codigo);
+                SetDescripcion(descripcion);
+
+                SubGrupoCuentaId = subGrupoCuentaId;
+                CreadoPor = creadoPor ?? throw new ArgumentNullException(nameof(creadoPor));
+                FechaHoraCreado = DateTime.UtcNow;
+                Cancelado = false;
             }
-            else
+
+            // ═══════════════════════════════════════════════════════════════
+            // 🔧 MÉTODOS DE DOMINIO - VALIDACIONES
+            // ═══════════════════════════════════════════════════════════════
+
+            public void SetCodigo(string codigo)
             {
-                _translations.Add(new CuentaTranslation(Id, lang, descripcion, usuario));
+                if (string.IsNullOrWhiteSpace(codigo) || codigo.Length > 8)
+                    throw new DomainException("El código es obligatorio y debe tener hasta 8 caracteres.");
+
+                Codigo = codigo.Trim(); // ✅ Agregado Trim()
             }
-        }
 
-        // Obtener descripción localizada con fallback
-        public string GetDescripcion(string language, string fallback = "es")
-        {
-            var lang = NormalizeLang(language);
-            var fb = NormalizeLang(fallback);
+            public void SetDescripcion(string descripcion)
+            {
+                if (string.IsNullOrWhiteSpace(descripcion))
+                    throw new DomainException("La descripción es obligatoria.");
+            
+                if (descripcion.Length > 256) // ✅ Agregada validación de longitud
+                    throw new DomainException("La descripción no puede exceder 256 caracteres.");
 
-            var match = _translations.FirstOrDefault(t => string.Equals(t.Language, lang, StringComparison.OrdinalIgnoreCase));
-            if (match != null && !string.IsNullOrWhiteSpace(match.Descripcion))
-                return match.Descripcion;
+                Descripcion = descripcion.Trim(); // ✅ Agregado Trim()
+            }
 
-            if (!string.IsNullOrWhiteSpace(Descripcion))
-                return Descripcion;
+            // ═══════════════════════════════════════════════════════════════
+            // 🌍 MÉTODOS DE TRADUCCIÓN
+            // ═══════════════════════════════════════════════════════════════
 
-            var fallbackMatch = _translations.FirstOrDefault(t => string.Equals(t.Language, fb, StringComparison.OrdinalIgnoreCase));
-            if (fallbackMatch != null) return fallbackMatch.Descripcion;
+            public void AddOrUpdateTranslation(string language, string descripcion, string usuario)
+            {
+                var lang = NormalizeLang(language);
+                var existing = _translations.FirstOrDefault(t => string.Equals(t.Language, lang, StringComparison.OrdinalIgnoreCase));
+                if (existing != null)
+                {
+                    existing.SetDescripcion(descripcion, usuario);
+                }
+                else
+                {
+                    _translations.Add(new CuentaTranslation(Id, lang, descripcion, usuario));
+                }
+            }
 
-            return string.Empty;
-        }
+            public string GetDescripcion(string language, string fallback = "es")
+            {
+                var lang = NormalizeLang(language);
+                var fb = NormalizeLang(fallback);
 
-        public void Update(string descripcion, int subGrupoCuentaId, string modificadoPor)
-        {
-            SetDescripcion(descripcion);
-            SubGrupoCuentaId = subGrupoCuentaId;
-            ModificadoPor = modificadoPor ?? ModificadoPor;
-            FechaHoraModificado = DateTime.UtcNow;
-        }
+                var match = _translations.FirstOrDefault(t => string.Equals(t.Language, lang, StringComparison.OrdinalIgnoreCase));
+                if (match != null && !string.IsNullOrWhiteSpace(match.Descripcion))
+                    return match.Descripcion;
 
-        public void SoftDelete(string modificadoPor)
-        {
-            Cancelado = true;
-            ModificadoPor = modificadoPor ?? ModificadoPor;
-            FechaHoraModificado = DateTime.UtcNow;
-        }
+                if (!string.IsNullOrWhiteSpace(Descripcion))
+                    return Descripcion;
 
-        private static string NormalizeLang(string? lang)
-        {
-            if (string.IsNullOrWhiteSpace(lang)) return "es";
-            var parts = lang.Split('-', StringSplitOptions.RemoveEmptyEntries);
-            return parts[0].ToLowerInvariant();
+                var fallbackMatch = _translations.FirstOrDefault(t => string.Equals(t.Language, fb, StringComparison.OrdinalIgnoreCase));
+                if (fallbackMatch != null) return fallbackMatch.Descripcion;
+
+                return string.Empty;
+            }
+
+            // ═══════════════════════════════════════════════════════════════
+            // 🔧 MÉTODOS DE ACTUALIZACIÓN Y ESTADO
+            // ═══════════════════════════════════════════════════════════════
+
+            public void Update(string descripcion, int subGrupoCuentaId, string modificadoPor)
+            {
+                SetDescripcion(descripcion);
+                SubGrupoCuentaId = subGrupoCuentaId;
+                ActualizarAuditoria(modificadoPor); // ✅ Usa método privado
+            }
+
+            public void SoftDelete(string modificadoPor)
+            {
+                if (Cancelado) // ✅ Agregada validación
+                    throw new DomainException("La cuenta ya está cancelada.");
+            
+                Cancelado = true;
+                ActualizarAuditoria(modificadoPor); // ✅ Usa método privado
+            }
+
+            public void Reactivar(string modificadoPor) // ✅ Método nuevo
+            {
+                if (!Cancelado)
+                    throw new DomainException("La cuenta no está cancelada.");
+            
+                Cancelado = false;
+                ActualizarAuditoria(modificadoPor);
+            }
+
+            // ═══════════════════════════════════════════════════════════════
+            // 🔧 MÉTODOS PRIVADOS
+            // ═══════════════════════════════════════════════════════════════
+
+            private void ActualizarAuditoria(string usuario) // ✅ Método privado nuevo
+            {
+                ModificadoPor = usuario ?? throw new ArgumentNullException(nameof(usuario));
+                FechaHoraModificado = DateTime.UtcNow;
+            }
+
+            private static string NormalizeLang(string? lang)
+            {
+                if (string.IsNullOrWhiteSpace(lang)) return "es";
+                var parts = lang.Split('-', StringSplitOptions.RemoveEmptyEntries);
+                return parts[0].ToLowerInvariant();
+            }
         }
     }
-}

@@ -1,5 +1,5 @@
 ﻿using GoldBusiness.Domain.Exceptions;
-using System.Linq;
+using GoldBusiness.Domain.Translation;
 
 namespace GoldBusiness.Domain.Entities
 {
@@ -19,12 +19,17 @@ namespace GoldBusiness.Domain.Entities
         public string ModificadoPor { get; private set; } = string.Empty;
         public DateTime? FechaHoraModificado { get; private set; }
 
+        // Propiedades de navegación
         public GrupoCuenta GrupoCuenta { get; private set; } = null!;
+        
+        // Colecciones de navegación (read-only)
         public IReadOnlyCollection<Cuenta> Cuenta => _cuenta;
         public IReadOnlyCollection<SubGrupoCuentaTranslation> Translations => _translations;
 
+        // Constructor protegido para EF Core
         protected SubGrupoCuenta() { }
 
+        // Constructor con validaciones
         public SubGrupoCuenta(
             string codigo,
             int grupoCuentaId,
@@ -42,6 +47,10 @@ namespace GoldBusiness.Domain.Entities
             Cancelado = false;
         }
 
+        // ═══════════════════════════════════════════════════════════════
+        // 🔧 MÉTODOS DE DOMINIO - VALIDACIONES
+        // ═══════════════════════════════════════════════════════════════
+
         public void SetCodigo(string codigo)
         {
             if (string.IsNullOrWhiteSpace(codigo) || codigo.Length != 5 || !codigo.All(char.IsDigit))
@@ -55,7 +64,15 @@ namespace GoldBusiness.Domain.Entities
             if (string.IsNullOrWhiteSpace(descripcion))
                 throw new DomainException("La descripción es obligatoria.");
 
-            Descripcion = descripcion;
+            if (descripcion.Length > 256)
+                throw new DomainException("La descripción no puede exceder 256 caracteres.");
+
+            Descripcion = descripcion.Trim();
+        }
+
+        public void SetDeudora(bool deudora)
+        {
+            Deudora = deudora;
         }
 
         public void AgregarCuenta(Cuenta cuenta)
@@ -66,7 +83,10 @@ namespace GoldBusiness.Domain.Entities
             _cuenta.Add(cuenta);
         }
 
-        // Traducciones: añadir/actualizar
+        // ═══════════════════════════════════════════════════════════════
+        // 🌍 MÉTODOS DE TRADUCCIÓN
+        // ═══════════════════════════════════════════════════════════════
+
         public void AddOrUpdateTranslation(string language, string descripcion, string usuario)
         {
             var lang = NormalizeLang(language);
@@ -81,7 +101,6 @@ namespace GoldBusiness.Domain.Entities
             }
         }
 
-        // Obtener descripción localizada con fallback
         public string GetDescripcion(string language, string fallback = "es")
         {
             var lang = NormalizeLang(language);
@@ -100,19 +119,46 @@ namespace GoldBusiness.Domain.Entities
             return string.Empty;
         }
 
-        public void Update(string descripcion, int grupoCuentaId, bool deudora, string? modificadoPor)
+        // ═══════════════════════════════════════════════════════════════
+        // 🔧 MÉTODOS DE ACTUALIZACIÓN Y ESTADO
+        // ═══════════════════════════════════════════════════════════════
+
+        public void Update(string descripcion, int grupoCuentaId, bool deudora, string modificadoPor)
         {
             SetDescripcion(descripcion);
             GrupoCuentaId = grupoCuentaId;
-            Deudora = deudora;
-            ModificadoPor = modificadoPor ?? ModificadoPor;
-            FechaHoraModificado = DateTime.UtcNow;
+            SetDeudora(deudora);
+            ActualizarAuditoria(modificadoPor);
         }
 
-        public void SoftDelete(string? modificadoPor)
+        public void SoftDelete(string modificadoPor)
         {
+            if (Cancelado)
+                throw new DomainException("El subgrupo de cuenta ya está cancelado.");
+
+            if (_cuenta.Any(c => !c.Cancelado))
+                throw new DomainException("No se puede cancelar un subgrupo de cuenta con cuentas activas.");
+
             Cancelado = true;
-            ModificadoPor = modificadoPor ?? ModificadoPor;
+            ActualizarAuditoria(modificadoPor);
+        }
+
+        public void Reactivar(string modificadoPor)
+        {
+            if (!Cancelado)
+                throw new DomainException("El subgrupo de cuenta no está cancelado.");
+
+            Cancelado = false;
+            ActualizarAuditoria(modificadoPor);
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 🔧 MÉTODOS PRIVADOS
+        // ═══════════════════════════════════════════════════════════════
+
+        private void ActualizarAuditoria(string usuario)
+        {
+            ModificadoPor = usuario ?? throw new ArgumentNullException(nameof(usuario));
             FechaHoraModificado = DateTime.UtcNow;
         }
 

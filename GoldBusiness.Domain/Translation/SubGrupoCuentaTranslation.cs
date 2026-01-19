@@ -1,11 +1,12 @@
+using GoldBusiness.Domain.Entities;
 using System;
 
-namespace GoldBusiness.Domain.Entities
+namespace GoldBusiness.Domain.Translation
 {
-    public class GrupoCuentaTranslation
+    public class SubGrupoCuentaTranslation
     {
         public int Id { get; private set; }
-        public int GrupoCuentaId { get; private set; }
+        public int SubGrupoCuentaId { get; private set; }
         public string Language { get; private set; } = string.Empty; // "es","en","fr"
         public string Descripcion { get; private set; } = string.Empty;
 
@@ -14,13 +15,13 @@ namespace GoldBusiness.Domain.Entities
         public string ModificadoPor { get; private set; } = string.Empty;
         public DateTime? FechaHoraModificado { get; private set; }
 
-        public GrupoCuenta GrupoCuenta { get; private set; } = null!;
+        public SubGrupoCuenta SubGrupoCuenta { get; private set; } = null!;
 
-        protected GrupoCuentaTranslation() { }
+        protected SubGrupoCuentaTranslation() { }
 
-        public GrupoCuentaTranslation(int grupoCuentaId, string language, string descripcion, string creadoPor)
+        public SubGrupoCuentaTranslation(int subGrupoCuentaId, string language, string descripcion, string creadoPor)
         {
-            GrupoCuentaId = grupoCuentaId;
+            SubGrupoCuentaId = subGrupoCuentaId;
             Language = NormalizeLang(language);
             Descripcion = descripcion ?? throw new ArgumentNullException(nameof(descripcion));
             CreadoPor = creadoPor ?? throw new ArgumentNullException(nameof(creadoPor));

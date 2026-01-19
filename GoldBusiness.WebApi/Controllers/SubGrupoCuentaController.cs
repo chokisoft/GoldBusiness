@@ -1,4 +1,4 @@
-using GoldBusiness.Application.Interfaces;
+﻿using GoldBusiness.Application.Interfaces;
 using GoldBusiness.Domain.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -50,7 +50,8 @@ namespace GoldBusiness.WebApi.Controllers
             var lang = string.IsNullOrWhiteSpace(dto.Language) ? "es" : dto.Language.Split('-', StringSplitOptions.RemoveEmptyEntries)[0].ToLowerInvariant();
             if (!supported.Contains(lang)) return BadRequest("Idioma no soportado.");
 
-            await _service.AddOrUpdateTranslationAsync(id, lang, dto.Descripcion, User?.Identity?.Name ?? "system");
+            // ✅ CORREGIDO: Usar TranslatedText en lugar de Descripcion
+            await _service.AddOrUpdateTranslationAsync(id, lang, dto.TranslatedText, User?.Identity?.Name ?? "system");
             return Ok();
         }
     }

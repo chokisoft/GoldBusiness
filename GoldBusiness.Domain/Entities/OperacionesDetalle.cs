@@ -1,0 +1,178 @@
+﻿using GoldBusiness.Domain.Exceptions;
+
+namespace GoldBusiness.Domain.Entities
+{
+    public class OperacionesDetalle
+    {
+        private readonly HashSet<ErroresVenta> _erroresVenta = new();
+        private readonly HashSet<OperacionesServicio> _operacionesServicio = new();
+
+        public int Id { get; private set; }
+        public int OperacionesEncabezadoId { get; private set; }
+        public int LocalidadId { get; private set; }
+        public int ProductoId { get; private set; }
+        public decimal Cantidad { get; private set; }
+        public decimal Costo { get; private set; }
+        public decimal ImporteCosto { get; private set; }
+        public decimal Venta { get; private set; }
+        public decimal ImporteVenta { get; private set; }
+        public decimal Existencia { get; private set; }
+        public bool Cancelado { get; private set; }
+        public string CreadoPor { get; private set; } = string.Empty;
+        public DateTime FechaHoraCreado { get; private set; }
+        public string ModificadoPor { get; private set; } = string.Empty;
+        public DateTime? FechaHoraModificado { get; private set; }
+
+        // Propiedades de navegación
+        public Producto ProductoNavigation { get; private set; } = null!;
+        public Localidad LocalidadNavigation { get; private set; } = null!;
+        public OperacionesEncabezado OperacionEncabezadoNavigation { get; private set; } = null!;
+
+        // Colecciones de navegación (read-only)
+        public IReadOnlyCollection<ErroresVenta> ErroresVenta => _erroresVenta;
+        public IReadOnlyCollection<OperacionesServicio> OperacionesServicio => _operacionesServicio;
+
+        // Constructor protegido para EF Core
+        protected OperacionesDetalle() { }
+
+        // Constructor con validaciones
+        public OperacionesDetalle(
+            int operacionesEncabezadoId,
+            int localidadId,
+            int productoId,
+            decimal cantidad,
+            decimal costo,
+            decimal venta,
+            decimal existencia,
+            string creadoPor)
+        {
+            OperacionesEncabezadoId = operacionesEncabezadoId;
+            LocalidadId = localidadId;
+            ProductoId = productoId;
+            Existencia = existencia;
+
+            SetCantidad(cantidad);
+            SetCosto(costo);
+            SetVenta(venta);
+
+            CreadoPor = creadoPor ?? throw new ArgumentNullException(nameof(creadoPor));
+            FechaHoraCreado = DateTime.UtcNow;
+            Cancelado = false;
+
+            CalcularImportes();
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 🔧 MÉTODOS DE DOMINIO - VALIDACIONES
+        // ═══════════════════════════════════════════════════════════════
+
+        public void SetCantidad(decimal cantidad)
+        {
+            if (cantidad == 0)
+                throw new DomainException("La cantidad no puede ser cero.");
+
+            Cantidad = cantidad;
+            CalcularImportes();
+        }
+
+        public void SetCosto(decimal costo)
+        {
+            if (costo < 0)
+                throw new DomainException("El costo no puede ser negativo.");
+
+            Costo = costo;
+            CalcularImportes();
+        }
+
+        public void SetVenta(decimal venta)
+        {
+            if (venta < 0)
+                throw new DomainException("El precio de venta no puede ser negativo.");
+
+            Venta = venta;
+            CalcularImportes();
+        }
+
+        public void SetExistencia(decimal existencia)
+        {
+            Existencia = existencia;
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 🔧 MÉTODOS DE ACTUALIZACIÓN Y ESTADO
+        // ═══════════════════════════════════════════════════════════════
+
+        public void Update(
+            decimal cantidad,
+            decimal costo,
+            decimal venta,
+            decimal existencia,
+            string modificadoPor)
+        {
+            SetCantidad(cantidad);
+            SetCosto(costo);
+            SetVenta(venta);
+            SetExistencia(existencia);
+            ActualizarAuditoria(modificadoPor);
+        }
+
+        public void SoftDelete(string modificadoPor)
+        {
+            if (Cancelado)
+                throw new DomainException("El detalle ya está cancelado.");
+
+            Cancelado = true;
+            ActualizarAuditoria(modificadoPor);
+        }
+
+        public void Reactivar(string modificadoPor)
+        {
+            if (!Cancelado)
+                throw new DomainException("El detalle no está cancelado.");
+
+            Cancelado = false;
+            ActualizarAuditoria(modificadoPor);
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 📊 MÉTODOS DE CÁLCULO
+        // ═══════════════════════════════════════════════════════════════
+
+        private void CalcularImportes()
+        {
+            ImporteCosto = Cantidad * Costo;
+            ImporteVenta = Cantidad * Venta;
+        }
+
+        public decimal GetMargenBruto()
+        {
+            return ImporteVenta - ImporteCosto;
+        }
+
+        public decimal GetPorcentajeMargen()
+        {
+            if (ImporteCosto == 0) return 0;
+            return ((ImporteVenta - ImporteCosto) / ImporteCosto) * 100;
+        }
+
+        public bool EsVenta()
+        {
+            return Cantidad > 0;
+        }
+
+        public bool EsDevolucion()
+        {
+            return Cantidad < 0;
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 🔧 MÉTODOS PRIVADOS
+        // ═══════════════════════════════════════════════════════════════
+
+        private void ActualizarAuditoria(string usuario)
+        {
+            ModificadoPor = usuario ?? throw new ArgumentNullException(nameof(usuario));
+            FechaHoraModificado = DateTime.UtcNow;
+        }
+    }
+}

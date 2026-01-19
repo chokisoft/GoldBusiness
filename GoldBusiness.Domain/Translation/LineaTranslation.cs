@@ -1,11 +1,11 @@
-using System;
+using GoldBusiness.Domain.Entities;
 
-namespace GoldBusiness.Domain.Entities
+namespace GoldBusiness.Domain.Translation
 {
-    public class CuentaTranslation
+    public class LineaTranslation
     {
         public int Id { get; private set; }
-        public int CuentaId { get; private set; }
+        public int LineaId { get; private set; }
         public string Language { get; private set; } = string.Empty; // "es","en","fr"
         public string Descripcion { get; private set; } = string.Empty;
 
@@ -14,13 +14,13 @@ namespace GoldBusiness.Domain.Entities
         public string ModificadoPor { get; private set; } = string.Empty;
         public DateTime? FechaHoraModificado { get; private set; }
 
-        public Cuenta Cuenta { get; private set; } = null!;
+        public Linea Linea { get; private set; } = null!;
 
-        protected CuentaTranslation() { }
+        protected LineaTranslation() { }
 
-        public CuentaTranslation(int cuentaId, string language, string descripcion, string creadoPor)
+        public LineaTranslation(int lineaId, string language, string descripcion, string creadoPor)
         {
-            CuentaId = cuentaId;
+            LineaId = lineaId;
             Language = NormalizeLang(language);
             Descripcion = descripcion ?? throw new ArgumentNullException(nameof(descripcion));
             CreadoPor = creadoPor ?? throw new ArgumentNullException(nameof(creadoPor));

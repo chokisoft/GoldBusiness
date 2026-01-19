@@ -27,7 +27,7 @@ namespace GoldBusiness.Application.Services
         public async Task<CuentaDTO> CreateAsync(CuentaDTO dto, string user, string lang = "es")
         {
             var creador = user ?? "system";
-            var entity = new Cuenta(dto.Codigo, dto.Descripcion, dto.SubGrupoCuenta, creador);
+            var entity = new Cuenta(dto.Codigo, dto.Descripcion, dto.SubGrupoCuentaId, creador);
 
             // Guardar entidad para obtener Id
             await _repo.AddAsync(entity);
@@ -44,7 +44,7 @@ namespace GoldBusiness.Application.Services
             var entity = await _repo.GetByIdAsync(id);
             if (entity == null) throw new KeyNotFoundException();
 
-            entity.Update(dto.Descripcion, dto.SubGrupoCuenta, user);
+            entity.Update(dto.Descripcion, dto.SubGrupoCuentaId, user);
 
             // Actualizar/crear traducción
             entity.AddOrUpdateTranslation(lang, dto.Descripcion, user ?? "system");
@@ -85,10 +85,11 @@ namespace GoldBusiness.Application.Services
                 Id = c.Id,
                 Codigo = c.Codigo,
                 Descripcion = c.GetDescripcion(lang),
-                SubGrupoCuenta = c.SubGrupoCuentaId,
-                SubGrupoCuentaDescripcion = c.SubGrupoCuenta?.GetDescripcion(lang),
-                GrupoCuenta = c.SubGrupoCuenta?.GrupoCuentaId ?? 0,
-                GrupoCuentaDescripcion = c.SubGrupoCuenta?.GrupoCuenta?.GetDescripcion(lang),
+                SubGrupoCuentaId = c.SubGrupoCuentaId,
+                SubGrupoCuentaCodigo = c.SubGrupoCuenta?.Codigo ?? string.Empty,
+                SubGrupoCuentaDescripcion = c.SubGrupoCuenta?.GetDescripcion(lang) ?? string.Empty,
+                GrupoCuentaCodigo = c.SubGrupoCuenta?.GrupoCuenta?.Codigo ?? string.Empty,
+                GrupoCuentaDescripcion = c.SubGrupoCuenta?.GrupoCuenta?.GetDescripcion(lang) ?? string.Empty,
                 Cancelado = c.Cancelado,
                 CreadoPor = c.CreadoPor,
                 FechaHoraCreado = c.FechaHoraCreado,

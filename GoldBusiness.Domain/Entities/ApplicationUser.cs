@@ -4,6 +4,6 @@ namespace GoldBusiness.Domain.Entities
 {
     public class ApplicationUser : IdentityUser
     {
-        public bool IsActive { get; set; } = true; // 👈 valor por defecto
+        public bool IsActive { get; set; } = true;
     }
 }

@@ -1,5 +1,5 @@
 ﻿using GoldBusiness.Domain.Exceptions;
-using System.Linq;
+using GoldBusiness.Domain.Translation;
 
 namespace GoldBusiness.Domain.Entities
 {
@@ -10,18 +10,21 @@ namespace GoldBusiness.Domain.Entities
 
         public int Id { get; private set; }
         public string Codigo { get; private set; } = string.Empty;
-        public string Descripcion { get; private set; } = string.Empty; // opcional: valor por compatibilidad
+        public string Descripcion { get; private set; } = string.Empty;
         public bool Cancelado { get; private set; }
         public string CreadoPor { get; private set; } = string.Empty;
         public DateTime FechaHoraCreado { get; private set; }
         public string ModificadoPor { get; private set; } = string.Empty;
         public DateTime? FechaHoraModificado { get; private set; }
 
+        // Colecciones de navegación (read-only)
         public IReadOnlyCollection<SubGrupoCuenta> SubGrupoCuenta => _subGrupoCuenta;
         public IReadOnlyCollection<GrupoCuentaTranslation> Translations => _translations;
 
+        // Constructor protegido para EF Core
         protected GrupoCuenta() { }
 
+        // Constructor con validaciones
         public GrupoCuenta(string codigo, string descripcion, string creadoPor)
         {
             SetCodigo(codigo);
@@ -32,10 +35,15 @@ namespace GoldBusiness.Domain.Entities
             Cancelado = false;
         }
 
+        // ═══════════════════════════════════════════════════════════════
+        // 🔧 MÉTODOS DE DOMINIO - VALIDACIONES
+        // ═══════════════════════════════════════════════════════════════
+
         public void SetCodigo(string codigo)
         {
             if (string.IsNullOrWhiteSpace(codigo) || codigo.Length != 2 || !codigo.All(char.IsDigit))
                 throw new DomainException("El código debe ser un número de 2 dígitos.");
+            
             Codigo = codigo;
         }
 
@@ -43,10 +51,17 @@ namespace GoldBusiness.Domain.Entities
         {
             if (string.IsNullOrWhiteSpace(descripcion))
                 throw new DomainException("La descripción es obligatoria.");
-            Descripcion = descripcion;
+
+            if (descripcion.Length > 256)
+                throw new DomainException("La descripción no puede exceder 256 caracteres.");
+            
+            Descripcion = descripcion.Trim();
         }
 
-        // Traducciones: añadir/actualizar
+        // ═══════════════════════════════════════════════════════════════
+        // 🌍 MÉTODOS DE TRADUCCIÓN
+        // ═══════════════════════════════════════════════════════════════
+
         public void AddOrUpdateTranslation(string language, string descripcion, string usuario)
         {
             var lang = NormalizeLang(language);
@@ -57,12 +72,10 @@ namespace GoldBusiness.Domain.Entities
             }
             else
             {
-                // Usar Id (ya debe existir si se llama tras AddAsync)
                 _translations.Add(new GrupoCuentaTranslation(Id, lang, descripcion, usuario));
             }
         }
 
-        // Obtener descripción localizada con fallback
         public string GetDescripcion(string language, string fallback = "es")
         {
             var lang = NormalizeLang(language);
@@ -72,29 +85,53 @@ namespace GoldBusiness.Domain.Entities
             if (match != null && !string.IsNullOrWhiteSpace(match.Descripcion))
                 return match.Descripcion;
 
-            // fallback a descripción base
             if (!string.IsNullOrWhiteSpace(Descripcion))
                 return Descripcion;
 
-            // fallback a otro idioma (ej. español)
             var fallbackMatch = _translations.FirstOrDefault(t => string.Equals(t.Language, fb, StringComparison.OrdinalIgnoreCase));
             if (fallbackMatch != null) return fallbackMatch.Descripcion;
 
-            // último recurso: cadena vacía
             return string.Empty;
         }
 
-        public void Update(string descripcion, string? modificadoPor)
+        // ═══════════════════════════════════════════════════════════════
+        // 🔧 MÉTODOS DE ACTUALIZACIÓN Y ESTADO
+        // ═══════════════════════════════════════════════════════════════
+
+        public void Update(string descripcion, string modificadoPor)
         {
             SetDescripcion(descripcion);
-            ModificadoPor = modificadoPor ?? ModificadoPor;
-            FechaHoraModificado = DateTime.UtcNow;
+            ActualizarAuditoria(modificadoPor);
         }
 
-        public void SoftDelete(string? modificadoPor)
+        public void SoftDelete(string modificadoPor)
         {
+            if (Cancelado)
+                throw new DomainException("El grupo de cuenta ya está cancelado.");
+
+            if (_subGrupoCuenta.Any(sg => !sg.Cancelado))
+                throw new DomainException("No se puede cancelar un grupo de cuenta con subgrupos activos.");
+
             Cancelado = true;
-            ModificadoPor = modificadoPor ?? ModificadoPor;
+            ActualizarAuditoria(modificadoPor);
+        }
+
+        public void Reactivar(string modificadoPor)
+        {
+            if (!Cancelado)
+                throw new DomainException("El grupo de cuenta no está cancelado.");
+
+            Cancelado = false;
+            ActualizarAuditoria(modificadoPor);
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 🔧 MÉTODOS PRIVADOS
+        // ═══════════════════════════════════════════════════════════════
+
+        private void ActualizarAuditoria(string usuario)
+        {
+            ModificadoPor = usuario ?? throw new ArgumentNullException(nameof(usuario));
             FechaHoraModificado = DateTime.UtcNow;
         }
 

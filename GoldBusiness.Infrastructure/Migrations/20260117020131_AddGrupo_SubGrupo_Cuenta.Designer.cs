@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GoldBusiness.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260112160848_Grupo_SubGrupo_Cuenta_Update20250112")]
-    partial class Grupo_SubGrupo_Cuenta_Update20250112
+    [Migration("20260117020131_AddGrupo_SubGrupo_Cuenta")]
+    partial class AddGrupo_SubGrupo_Cuenta
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -245,6 +245,135 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.ToTable("SubGrupoCuenta");
                 });
 
+            modelBuilder.Entity("GoldBusiness.Domain.Translation.CuentaTranslation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CreadoPor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CuentaId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<DateTime>("FechaHoraCreado")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FechaHoraModificado")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Language")
+                        .IsRequired()
+                        .HasMaxLength(5)
+                        .HasColumnType("nvarchar(5)");
+
+                    b.Property<string>("ModificadoPor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CuentaId", "Language")
+                        .IsUnique();
+
+                    b.ToTable("CuentaTranslation");
+                });
+
+            modelBuilder.Entity("GoldBusiness.Domain.Translation.GrupoCuentaTranslation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CreadoPor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<DateTime>("FechaHoraCreado")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FechaHoraModificado")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("GrupoCuentaId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Language")
+                        .IsRequired()
+                        .HasMaxLength(5)
+                        .HasColumnType("nvarchar(5)");
+
+                    b.Property<string>("ModificadoPor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GrupoCuentaId", "Language")
+                        .IsUnique();
+
+                    b.ToTable("GrupoCuentaTranslation");
+                });
+
+            modelBuilder.Entity("GoldBusiness.Domain.Translation.SubGrupoCuentaTranslation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CreadoPor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<DateTime>("FechaHoraCreado")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FechaHoraModificado")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Language")
+                        .IsRequired()
+                        .HasMaxLength(5)
+                        .HasColumnType("nvarchar(5)");
+
+                    b.Property<string>("ModificadoPor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SubGrupoCuentaId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SubGrupoCuentaId", "Language")
+                        .IsUnique();
+
+                    b.ToTable("SubGrupoCuentaTranslation");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -400,6 +529,39 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.Navigation("GrupoCuenta");
                 });
 
+            modelBuilder.Entity("GoldBusiness.Domain.Translation.CuentaTranslation", b =>
+                {
+                    b.HasOne("GoldBusiness.Domain.Entities.Cuenta", "Cuenta")
+                        .WithMany("Translations")
+                        .HasForeignKey("CuentaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cuenta");
+                });
+
+            modelBuilder.Entity("GoldBusiness.Domain.Translation.GrupoCuentaTranslation", b =>
+                {
+                    b.HasOne("GoldBusiness.Domain.Entities.GrupoCuenta", "GrupoCuenta")
+                        .WithMany("Translations")
+                        .HasForeignKey("GrupoCuentaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("GrupoCuenta");
+                });
+
+            modelBuilder.Entity("GoldBusiness.Domain.Translation.SubGrupoCuentaTranslation", b =>
+                {
+                    b.HasOne("GoldBusiness.Domain.Entities.SubGrupoCuenta", "SubGrupoCuenta")
+                        .WithMany("Translations")
+                        .HasForeignKey("SubGrupoCuentaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("SubGrupoCuenta");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -451,14 +613,23 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("GoldBusiness.Domain.Entities.Cuenta", b =>
+                {
+                    b.Navigation("Translations");
+                });
+
             modelBuilder.Entity("GoldBusiness.Domain.Entities.GrupoCuenta", b =>
                 {
                     b.Navigation("SubGrupoCuenta");
+
+                    b.Navigation("Translations");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.SubGrupoCuenta", b =>
                 {
                     b.Navigation("Cuenta");
+
+                    b.Navigation("Translations");
                 });
 #pragma warning restore 612, 618
         }
