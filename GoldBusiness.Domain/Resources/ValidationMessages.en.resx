@@ -185,5 +185,29 @@
 </data>
 	<data name="DescripcionLongitud" xml:space="preserve">
   <value>Description cannot exceed {0} characters</value>
-</data> 
+</data>
+	<data name="TranslationUpdated" xml:space="preserve">
+  <value>Translation updated successfully</value>
+</data>
+	<data name="UnsupportedLanguage" xml:space="preserve">
+  <value>Unsupported language. Valid languages: es, en, fr</value>
+</data>
+	<data name="GroupId" xml:space="preserve">
+  <value>Group ID</value>
+</data>
+	<data name="SubGroupId" xml:space="preserve">
+  <value>SubGroup ID</value>
+</data>
+	<data name="AccountId" xml:space="preserve">
+  <value>Account ID</value>
+</data>
+	<data name="Language" xml:space="preserve">
+  <value>Language</value>
+</data>
+	<data name="ProvidedLanguage" xml:space="preserve">
+  <value>Provided Language</value>
+</data>
+	<data name="SupportedLanguages" xml:space="preserve">
+  <value>Supported Languages</value>
+</data>
 </root>

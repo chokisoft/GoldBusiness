@@ -2,6 +2,7 @@
 using GoldBusiness.Domain.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using System.Globalization;
 
 namespace GoldBusiness.WebApi.Controllers
@@ -16,10 +17,14 @@ namespace GoldBusiness.WebApi.Controllers
     public class SubGrupoCuentaController : ControllerBase
     {
         private readonly ISubGrupoCuentaService _service;
+        private readonly IStringLocalizer<GoldBusiness.Domain.Resources.ValidationMessages> _localizer;
 
-        public SubGrupoCuentaController(ISubGrupoCuentaService service)
+        public SubGrupoCuentaController(
+            ISubGrupoCuentaService service,
+            IStringLocalizer<GoldBusiness.Domain.Resources.ValidationMessages> localizer)
         {
             _service = service;
+            _localizer = localizer;
         }
 
         /// <summary>
@@ -111,7 +116,7 @@ namespace GoldBusiness.WebApi.Controllers
             {
                 return BadRequest(new 
                 { 
-                    Message = "Idioma no soportado. Idiomas válidos: es, en, fr",
+                    Message = _localizer["UnsupportedLanguage"].Value,
                     ProvidedLanguage = dto.Language,
                     SupportedLanguages = supportedLanguages
                 });
@@ -122,7 +127,7 @@ namespace GoldBusiness.WebApi.Controllers
             
             return Ok(new 
             { 
-                Message = "Traducción actualizada correctamente",
+                Message = _localizer["TranslationUpdated"].Value,
                 SubGroupId = id,
                 Language = lang
             });

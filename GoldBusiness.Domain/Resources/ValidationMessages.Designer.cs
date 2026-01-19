@@ -70,6 +70,15 @@ namespace GoldBusiness.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ID de la Cuenta.
+        /// </summary>
+        public static string AccountId {
+            get {
+                return ResourceManager.GetString("AccountId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cuenta bloqueada.
         /// </summary>
         public static string AccountLocked {
@@ -214,6 +223,15 @@ namespace GoldBusiness.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ID del Grupo.
+        /// </summary>
+        public static string GroupId {
+            get {
+                return ResourceManager.GetString("GroupId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Credenciales inválidas.
         /// </summary>
         public static string InvalidCredentials {
@@ -223,11 +241,29 @@ namespace GoldBusiness.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Idioma.
+        /// </summary>
+        public static string Language {
+            get {
+                return ResourceManager.GetString("Language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error en el inicio de sesión.
         /// </summary>
         public static string LoginFailed {
             get {
                 return ResourceManager.GetString("LoginFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Idioma Proporcionado.
+        /// </summary>
+        public static string ProvidedLanguage {
+            get {
+                return ResourceManager.GetString("ProvidedLanguage", resourceCulture);
             }
         }
         
@@ -264,6 +300,42 @@ namespace GoldBusiness.Domain.Resources {
         public static string StringLengthMax {
             get {
                 return ResourceManager.GetString("StringLengthMax", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ID del SubGrupo.
+        /// </summary>
+        public static string SubGroupId {
+            get {
+                return ResourceManager.GetString("SubGroupId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Idiomas Soportados.
+        /// </summary>
+        public static string SupportedLanguages {
+            get {
+                return ResourceManager.GetString("SupportedLanguages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Traducción actualizada correctamente.
+        /// </summary>
+        public static string TranslationUpdated {
+            get {
+                return ResourceManager.GetString("TranslationUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Idioma no soportado. Idiomas válidos: es, en, fr.
+        /// </summary>
+        public static string UnsupportedLanguage {
+            get {
+                return ResourceManager.GetString("UnsupportedLanguage", resourceCulture);
             }
         }
     }
