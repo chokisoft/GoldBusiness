@@ -1,4 +1,4 @@
-namespace GoldBusiness.WebApi.Middleware;
+ï»¿namespace GoldBusiness.WebApi.Middleware;
 
 /// <summary>
 /// Middleware que agrega headers de seguridad a todas las respuestas.
@@ -26,8 +26,11 @@ public class SecurityHeadersMiddleware
         // X-XSS-Protection: Habilita filtro XSS del navegador
         context.Response.Headers.Append("X-XSS-Protection", "1; mode=block");
         
-        // Referrer-Policy: Controla información de referrer
+        // Referrer-Policy: Controla informaciÃ³n de referrer
         context.Response.Headers.Append("Referrer-Policy", "no-referrer");
+        
+        // âœ… NUEVO: Strict-Transport-Security (HSTS)
+        context.Response.Headers.Append("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
         
         // Content-Security-Policy: Define fuentes de contenido permitidas
         context.Response.Headers.Append(
@@ -40,7 +43,7 @@ public class SecurityHeadersMiddleware
             "connect-src 'self'; " +
             "frame-ancestors 'none';");
         
-        // Permissions-Policy: Controla características del navegador
+        // Permissions-Policy: Controla caracterÃ­sticas del navegador
         context.Response.Headers.Append(
             "Permissions-Policy",
             "geolocation=(), microphone=(), camera=()");
@@ -53,7 +56,7 @@ public class SecurityHeadersMiddleware
 }
 
 /// <summary>
-/// Extensión para registrar el middleware de security headers.
+/// ExtensiÃ³n para registrar el middleware de security headers.
 /// </summary>
 public static class SecurityHeadersMiddlewareExtensions
 {

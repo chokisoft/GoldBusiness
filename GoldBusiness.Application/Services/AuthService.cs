@@ -2,6 +2,7 @@
 using GoldBusiness.Domain.DTOs;
 using GoldBusiness.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -55,17 +56,19 @@ namespace GoldBusiness.Application.Services
 
             // 4. Claims base del token
             var claims = new List<Claim>
-    {
-        new Claim(ClaimTypes.Name, user.UserName ?? ""),
-        new Claim(ClaimTypes.NameIdentifier, user.Id)
-    };
+            {
+                new Claim(ClaimTypes.Name, user.UserName ?? ""),
+                new Claim(ClaimTypes.NameIdentifier, user.Id)
+            };
 
             // 5. Agregar claims del usuario y del rol
             claims.AddRange(userClaims);
             claims.AddRange(roleClaims);
 
-            // 6. Generar token
+            // 6. Generar token con expiración configurable
             var jwtKey = _config["Jwt:Key"];
+            var expirationMinutes = _config.GetValue<int>("Jwt:AccessTokenExpirationMinutes", 15);  // ✅ Configurable
+            
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
@@ -73,7 +76,7 @@ namespace GoldBusiness.Application.Services
                 issuer: _config["Jwt:Issuer"],
                 audience: null,
                 claims: claims,
-                expires: DateTime.UtcNow.AddHours(2),
+                expires: DateTime.UtcNow.AddMinutes(expirationMinutes),  // ✅ Ahora usa la configuración
                 signingCredentials: creds);
 
             return new AuthResponseDTO

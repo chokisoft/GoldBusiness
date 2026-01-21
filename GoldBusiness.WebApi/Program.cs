@@ -33,16 +33,21 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
+    // 🔒 Política de contraseñas robusta
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
-    options.Password.RequireUppercase = false;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequiredLength = 6;
+    options.Password.RequireUppercase = true;  // ✅ Ahora requerida
+    options.Password.RequireNonAlphanumeric = true;  // ✅ Ahora requerida
+    options.Password.RequiredLength = 12;  // ✅ Aumentado de 6 a 12
+    options.Password.RequiredUniqueChars = 4;  // ✅ Nuevo: mínimo 4 caracteres únicos
 
     // 🔒 Configuración de lockout para seguridad
-    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);  // ✅ Aumentado de 5 a 15 minutos
     options.Lockout.MaxFailedAccessAttempts = 5;
     options.Lockout.AllowedForNewUsers = true;
+
+    // 🔒 Requerir email confirmado (producción)
+    options.SignIn.RequireConfirmedEmail = false;  // ✅ Cambiar a true en producción cuando tengas email configurado
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
@@ -105,6 +110,22 @@ builder.Services.AddScoped<ISubGrupoCuentaService, SubGrupoCuentaService>();
 
 var jwtIssuer = builder.Configuration["Jwt:Issuer"];
 var jwtKey = builder.Configuration["Jwt:Key"];
+
+// ⚠️ VALIDACIÓN TEMPRANA DE CONFIGURACIÓN JWT
+if (string.IsNullOrWhiteSpace(jwtIssuer) || string.IsNullOrWhiteSpace(jwtKey))
+{
+    throw new InvalidOperationException("⚠️ JWT configuration is missing. Set Jwt:Issuer and Jwt:Key in User Secrets (Development) or Environment Variables (Production).");
+}
+
+if (jwtKey.Contains("REEMPLAZAR") || jwtKey.Contains("CONFIGURAR") || jwtKey.Contains("USAR-USER-SECRETS"))
+{
+    throw new InvalidOperationException("⚠️ JWT Key not configured properly. Update User Secrets (Development) or Environment Variables (Production).");
+}
+
+if (jwtKey.Length < 32)
+{
+    throw new InvalidOperationException("⚠️ JWT Key must be at least 32 characters long for security.");
+}
 
 builder.Services.AddAuthentication(options =>
 {
@@ -341,7 +362,7 @@ using (var scope = app.Services.CreateScope())
 
     try
     {
-        logger.LogInformation("🚀 Iniciando seed de base de datos...");
+        logger.LogInformation("Iniciando seed de base de datos...");
 
         // Crear roles
         var rolesToEnsure = new[] { "DESARROLLADOR", "ADMINISTRADOR", "ECONOMICO", "CONTADOR" };
@@ -349,16 +370,16 @@ using (var scope = app.Services.CreateScope())
         {
             if (!await roleManager.RoleExistsAsync(roleName))
             {
-                logger.LogInformation("👥 Creando rol: {RoleName}", roleName);
+                logger.LogInformation("Creando rol: {RoleName}", roleName);
                 var roleResult = await roleManager.CreateAsync(new IdentityRole(roleName));
                 if (!roleResult.Succeeded)
                 {
-                    logger.LogError("❌ Error creando rol {Role}: {Errors}", roleName,
+                    logger.LogError("Error creando rol {Role}: {Errors}", roleName,
                         string.Join(", ", roleResult.Errors.Select(e => e.Description)));
                 }
                 else
                 {
-                    logger.LogInformation("✅ Rol creado exitosamente: {RoleName}", roleName);
+                    logger.LogInformation("Rol creado exitosamente: {RoleName}", roleName);
                 }
             }
         }
@@ -381,79 +402,92 @@ using (var scope = app.Services.CreateScope())
                 if (!claims.Any(c => c.Type == "permission" && c.Value == kvp.Value))
                 {
                     await roleManager.AddClaimAsync(role, new Claim("permission", kvp.Value));
-                    logger.LogInformation("🔑 Claim agregado al rol {Role}: {Claim}", kvp.Key, kvp.Value);
+                    logger.LogInformation("Claim agregado al rol {Role}: {Claim}", kvp.Key, kvp.Value);
                 }
             }
         }
 
-        // Crear usuario de desarrollo
-        var user = await userManager.FindByNameAsync("fragela");
-        if (user == null)
+        // ✅ Crear usuario de desarrollo desde configuración (más seguro)
+        var defaultUsername = builder.Configuration["Seed:DefaultUser:Username"];
+        var defaultEmail = builder.Configuration["Seed:DefaultUser:Email"];
+        var defaultPassword = builder.Configuration["Seed:DefaultUser:Password"];
+        var defaultFullName = builder.Configuration["Seed:DefaultUser:FullName"];
+
+        // Solo crear usuario si está configurado en secrets.json
+        if (!string.IsNullOrEmpty(defaultUsername) && !string.IsNullOrEmpty(defaultPassword))
         {
-            logger.LogInformation("👤 Creando usuario de desarrollo...");
-
-            var newUser = new ApplicationUser
+            var user = await userManager.FindByNameAsync(defaultUsername);
+            if (user == null)
             {
-                UserName = "fragela",
-                Email = "chokisoft@gmail.com",
-                EmailConfirmed = true,
-                IsActive = true
-            };
+                logger.LogInformation("Creando usuario de desarrollo...");
 
-            var result = await userManager.CreateAsync(newUser, "choki1972,.");
-            if (result.Succeeded)
-            {
-                logger.LogInformation("✅ Usuario creado: {UserName}", newUser.UserName);
-
-                var addRolesResult = await userManager.AddToRolesAsync(newUser, new[] { "DESARROLLADOR" });
-
-                if (addRolesResult.Succeeded)
+                var newUser = new ApplicationUser
                 {
-                    await userManager.AddClaimAsync(newUser, new Claim("fullName", "Rolando Fragela Herva"));
-                    await userManager.AddClaimAsync(newUser, new Claim("permission", "ERP:FullAccess"));
-                    await userManager.AddClaimAsync(newUser, new Claim("accessLevel", "*"));
+                    UserName = defaultUsername,
+                    Email = defaultEmail ?? $"{defaultUsername}@example.com",
+                    EmailConfirmed = true,
+                    IsActive = true
+                };
 
-                    logger.LogInformation("✅ Roles y claims asignados al usuario {UserName}", newUser.UserName);
+                var result = await userManager.CreateAsync(newUser, defaultPassword);
+                if (result.Succeeded)
+                {
+                    logger.LogInformation("Usuario creado: {UserName}", newUser.UserName);
+
+                    var addRolesResult = await userManager.AddToRolesAsync(newUser, new[] { "DESARROLLADOR" });
+
+                    if (addRolesResult.Succeeded)
+                    {
+                        await userManager.AddClaimAsync(newUser, new Claim("fullName", defaultFullName ?? "Usuario Desarrollo"));
+                        await userManager.AddClaimAsync(newUser, new Claim("permission", "ERP:FullAccess"));
+                        await userManager.AddClaimAsync(newUser, new Claim("accessLevel", "*"));
+
+                        logger.LogInformation("Roles y claims asignados al usuario {UserName}", newUser.UserName);
+                    }
+                    else
+                    {
+                        logger.LogError("Error asignando roles al usuario: {Errors}",
+                            string.Join(", ", addRolesResult.Errors.Select(e => e.Description)));
+                    }
                 }
                 else
                 {
-                    logger.LogError("❌ Error asignando roles al usuario: {Errors}",
-                        string.Join(", ", addRolesResult.Errors.Select(e => e.Description)));
+                    logger.LogError("Error creando usuario: {Errors}",
+                        string.Join(", ", result.Errors.Select(e => e.Description)));
                 }
             }
             else
             {
-                logger.LogError("❌ Error creando usuario: {Errors}",
-                    string.Join(", ", result.Errors.Select(e => e.Description)));
+                logger.LogInformation("Usuario encontrado: {UserName}", user.UserName);
+
+                if (!await userManager.IsInRoleAsync(user, "DESARROLLADOR"))
+                {
+                    logger.LogInformation("Agregando rol DESARROLLADOR al usuario existente...");
+
+                    var addRoleResult = await userManager.AddToRoleAsync(user, "DESARROLLADOR");
+
+                    if (addRoleResult.Succeeded)
+                    {
+                        await userManager.AddClaimAsync(user, new Claim("fullName", defaultFullName ?? "Usuario Desarrollo"));
+                        await userManager.AddClaimAsync(user, new Claim("permission", "ERP:FullAccess"));
+
+                        logger.LogInformation("Rol y claims agregados al usuario existente");
+                    }
+                    else
+                    {
+                        logger.LogError("Error agregando rol al usuario existente: {Errors}",
+                            string.Join(", ", addRoleResult.Errors.Select(e => e.Description)));
+                    }
+                }
             }
         }
         else
         {
-            logger.LogInformation("👤 Usuario encontrado: {UserName}", user.UserName);
-
-            if (!await userManager.IsInRoleAsync(user, "DESARROLLADOR"))
-            {
-                logger.LogInformation("➕ Agregando rol DESARROLLADOR al usuario existente...");
-
-                var addRoleResult = await userManager.AddToRoleAsync(user, "DESARROLLADOR");
-
-                if (addRoleResult.Succeeded)
-                {
-                    await userManager.AddClaimAsync(user, new Claim("FullName", "Rolando Fragela Herva"));
-                    await userManager.AddClaimAsync(user, new Claim("permission", "ERP:FullAccess"));
-
-                    logger.LogInformation("✅ Rol y claims agregados al usuario existente");
-                }
-                else
-                {
-                    logger.LogError("❌ Error agregando rol al usuario existente: {Errors}",
-                        string.Join(", ", addRoleResult.Errors.Select(e => e.Description)));
-                }
-            }
+            logger.LogWarning("Usuario de seed no configurado en secrets.json. Omitiendo creación de usuario de desarrollo.");
         }
 
         // Seed de traducciones iniciales
-        logger.LogInformation("🌍 Iniciando seed de traducciones...");
+        logger.LogInformation("Iniciando seed de traducciones...");
 
         var gruposSinTraduccion = db.GrupoCuenta.Where(x => !x.Translations.Any()).ToList();
         foreach (var g in gruposSinTraduccion)
@@ -461,7 +495,7 @@ using (var scope = app.Services.CreateScope())
             db.GrupoCuentaTranslation.Add(new GrupoCuentaTranslation(g.Id, "es", g.Descripcion, "system"));
         }
         if (gruposSinTraduccion.Any())
-            logger.LogInformation("✅ {Count} traducciones de GrupoCuenta agregadas", gruposSinTraduccion.Count);
+            logger.LogInformation("{Count} traducciones de GrupoCuenta agregadas", gruposSinTraduccion.Count);
 
         var subgruposSinTraduccion = db.SubGrupoCuenta.Where(x => !x.Translations.Any()).ToList();
         foreach (var s in subgruposSinTraduccion)
@@ -469,7 +503,7 @@ using (var scope = app.Services.CreateScope())
             db.SubGrupoCuentaTranslation.Add(new SubGrupoCuentaTranslation(s.Id, "es", s.Descripcion, "system"));
         }
         if (subgruposSinTraduccion.Any())
-            logger.LogInformation("✅ {Count} traducciones de SubGrupoCuenta agregadas", subgruposSinTraduccion.Count);
+            logger.LogInformation("{Count} traducciones de SubGrupoCuenta agregadas", subgruposSinTraduccion.Count);
 
         var cuentasSinTraduccion = db.Cuenta.Where(x => !x.Translations.Any()).ToList();
         foreach (var c in cuentasSinTraduccion)
@@ -477,23 +511,23 @@ using (var scope = app.Services.CreateScope())
             db.CuentaTranslation.Add(new CuentaTranslation(c.Id, "es", c.Descripcion, "system"));
         }
         if (cuentasSinTraduccion.Any())
-            logger.LogInformation("✅ {Count} traducciones de Cuenta agregadas", cuentasSinTraduccion.Count);
+            logger.LogInformation("{Count} traducciones de Cuenta agregadas", cuentasSinTraduccion.Count);
 
         if (gruposSinTraduccion.Any() || subgruposSinTraduccion.Any() || cuentasSinTraduccion.Any())
         {
             await db.SaveChangesAsync();
-            logger.LogInformation("💾 Traducciones guardadas en base de datos");
+            logger.LogInformation("Traducciones guardadas en base de datos");
         }
         else
         {
-            logger.LogInformation("📝 No se encontraron registros sin traducciones");
+            logger.LogInformation("No se encontraron registros sin traducciones");
         }
 
-        logger.LogInformation("🎉 Seed de base de datos completado exitosamente!");
+        logger.LogInformation("Seed de base de datos completado exitosamente!");
     }
     catch (Exception ex)
     {
-        logger.LogError(ex, "❌ Error durante el seed de base de datos");
+        logger.LogError(ex, "Error durante el seed de base de datos");
         throw;
     }
 }
@@ -502,6 +536,7 @@ using (var scope = app.Services.CreateScope())
 // 🌐 MIDDLEWARE PIPELINE
 // ============================================
 
+// ✅ Swagger solo en desarrollo
 if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     app.UseStaticFiles();
@@ -559,26 +594,32 @@ if (builder.Configuration.GetValue<bool>("Security:EnableSecurityLogging", true)
 app.UseAuthentication();
 app.UseAuthorization();
 
-// ✅ Middleware para manejar excepciones
+// ✅ Middleware para manejar excepciones (mejorado)
 app.UseExceptionHandler(appBuilder =>
 {
     appBuilder.Run(async context =>
     {
         var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
         var exception = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>()?.Error;
+        var env = context.RequestServices.GetRequiredService<IWebHostEnvironment>();
 
-        logger.LogError(exception, "🔥 Error no manejado en la aplicación");
+        logger.LogError(exception, "Error no manejado en la aplicación");
 
         context.Response.StatusCode = 500;
         context.Response.ContentType = "application/json";
 
-        await context.Response.WriteAsJsonAsync(new
+        // ✅ Solo mostrar detalles en desarrollo
+        var response = new
         {
             error = "Internal Server Error",
-            message = "An unexpected error occurred.",
-            requestId = context.TraceIdentifier,
+            message = env.IsDevelopment()
+                ? exception?.Message
+                : "An unexpected error occurred.",
+            requestId = env.IsDevelopment() ? context.TraceIdentifier : null,
             timestamp = DateTime.UtcNow
-        });
+        };
+
+        await context.Response.WriteAsJsonAsync(response);
     });
 });
 
