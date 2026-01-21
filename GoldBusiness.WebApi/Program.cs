@@ -4,21 +4,23 @@ using GoldBusiness.Domain.Entities;
 using GoldBusiness.Domain.Translation;
 using GoldBusiness.Infrastructure.Context;
 using GoldBusiness.Infrastructure.Repositories;
+using GoldBusiness.WebApi.Middleware;
 using GoldBusiness.WebApi.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Globalization;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +38,11 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     options.Password.RequireUppercase = false;
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequiredLength = 6;
+
+    // 🔒 Configuración de lockout para seguridad
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.AllowedForNewUsers = true;
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
@@ -43,6 +50,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 // ============================================
 // 🌍 LOCALIZACIÓN (MULTIIDIOMA)
 // ============================================
+
+builder.Services.AddLocalization();
 
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
@@ -62,42 +71,6 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
     options.RequestCultureProviders.Add(new AcceptLanguageHeaderRequestCultureProvider());
     options.RequestCultureProviders.Add(new QueryStringRequestCultureProvider());
     options.RequestCultureProviders.Add(new CookieRequestCultureProvider());
-
-    // ✅ AGREGAR LOGGING PARA DEBUG
-    options.RequestCultureProviders.Insert(0, new CustomRequestCultureProvider(async context =>
-    {
-        var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
-
-        // Obtener el header Accept-Language
-        var acceptLanguage = context.Request.Headers["Accept-Language"].ToString();
-        logger.LogWarning("🌍 Accept-Language header: {AcceptLanguage}", acceptLanguage);
-
-        // Detectar cultura
-        string culture = "es"; // por defecto
-
-        if (!string.IsNullOrEmpty(acceptLanguage))
-        {
-            var languages = acceptLanguage.Split(',');
-            if (languages.Length > 0)
-            {
-                var lang = languages[0].Trim().Split(';')[0].Trim();
-                var parts = lang.Split('-');
-                culture = parts[0].ToLowerInvariant();
-            }
-        }
-
-        // Verificar si es soportado
-        if (!supportedCultures.Any(c => c.TwoLetterISOLanguageName == culture))
-        {
-            culture = "es";
-        }
-
-        logger.LogWarning("🌍 Cultura detectada: {Culture}", culture);
-        logger.LogWarning("🌍 CurrentCulture: {CurrentCulture}", CultureInfo.CurrentCulture.Name);
-        logger.LogWarning("🌍 CurrentUICulture: {CurrentUICulture}", CultureInfo.CurrentUICulture.Name);
-
-        return new ProviderCultureResult(culture, culture);
-    }));
 });
 
 builder.Services.ConfigureApplicationCookie(options =>
@@ -132,10 +105,6 @@ builder.Services.AddScoped<ISubGrupoCuentaService, SubGrupoCuentaService>();
 
 var jwtIssuer = builder.Configuration["Jwt:Issuer"];
 var jwtKey = builder.Configuration["Jwt:Key"];
-if (string.IsNullOrWhiteSpace(jwtIssuer) || string.IsNullOrWhiteSpace(jwtKey))
-{
-    throw new InvalidOperationException("JWT configuration is missing. Set Jwt:Issuer and Jwt:Key.");
-}
 
 builder.Services.AddAuthentication(options =>
 {
@@ -198,51 +167,87 @@ builder.Services.AddAuthorization(options =>
 });
 
 // ============================================
-// 🌐 CORS
+// 🌐 CORS - CONFIGURACIÓN SEGURA POR ENTORNO
 // ============================================
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
+    // Política para desarrollo
+    options.AddPolicy("Development", policy =>
     {
-        policy.AllowAnyOrigin()
+        var allowedOrigins = builder.Configuration.GetSection("Cors:Development:AllowedOrigins").Get<string[]>()
+            ?? new[] { "http://localhost:5173" };
+
+        policy.WithOrigins(allowedOrigins)
               .AllowAnyHeader()
-              .AllowAnyMethod();
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+
+    // Política para producción
+    options.AddPolicy("Production", policy =>
+    {
+        var allowedOrigins = builder.Configuration.GetSection("Cors:Production:AllowedOrigins").Get<string[]>()
+            ?? new[] { "https://goldbusiness.com" };
+
+        policy.WithOrigins(allowedOrigins)
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
     });
 });
+
+// ============================================
+// 🚦 RATE LIMITING
+// ============================================
+
+var enableRateLimiting = builder.Configuration.GetValue<bool>("Security:EnableRateLimiting", true);
+
+if (enableRateLimiting)
+{
+    builder.Services.AddRateLimiter(options =>
+    {
+        var authPermitLimit = builder.Configuration.GetValue<int>("RateLimiting:Auth:PermitLimit", 10);
+        var authWindowMinutes = builder.Configuration.GetValue<int>("RateLimiting:Auth:WindowMinutes", 1);
+
+        options.AddFixedWindowLimiter("auth", limiterOptions =>
+        {
+            limiterOptions.PermitLimit = authPermitLimit;
+            limiterOptions.Window = TimeSpan.FromMinutes(authWindowMinutes);
+            limiterOptions.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+            limiterOptions.QueueLimit = 0;
+        });
+
+        var apiPermitLimit = builder.Configuration.GetValue<int>("RateLimiting:Api:PermitLimit", 100);
+        var apiWindowMinutes = builder.Configuration.GetValue<int>("RateLimiting:Api:WindowMinutes", 1);
+
+        options.AddFixedWindowLimiter("api", limiterOptions =>
+        {
+            limiterOptions.PermitLimit = apiPermitLimit;
+            limiterOptions.Window = TimeSpan.FromMinutes(apiWindowMinutes);
+            limiterOptions.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+            limiterOptions.QueueLimit = 0;
+        });
+
+        options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    });
+}
 
 // ============================================
 // 📝 CONTROLLERS CON VALIDACIÓN LOCALIZADA
 // ============================================
 
-// 🔧 CORRECCIÓN: Eliminar el CreateLogger que causa el error
 builder.Services.AddControllers()
     .AddDataAnnotationsLocalization(options =>
     {
         options.DataAnnotationLocalizerProvider = (type, factory) =>
-        {
-            var localizer = factory.Create(typeof(GoldBusiness.Domain.Resources.ValidationMessages));
-
-            // ✅ CORREGIDO: Solo crear el localizador, sin intentar crear logger
-            // El logging se manejará en otros lugares (middleware o servicios)
-
-            return localizer;
-        };
+            factory.Create(typeof(GoldBusiness.Domain.Resources.ValidationMessages));
     })
     .ConfigureApiBehaviorOptions(options =>
     {
         options.InvalidModelStateResponseFactory = context =>
         {
-            var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
-
-            // Obtener información de localización actual
-            var localizationOptions = context.HttpContext.RequestServices
-                .GetRequiredService<IOptions<RequestLocalizationOptions>>().Value;
             var currentCulture = CultureInfo.CurrentUICulture.Name;
-
-            logger.LogWarning("🌍 InvalidModelState - Cultura actual: {Culture}", currentCulture);
-            logger.LogWarning("🌍 Supported Cultures: {Cultures}",
-                string.Join(", ", localizationOptions.SupportedUICultures.Select(c => c.Name)));
 
             var errors = context.ModelState
                 .Where(e => e.Value?.Errors.Count > 0)
@@ -258,7 +263,8 @@ builder.Services.AddControllers()
                 status = 400,
                 culture = currentCulture,
                 errors = errors,
-                timestamp = DateTime.UtcNow
+                timestamp = DateTime.UtcNow,
+                apiVersion = builder.Configuration["ApiVersion:Name"] ?? "v2.0"
             };
 
             return new BadRequestObjectResult(result);
@@ -273,10 +279,12 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
 {
+    var apiVersion = builder.Configuration["ApiVersion:Name"] ?? "v2.0";
+
     c.SwaggerDoc("v2", new OpenApiInfo
     {
         Title = "GoldBusiness API",
-        Version = "v2",
+        Version = apiVersion,
         Description = "API REST para sistema ERP con soporte multiidioma (es, en, fr)"
     });
 
@@ -308,6 +316,13 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // ============================================
+// 📊 HEALTH CHECKS
+// ============================================
+
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<ApplicationDbContext>("database");
+
+// ============================================
 // 🏗️ CONSTRUIR LA APLICACIÓN
 // ============================================
 
@@ -329,7 +344,7 @@ using (var scope = app.Services.CreateScope())
         logger.LogInformation("🚀 Iniciando seed de base de datos...");
 
         // Crear roles
-        var rolesToEnsure = new[] { "DESARROLLADOR", "ADMINISTRADDR", "ECONOMICO", "CONTADOR" };
+        var rolesToEnsure = new[] { "DESARROLLADOR", "ADMINISTRADOR", "ECONOMICO", "CONTADOR" };
         foreach (var roleName in rolesToEnsure)
         {
             if (!await roleManager.RoleExistsAsync(roleName))
@@ -352,7 +367,7 @@ using (var scope = app.Services.CreateScope())
         var roleClaimsMap = new Dictionary<string, string>
         {
             { "DESARROLLADOR", "ERP:FullAccess" },
-            { "ADMINISTRADDR", "ERP:AdminAccess" },
+            { "ADMINISTRADOR", "ERP:AdminAccess" },
             { "ECONOMICO", "ERP:FinanceAccess" },
             { "CONTADOR", "ERP:AccountingAccess" }
         };
@@ -494,62 +509,57 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v2/swagger.json", "GoldBusiness API v2");
-        c.InjectStylesheet("/swagger-ui/swagger.css?v=1");
+        c.InjectStylesheet("/swagger-ui/swagger.css?v=2");
         c.DisplayRequestDuration();
         c.EnableDeepLinking();
-        c.DefaultModelsExpandDepth(-1); // Ocultar schemas por defecto
+        c.DefaultModelsExpandDepth(-1);
     });
 }
 
+// ✅ HSTS para producción
+if (app.Environment.IsProduction())
+{
+    app.UseHsts();
+}
+
 app.UseHttpsRedirection();
-app.UseCors("AllowAll");
+
+// ✅ CORS según entorno
+if (app.Environment.IsDevelopment())
+{
+    app.UseCors("Development");
+}
+else
+{
+    app.UseCors("Production");
+}
 
 // ✅ CRÍTICO: UseRequestLocalization ANTES de UseRouting
 var localizationOptions = app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value;
 app.UseRequestLocalization(localizationOptions);
 
-// ✅ MIDDLEWARE para logging de cultura en cada request
-app.Use(async (context, next) =>
+// ✅ Security headers middleware
+if (builder.Configuration.GetValue<bool>("Security:EnableSecurityHeaders", true))
 {
-    var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+    app.UseSecurityHeaders();
+}
 
-    // Log de información de la request
-    logger.LogInformation("🌐 REQUEST - Method: {Method}, Path: {Path}",
-        context.Request.Method, context.Request.Path);
+// ✅ Rate limiting
+if (enableRateLimiting)
+{
+    app.UseRateLimiter();
+}
 
-    // Log de headers de localización
-    var acceptLanguage = context.Request.Headers["Accept-Language"].ToString();
-    if (!string.IsNullOrEmpty(acceptLanguage))
-    {
-        logger.LogInformation("🌍 Accept-Language: {AcceptLanguage}", acceptLanguage);
-    }
-
-    // Log de cultura actual
-    logger.LogInformation("🌍 Cultura actual - Culture: {Culture}, UICulture: {UICulture}",
-        CultureInfo.CurrentCulture.Name,
-        CultureInfo.CurrentUICulture.Name);
-
-    // Verificar si tenemos un localizador funcionando
-    try
-    {
-        var localizerFactory = context.RequestServices.GetRequiredService<IStringLocalizerFactory>();
-        var validationLocalizer = localizerFactory.Create(typeof(GoldBusiness.Domain.Resources.ValidationMessages));
-        var testTranslation = validationLocalizer["Required"];
-
-        logger.LogInformation("✅ Localizador funcionando: {TestTranslation}", testTranslation);
-    }
-    catch (Exception ex)
-    {
-        logger.LogWarning(ex, "⚠️ Problema con el localizador");
-    }
-
-    await next();
-});
+// ✅ Security logging middleware
+if (builder.Configuration.GetValue<bool>("Security:EnableSecurityLogging", true))
+{
+    app.UseSecurityLogging();
+}
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-// ✅ Middleware para manejar excepciones de localización
+// ✅ Middleware para manejar excepciones
 app.UseExceptionHandler(appBuilder =>
 {
     appBuilder.Run(async context =>
@@ -575,27 +585,18 @@ app.UseExceptionHandler(appBuilder =>
 app.MapControllers();
 
 // ✅ Health check endpoint
-app.MapGet("/health", () => Results.Json(new
-{
-    status = "Healthy",
-    timestamp = DateTime.UtcNow,
-    localization = new
-    {
-        currentCulture = CultureInfo.CurrentCulture.Name,
-        currentUICulture = CultureInfo.CurrentUICulture.Name,
-        defaultCulture = localizationOptions.DefaultRequestCulture.Culture.Name
-    }
-}));
+app.MapHealthChecks("/health");
 
 // ✅ Información de la API
 app.MapGet("/api-info", () => Results.Json(new
 {
     name = "GoldBusiness API",
-    version = "v2",
+    version = builder.Configuration["ApiVersion:Name"] ?? "v2.0",
     description = "Sistema ERP con soporte multiidioma",
     supportedLanguages = new[] { "es", "en", "fr" },
     authentication = "JWT Bearer Token",
-    documentation = "/swagger"
-}));
+    documentation = "/swagger",
+    environment = app.Environment.EnvironmentName
+})).AllowAnonymous();
 
 app.Run();
