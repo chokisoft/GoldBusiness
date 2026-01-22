@@ -106,7 +106,7 @@ namespace GoldBusiness.Domain.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to El código es obligatorio.
+        ///   Looks up a localized string similar to El código es obligatorio..
         /// </summary>
         public static string CodigoObligatorio {
             get {
@@ -115,7 +115,7 @@ namespace GoldBusiness.Domain.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to La descripción no puede exceder {0} caracteres.
+        ///   Looks up a localized string similar to La descripción no puede exceder {1} caracteres..
         /// </summary>
         public static string DescripcionLongitud {
             get {
@@ -124,7 +124,7 @@ namespace GoldBusiness.Domain.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to La descripción es obligatoria.
+        ///   Looks up a localized string similar to La descripción es obligatoria..
         /// </summary>
         public static string DescripcionObligatoria {
             get {
@@ -142,7 +142,7 @@ namespace GoldBusiness.Domain.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to El código.
+        ///   Looks up a localized string similar to Código.
         /// </summary>
         public static string Field_Codigo {
             get {
@@ -160,7 +160,7 @@ namespace GoldBusiness.Domain.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to La descripción.
+        ///   Looks up a localized string similar to Descripción.
         /// </summary>
         public static string Field_Descripcion {
             get {
@@ -214,6 +214,15 @@ namespace GoldBusiness.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sublíneas.
+        /// </summary>
+        public static string Field_Sublineas {
+            get {
+                return ResourceManager.GetString("Field_Sublineas", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to El nombre de usuario.
         /// </summary>
         public static string Field_Username {
@@ -246,6 +255,15 @@ namespace GoldBusiness.Domain.Resources {
         public static string Language {
             get {
                 return ResourceManager.GetString("Language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El código de la línea debe tener exactamente 2 caracteres..
+        /// </summary>
+        public static string LineaCodigoLongitud {
+            get {
+                return ResourceManager.GetString("LineaCodigoLongitud", resourceCulture);
             }
         }
         
@@ -322,7 +340,7 @@ namespace GoldBusiness.Domain.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Traducción actualizada correctamente.
+        ///   Looks up a localized string similar to Traducción actualizada exitosamente..
         /// </summary>
         public static string TranslationUpdated {
             get {
@@ -331,7 +349,7 @@ namespace GoldBusiness.Domain.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Idioma no soportado. Idiomas válidos: es, en, fr.
+        ///   Looks up a localized string similar to Idioma no soportado. Use uno de los idiomas permitidos..
         /// </summary>
         public static string UnsupportedLanguage {
             get {

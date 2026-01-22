@@ -210,4 +210,40 @@
 	<data name="SupportedLanguages" xml:space="preserve">
   <value>Supported Languages</value>
 </data>
+	<data name="UnsupportedLanguage" xml:space="preserve">
+  <value>Unsupported language. Use one of the allowed languages.</value>
+</data>
+	<data name="TranslationUpdated" xml:space="preserve">
+  <value>Translation updated successfully.</value>
+</data>
+	<data name="LineaCodigoLongitud" xml:space="preserve">
+  <value>The line code must be exactly 2 characters.</value>
+</data>
+	<data name="Field_Sublineas" xml:space="preserve">
+  <value>Sublines</value>
+</data>
+	<data name="CodigoObligatorio" xml:space="preserve">
+  <value>Code is required.</value>
+</data>
+	<data name="Field_Codigo" xml:space="preserve">
+  <value>Code</value>
+</data>
+	<data name="DescripcionObligatoria" xml:space="preserve">
+  <value>Description is required.</value>
+</data>
+	<data name="Field_Descripcion" xml:space="preserve">
+  <value>Description</value>
+</data>
+	<data name="DescripcionLongitud" xml:space="preserve">
+  <value>Description cannot exceed {1} characters.</value>
+</data>
+	<data name="Field_Cancelado" xml:space="preserve">
+  <value>Canceled</value>
+</data>
+	<data name="UnsupportedLanguage" xml:space="preserve">
+  <value>Unsupported language. Use one of the allowed languages.</value>
+</data>
+	<data name="TranslationUpdated" xml:space="preserve">
+  <value>Translation updated successfully.</value>
+</data>
 </root>

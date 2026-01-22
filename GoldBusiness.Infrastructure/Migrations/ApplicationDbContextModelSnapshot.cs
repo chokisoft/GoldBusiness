@@ -3645,12 +3645,13 @@ namespace GoldBusiness.Infrastructure.Migrations
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.LineaTranslation", b =>
                 {
-                    b.HasOne("GoldBusiness.Domain.Entities.Linea", null)
-                        .WithMany()
+                    b.HasOne("GoldBusiness.Domain.Entities.Linea", "Linea")
+                        .WithMany("Translations")
                         .HasForeignKey("LineaId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_LineaTranslation_Linea");
+                        .IsRequired();
+
+                    b.Navigation("Linea");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.LocalidadTranslation", b =>
@@ -3716,12 +3717,13 @@ namespace GoldBusiness.Infrastructure.Migrations
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.SubLineaTranslation", b =>
                 {
-                    b.HasOne("GoldBusiness.Domain.Entities.SubLinea", null)
-                        .WithMany()
+                    b.HasOne("GoldBusiness.Domain.Entities.SubLinea", "SubLinea")
+                        .WithMany("Translations")
                         .HasForeignKey("SubLineaId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_SubLineaTranslation_SubLinea");
+                        .IsRequired();
+
+                    b.Navigation("SubLinea");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.TransaccionTranslation", b =>
@@ -3869,6 +3871,8 @@ namespace GoldBusiness.Infrastructure.Migrations
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Linea", b =>
                 {
                     b.Navigation("SubLineas");
+
+                    b.Navigation("Translations");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Localidad", b =>
@@ -3932,6 +3936,8 @@ namespace GoldBusiness.Infrastructure.Migrations
             modelBuilder.Entity("GoldBusiness.Domain.Entities.SubLinea", b =>
                 {
                     b.Navigation("Productos");
+
+                    b.Navigation("Translations");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Transaccion", b =>

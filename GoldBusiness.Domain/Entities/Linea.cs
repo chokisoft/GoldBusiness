@@ -18,8 +18,8 @@ namespace GoldBusiness.Domain.Entities
         public DateTime? FechaHoraModificado { get; private set; }
 
         // Colecciones de navegación (read-only)
-        public IReadOnlyCollection<LineaTranslation> Translations => _translations;
         public IReadOnlyCollection<SubLinea> SubLineas => _subLineas;
+        public IReadOnlyCollection<LineaTranslation> Translations => _translations;
 
         // Constructor protegido para EF Core
         protected Linea() { }
@@ -29,6 +29,7 @@ namespace GoldBusiness.Domain.Entities
         {
             SetCodigo(codigo);
             SetDescripcion(descripcion);
+
             CreadoPor = creadoPor ?? throw new ArgumentNullException(nameof(creadoPor));
             FechaHoraCreado = DateTime.UtcNow;
             Cancelado = false;

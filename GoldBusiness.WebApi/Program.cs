@@ -103,6 +103,8 @@ builder.Services.AddScoped<IGrupoCuentaRepository, GrupoCuentaRepository>();
 builder.Services.AddScoped<IGrupoCuentaService, GrupoCuentaService>();
 builder.Services.AddScoped<ISubGrupoCuentaRepository, SubGrupoCuentaRepository>();
 builder.Services.AddScoped<ISubGrupoCuentaService, SubGrupoCuentaService>();
+builder.Services.AddScoped<ILineaRepository, LineaRepository>();
+builder.Services.AddScoped<ILineaService, LineaService>();
 
 // ============================================
 // 🔐 JWT AUTHENTICATION
@@ -489,6 +491,7 @@ using (var scope = app.Services.CreateScope())
         // Seed de traducciones iniciales
         logger.LogInformation("Iniciando seed de traducciones...");
 
+        // ✅ GrupoCuenta
         var gruposSinTraduccion = db.GrupoCuenta.Where(x => !x.Translations.Any()).ToList();
         foreach (var g in gruposSinTraduccion)
         {
@@ -497,6 +500,7 @@ using (var scope = app.Services.CreateScope())
         if (gruposSinTraduccion.Any())
             logger.LogInformation("{Count} traducciones de GrupoCuenta agregadas", gruposSinTraduccion.Count);
 
+        // ✅ SubGrupoCuenta
         var subgruposSinTraduccion = db.SubGrupoCuenta.Where(x => !x.Translations.Any()).ToList();
         foreach (var s in subgruposSinTraduccion)
         {
@@ -505,6 +509,7 @@ using (var scope = app.Services.CreateScope())
         if (subgruposSinTraduccion.Any())
             logger.LogInformation("{Count} traducciones de SubGrupoCuenta agregadas", subgruposSinTraduccion.Count);
 
+        // ✅ Cuenta
         var cuentasSinTraduccion = db.Cuenta.Where(x => !x.Translations.Any()).ToList();
         foreach (var c in cuentasSinTraduccion)
         {
@@ -513,7 +518,26 @@ using (var scope = app.Services.CreateScope())
         if (cuentasSinTraduccion.Any())
             logger.LogInformation("{Count} traducciones de Cuenta agregadas", cuentasSinTraduccion.Count);
 
-        if (gruposSinTraduccion.Any() || subgruposSinTraduccion.Any() || cuentasSinTraduccion.Any())
+        // ✅ Linea (NUEVO)
+        var lineasSinTraduccion = db.Linea.Where(x => !x.Translations.Any()).ToList();
+        foreach (var l in lineasSinTraduccion)
+        {
+            db.LineaTranslation.Add(new LineaTranslation(l.Id, "es", l.Descripcion, "system"));
+        }
+        if (lineasSinTraduccion.Any())
+            logger.LogInformation("{Count} traducciones de Linea agregadas", lineasSinTraduccion.Count);
+
+        // ✅ SubLinea (NUEVO)
+        var sublineasSinTraduccion = db.SubLinea.Where(x => !x.Translations.Any()).ToList();
+        foreach (var sl in sublineasSinTraduccion)
+        {
+            db.SubLineaTranslation.Add(new SubLineaTranslation(sl.Id, "es", sl.Descripcion, "system"));
+        }
+        if (sublineasSinTraduccion.Any())
+            logger.LogInformation("{Count} traducciones de SubLinea agregadas", sublineasSinTraduccion.Count);
+
+        // ✅ Guardar cambios si hay traducciones nuevas
+        if (gruposSinTraduccion.Any() || subgruposSinTraduccion.Any() || cuentasSinTraduccion.Any() || lineasSinTraduccion.Any() || sublineasSinTraduccion.Any())
         {
             await db.SaveChangesAsync();
             logger.LogInformation("Traducciones guardadas en base de datos");

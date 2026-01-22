@@ -358,8 +358,7 @@ namespace GoldBusiness.Infrastructure.Context
                 entity.Property(e => e.ModificadoPor).IsRequired().HasMaxLength(256);
                 entity.Property(e => e.FechaHoraCreado).HasColumnType("datetime");
                 entity.Property(e => e.FechaHoraModificado).HasColumnType("datetime");
-                entity.Ignore(e => e.Linea);
-                entity.HasOne<Linea>().WithMany().HasForeignKey(e => e.LineaId).OnDelete(DeleteBehavior.Cascade).HasConstraintName("FK_LineaTranslation_Linea");
+                entity.HasOne(e => e.Linea).WithMany(g => g.Translations).HasForeignKey(e => e.LineaId).OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<SubLinea>(entity =>
@@ -388,8 +387,7 @@ namespace GoldBusiness.Infrastructure.Context
                 entity.Property(e => e.ModificadoPor).IsRequired().HasMaxLength(256);
                 entity.Property(e => e.FechaHoraCreado).HasColumnType("datetime");
                 entity.Property(e => e.FechaHoraModificado).HasColumnType("datetime");
-                entity.Ignore(e => e.SubLinea);
-                entity.HasOne<SubLinea>().WithMany().HasForeignKey(e => e.SubLineaId).OnDelete(DeleteBehavior.Cascade).HasConstraintName("FK_SubLineaTranslation_SubLinea");
+                entity.HasOne(e => e.SubLinea).WithMany(s => s.Translations).HasForeignKey(e => e.SubLineaId).OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<UnidadMedida>(entity =>

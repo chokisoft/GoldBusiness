@@ -210,4 +210,40 @@
 	<data name="SupportedLanguages" xml:space="preserve">
   <value>Langues Prises en Charge</value>
 </data>
+	<data name="UnsupportedLanguage" xml:space="preserve">
+  <value>Langue non prise en charge. Utilisez l'une des langues autorisées.</value>
+</data>
+	<data name="TranslationUpdated" xml:space="preserve">
+  <value>Traduction mise à jour avec succès.</value>
+</data>
+	<data name="LineaCodigoLongitud" xml:space="preserve">
+  <value>Le code de ligne doit comporter exactement 2 caractères.</value>
+</data>
+	<data name="Field_Sublineas" xml:space="preserve">
+  <value>Sous-lignes</value>
+</data>
+	<data name="CodigoObligatorio" xml:space="preserve">
+  <value>Le code est obligatoire.</value>
+</data>
+	<data name="Field_Codigo" xml:space="preserve">
+  <value>Code</value>
+</data>
+	<data name="DescripcionObligatoria" xml:space="preserve">
+  <value>La description est obligatoire.</value>
+</data>
+	<data name="Field_Descripcion" xml:space="preserve">
+  <value>Description</value>
+</data>
+	<data name="DescripcionLongitud" xml:space="preserve">
+  <value>La description ne peut pas dépasser {1} caractères.</value>
+</data>
+	<data name="Field_Cancelado" xml:space="preserve">
+  <value>Annulé</value>
+</data>
+	<data name="UnsupportedLanguage" xml:space="preserve">
+  <value>Langue non prise en charge. Utilisez l'une des langues autorisées.</value>
+</data>
+	<data name="TranslationUpdated" xml:space="preserve">
+  <value>Traduction mise à jour avec succès.</value>
+</data>
 </root>

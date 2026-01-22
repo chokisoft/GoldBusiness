@@ -294,7 +294,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_LineaTranslation", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_LineaTranslation_Linea",
+                        name: "FK_LineaTranslation_Linea_LineaId",
                         column: x => x.LineaId,
                         principalTable: "Linea",
                         principalColumn: "Id",
@@ -469,7 +469,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_SubLineaTranslation", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SubLineaTranslation_SubLinea",
+                        name: "FK_SubLineaTranslation_SubLinea_SubLineaId",
                         column: x => x.SubLineaId,
                         principalTable: "SubLinea",
                         principalColumn: "Id",
