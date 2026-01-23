@@ -10,26 +10,59 @@ namespace GoldBusiness.Domain.DTOs
         public int Id { get; set; }
 
         /// <summary>
-        /// Código de la sublínea (formato: ##-##).
-        /// Ejemplo: "01-01" = Alimentos - Lácteos.
+        /// Código de la sublínea (formato: #####).
+        /// Ejemplo: "01100" = CONFECCIONES EXTERIORES.
         /// </summary>
-        [Required(ErrorMessage = "El código es obligatorio")]
-        [Display(Name = "Código")]
-        [StringLength(5, MinimumLength = 5, ErrorMessage = "El código debe tener exactamente 5 caracteres")]
-        [RegularExpression(@"^\d{2}-\d{2}$", ErrorMessage = "Formato debe ser ##-## (Ejemplo: 01-01)")]
+        [Required(
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.CodigoObligatorio)
+        )]
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Codigo),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
+        [StringLength(5, MinimumLength = 5,
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.SubLineaCodigoLongitud)
+        )]
+        [RegularExpression(@"^\d{5}$",
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.SubLineaCodigoFormato)
+        )]
         public string Codigo { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "La descripción es obligatoria")]
-        [Display(Name = "Descripción")]
-        [StringLength(256, ErrorMessage = "La descripción no puede exceder 256 caracteres")]
+        [Required(
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.DescripcionObligatoria)
+        )]
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Descripcion),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
+        [StringLength(256,
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.DescripcionLongitud)
+        )]
         public string Descripcion { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "La línea es obligatoria")]
-        [Display(Name = "Línea")]
-        [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar una línea válida")]
+        [Required(
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.LineaObligatoria)
+        )]
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Linea),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
+        [Range(1, int.MaxValue,
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.LineaSeleccion)
+        )]
         public int LineaId { get; set; }
 
-        [Display(Name = "Cancelado")]
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Cancelado),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
         public bool Cancelado { get; set; }
 
         public string CreadoPor { get; set; } = string.Empty;
@@ -43,7 +76,10 @@ namespace GoldBusiness.Domain.DTOs
         /// <summary>
         /// Cantidad de productos.
         /// </summary>
-        [Display(Name = "Productos")]
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Productos),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
         public int CantidadProductos { get; set; }
 
         public string CodigoDescripcion => $"{Codigo} | {Descripcion}";

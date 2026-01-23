@@ -1,64 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
-    Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
-    associated with the data types.
-    
-    Example:
-    
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-                
-    There are any number of "resheader" rows that contain simple 
-    name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
-    mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
-    extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
-    read any of the formats listed below.
-    
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-    
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
@@ -129,11 +70,77 @@
   <data name="StringLengthMax" xml:space="preserve">
     <value>{0} ne peut pas dépasser {1} caractères</value>
   </data>
+  <data name="CodigoObligatorio" xml:space="preserve">
+    <value>Le code est obligatoire</value>
+  </data>
+  <data name="DescripcionObligatoria" xml:space="preserve">
+    <value>La description est obligatoire</value>
+  </data>
+  <data name="DescripcionLongitud" xml:space="preserve">
+    <value>La description ne peut pas dépasser {1} caractères</value>
+  </data>
+  <data name="Field_Codigo" xml:space="preserve">
+    <value>Code</value>
+  </data>
+  <data name="Field_Descripcion" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="Field_Cancelado" xml:space="preserve">
+    <value>Annulé</value>
+  </data>
+  <data name="Field_CreadoPor" xml:space="preserve">
+    <value>Créé par</value>
+  </data>
+  <data name="Field_FechaCreacion" xml:space="preserve">
+    <value>Date de création</value>
+  </data>
+  <data name="Field_ModificadoPor" xml:space="preserve">
+    <value>Modifié par</value>
+  </data>
+  <data name="Field_FechaModificacion" xml:space="preserve">
+    <value>Date de modification</value>
+  </data>
   <data name="Field_Username" xml:space="preserve">
-    <value>Le nom d'utilisateur</value>
+    <value>Nom d'utilisateur</value>
   </data>
   <data name="Field_Password" xml:space="preserve">
-    <value>Le mot de passe</value>
+    <value>Mot de passe</value>
+  </data>
+  <data name="Field_GrupoCuenta" xml:space="preserve">
+    <value>Groupe de Comptes</value>
+  </data>
+  <data name="Field_Deudora" xml:space="preserve">
+    <value>Débit</value>
+  </data>
+  <data name="Field_Cuentas" xml:space="preserve">
+    <value>Comptes</value>
+  </data>
+  <data name="Field_Subgrupos" xml:space="preserve">
+    <value>Sous-groupes</value>
+  </data>
+  <data name="Field_Sublineas" xml:space="preserve">
+    <value>Sous-lignes</value>
+  </data>
+  <data name="CodigoLongitud" xml:space="preserve">
+    <value>Le code doit comporter exactement {1} caractères</value>
+  </data>
+  <data name="CodigoFormato" xml:space="preserve">
+    <value>Le code ne doit contenir que des chiffres (00-99)</value>
+  </data>
+  <data name="SubGrupoCuentaCodigoLongitud" xml:space="preserve">
+    <value>Le code de sous-groupe doit comporter exactement 5 caractères</value>
+  </data>
+  <data name="SubGrupoCuentaCodigoFormato" xml:space="preserve">
+    <value>Le code doit être numérique avec 5 chiffres (Exemple: 01001)</value>
+  </data>
+  <data name="GrupoCuentaObligatorio" xml:space="preserve">
+    <value>Le groupe de comptes est obligatoire</value>
+  </data>
+  <data name="GrupoCuentaSeleccion" xml:space="preserve">
+    <value>Vous devez sélectionner un groupe de comptes valide</value>
+  </data>
+  <data name="LineaCodigoLongitud" xml:space="preserve">
+    <value>Le code de ligne doit comporter exactement 2 caractères</value>
   </data>
   <data name="InvalidCredentials" xml:space="preserve">
     <value>Identifiants invalides</value>
@@ -147,103 +154,61 @@
   <data name="AccountDisabled" xml:space="preserve">
     <value>Compte désactivé</value>
   </data>
-	<data name="Field_Codigo" xml:space="preserve">
-  <value>Le code</value>
+  <data name="UnsupportedLanguage" xml:space="preserve">
+    <value>Langue non prise en charge. Utilisez l'une des langues autorisées</value>
+  </data>
+  <data name="TranslationUpdated" xml:space="preserve">
+    <value>Traduction mise à jour avec succès</value>
+  </data>
+  <data name="GroupId" xml:space="preserve">
+    <value>ID du Groupe</value>
+  </data>
+  <data name="SubGroupId" xml:space="preserve">
+    <value>ID du Sous-groupe</value>
+  </data>
+  <data name="AccountId" xml:space="preserve">
+    <value>ID du Compte</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Langue</value>
+  </data>
+  <data name="ProvidedLanguage" xml:space="preserve">
+    <value>Langue Fournie</value>
+  </data>
+  <data name="SupportedLanguages" xml:space="preserve">
+    <value>Langues Prises en Charge</value>
+  </data>
+	<data name="CuentaCodigoLongitud" xml:space="preserve">
+  <value>Le code de compte doit comporter exactement 8 caractères</value>
 </data>
-	<data name="Field_Descripcion" xml:space="preserve">
-  <value>La description</value>
+	<data name="CuentaCodigoFormato" xml:space="preserve">
+  <value>Le code doit être numérique avec 8 chiffres (Exemple: 10000010)</value>
 </data>
-	<data name="Field_Cancelado" xml:space="preserve">
-  <value>Annulé</value>
+	<data name="SubGrupoCuentaObligatorio" xml:space="preserve">
+  <value>Le sous-groupe de comptes est obligatoire</value>
 </data>
-	<data name="Field_CreadoPor" xml:space="preserve">
-  <value>Créé par</value>
+	<data name="SubGrupoCuentaSeleccion" xml:space="preserve">
+  <value>Vous devez sélectionner un sous-groupe de comptes valide</value>
 </data>
-	<data name="Field_FechaCreacion" xml:space="preserve">
-  <value>Date de création</value>
+	<data name="Field_SubGrupoCuenta" xml:space="preserve">
+  <value>Sous-groupe de Comptes</value>
 </data>
-	<data name="Field_ModificadoPor" xml:space="preserve">
-  <value>Modifié par</value>
+	<data name="SubLineaCodigoLongitud" xml:space="preserve">
+  <value>Le code de sous-ligne doit comporter exactement 5 caractères</value>
 </data>
-	<data name="Field_FechaModificacion" xml:space="preserve">
-  <value>Date de modification</value>
+	<data name="SubLineaCodigoFormato" xml:space="preserve">
+  <value>Le code doit être numérique avec 5 chiffres (Exemple: 01100)</value>
 </data>
-	<data name="Field_Subgrupos" xml:space="preserve">
-  <value>Sous-groupes</value>
+	<data name="LineaObligatoria" xml:space="preserve">
+  <value>La ligne est obligatoire</value>
 </data>
-	<data name="CodigoObligatorio" xml:space="preserve">
-  <value>Le code est obligatoire</value>
+	<data name="LineaSeleccion" xml:space="preserve">
+  <value>Vous devez sélectionner une ligne valide</value>
 </data>
-	<data name="CodigoLongitud" xml:space="preserve">
-  <value>Le code doit contenir exactement 2 caractères</value>
+	<data name="Field_Linea" xml:space="preserve">
+  <value>Ligne</value>
 </data>
-	<data name="CodigoFormato" xml:space="preserve">
-  <value>Le code ne doit contenir que des chiffres (00-99)</value>
-</data>
-	<data name="DescripcionObligatoria" xml:space="preserve">
-  <value>La description est obligatoire</value>
-</data>
-	<data name="DescripcionLongitud" xml:space="preserve">
-  <value>La description ne peut pas dépasser {0} caractères</value>
-</data>
-	<data name="TranslationUpdated" xml:space="preserve">
-  <value>Traduction mise à jour avec succès</value>
-</data>
-	<data name="UnsupportedLanguage" xml:space="preserve">
-  <value>Langue non prise en charge. Langues valides: es, en, fr</value>
-</data>
-	<data name="GroupId" xml:space="preserve">
-  <value>ID du Groupe</value>
-</data>
-	<data name="SubGroupId" xml:space="preserve">
-  <value>ID du Sous-groupe</value>
-</data>
-	<data name="AccountId" xml:space="preserve">
-  <value>ID du Compte</value>
-</data>
-	<data name="Language" xml:space="preserve">
-  <value>Langue</value>
-</data>
-	<data name="ProvidedLanguage" xml:space="preserve">
-  <value>Langue Fournie</value>
-</data>
-	<data name="SupportedLanguages" xml:space="preserve">
-  <value>Langues Prises en Charge</value>
-</data>
-	<data name="UnsupportedLanguage" xml:space="preserve">
-  <value>Langue non prise en charge. Utilisez l'une des langues autorisées.</value>
-</data>
-	<data name="TranslationUpdated" xml:space="preserve">
-  <value>Traduction mise à jour avec succès.</value>
-</data>
-	<data name="LineaCodigoLongitud" xml:space="preserve">
-  <value>Le code de ligne doit comporter exactement 2 caractères.</value>
-</data>
-	<data name="Field_Sublineas" xml:space="preserve">
-  <value>Sous-lignes</value>
-</data>
-	<data name="CodigoObligatorio" xml:space="preserve">
-  <value>Le code est obligatoire.</value>
-</data>
-	<data name="Field_Codigo" xml:space="preserve">
-  <value>Code</value>
-</data>
-	<data name="DescripcionObligatoria" xml:space="preserve">
-  <value>La description est obligatoire.</value>
-</data>
-	<data name="Field_Descripcion" xml:space="preserve">
-  <value>Description</value>
-</data>
-	<data name="DescripcionLongitud" xml:space="preserve">
-  <value>La description ne peut pas dépasser {1} caractères.</value>
-</data>
-	<data name="Field_Cancelado" xml:space="preserve">
-  <value>Annulé</value>
-</data>
-	<data name="UnsupportedLanguage" xml:space="preserve">
-  <value>Langue non prise en charge. Utilisez l'une des langues autorisées.</value>
-</data>
-	<data name="TranslationUpdated" xml:space="preserve">
-  <value>Traduction mise à jour avec succès.</value>
+	<data name="Field_Productos" xml:space="preserve">
+  <value>Produits</value>
 </data>
 </root>

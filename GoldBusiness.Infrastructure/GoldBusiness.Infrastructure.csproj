@@ -17,4 +17,13 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.1" />
   </ItemGroup>
 
+    <ItemGroup>
+		<None Remove="Data\SeedData\SubLineas.csv" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="Data\SeedData\SubLineas.csv">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</EmbeddedResource>
+	</ItemGroup>
 </Project>

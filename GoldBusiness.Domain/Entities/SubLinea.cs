@@ -45,7 +45,11 @@ namespace GoldBusiness.Domain.Entities
         {
             if (string.IsNullOrWhiteSpace(codigo) || codigo.Length != 5)
                 throw new DomainException("El código debe tener exactamente 5 caracteres.");
-            Codigo = codigo.ToUpperInvariant();
+
+            if (!codigo.All(char.IsDigit))
+                throw new DomainException("El código debe ser numérico (00000-99999).");
+
+            Codigo = codigo;
         }
 
         public void SetDescripcion(string descripcion)

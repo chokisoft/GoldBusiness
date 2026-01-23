@@ -547,6 +547,9 @@ using (var scope = app.Services.CreateScope())
             logger.LogInformation("No se encontraron registros sin traducciones");
         }
 
+        // ✅ AGREGAR DbInitializer para otros seeds necesarios
+        await GoldBusiness.Infrastructure.Data.DbInitializer.InitializeAsync(db, logger);
+
         logger.LogInformation("Seed de base de datos completado exitosamente!");
     }
     catch (Exception ex)

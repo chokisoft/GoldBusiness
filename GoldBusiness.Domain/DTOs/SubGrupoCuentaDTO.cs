@@ -3,46 +3,88 @@
 namespace GoldBusiness.Domain.DTOs
 {
     /// <summary>
-    /// DTO para SubGrupoCuenta - Segundo nivel del plan de cuentas.
-    /// Agrupa cuentas contables específicas dentro de un grupo.
+    /// DTO para SubGrupoCuenta - Nivel intermedio del plan de cuentas.
+    /// Agrupa cuentas relacionadas dentro de un GrupoCuenta.
     /// </summary>
     public class SubGrupoCuentaDTO
     {
+        /// <summary>
+        /// Identificador único del subgrupo de cuenta.
+        /// </summary>
         public int Id { get; set; }
 
         /// <summary>
-        /// Código del subgrupo (formato: ##-##).
-        /// Ejemplo: "01-01" = ACTIVO CIRCULANTE.
+        /// Código del subgrupo (formato: #####).
+        /// Ejemplo: "01001" = ACTIVO CIRCULANTE.
         /// </summary>
-        [Required(ErrorMessage = "El código es obligatorio")]
-        [Display(Name = "Código")]
-        [StringLength(5, MinimumLength = 5, ErrorMessage = "El código debe tener exactamente 5 caracteres")]
-        [RegularExpression(@"^\d{2}-\d{2}$", ErrorMessage = "El código debe tener el formato ##-## (Ejemplo: 01-01)")]
+        [Required(
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.CodigoObligatorio)
+        )]
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Codigo),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
+        [StringLength(5, MinimumLength = 5,
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.SubGrupoCuentaCodigoLongitud)
+        )]
+        [RegularExpression(@"^\d{5}$",
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.SubGrupoCuentaCodigoFormato)
+        )]
         public string Codigo { get; set; } = string.Empty;
 
         /// <summary>
-        /// Descripción del subgrupo.
+        /// ID del grupo de cuenta al que pertenece.
         /// </summary>
-        [Required(ErrorMessage = "La descripción es obligatoria")]
-        [Display(Name = "Descripción")]
-        [StringLength(256, ErrorMessage = "La descripción no puede exceder 256 caracteres")]
-        public string Descripcion { get; set; } = string.Empty;
+        [Required(
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.GrupoCuentaObligatorio)
+        )]
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_GrupoCuenta),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
+        [Range(1, int.MaxValue,
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.GrupoCuentaSeleccion)
+        )]
+        public int GrupoCuentaId { get; set; }
 
         /// <summary>
-        /// ID del grupo padre.
+        /// Descripción del subgrupo de cuenta.
         /// </summary>
-        [Required(ErrorMessage = "El grupo de cuenta es obligatorio")]
-        [Display(Name = "Grupo de Cuenta")]
-        [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar un grupo válido")]
-        public int GrupoCuentaId { get; set; }
+        [Required(
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.DescripcionObligatoria)
+        )]
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Descripcion),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
+        [StringLength(256,
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.DescripcionLongitud)
+        )]
+        public string Descripcion { get; set; } = string.Empty;
 
         /// <summary>
         /// Indica si las cuentas de este subgrupo son deudoras.
         /// </summary>
-        [Display(Name = "¿Es Deudora?")]
-        public bool Deudora { get; set; }  // ✅ AGREGADO
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Deudora),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
+        public bool Deudora { get; set; }
 
-        [Display(Name = "Cancelado")]
+        /// <summary>
+        /// Indica si el subgrupo está cancelado.
+        /// </summary>
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Cancelado),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
         public bool Cancelado { get; set; }
 
         public string CreadoPor { get; set; } = string.Empty;
@@ -51,15 +93,18 @@ namespace GoldBusiness.Domain.DTOs
         public DateTime? FechaHoraModificado { get; set; }
 
         /// <summary>
-        /// Datos del grupo padre.
+        /// Jerarquía - Información del grupo padre.
         /// </summary>
         public string GrupoCuentaCodigo { get; set; } = string.Empty;
         public string GrupoCuentaDescripcion { get; set; } = string.Empty;
 
         /// <summary>
-        /// Cantidad de cuentas.
+        /// Cantidad de cuentas hijas.
         /// </summary>
-        [Display(Name = "Cuentas")]
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Cuentas),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
         public int CantidadCuentas { get; set; }
 
         public string CodigoDescripcion => $"{Codigo} | {Descripcion}";

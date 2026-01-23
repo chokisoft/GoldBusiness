@@ -41,19 +41,22 @@
                 Cancelado = false;
             }
 
-            // ═══════════════════════════════════════════════════════════════
-            // 🔧 MÉTODOS DE DOMINIO - VALIDACIONES
-            // ═══════════════════════════════════════════════════════════════
+        // ═══════════════════════════════════════════════════════════════
+        // 🔧 MÉTODOS DE DOMINIO - VALIDACIONES
+        // ═══════════════════════════════════════════════════════════════
 
-            public void SetCodigo(string codigo)
-            {
-                if (string.IsNullOrWhiteSpace(codigo) || codigo.Length > 8)
-                    throw new DomainException("El código es obligatorio y debe tener hasta 8 caracteres.");
+        public void SetCodigo(string codigo)
+        {
+            if (string.IsNullOrWhiteSpace(codigo) || codigo.Length != 8)
+                throw new DomainException("El código debe tener exactamente 8 caracteres.");
 
-                Codigo = codigo.Trim(); // ✅ Agregado Trim()
-            }
+            if (!codigo.All(char.IsDigit))
+                throw new DomainException("El código debe ser numérico (00000000-99999999).");
 
-            public void SetDescripcion(string descripcion)
+            Codigo = codigo;
+        }
+
+        public void SetDescripcion(string descripcion)
             {
                 if (string.IsNullOrWhiteSpace(descripcion))
                     throw new DomainException("La descripción es obligatoria.");

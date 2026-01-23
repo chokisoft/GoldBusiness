@@ -11,26 +11,59 @@ namespace GoldBusiness.Domain.DTOs
         public int Id { get; set; }
 
         /// <summary>
-        /// Código de la cuenta (formato: ##-##-##).
-        /// Ejemplo: "01-01-01" = CAJA GENERAL.
+        /// Código de la cuenta (formato: ########).
+        /// Ejemplo: "10000010" = EFECTIVO EN CAJA.
         /// </summary>
-        [Required(ErrorMessage = "El código es obligatorio")]
-        [Display(Name = "Código")]
-        [StringLength(8, ErrorMessage = "El código no puede exceder 8 caracteres")]
-        [RegularExpression(@"^\d{2}-\d{2}-\d{2}$", ErrorMessage = "Formato debe ser ##-##-## (Ejemplo: 01-01-01)")]
+        [Required(
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.CodigoObligatorio)
+        )]
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Codigo),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
+        [StringLength(8, MinimumLength = 8,
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.CuentaCodigoLongitud)
+        )]
+        [RegularExpression(@"^\d{8}$",
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.CuentaCodigoFormato)
+        )]
         public string Codigo { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "La descripción es obligatoria")]
-        [Display(Name = "Descripción")]
-        [StringLength(256, ErrorMessage = "La descripción no puede exceder 256 caracteres")]
+        [Required(
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.DescripcionObligatoria)
+        )]
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Descripcion),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
+        [StringLength(256,
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.DescripcionLongitud)
+        )]
         public string Descripcion { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "El subgrupo es obligatorio")]
-        [Display(Name = "Subgrupo")]
-        [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar un subgrupo válido")]
+        [Required(
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.SubGrupoCuentaObligatorio)
+        )]
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_SubGrupoCuenta),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
+        [Range(1, int.MaxValue,
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.SubGrupoCuentaSeleccion)
+        )]
         public int SubGrupoCuentaId { get; set; }
 
-        [Display(Name = "Cancelado")]
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Cancelado),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
         public bool Cancelado { get; set; }
 
         public string CreadoPor { get; set; } = string.Empty;

@@ -12,7 +12,7 @@ namespace GoldBusiness.Domain.DTOs
 
         /// <summary>
         /// Código de la línea (2 caracteres alfanuméricos).
-        /// Ejemplo: "AL" = Alimentos, "BE" = Bebidas.
+        /// Ejemplo: "AL" = Alimentos, "BE" = Bebidas ó "01" = Alimentos, "02" = Bebidas.
         /// </summary>
         [Required(
             ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
