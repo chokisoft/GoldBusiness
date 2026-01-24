@@ -120,14 +120,14 @@ namespace GoldBusiness.Infrastructure.Data
 
             var subgrupos = new[]
             {
-                new SubGrupoCuenta("10101", grupoActivo.Id, "ACTIVO CIRCULANTE", deudora: true, "system"),
-                new SubGrupoCuenta("10102", grupoActivo.Id, "ACTIVOS FIJOS", deudora: true, "system"),
-                new SubGrupoCuenta("10103", grupoActivo.Id, "CUENTAS REGULADORAS DE ACTIVOS", deudora: false, "system"),
-                new SubGrupoCuenta("20201", grupoPasivo.Id, "PASIVOS CIRCULANTES", deudora: false, "system"),
-                new SubGrupoCuenta("30300", grupoPatrimonio.Id, "GRUPO PATRIMONIO", deudora: false, "system"),
-                new SubGrupoCuenta("40401", grupoNominales.Id, "CUENTAS NOMINALES DEUDORAS", deudora: true, "system"),
-                new SubGrupoCuenta("40402", grupoNominales.Id, "CUENTAS NOMINALES ACREEDORAS", deudora: false, "system"),
-                new SubGrupoCuenta("50500", grupoCierre.Id, "CUENTA DE CIERRE", deudora: false, "system")
+                new SubGrupoCuenta("10101", "ACTIVO CIRCULANTE", grupoActivo.Id, deudora: true, "system"),
+                new SubGrupoCuenta("10102", "ACTIVOS FIJOS", grupoActivo.Id, deudora: true, "system"),
+                new SubGrupoCuenta("10103", "CUENTAS REGULADORAS DE ACTIVOS", grupoActivo.Id, deudora: false, "system"),
+                new SubGrupoCuenta("20201", "PASIVOS CIRCULANTES", grupoPasivo.Id, deudora: false, "system"),
+                new SubGrupoCuenta("30300", "GRUPO PATRIMONIO", grupoPatrimonio.Id, deudora: false, "system"),
+                new SubGrupoCuenta("40401", "CUENTAS NOMINALES DEUDORAS", grupoNominales.Id, deudora: true, "system"),
+                new SubGrupoCuenta("40402", "CUENTAS NOMINALES ACREEDORAS", grupoNominales.Id, deudora: false, "system"),
+                new SubGrupoCuenta("50500", "CUENTA DE CIERRE", grupoCierre.Id, deudora: false, "system")
             };
 
             context.SubGrupoCuenta.AddRange(subgrupos);

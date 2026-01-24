@@ -5,8 +5,8 @@ namespace GoldBusiness.Domain.Entities
 {
     public class Linea
     {
+        private readonly HashSet<SubLinea> _subLinea = new();
         private readonly HashSet<LineaTranslation> _translations = new();
-        private readonly HashSet<SubLinea> _subLineas = new();
 
         public int Id { get; private set; }
         public string Codigo { get; private set; } = string.Empty;
@@ -18,7 +18,7 @@ namespace GoldBusiness.Domain.Entities
         public DateTime? FechaHoraModificado { get; private set; }
 
         // Colecciones de navegación (read-only)
-        public IReadOnlyCollection<SubLinea> SubLineas => _subLineas;
+        public IReadOnlyCollection<SubLinea> SubLinea => _subLinea;
         public IReadOnlyCollection<LineaTranslation> Translations => _translations;
 
         // Constructor protegido para EF Core
@@ -43,6 +43,7 @@ namespace GoldBusiness.Domain.Entities
         {
             if (string.IsNullOrWhiteSpace(codigo) || codigo.Length != 2)
                 throw new DomainException("El código debe tener exactamente 2 caracteres.");
+
             Codigo = codigo.ToUpperInvariant();
         }
 
@@ -108,7 +109,7 @@ namespace GoldBusiness.Domain.Entities
             if (Cancelado)
                 throw new DomainException("La línea ya está cancelada.");
             
-            if (_subLineas.Any(s => !s.Cancelado))
+            if (_subLinea.Any(s => !s.Cancelado))
                 throw new DomainException("No se puede cancelar una línea con sublíneas activas.");
             
             Cancelado = true;

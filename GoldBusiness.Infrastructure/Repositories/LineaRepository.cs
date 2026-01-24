@@ -17,14 +17,14 @@ namespace GoldBusiness.Infrastructure.Repositories
             => await _context.Linea
                 .Where(g => !g.Cancelado)
                 .Include(g => g.Translations)
-                .Include(g => g.SubLineas)
+                .Include(g => g.SubLinea)
                     .ThenInclude(s => s.Translations)
                 .ToListAsync();
 
         public async Task<Linea?> GetByIdAsync(int id)
             => await _context.Linea
                 .Include(g => g.Translations)
-                .Include(g => g.SubLineas)
+                .Include(g => g.SubLinea)
                     .ThenInclude(s => s.Translations)
                 .FirstOrDefaultAsync(g => g.Id == id);
 
@@ -39,7 +39,7 @@ namespace GoldBusiness.Infrastructure.Repositories
                 .LoadAsync();
 
             await _context.Entry(entity)
-                .Collection(e => e.SubLineas)
+                .Collection(e => e.SubLinea)
                 .Query()
                 .Include(s => s.Translations)
                 .LoadAsync();
@@ -56,7 +56,7 @@ namespace GoldBusiness.Infrastructure.Repositories
                 .LoadAsync();
 
             await _context.Entry(entity)
-                .Collection(e => e.SubLineas)
+                .Collection(e => e.SubLinea)
                 .Query()
                 .Include(s => s.Translations)
                 .LoadAsync();

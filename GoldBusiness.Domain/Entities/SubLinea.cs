@@ -12,12 +12,13 @@ namespace GoldBusiness.Domain.Entities
         public string Codigo { get; private set; } = string.Empty;
         public string Descripcion { get; private set; } = string.Empty;
         public int LineaId { get; private set; }
-        public Linea LineaNavigation { get; private set; } = null!;
         public bool Cancelado { get; private set; }
         public string CreadoPor { get; private set; } = string.Empty;
         public DateTime FechaHoraCreado { get; private set; }
         public string ModificadoPor { get; private set; } = string.Empty;
         public DateTime? FechaHoraModificado { get; private set; }
+
+        public Linea Linea { get; private set; } = null!;
 
         // Colecciones de navegación (read-only)
         public IReadOnlyCollection<SubLineaTranslation> Translations => _translations;
@@ -31,6 +32,7 @@ namespace GoldBusiness.Domain.Entities
         {
             SetCodigo(codigo);
             SetDescripcion(descripcion);
+
             LineaId = lineaId;
             CreadoPor = creadoPor ?? throw new ArgumentNullException(nameof(creadoPor));
             FechaHoraCreado = DateTime.UtcNow;

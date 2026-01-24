@@ -345,7 +345,7 @@ namespace GoldBusiness.Infrastructure.Context
                 entity.Property(e => e.FechaHoraCreado).HasColumnType("datetime");
                 entity.Property(e => e.FechaHoraModificado).HasColumnType("datetime");
                 entity.Ignore(e => e.Translations);
-                entity.Ignore(e => e.SubLineas);
+                entity.Ignore(e => e.SubLinea);
             });
 
             modelBuilder.Entity<LineaTranslation>(entity =>
@@ -374,7 +374,7 @@ namespace GoldBusiness.Infrastructure.Context
                 entity.Property(e => e.FechaHoraModificado).HasColumnType("datetime");
                 entity.Ignore(e => e.Translations);
                 entity.Ignore(e => e.Productos);
-                entity.HasOne(d => d.LineaNavigation).WithMany(p => p.SubLineas).HasForeignKey(d => d.LineaId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_SubLinea_Linea");
+                entity.HasOne(d => d.Linea).WithMany(p => p.SubLinea).HasForeignKey(d => d.LineaId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_SubLinea_Linea");
             });
 
             modelBuilder.Entity<SubLineaTranslation>(entity =>

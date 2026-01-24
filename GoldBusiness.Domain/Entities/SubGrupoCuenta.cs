@@ -32,8 +32,8 @@ namespace GoldBusiness.Domain.Entities
         // Constructor con validaciones
         public SubGrupoCuenta(
             string codigo,
-            int grupoCuentaId,
             string descripcion,
+            int grupoCuentaId,
             bool deudora,
             string creadoPor)
         {

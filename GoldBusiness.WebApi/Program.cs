@@ -105,6 +105,8 @@ builder.Services.AddScoped<ISubGrupoCuentaRepository, SubGrupoCuentaRepository>(
 builder.Services.AddScoped<ISubGrupoCuentaService, SubGrupoCuentaService>();
 builder.Services.AddScoped<ILineaRepository, LineaRepository>();
 builder.Services.AddScoped<ILineaService, LineaService>();
+builder.Services.AddScoped<ISubLineaService, SubLineaService>();
+builder.Services.AddScoped<ISubLineaRepository, SubLineaRepository>();
 
 // ============================================
 // 🔐 JWT AUTHENTICATION
@@ -654,17 +656,5 @@ app.MapControllers();
 
 // ✅ Health check endpoint
 app.MapHealthChecks("/health");
-
-// ✅ Información de la API
-app.MapGet("/api-info", () => Results.Json(new
-{
-    name = "GoldBusiness API",
-    version = builder.Configuration["ApiVersion:Name"] ?? "v2.0",
-    description = "Sistema ERP con soporte multiidioma",
-    supportedLanguages = new[] { "es", "en", "fr" },
-    authentication = "JWT Bearer Token",
-    documentation = "/swagger",
-    environment = app.Environment.EnvironmentName
-})).AllowAnonymous();
 
 app.Run();

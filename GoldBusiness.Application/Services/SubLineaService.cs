@@ -5,30 +5,29 @@ using GoldBusiness.Infrastructure.Repositories;
 
 namespace GoldBusiness.Application.Services
 {
-    public class SubGrupoCuentaService : ISubGrupoCuentaService
+    public class SubLineaService : ISubLineaService
     {
-        private readonly ISubGrupoCuentaRepository _repo;
+        private readonly ISubLineaRepository _repo;
 
-        public SubGrupoCuentaService(ISubGrupoCuentaRepository repo)
+        public SubLineaService(ISubLineaRepository repo)
         {
             _repo = repo;
         }
 
-        public async Task<IEnumerable<SubGrupoCuentaDTO>> GetAllAsync(string lang = "es")
+        public async Task<IEnumerable<SubLineaDTO>> GetAllAsync(string lang = "es")
             => (await _repo.GetAllAsync())
                 .Select(s => MapToDTO(s, lang))
                 .Where(dto => dto is not null)
                 .Select(dto => dto!)
                 .ToList();
 
-        public async Task<SubGrupoCuentaDTO?> GetByIdAsync(int id, string lang = "es")
+        public async Task<SubLineaDTO?> GetByIdAsync(int id, string lang = "es")
             => MapToDTO(await _repo.GetByIdAsync(id), lang);
 
-        public async Task<SubGrupoCuentaDTO> CreateAsync(SubGrupoCuentaDTO dto, string user, string lang = "es")
+        public async Task<SubLineaDTO> CreateAsync(SubLineaDTO dto, string user, string lang = "es")
         {
             var creador = user ?? "system";
-            // ✅ Ahora usa dto.Deudora
-            var entity = new SubGrupoCuenta(dto.Codigo, dto.Descripcion, dto.GrupoCuentaId, dto.Deudora, creador);
+            var entity = new SubLinea(dto.Codigo, dto.Descripcion, dto.LineaId, creador);
 
             await _repo.AddAsync(entity);
 
@@ -38,13 +37,13 @@ namespace GoldBusiness.Application.Services
             return MapToDTO(entity, lang)!;
         }
 
-        public async Task<SubGrupoCuentaDTO> UpdateAsync(int id, SubGrupoCuentaDTO dto, string user, string lang = "es")
+        public async Task<SubLineaDTO> UpdateAsync(int id, SubLineaDTO dto, string user, string lang = "es")
         {
             var entity = await _repo.GetByIdAsync(id);
             if (entity == null) throw new KeyNotFoundException();
 
             // ✅ Ahora usa dto.Deudora
-            entity.Update(dto.Descripcion, dto.GrupoCuentaId, dto.Deudora, user);
+            entity.Update(dto.Descripcion, dto.LineaId, user);
 
             entity.AddOrUpdateTranslation(lang, dto.Descripcion, user ?? "system");
 
@@ -52,7 +51,7 @@ namespace GoldBusiness.Application.Services
             return MapToDTO(entity, lang)!;
         }
 
-        public async Task<SubGrupoCuentaDTO?> SoftDeleteAsync(int id, string user)
+        public async Task<SubLineaDTO?> SoftDeleteAsync(int id, string user)
         {
             var entity = await _repo.GetByIdAsync(id);
             if (entity == null) return null;
@@ -75,19 +74,18 @@ namespace GoldBusiness.Application.Services
             await _repo.UpdateAsync(entity);
         }
 
-        private static SubGrupoCuentaDTO? MapToDTO(SubGrupoCuenta? s, string lang)
+        private static SubLineaDTO? MapToDTO(SubLinea? s, string lang)
         {
             if (s == null) return null;
 
-            return new SubGrupoCuentaDTO
+            return new SubLineaDTO
             {
                 Id = s.Id,
                 Codigo = s.Codigo,
-                GrupoCuentaId = s.GrupoCuentaId,
-                GrupoCuentaCodigo = s.GrupoCuenta?.Codigo ?? string.Empty,
-                GrupoCuentaDescripcion = s.GrupoCuenta?.GetDescripcion(lang) ?? string.Empty,
+                LineaId = s.LineaId,
+                LineaCodigo = s.Linea?.Codigo ?? string.Empty,
+                LineaDescripcion = s.Linea?.GetDescripcion(lang) ?? string.Empty,
                 Descripcion = s.GetDescripcion(lang),
-                Deudora = s.Deudora,  // ✅ AGREGADO
                 Cancelado = s.Cancelado,
                 CreadoPor = s.CreadoPor,
                 FechaHoraCreado = s.FechaHoraCreado,
