@@ -10,27 +10,19 @@ using System.Text;
 
 namespace GoldBusiness.Application.Services
 {
-    public class AuthService : IAuthService
+    public class AuthService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration config) : IAuthService
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;   // ⭐ NECESARIO PARA ROLECLAIMS
-        private readonly IConfiguration _config;
-
-        public AuthService(
-            UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole> roleManager,
-            IConfiguration config)
-        {
-            _userManager = userManager;
-            _roleManager = roleManager;
-            _config = config;
-        }
+        private readonly UserManager<ApplicationUser> _userManager = userManager;
+        private readonly RoleManager<IdentityRole> _roleManager = roleManager;
+        private readonly IConfiguration _config = config;
 
         public async Task<AuthResponseDTO?> AuthenticateAsync(LoginDTO login)
         {
+            // Validar usuario
             var user = await _userManager.FindByNameAsync(login.Username);
             if (user == null || !user.IsActive) return null;
 
+            // Validar contraseña
             var validPassword = await _userManager.CheckPasswordAsync(user, login.Password);
             if (!validPassword) return null;
 
@@ -65,18 +57,22 @@ namespace GoldBusiness.Application.Services
             claims.AddRange(userClaims);
             claims.AddRange(roleClaims);
 
-            // 6. Generar token con expiración configurable
-            var jwtKey = _config["Jwt:Key"];
-            var expirationMinutes = _config.GetValue<int>("Jwt:AccessTokenExpirationMinutes", 15);  // ✅ Configurable
-            
+            // 6. Validar configuración JWT
+            var jwtKey = _config["Jwt:Key"] 
+                ?? throw new InvalidOperationException("JWT Key is not configured in appsettings.json");
+            var jwtIssuer = _config["Jwt:Issuer"] 
+                ?? throw new InvalidOperationException("JWT Issuer is not configured in appsettings.json");
+            var expirationMinutes = _config.GetValue<int>("Jwt:AccessTokenExpirationMinutes", 15);
+
+            // 7. Generar token
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                issuer: _config["Jwt:Issuer"],
+                issuer: jwtIssuer,
                 audience: null,
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(expirationMinutes),  // ✅ Ahora usa la configuración
+                expires: DateTime.UtcNow.AddMinutes(expirationMinutes),
                 signingCredentials: creds);
 
             return new AuthResponseDTO

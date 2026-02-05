@@ -1,0 +1,23 @@
+﻿using GoldBusiness.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace GoldBusiness.Infrastructure.Settings.Classification
+{
+    public class LineaConfiguration : IEntityTypeConfiguration<Linea>
+    {
+        public void Configure(EntityTypeBuilder<Linea> builder)
+        {
+            builder.HasKey(e => e.Id);
+            builder.HasIndex(e => new { e.Codigo, e.Cancelado }).HasDatabaseName("IX_Linea").IsUnique();
+            builder.Property(e => e.Codigo).IsRequired().HasMaxLength(2);
+            builder.Property(e => e.Descripcion).IsRequired().HasMaxLength(256);
+            builder.Property(e => e.CreadoPor).IsRequired().HasMaxLength(256);
+            builder.Property(e => e.ModificadoPor).IsRequired().HasMaxLength(256);
+            builder.Property(e => e.FechaHoraCreado).HasColumnType("datetime");
+            builder.Property(e => e.FechaHoraModificado).HasColumnType("datetime");
+            builder.Ignore(e => e.Translations);
+            builder.Ignore(e => e.SubLinea);
+        }
+    }
+}

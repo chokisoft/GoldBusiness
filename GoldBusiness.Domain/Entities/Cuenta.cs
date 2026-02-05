@@ -23,8 +23,8 @@
             public IReadOnlyCollection<Localidad> LocalidadCuentaCostoNavigation { get; } = new HashSet<Localidad>();
             public IReadOnlyCollection<Localidad> LocalidadCuentaVentaNavigation { get; } = new HashSet<Localidad>();
             public IReadOnlyCollection<Localidad> LocalidadCuentaDevolucionNavigation { get; } = new HashSet<Localidad>();
-            public IReadOnlyCollection<Configuracion> ConfiguracionCuentaPagarNavigation { get; } = new HashSet<Configuracion>();
-            public IReadOnlyCollection<Configuracion> ConfiguracionCuentaCobrarNavigation { get; } = new HashSet<Configuracion>();
+            public IReadOnlyCollection<SystemConfiguration> ConfiguracionCuentaPagarNavigation { get; } = new HashSet<SystemConfiguration>();
+            public IReadOnlyCollection<SystemConfiguration> ConfiguracionCuentaCobrarNavigation { get; } = new HashSet<SystemConfiguration>();
 
         // Constructor protegido para EF Core
         protected Cuenta() { }

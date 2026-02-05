@@ -3,7 +3,7 @@ using GoldBusiness.Domain.Exceptions;
 
 namespace GoldBusiness.Domain.Translation
 {
-    public class ConfiguracionTranslation
+    public class SystemConfigurationTranslation
     {
         public int Id { get; private set; }
         public int ConfiguracionId { get; private set; }
@@ -16,11 +16,11 @@ namespace GoldBusiness.Domain.Translation
         public string ModificadoPor { get; private set; } = string.Empty;
         public DateTime? FechaHoraModificado { get; private set; }
 
-        public Configuracion Configuracion { get; private set; } = null!;
+        public Entities.SystemConfiguration Configuracion { get; private set; } = null!;
 
-        protected ConfiguracionTranslation() { }
+        protected SystemConfigurationTranslation() { }
 
-        public ConfiguracionTranslation(
+        public SystemConfigurationTranslation(
             int configuracionId, 
             string language, 
             string nombreNegocio, 

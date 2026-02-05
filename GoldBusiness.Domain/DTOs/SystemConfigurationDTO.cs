@@ -6,7 +6,7 @@ namespace GoldBusiness.Domain.DTOs
     /// DTO para la configuración general del sistema.
     /// Almacena datos del negocio, licencia y cuentas contables por defecto.
     /// </summary>
-    public class ConfiguracionDTO
+    public class SystemConfigurationDTO
     {
         public int Id { get; set; }
 

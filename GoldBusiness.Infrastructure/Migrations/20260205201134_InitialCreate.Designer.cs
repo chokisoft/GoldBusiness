@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GoldBusiness.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260122020038_AddBusinessTable")]
-    partial class AddBusinessTable
+    [Migration("20260205201134_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -532,108 +532,6 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.ToTable("ConceptoAjuste");
                 });
 
-            modelBuilder.Entity("GoldBusiness.Domain.Entities.Configuracion", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("Caducidad")
-                        .HasColumnType("datetime");
-
-                    b.Property<string>("CodPostal")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("CodigoSistema")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("CreadoPor")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<int>("CuentaCobrarId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CuentaCobrarNavigationId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CuentaPagarId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CuentaPagarNavigationId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Direccion")
-                        .IsRequired()
-                        .HasMaxLength(512)
-                        .HasColumnType("nvarchar(512)");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<DateTime>("FechaHoraCreado")
-                        .HasColumnType("datetime");
-
-                    b.Property<DateTime?>("FechaHoraModificado")
-                        .HasColumnType("datetime");
-
-                    b.Property<byte[]>("Imagen")
-                        .IsRequired()
-                        .HasColumnType("image");
-
-                    b.Property<string>("Licencia")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("ModificadoPor")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("Municipio")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
-
-                    b.Property<string>("NombreNegocio")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("Provincia")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
-
-                    b.Property<string>("Telefono")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("Web")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CuentaCobrarNavigationId");
-
-                    b.HasIndex("CuentaPagarNavigationId");
-
-                    b.ToTable("Configuracion");
-                });
-
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Cuenta", b =>
                 {
                     b.Property<int>("Id")
@@ -891,7 +789,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.Property<bool>("Activo")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
-                        .HasDefaultValueSql("((1))");
+                        .HasDefaultValue(true);
 
                     b.Property<bool>("Cancelado")
                         .HasColumnType("bit");
@@ -1184,7 +1082,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.Property<bool>("Activo")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
-                        .HasDefaultValueSql("((1))");
+                        .HasDefaultValue(true);
 
                     b.Property<bool>("Almacen")
                         .HasColumnType("bit");
@@ -1949,6 +1847,102 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.ToTable("SubLinea");
                 });
 
+            modelBuilder.Entity("GoldBusiness.Domain.Entities.SystemConfiguration", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Caducidad")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("CodPostal")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("CodigoSistema")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("CreadoPor")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<int>("CuentaCobrarId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CuentaPagarId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Direccion")
+                        .IsRequired()
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<DateTime>("FechaHoraCreado")
+                        .HasColumnType("datetime");
+
+                    b.Property<DateTime?>("FechaHoraModificado")
+                        .HasColumnType("datetime");
+
+                    b.Property<byte[]>("Imagen")
+                        .IsRequired()
+                        .HasColumnType("image");
+
+                    b.Property<string>("Licencia")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("ModificadoPor")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("Municipio")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("NombreNegocio")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("Provincia")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("Telefono")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Web")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CuentaCobrarId");
+
+                    b.HasIndex("CuentaPagarId");
+
+                    b.ToTable("SystemConfiguration");
+                });
+
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Transaccion", b =>
                 {
                     b.Property<int>("Id")
@@ -2257,56 +2251,6 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("ConceptoAjusteTranslation");
-                });
-
-            modelBuilder.Entity("GoldBusiness.Domain.Translation.ConfiguracionTranslation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ConfiguracionId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CreadoPor")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("Direccion")
-                        .IsRequired()
-                        .HasMaxLength(512)
-                        .HasColumnType("nvarchar(512)");
-
-                    b.Property<DateTime>("FechaHoraCreado")
-                        .HasColumnType("datetime");
-
-                    b.Property<DateTime?>("FechaHoraModificado")
-                        .HasColumnType("datetime");
-
-                    b.Property<string>("Language")
-                        .IsRequired()
-                        .HasMaxLength(5)
-                        .HasColumnType("nvarchar(5)");
-
-                    b.Property<string>("ModificadoPor")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NombreNegocio")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ConfiguracionId", "Language")
-                        .IsUnique();
-
-                    b.ToTable("ConfiguracionTranslation");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.CuentaTranslation", b =>
@@ -2814,6 +2758,56 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.ToTable("SubLineaTranslation");
                 });
 
+            modelBuilder.Entity("GoldBusiness.Domain.Translation.SystemConfigurationTranslation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ConfiguracionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CreadoPor")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("Direccion")
+                        .IsRequired()
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
+
+                    b.Property<DateTime>("FechaHoraCreado")
+                        .HasColumnType("datetime");
+
+                    b.Property<DateTime?>("FechaHoraModificado")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("Language")
+                        .IsRequired()
+                        .HasMaxLength(5)
+                        .HasColumnType("nvarchar(5)");
+
+                    b.Property<string>("ModificadoPor")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NombreNegocio")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConfiguracionId", "Language")
+                        .IsUnique();
+
+                    b.ToTable("SystemConfigurationTranslation");
+                });
+
             modelBuilder.Entity("GoldBusiness.Domain.Translation.TransaccionTranslation", b =>
                 {
                     b.Property<int>("Id")
@@ -3040,7 +3034,7 @@ namespace GoldBusiness.Infrastructure.Migrations
             modelBuilder.Entity("GoldBusiness.Domain.Entities.CajaRegistradora", b =>
                 {
                     b.HasOne("GoldBusiness.Domain.Entities.IdTurno", "IdTurnoNavigation")
-                        .WithMany("CajasRegistradoras")
+                        .WithMany()
                         .HasForeignKey("IdTurnoId")
                         .IsRequired()
                         .HasConstraintName("FK_CajaRegistradora_IdTurno");
@@ -3078,7 +3072,7 @@ namespace GoldBusiness.Infrastructure.Migrations
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Comprobante", b =>
                 {
                     b.HasOne("GoldBusiness.Domain.Entities.Establecimiento", "EstablecimientoNavigation")
-                        .WithMany("Comprobantes")
+                        .WithMany()
                         .HasForeignKey("EstablecimientoId")
                         .IsRequired()
                         .HasConstraintName("FK_Comprobante_Establecimiento");
@@ -3109,7 +3103,7 @@ namespace GoldBusiness.Infrastructure.Migrations
             modelBuilder.Entity("GoldBusiness.Domain.Entities.ComprobanteTemporal", b =>
                 {
                     b.HasOne("GoldBusiness.Domain.Entities.Establecimiento", "EstablecimientoNavigation")
-                        .WithMany("ComprobantesTemporales")
+                        .WithMany()
                         .HasForeignKey("EstablecimientoId")
                         .IsRequired()
                         .HasConstraintName("FK_ComprobanteTemporal_Establecimiento");
@@ -3129,29 +3123,10 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.Navigation("CuentaNavigation");
                 });
 
-            modelBuilder.Entity("GoldBusiness.Domain.Entities.Configuracion", b =>
-                {
-                    b.HasOne("GoldBusiness.Domain.Entities.Cuenta", "CuentaCobrarNavigation")
-                        .WithMany()
-                        .HasForeignKey("CuentaCobrarNavigationId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("GoldBusiness.Domain.Entities.Cuenta", "CuentaPagarNavigation")
-                        .WithMany()
-                        .HasForeignKey("CuentaPagarNavigationId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("CuentaCobrarNavigation");
-
-                    b.Navigation("CuentaPagarNavigation");
-                });
-
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Cuenta", b =>
                 {
                     b.HasOne("GoldBusiness.Domain.Entities.SubGrupoCuenta", "SubGrupoCuenta")
-                        .WithMany("Cuenta")
+                        .WithMany()
                         .HasForeignKey("SubGrupoCuentaId")
                         .IsRequired()
                         .HasConstraintName("FK_Cuenta_SubGrupoCuenta");
@@ -3162,7 +3137,7 @@ namespace GoldBusiness.Infrastructure.Migrations
             modelBuilder.Entity("GoldBusiness.Domain.Entities.CuentaCobrarPagar", b =>
                 {
                     b.HasOne("GoldBusiness.Domain.Entities.Cliente", "ClienteNavigation")
-                        .WithMany("CuentasCobrarPagar")
+                        .WithMany()
                         .HasForeignKey("ClienteId")
                         .OnDelete(DeleteBehavior.SetNull)
                         .HasConstraintName("FK_CuentaCobrarPagar_Cliente");
@@ -3192,19 +3167,19 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .HasConstraintName("FK_CuentaCobrarPagar_CuentaPagoElectronico");
 
                     b.HasOne("GoldBusiness.Domain.Entities.Establecimiento", "EstablecimientoNavigation")
-                        .WithMany("CuentasCobrarPagar")
+                        .WithMany()
                         .HasForeignKey("EstablecimientoId")
                         .IsRequired()
                         .HasConstraintName("FK_CuentaCobrarPagar_Establecimiento");
 
                     b.HasOne("GoldBusiness.Domain.Entities.Proveedor", "ProveedorNavigation")
-                        .WithMany("CuentasCobrarPagar")
+                        .WithMany()
                         .HasForeignKey("ProveedorId")
                         .OnDelete(DeleteBehavior.SetNull)
                         .HasConstraintName("FK_CuentaCobrarPagar_Proveedor");
 
                     b.HasOne("GoldBusiness.Domain.Entities.Transaccion", "TransaccionNavigation")
-                        .WithMany("CuentasCobrarPagar")
+                        .WithMany()
                         .HasForeignKey("TransaccionId")
                         .IsRequired()
                         .HasConstraintName("FK_CuentaCobrarPagar_Transaccion");
@@ -3235,7 +3210,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .HasConstraintName("FK_ErroresVenta_Localidad");
 
                     b.HasOne("GoldBusiness.Domain.Entities.OperacionesDetalle", "OperacionesDetalleNavigation")
-                        .WithMany("ErroresVenta")
+                        .WithMany()
                         .HasForeignKey("OperacionesDetalleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -3256,8 +3231,8 @@ namespace GoldBusiness.Infrastructure.Migrations
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Establecimiento", b =>
                 {
-                    b.HasOne("GoldBusiness.Domain.Entities.Configuracion", "NegocioNavigation")
-                        .WithMany("Establecimientos")
+                    b.HasOne("GoldBusiness.Domain.Entities.SystemConfiguration", "NegocioNavigation")
+                        .WithMany()
                         .HasForeignKey("NegocioId")
                         .IsRequired()
                         .HasConstraintName("FK_Establecimiento_Configuracion");
@@ -3275,7 +3250,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .HasConstraintName("FK_EstadoCuenta_Cuenta");
 
                     b.HasOne("GoldBusiness.Domain.Entities.Establecimiento", "EstablecimientoNavigation")
-                        .WithMany("EstadosCuenta")
+                        .WithMany()
                         .HasForeignKey("EstablecimientoId")
                         .IsRequired()
                         .HasConstraintName("FK_EstadoCuenta_Establecimiento");
@@ -3362,7 +3337,7 @@ namespace GoldBusiness.Infrastructure.Migrations
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Moneda", b =>
                 {
                     b.HasOne("GoldBusiness.Domain.Entities.Establecimiento", "EstablecimientoNavigation")
-                        .WithMany("Monedas")
+                        .WithMany()
                         .HasForeignKey("EstablecimientoId")
                         .IsRequired()
                         .HasConstraintName("FK_Moneda_Establecimiento");
@@ -3379,7 +3354,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .HasConstraintName("FK_OperacionesDetalle_Localidad");
 
                     b.HasOne("GoldBusiness.Domain.Entities.OperacionesEncabezado", "OperacionEncabezadoNavigation")
-                        .WithMany("OperacionesDetalle")
+                        .WithMany()
                         .HasForeignKey("OperacionesEncabezadoId")
                         .IsRequired()
                         .HasConstraintName("FK_OperacionesDetalle_OperacionesEncabezado");
@@ -3400,7 +3375,7 @@ namespace GoldBusiness.Infrastructure.Migrations
             modelBuilder.Entity("GoldBusiness.Domain.Entities.OperacionesEncabezado", b =>
                 {
                     b.HasOne("GoldBusiness.Domain.Entities.Cliente", "ClienteNavigation")
-                        .WithMany("OperacionesEncabezado")
+                        .WithMany()
                         .HasForeignKey("ClienteId")
                         .OnDelete(DeleteBehavior.SetNull)
                         .HasConstraintName("FK_OperacionesEncabezado_Cliente");
@@ -3412,19 +3387,19 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .HasConstraintName("FK_OperacionesEncabezado_ConceptoAjuste");
 
                     b.HasOne("GoldBusiness.Domain.Entities.Establecimiento", "EstablecimientoNavigation")
-                        .WithMany("OperacionesEncabezado")
+                        .WithMany()
                         .HasForeignKey("EstablecimientoId")
                         .IsRequired()
                         .HasConstraintName("FK_OperacionesEncabezado_Establecimiento");
 
                     b.HasOne("GoldBusiness.Domain.Entities.Proveedor", "ProveedorNavigation")
-                        .WithMany("OperacionesEncabezado")
+                        .WithMany()
                         .HasForeignKey("ProveedorId")
                         .OnDelete(DeleteBehavior.SetNull)
                         .HasConstraintName("FK_OperacionesEncabezado_Proveedor");
 
                     b.HasOne("GoldBusiness.Domain.Entities.Transaccion", "TransaccionNavigation")
-                        .WithMany("OperacionesEncabezado")
+                        .WithMany()
                         .HasForeignKey("TransaccionId")
                         .IsRequired()
                         .HasConstraintName("FK_OperacionesEncabezado_Transaccion");
@@ -3535,7 +3510,7 @@ namespace GoldBusiness.Infrastructure.Migrations
             modelBuilder.Entity("GoldBusiness.Domain.Entities.SubGrupoCuenta", b =>
                 {
                     b.HasOne("GoldBusiness.Domain.Entities.GrupoCuenta", "GrupoCuenta")
-                        .WithMany("SubGrupoCuenta")
+                        .WithMany()
                         .HasForeignKey("GrupoCuentaId")
                         .IsRequired()
                         .HasConstraintName("FK_SubGrupoCuenta_GrupoCuenta");
@@ -3545,13 +3520,34 @@ namespace GoldBusiness.Infrastructure.Migrations
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.SubLinea", b =>
                 {
-                    b.HasOne("GoldBusiness.Domain.Entities.Linea", "LineaNavigation")
-                        .WithMany("SubLineas")
+                    b.HasOne("GoldBusiness.Domain.Entities.Linea", "Linea")
+                        .WithMany("SubLinea")
                         .HasForeignKey("LineaId")
                         .IsRequired()
                         .HasConstraintName("FK_SubLinea_Linea");
 
-                    b.Navigation("LineaNavigation");
+                    b.Navigation("Linea");
+                });
+
+            modelBuilder.Entity("GoldBusiness.Domain.Entities.SystemConfiguration", b =>
+                {
+                    b.HasOne("GoldBusiness.Domain.Entities.Cuenta", "CuentaCobrarNavigation")
+                        .WithMany("ConfiguracionCuentaCobrarNavigation")
+                        .HasForeignKey("CuentaCobrarId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_Configuracion_CuentaCobrar");
+
+                    b.HasOne("GoldBusiness.Domain.Entities.Cuenta", "CuentaPagarNavigation")
+                        .WithMany("ConfiguracionCuentaPagarNavigation")
+                        .HasForeignKey("CuentaPagarId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_Configuracion_CuentaPagar");
+
+                    b.Navigation("CuentaCobrarNavigation");
+
+                    b.Navigation("CuentaPagarNavigation");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.ClienteTranslation", b =>
@@ -3602,16 +3598,6 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_ConceptoAjusteTranslation_ConceptoAjuste");
-                });
-
-            modelBuilder.Entity("GoldBusiness.Domain.Translation.ConfiguracionTranslation", b =>
-                {
-                    b.HasOne("GoldBusiness.Domain.Entities.Configuracion", null)
-                        .WithMany()
-                        .HasForeignKey("ConfiguracionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_ConfiguracionTranslation_Configuracion");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.CuentaTranslation", b =>
@@ -3729,6 +3715,16 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.Navigation("SubLinea");
                 });
 
+            modelBuilder.Entity("GoldBusiness.Domain.Translation.SystemConfigurationTranslation", b =>
+                {
+                    b.HasOne("GoldBusiness.Domain.Entities.SystemConfiguration", null)
+                        .WithMany()
+                        .HasForeignKey("ConfiguracionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_ConfiguracionTranslation_Configuracion");
+                });
+
             modelBuilder.Entity("GoldBusiness.Domain.Translation.TransaccionTranslation", b =>
                 {
                     b.HasOne("GoldBusiness.Domain.Entities.Transaccion", null)
@@ -3805,13 +3801,6 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.Navigation("Detalles");
                 });
 
-            modelBuilder.Entity("GoldBusiness.Domain.Entities.Cliente", b =>
-                {
-                    b.Navigation("CuentasCobrarPagar");
-
-                    b.Navigation("OperacionesEncabezado");
-                });
-
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Comprobante", b =>
                 {
                     b.Navigation("Detalles");
@@ -3822,13 +3811,12 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.Navigation("OperacionesEncabezado");
                 });
 
-            modelBuilder.Entity("GoldBusiness.Domain.Entities.Configuracion", b =>
-                {
-                    b.Navigation("Establecimientos");
-                });
-
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Cuenta", b =>
                 {
+                    b.Navigation("ConfiguracionCuentaCobrarNavigation");
+
+                    b.Navigation("ConfiguracionCuentaPagarNavigation");
+
                     b.Navigation("LocalidadCuentaCostoNavigation");
 
                     b.Navigation("LocalidadCuentaDevolucionNavigation");
@@ -3842,38 +3830,19 @@ namespace GoldBusiness.Infrastructure.Migrations
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Establecimiento", b =>
                 {
-                    b.Navigation("Comprobantes");
-
-                    b.Navigation("ComprobantesTemporales");
-
-                    b.Navigation("CuentasCobrarPagar");
-
-                    b.Navigation("EstadosCuenta");
-
                     b.Navigation("Localidades");
-
-                    b.Navigation("Monedas");
-
-                    b.Navigation("OperacionesEncabezado");
 
                     b.Navigation("Productos");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.GrupoCuenta", b =>
                 {
-                    b.Navigation("SubGrupoCuenta");
-
                     b.Navigation("Translations");
-                });
-
-            modelBuilder.Entity("GoldBusiness.Domain.Entities.IdTurno", b =>
-                {
-                    b.Navigation("CajasRegistradoras");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Linea", b =>
                 {
-                    b.Navigation("SubLineas");
+                    b.Navigation("SubLinea");
 
                     b.Navigation("Translations");
                 });
@@ -3893,14 +3862,7 @@ namespace GoldBusiness.Infrastructure.Migrations
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.OperacionesDetalle", b =>
                 {
-                    b.Navigation("ErroresVenta");
-
                     b.Navigation("OperacionesServicio");
-                });
-
-            modelBuilder.Entity("GoldBusiness.Domain.Entities.OperacionesEncabezado", b =>
-                {
-                    b.Navigation("OperacionesDetalle");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Producto", b =>
@@ -3922,17 +3884,11 @@ namespace GoldBusiness.Infrastructure.Migrations
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Proveedor", b =>
                 {
-                    b.Navigation("CuentasCobrarPagar");
-
-                    b.Navigation("OperacionesEncabezado");
-
                     b.Navigation("Productos");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.SubGrupoCuenta", b =>
                 {
-                    b.Navigation("Cuenta");
-
                     b.Navigation("Translations");
                 });
 
@@ -3941,13 +3897,6 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.Navigation("Productos");
 
                     b.Navigation("Translations");
-                });
-
-            modelBuilder.Entity("GoldBusiness.Domain.Entities.Transaccion", b =>
-                {
-                    b.Navigation("CuentasCobrarPagar");
-
-                    b.Navigation("OperacionesEncabezado");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.UnidadMedida", b =>

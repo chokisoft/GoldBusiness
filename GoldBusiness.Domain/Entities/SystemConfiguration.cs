@@ -3,9 +3,9 @@ using GoldBusiness.Domain.Translation;
 
 namespace GoldBusiness.Domain.Entities
 {
-    public class Configuracion
+    public class SystemConfiguration
     {
-        private readonly HashSet<ConfiguracionTranslation> _translations = new();
+        private readonly HashSet<SystemConfigurationTranslation> _translations = new();
         private readonly HashSet<Establecimiento> _establecimientos = new();
 
         public int Id { get; private set; }
@@ -33,14 +33,14 @@ namespace GoldBusiness.Domain.Entities
         public Cuenta CuentaPagarNavigation { get; private set; } = null!;
 
         // Colecciones de navegación (read-only)
-        public IReadOnlyCollection<ConfiguracionTranslation> Translations => _translations;
+        public IReadOnlyCollection<SystemConfigurationTranslation> Translations => _translations;
         public IReadOnlyCollection<Establecimiento> Establecimientos => _establecimientos;
 
         // Constructor protegido para EF Core
-        protected Configuracion() { }
+        protected SystemConfiguration() { }
 
         // Constructor con validaciones
-        public Configuracion(
+        public SystemConfiguration(
             string codigoSistema,
             string licencia,
             string nombreNegocio,
@@ -223,7 +223,7 @@ namespace GoldBusiness.Domain.Entities
             }
             else
             {
-                _translations.Add(new ConfiguracionTranslation(
+                _translations.Add(new SystemConfigurationTranslation(
                     Id, lang, nombreNegocio, direccion, usuario));
             }
         }

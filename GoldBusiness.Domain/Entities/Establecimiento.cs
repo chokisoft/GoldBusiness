@@ -27,7 +27,7 @@ namespace GoldBusiness.Domain.Entities
         public DateTime? FechaHoraModificado { get; private set; }
 
         // Propiedades de navegación
-        public Configuracion NegocioNavigation { get; private set; } = null!;
+        public SystemConfiguration NegocioNavigation { get; private set; } = null!;
 
         // Colecciones de navegación (read-only)
         public IReadOnlyCollection<EstablecimientoTranslation> Translations => _translations;
