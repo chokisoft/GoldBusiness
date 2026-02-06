@@ -9,14 +9,10 @@ namespace GoldBusiness.Domain.Entities
         private readonly HashSet<MonedaTranslation> _translations = new();
 
         public int Id { get; private set; }
-        public int EstablecimientoId { get; private set; }
         public string Codigo { get; private set; } = string.Empty;
         public string Descripcion { get; private set; } = string.Empty;
         public bool Cancelado { get; private set; }
 
-        // Propiedades de navegación
-        public Establecimiento EstablecimientoNavigation { get; private set; } = null!;
-        
         // Colecciones de navegación (read-only)
         public IReadOnlyCollection<MonedaTranslation> Translations => _translations;
 
@@ -24,9 +20,8 @@ namespace GoldBusiness.Domain.Entities
         protected Moneda() { }
 
         // Constructor con validaciones
-        public Moneda(int establecimientoId, string codigo, string descripcion, string creadoPor)
+        public Moneda(string codigo, string descripcion, string creadoPor)
         {
-            EstablecimientoId = establecimientoId;
             SetCodigo(codigo);
             SetDescripcion(descripcion);
             EstablecerCreador(creadoPor);

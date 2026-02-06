@@ -23,7 +23,6 @@ namespace GoldBusiness.Infrastructure.Settings.EstablishmentLocations
             builder.Ignore(e => e.CuentasCobrarPagar);
             builder.Ignore(e => e.EstadosCuenta);
             builder.Ignore(e => e.Localidades);
-            builder.Ignore(e => e.Monedas);
             builder.Ignore(e => e.OperacionesEncabezado);
             builder.Ignore(e => e.Productos);
             builder.HasOne(d => d.NegocioNavigation).WithMany().HasForeignKey(d => d.NegocioId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Establecimiento_Configuracion");

@@ -146,6 +146,25 @@ namespace GoldBusiness.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Moneda",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Codigo = table.Column<string>(type: "nvarchar(3)", maxLength: 3, nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    Cancelado = table.Column<bool>(type: "bit", nullable: false),
+                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
+                    ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Moneda", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Proveedor",
                 columns: table => new
                 {
@@ -470,6 +489,31 @@ namespace GoldBusiness.Infrastructure.Migrations
                         column: x => x.LineaId,
                         principalTable: "Linea",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MonedaTranslation",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MonedaId = table.Column<int>(type: "int", nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
+                    ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MonedaTranslation", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MonedaTranslation_Moneda",
+                        column: x => x.MonedaId,
+                        principalTable: "Moneda",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -1056,31 +1100,6 @@ namespace GoldBusiness.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Moneda",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    EstablecimientoId = table.Column<int>(type: "int", nullable: false),
-                    Codigo = table.Column<string>(type: "nvarchar(3)", maxLength: 3, nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    Cancelado = table.Column<bool>(type: "bit", nullable: false),
-                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
-                    ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Moneda", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Moneda_Establecimiento",
-                        column: x => x.EstablecimientoId,
-                        principalTable: "Establecimiento",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "OperacionesEncabezado",
                 columns: table => new
                 {
@@ -1295,31 +1314,6 @@ namespace GoldBusiness.Infrastructure.Migrations
                         name: "FK_LocalidadTranslation_Localidad",
                         column: x => x.LocalidadId,
                         principalTable: "Localidad",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "MonedaTranslation",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    MonedaId = table.Column<int>(type: "int", nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
-                    ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
-                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MonedaTranslation", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_MonedaTranslation_Moneda",
-                        column: x => x.MonedaId,
-                        principalTable: "Moneda",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -1933,12 +1927,6 @@ namespace GoldBusiness.Infrastructure.Migrations
                 name: "IX_LocalidadTranslation_LocalidadId_Language",
                 table: "LocalidadTranslation",
                 columns: new[] { "LocalidadId", "Language" },
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Moneda_EstablecimientoId_Codigo_Cancelado",
-                table: "Moneda",
-                columns: new[] { "EstablecimientoId", "Codigo", "Cancelado" },
                 unique: true);
 
             migrationBuilder.CreateIndex(

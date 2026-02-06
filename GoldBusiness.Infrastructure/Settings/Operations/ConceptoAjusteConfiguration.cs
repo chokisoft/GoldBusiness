@@ -17,7 +17,7 @@ namespace GoldBusiness.Infrastructure.Settings.Operations
             builder.Property(e => e.FechaHoraModificado).HasColumnType("datetime");
             builder.Ignore(e => e.Translations);
             builder.Ignore(e => e.OperacionesEncabezado);
-            builder.HasOne(d => d.CuentaNavigation).WithMany().HasForeignKey(d => d.CuentaId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_ConceptoAjuste_Cuenta");
+            builder.HasOne(d => d.Cuenta).WithMany().HasForeignKey(d => d.CuentaId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_ConceptoAjuste_Cuenta");
         }
     }
 }

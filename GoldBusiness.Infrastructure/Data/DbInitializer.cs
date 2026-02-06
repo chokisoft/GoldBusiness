@@ -2,6 +2,9 @@
 using GoldBusiness.Domain.Translation;
 using GoldBusiness.Infrastructure.Context;
 using Microsoft.Extensions.Logging;
+using System.Drawing;
+using System.Security.Cryptography;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace GoldBusiness.Infrastructure.Data
 {
@@ -30,8 +33,14 @@ namespace GoldBusiness.Infrastructure.Data
                 // Seed de Linea
                 await SeedLineaAsync(context, logger);
 
-                // Seed de Linea
+                // Seed de SubLinea
                 await SeedSubLineaAsync(context, logger);
+
+                // Seed de Moneda
+                await SeedMonedaAsync(context, logger);
+
+                // Seed de ConceptoAjuste
+                await SeedConceptoAjusteAsync(context, logger);
 
                 logger.LogInformation("Seed de datos maestros completado exitosamente!");
             }
@@ -791,5 +800,206 @@ namespace GoldBusiness.Infrastructure.Data
         }
 
         #endregion
+
+        #region Moneda
+
+        private static async Task SeedMonedaAsync(ApplicationDbContext context, ILogger logger)
+        {
+            if (context.Moneda.Any())
+            {
+                logger.LogInformation("Moneda ya tiene datos, omitiendo seed.");
+                return;
+            }
+
+            var moneda = new[]
+            {
+                new Moneda("CUP", "PESO CUBANO", "system"),
+                new Moneda("MLC", "MONEDA LIBREMENTE CONVERTIBLE", "system"),
+                new Moneda("USD", "DÓLAR ESTADOUNIDENSE", "system"),
+                new Moneda("EUR", "EURO", "system"),
+                new Moneda("JPY", "YEN JAPONÉS", "system"),
+                new Moneda("GBP", "LIBRA ESTERLINA", "system"),
+                new Moneda("AUD", "DÓLAR AUSTRALIANO", "system"),
+                new Moneda("CAD", "DÓLAR CANADIENSE", "system"),
+                new Moneda("CHF", "FRANCO SUIZO", "system"),
+                new Moneda("CNY", "YUAN RENMINBI", "system"),
+                new Moneda("HKD", "DÓLAR DE HONG KONG", "system"),
+                new Moneda("NZD", "DÓLAR NEOZELANDÉS", "system")
+            };
+
+            context.Moneda.AddRange(moneda);
+            await context.SaveChangesAsync();
+
+            // Agregar traducciones
+            var traducciones = new List<MonedaTranslation>
+            {
+                new(moneda[0].Id, "es", "PESO CUBANO", "system"),
+                new(moneda[0].Id, "en", "CUBAN PESO", "system"),
+                new(moneda[0].Id, "fr", "PESO CUBAIN", "system"),
+
+                new(moneda[1].Id, "es", "MONEDA LIBREMENTE CONVERTIBLE", "system"),
+                new(moneda[1].Id, "en", "FREELY CONVERTIBLE CURRENCY", "system"),
+                new(moneda[1].Id, "fr", "MONNAIE LIBREMENT CONVERTIBLE", "system"),
+
+                new(moneda[2].Id, "es", "DÓLAR ESTADOUNIDENSE", "system"),
+                new(moneda[2].Id, "en", "UNITED STATES DOLLAR", "system"),
+                new(moneda[2].Id, "fr", "DOLLAR AMÉRICAIN", "system"),
+
+                new(moneda[3].Id, "es", "EURO", "system"),
+                new(moneda[3].Id, "en", "EURO", "system"),
+                new(moneda[3].Id, "fr", "EURO", "system"),
+
+                new(moneda[4].Id, "es", "YEN JAPONÉS", "system"),
+                new(moneda[4].Id, "en", "JAPANESE YEN", "system"),
+                new(moneda[4].Id, "fr", "YEN JAPONAIS", "system"),
+
+                new(moneda[5].Id, "es", "LIBRA ESTERLINA", "system"),
+                new(moneda[5].Id, "en", "POUND STERLING", "system"),
+                new(moneda[5].Id, "fr", "LIVRE STERLING", "system"),
+
+                new(moneda[6].Id, "es", "DÓLAR AUSTRALIANO", "system"),
+                new(moneda[6].Id, "en", "AUSTRALIAN DOLLAR", "system"),
+                new(moneda[6].Id, "fr", "DOLLAR AUSTRALIEN", "system"),
+
+                new(moneda[7].Id, "es", "DÓLAR CANADIENSE", "system"),
+                new(moneda[7].Id, "en", "CANADIAN DOLLAR", "system"),
+                new(moneda[7].Id, "fr", "DOLLAR CANADIEN", "system"),
+
+                new(moneda[8].Id, "es", "FRANCO SUIZO", "system"),
+                new(moneda[8].Id, "en", "SWISS FRANC", "system"),
+                new(moneda[8].Id, "fr", "FRANC SUISSE", "system"),
+
+                new(moneda[9].Id, "es", "YUAN RENMINBI", "system"),
+                new(moneda[9].Id, "en", "RENMINBI YUAN", "system"),
+                new(moneda[9].Id, "fr", "YUAN RENMINBI", "system"),
+
+                new(moneda[10].Id, "es", "DÓLAR DE HONG KONG", "system"),
+                new(moneda[10].Id, "en", "HONG KONG DOLLAR", "system"),
+                new(moneda[10].Id, "fr", "DOLLAR DE HONG KONG", "system"),
+
+                new(moneda[11].Id, "es", "DÓLAR NEOZELANDÉS", "system"),
+                new(moneda[11].Id, "en", "NEW ZEALAND DOLLAR", "system"),
+                new(moneda[11].Id, "fr", "DOLLAR NÉO-ZÉLANDAIS", "system"),
+            };
+
+            context.MonedaTranslation.AddRange(traducciones);
+            await context.SaveChangesAsync();
+
+            logger.LogInformation("Seed de Moneda completado: {Count} monedas agregadas", moneda.Length);
+        }
+
+        #endregion
+
+        #region ConceptoAjuste
+
+        private static async Task SeedConceptoAjusteAsync(ApplicationDbContext context, ILogger logger)
+        {
+            if (context.ConceptoAjuste.Any())
+            {
+                logger.LogInformation("ConceptoAjuste ya tiene datos, omitiendo seed.");
+                return;
+            }
+
+            var conceptoAjuste = new[]
+            {
+                new ConceptoAjuste("10", "CAMBIO DE PRECIO POSITIVO", 25, "system"),
+                new ConceptoAjuste("11", "SOBRANTES", 21, "system"),
+                new ConceptoAjuste("12", "MERCANCIA RECUPERADA", 25, "system"),
+                new ConceptoAjuste("13", "ERROR EN VENTA (DE ENTRADA)", 25, "system"),
+                new ConceptoAjuste("14", "MERMA ROTURA Y DETERIORO", 24, "system"),
+                new ConceptoAjuste("17", "AUMENTO DE PRECIO PROMEDIO PONDERADO", 25, "system"),
+                new ConceptoAjuste("18", "AJUSTE POSITIVO DE CONVERSIÓN", 25, "system"),
+                new ConceptoAjuste("19", "OTRAS ENTRADAS", 25, "system"),
+
+                new ConceptoAjuste("20", "CAMBIO DE PRECIO NEGATIVO", 25, "system"),
+                new ConceptoAjuste("21", "FALTANTES", 21, "system"),
+                new ConceptoAjuste("22", "MERCANCIA A RECUPERAR", 25, "system"),
+                new ConceptoAjuste("23", "ERROR EN VENTA (DE SALIDA)", 25, "system"),
+                new ConceptoAjuste("24", "MERMA ROTURA Y DETERIORO", 25, "system"),
+                new ConceptoAjuste("27", "DISMINUCIÓN DE PRECIO PROMEDIO PONDERADO", 25, "system"),
+                new ConceptoAjuste("28", "AJUSTE NEGATIVO DE CONVERSIÓN", 24, "system"),
+                new ConceptoAjuste("29", "OTRAS SALIDAS", 25, "system"),
+            };
+
+            context.ConceptoAjuste.AddRange(conceptoAjuste);
+            await context.SaveChangesAsync();
+
+            // Agregar traducciones
+            var traducciones = new List<ConceptoAjusteTranslation>
+            {
+                new(conceptoAjuste[0].Id, "es", "CAMBIO DE PRECIO POSITIVO", "system"),
+                new(conceptoAjuste[0].Id, "en", "POSITIVE PRICE CHANGE", "system"),
+                new(conceptoAjuste[0].Id, "fr", "CHANGEMENT DE PRIX POSITIF", "system"),
+
+                new(conceptoAjuste[1].Id, "es", "SOBRANTES", "system"),
+                new(conceptoAjuste[1].Id, "en", "SURPLUSES", "system"),
+                new(conceptoAjuste[1].Id, "fr", "SURPLUS", "system"),
+
+                new(conceptoAjuste[2].Id, "es", "MERCANCÍA RECUPERADA", "system"),
+                new(conceptoAjuste[2].Id, "en", "RECOVERED GOODS", "system"),
+                new(conceptoAjuste[2].Id, "fr", "MARCHANDISE RÉCUPÉRÉE", "system"),
+
+                new(conceptoAjuste[3].Id, "es", "ERROR EN VENTA (DE ENTRADA)", "system"),
+                new(conceptoAjuste[3].Id, "en", "SALES ERROR (INBOUND)", "system"),
+                new(conceptoAjuste[3].Id, "fr", "ERREUR DE VENTE (ENTRÉE)", "system"),
+
+                new(conceptoAjuste[4].Id, "es", "MERMA ROTURA Y DETERIORO", "system"),
+                new(conceptoAjuste[4].Id, "en", "BREAKAGE AND DETERIORATION LOSS", "system"),
+                new(conceptoAjuste[4].Id, "fr", "PERTE PAR CASSURE ET DÉTÉRIORATION", "system"),
+
+                new(conceptoAjuste[5].Id, "es", "AUMENTO DE PRECIO PROMEDIO PONDERADO", "system"),
+                new(conceptoAjuste[5].Id, "en", "WEIGHTED AVERAGE PRICE INCREASE", "system"),
+                new(conceptoAjuste[5].Id, "fr", "AUGMENTATION DU PRIX MOYEN PONDÉRÉ", "system"),
+
+                new(conceptoAjuste[6].Id, "es", "AJUSTE POSITIVO DE CONVERSIÓN", "system"),
+                new(conceptoAjuste[6].Id, "en", "POSITIVE CONVERSION ADJUSTMENT", "system"),
+                new(conceptoAjuste[6].Id, "fr", "AJUSTEMENT POSITIF DE CONVERSION", "system"),
+
+                new(conceptoAjuste[7].Id, "es", "OTRAS ENTRADAS", "system"),
+                new(conceptoAjuste[7].Id, "en", "OTHER ENTRIES", "system"),
+                new(conceptoAjuste[7].Id, "fr", "AUTRES ENTRÉES", "system"),
+
+                new(conceptoAjuste[8].Id, "es", "CAMBIO DE PRECIO NEGATIVO", "system"),
+                new(conceptoAjuste[8].Id, "en", "NEGATIVE PRICE CHANGE", "system"),
+                new(conceptoAjuste[8].Id, "fr", "CHANGEMENT DE PRIX NÉGATIF", "system"),
+
+                new(conceptoAjuste[9].Id, "es", "FALTANTES", "system"),
+                new(conceptoAjuste[9].Id, "en", "SHORTAGES", "system"),
+                new(conceptoAjuste[9].Id, "fr", "MANQUANTS", "system"),
+
+                new(conceptoAjuste[10].Id, "es", "MERCANCÍA A RECUPERAR", "system"),
+                new(conceptoAjuste[10].Id, "en", "GOODS TO BE RECOVERED", "system"),
+                new(conceptoAjuste[10].Id, "fr", "MARCHANDISE À RÉCUPÉRER", "system"),
+
+                new(conceptoAjuste[11].Id, "es", "ERROR EN VENTA (DE SALIDA)", "system"),
+                new(conceptoAjuste[11].Id, "en", "SALES ERROR (OUTBOUND)", "system"),
+                new(conceptoAjuste[11].Id, "fr", "ERREUR DE VENTE (SORTIE)", "system"),
+
+                new(conceptoAjuste[12].Id, "es", "MERMA ROTURA Y DETERIORO", "system"),
+                new(conceptoAjuste[12].Id, "en", "BREAKAGE AND DETERIORATION LOSS", "system"),
+                new(conceptoAjuste[12].Id, "fr", "PERTE PAR CASSURE ET DÉTÉRIORATION", "system"),
+
+                new(conceptoAjuste[13].Id, "es", "DISMINUCIÓN DE PRECIO PROMEDIO PONDERADO", "system"),
+                new(conceptoAjuste[13].Id, "en", "WEIGHTED AVERAGE PRICE DECREASE", "system"),
+                new(conceptoAjuste[13].Id, "fr", "DIMINUTION DU PRIX MOYEN PONDÉRÉ", "system"),
+
+                new(conceptoAjuste[14].Id, "es", "AJUSTE NEGATIVO DE CONVERSIÓN", "system"),
+                new(conceptoAjuste[14].Id, "en", "NEGATIVE CONVERSION ADJUSTMENT", "system"),
+                new(conceptoAjuste[14].Id, "fr", "AJUSTEMENT NÉGATIF DE CONVERSION", "system"),
+
+                new(conceptoAjuste[15].Id, "es", "OTRAS SALIDAS", "system"),
+                new(conceptoAjuste[15].Id, "en", "OTHER OUTPUTS", "system"),
+                new(conceptoAjuste[15].Id, "fr", "AUTRES SORTIES", "system"),
+
+            };
+
+            context.ConceptoAjusteTranslation.AddRange(traducciones);
+            await context.SaveChangesAsync();
+
+            logger.LogInformation("Seed de Concepto Ajuste completado: {Count} coceptoAjuste agregados", conceptoAjuste.Length);
+        }
+
+        #endregion
+
     }
 }

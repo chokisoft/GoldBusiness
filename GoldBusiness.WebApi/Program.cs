@@ -107,6 +107,10 @@ builder.Services.AddScoped<ILineaRepository, LineaRepository>();
 builder.Services.AddScoped<ILineaService, LineaService>();
 builder.Services.AddScoped<ISubLineaService, SubLineaService>();
 builder.Services.AddScoped<ISubLineaRepository, SubLineaRepository>();
+builder.Services.AddScoped<IMonedaService, MonedaService>();
+builder.Services.AddScoped<IMonedaRepository, MonedaRepository>();
+builder.Services.AddScoped<IConceptoAjusteService, ConceptoAjusteService>();
+builder.Services.AddScoped<IConceptoAjusteRepository, ConceptoAjusteRepository>();
 
 // ============================================
 // 🔐 JWT AUTHENTICATION
@@ -538,8 +542,27 @@ using (var scope = app.Services.CreateScope())
         if (sublineasSinTraduccion.Any())
             logger.LogInformation("{Count} traducciones de SubLinea agregadas", sublineasSinTraduccion.Count);
 
+        // ✅ Moneda (NUEVO)
+        var monedaSinTraduccion = db.Moneda.Where(x => !x.Translations.Any()).ToList();
+        foreach (var sl in monedaSinTraduccion)
+        {
+            db.MonedaTranslation.Add(new MonedaTranslation(sl.Id, "es", sl.Descripcion, "system"));
+        }
+        if (monedaSinTraduccion.Any())
+            logger.LogInformation("{Count} traducciones de Moneda agregadas", monedaSinTraduccion.Count);
+
+        // ✅ ConceptoAjuste (NUEVO)
+        var conceptoAjusteSinTraduccion = db.ConceptoAjuste.Where(x => !x.Translations.Any()).ToList();
+        foreach (var sl in conceptoAjusteSinTraduccion)
+        {
+            db.ConceptoAjusteTranslation.Add(new ConceptoAjusteTranslation(sl.Id, "es", sl.Descripcion, "system"));
+        }
+        if (conceptoAjusteSinTraduccion.Any())
+            logger.LogInformation("{Count} traducciones de ConceptoAjuste agregados", conceptoAjusteSinTraduccion.Count);
+
+
         // ✅ Guardar cambios si hay traducciones nuevas
-        if (gruposSinTraduccion.Any() || subgruposSinTraduccion.Any() || cuentasSinTraduccion.Any() || lineasSinTraduccion.Any() || sublineasSinTraduccion.Any())
+        if (gruposSinTraduccion.Any() || subgruposSinTraduccion.Any() || cuentasSinTraduccion.Any() || lineasSinTraduccion.Any() || sublineasSinTraduccion.Any() || monedaSinTraduccion.Any() || conceptoAjusteSinTraduccion.Any())
         {
             await db.SaveChangesAsync();
             logger.LogInformation("Traducciones guardadas en base de datos");

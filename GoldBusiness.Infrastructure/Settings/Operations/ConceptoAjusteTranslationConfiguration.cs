@@ -18,7 +18,7 @@ namespace GoldBusiness.Infrastructure.Settings.Operations
             builder.Property(e => e.FechaHoraCreado).HasColumnType("datetime");
             builder.Property(e => e.FechaHoraModificado).HasColumnType("datetime");
             builder.Ignore(e => e.ConceptoAjuste);
-            builder.HasOne<ConceptoAjuste>().WithMany().HasForeignKey(e => e.ConceptoAjusteId).OnDelete(DeleteBehavior.Cascade).HasConstraintName("FK_ConceptoAjusteTranslation_ConceptoAjuste");
+            builder.HasOne<ConceptoAjuste>().WithMany(g => g.Translations).HasForeignKey(e => e.ConceptoAjusteId).OnDelete(DeleteBehavior.Cascade).HasConstraintName("FK_ConceptoAjusteTranslation_ConceptoAjuste");
         }
     }
 }

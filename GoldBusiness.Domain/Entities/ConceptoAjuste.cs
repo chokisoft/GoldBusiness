@@ -16,7 +16,7 @@ namespace GoldBusiness.Domain.Entities
         public bool Cancelado { get; private set; }
 
         // Propiedades de navegación
-        public Cuenta CuentaNavigation { get; private set; } = null!;
+        public Cuenta Cuenta { get; private set; } = null!;
         
         // Colecciones de navegación (read-only)
         public IReadOnlyCollection<ConceptoAjusteTranslation> Translations => _translations;

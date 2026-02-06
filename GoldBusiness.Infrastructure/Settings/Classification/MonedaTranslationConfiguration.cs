@@ -18,7 +18,7 @@ namespace GoldBusiness.Infrastructure.Settings.Classification
             builder.Property(e => e.FechaHoraCreado).HasColumnType("datetime");
             builder.Property(e => e.FechaHoraModificado).HasColumnType("datetime");
             builder.Ignore(e => e.Moneda);
-            builder.HasOne<Moneda>().WithMany().HasForeignKey(e => e.MonedaId).OnDelete(DeleteBehavior.Cascade).HasConstraintName("FK_MonedaTranslation_Moneda");
+            builder.HasOne<Moneda>().WithMany(g => g.Translations).HasForeignKey(e => e.MonedaId).OnDelete(DeleteBehavior.Cascade).HasConstraintName("FK_MonedaTranslation_Moneda");
         }
     }
 }

@@ -9,11 +9,6 @@ namespace GoldBusiness.Domain.DTOs
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "El establecimiento es obligatorio")]
-        [Display(Name = "Establecimiento")]
-        [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar un establecimiento válido")]
-        public int EstablecimientoId { get; set; }
-
         /// <summary>
         /// Código ISO 4217 de la moneda (3 caracteres).
         /// Ejemplos: "USD", "EUR", "CUP", "MLC".
@@ -36,8 +31,6 @@ namespace GoldBusiness.Domain.DTOs
         public DateTime FechaHoraCreado { get; set; }
         public string? ModificadoPor { get; set; }
         public DateTime? FechaHoraModificado { get; set; }
-
-        public string EstablecimientoDescripcion { get; set; } = string.Empty;
 
         public string CodigoDescripcion => $"{Codigo} | {Descripcion}";
     }

@@ -12,7 +12,6 @@ namespace GoldBusiness.Domain.Entities
         private readonly HashSet<CuentaCobrarPagar> _cuentasCobrarPagar = new();
         private readonly HashSet<EstadoCuenta> _estadosCuenta = new();
         private readonly HashSet<Localidad> _localidades = new();
-        private readonly HashSet<Moneda> _monedas = new();
         private readonly HashSet<OperacionesEncabezado> _operacionesEncabezado = new();
         private readonly HashSet<Producto> _productos = new();
 
@@ -33,7 +32,6 @@ namespace GoldBusiness.Domain.Entities
         public IReadOnlyCollection<CuentaCobrarPagar> CuentasCobrarPagar => _cuentasCobrarPagar;
         public IReadOnlyCollection<EstadoCuenta> EstadosCuenta => _estadosCuenta;
         public IReadOnlyCollection<Localidad> Localidades => _localidades;
-        public IReadOnlyCollection<Moneda> Monedas => _monedas;
         public IReadOnlyCollection<OperacionesEncabezado> OperacionesEncabezado => _operacionesEncabezado;
         public IReadOnlyCollection<Producto> Productos => _productos;
 

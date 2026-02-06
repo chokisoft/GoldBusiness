@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GoldBusiness.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260206021032_InitialCreate")]
+    [Migration("20260206161620_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -1195,9 +1195,6 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<int>("EstablecimientoId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("FechaHoraCreado")
                         .HasColumnType("datetime");
 
@@ -1210,9 +1207,6 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("EstablecimientoId", "Codigo", "Cancelado")
-                        .IsUnique();
 
                     b.ToTable("Moneda");
                 });
@@ -3365,17 +3359,6 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.Navigation("EstablecimientoNavigation");
                 });
 
-            modelBuilder.Entity("GoldBusiness.Domain.Entities.Moneda", b =>
-                {
-                    b.HasOne("GoldBusiness.Domain.Entities.Establecimiento", "EstablecimientoNavigation")
-                        .WithMany()
-                        .HasForeignKey("EstablecimientoId")
-                        .IsRequired()
-                        .HasConstraintName("FK_Moneda_Establecimiento");
-
-                    b.Navigation("EstablecimientoNavigation");
-                });
-
             modelBuilder.Entity("GoldBusiness.Domain.Entities.OperacionesDetalle", b =>
                 {
                     b.HasOne("GoldBusiness.Domain.Entities.Localidad", "LocalidadNavigation")
@@ -3541,7 +3524,7 @@ namespace GoldBusiness.Infrastructure.Migrations
             modelBuilder.Entity("GoldBusiness.Domain.Entities.SubGrupoCuenta", b =>
                 {
                     b.HasOne("GoldBusiness.Domain.Entities.GrupoCuenta", "GrupoCuenta")
-                        .WithMany()
+                        .WithMany("SubGrupoCuenta")
                         .HasForeignKey("GrupoCuentaId")
                         .IsRequired()
                         .HasConstraintName("FK_SubGrupoCuenta_GrupoCuenta");
@@ -3687,7 +3670,7 @@ namespace GoldBusiness.Infrastructure.Migrations
             modelBuilder.Entity("GoldBusiness.Domain.Translation.MonedaTranslation", b =>
                 {
                     b.HasOne("GoldBusiness.Domain.Entities.Moneda", null)
-                        .WithMany()
+                        .WithMany("Translations")
                         .HasForeignKey("MonedaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -3868,6 +3851,8 @@ namespace GoldBusiness.Infrastructure.Migrations
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.GrupoCuenta", b =>
                 {
+                    b.Navigation("SubGrupoCuenta");
+
                     b.Navigation("Translations");
                 });
 
@@ -3889,6 +3874,11 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.Navigation("Saldos");
 
                     b.Navigation("SaldosAnteriores");
+                });
+
+            modelBuilder.Entity("GoldBusiness.Domain.Entities.Moneda", b =>
+                {
+                    b.Navigation("Translations");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.OperacionesDetalle", b =>
