@@ -1,9 +1,10 @@
 ﻿using GoldBusiness.Domain.Exceptions;
 using GoldBusiness.Domain.Translation;
+using GoldBusiness.Domain.Helpers;
 
 namespace GoldBusiness.Domain.Entities
 {
-    public class GrupoCuenta
+    public class GrupoCuenta : BaseEntity
     {
         private readonly HashSet<SubGrupoCuenta> _subGrupoCuenta = new();
         private readonly HashSet<GrupoCuentaTranslation> _translations = new();
@@ -12,10 +13,6 @@ namespace GoldBusiness.Domain.Entities
         public string Codigo { get; private set; } = string.Empty;
         public string Descripcion { get; private set; } = string.Empty;
         public bool Cancelado { get; private set; }
-        public string CreadoPor { get; private set; } = string.Empty;
-        public DateTime FechaHoraCreado { get; private set; }
-        public string ModificadoPor { get; private set; } = string.Empty;
-        public DateTime? FechaHoraModificado { get; private set; }
 
         // Colecciones de navegación (read-only)
         public IReadOnlyCollection<SubGrupoCuenta> SubGrupoCuenta => _subGrupoCuenta;
@@ -30,8 +27,7 @@ namespace GoldBusiness.Domain.Entities
             SetCodigo(codigo);
             SetDescripcion(descripcion);
 
-            CreadoPor = creadoPor ?? throw new ArgumentNullException(nameof(creadoPor));
-            FechaHoraCreado = DateTime.UtcNow;
+            EstablecerCreador(creadoPor);
             Cancelado = false;
         }
 
@@ -64,7 +60,7 @@ namespace GoldBusiness.Domain.Entities
 
         public void AddOrUpdateTranslation(string language, string descripcion, string usuario)
         {
-            var lang = NormalizeLang(language);
+            var lang = LanguageHelper.NormalizeLang(language);
             var existing = _translations.FirstOrDefault(t => string.Equals(t.Language, lang, StringComparison.OrdinalIgnoreCase));
             if (existing != null)
             {
@@ -78,8 +74,8 @@ namespace GoldBusiness.Domain.Entities
 
         public string GetDescripcion(string language, string fallback = "es")
         {
-            var lang = NormalizeLang(language);
-            var fb = NormalizeLang(fallback);
+            var lang = LanguageHelper.NormalizeLang(language);
+            var fb = LanguageHelper.NormalizeLang(fallback);
 
             var match = _translations.FirstOrDefault(t => string.Equals(t.Language, lang, StringComparison.OrdinalIgnoreCase));
             if (match != null && !string.IsNullOrWhiteSpace(match.Descripcion))
@@ -123,23 +119,6 @@ namespace GoldBusiness.Domain.Entities
 
             Cancelado = false;
             ActualizarAuditoria(modificadoPor);
-        }
-
-        // ═══════════════════════════════════════════════════════════════
-        // 🔧 MÉTODOS PRIVADOS
-        // ═══════════════════════════════════════════════════════════════
-
-        private void ActualizarAuditoria(string usuario)
-        {
-            ModificadoPor = usuario ?? throw new ArgumentNullException(nameof(usuario));
-            FechaHoraModificado = DateTime.UtcNow;
-        }
-
-        private static string NormalizeLang(string? lang)
-        {
-            if (string.IsNullOrWhiteSpace(lang)) return "es";
-            var parts = lang.Split('-', StringSplitOptions.RemoveEmptyEntries);
-            return parts[0].ToLowerInvariant();
         }
     }
 }

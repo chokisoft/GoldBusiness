@@ -1,9 +1,10 @@
 ﻿using GoldBusiness.Domain.Exceptions;
 using GoldBusiness.Domain.Translation;
+using GoldBusiness.Domain.Helpers;
 
 namespace GoldBusiness.Domain.Entities
 {
-    public class Comprobante
+    public class Comprobante : BaseEntity
     {
         private readonly HashSet<ComprobanteTranslation> _translations = new();
         private readonly HashSet<ComprobanteDetalle> _detalles = new();
@@ -16,10 +17,6 @@ namespace GoldBusiness.Domain.Entities
         public bool Automatico { get; private set; }
         public bool Posteado { get; private set; }
         public bool Cancelado { get; private set; }
-        public string CreadoPor { get; private set; } = string.Empty;
-        public DateTime FechaHoraCreado { get; private set; }
-        public string ModificadoPor { get; private set; } = string.Empty;
-        public DateTime? FechaHoraModificado { get; private set; }
 
         // Propiedades de navegación
         public Establecimiento EstablecimientoNavigation { get; private set; } = null!;
@@ -43,8 +40,7 @@ namespace GoldBusiness.Domain.Entities
             SetNoComprobante(noComprobante);
             SetFecha(fecha);
             Automatico = automatico;
-            CreadoPor = creadoPor ?? throw new ArgumentNullException(nameof(creadoPor));
-            FechaHoraCreado = DateTime.UtcNow;
+            EstablecerCreador(creadoPor);
             Posteado = false;
             Cancelado = false;
         }
@@ -69,6 +65,12 @@ namespace GoldBusiness.Domain.Entities
             if (fecha == default)
                 throw new DomainException("La fecha es obligatoria.");
 
+            if (fecha < new DateTime(2000, 1, 1))
+                throw new DomainException("La fecha no puede ser anterior al año 2000.");
+
+            if (fecha > DateTime.UtcNow.AddYears(1))
+                throw new DomainException("La fecha no puede ser más de 1 año en el futuro.");
+
             Fecha = fecha;
         }
 
@@ -86,7 +88,7 @@ namespace GoldBusiness.Domain.Entities
 
         public void AddOrUpdateTranslation(string language, string observaciones, string usuario)
         {
-            var lang = NormalizeLang(language);
+            var lang = LanguageHelper.NormalizeLang(language);
             var existing = _translations.FirstOrDefault(t => string.Equals(t.Language, lang, StringComparison.OrdinalIgnoreCase));
             if (existing != null)
             {
@@ -100,8 +102,8 @@ namespace GoldBusiness.Domain.Entities
 
         public string GetObservaciones(string language, string fallback = "es")
         {
-            var lang = NormalizeLang(language);
-            var fb = NormalizeLang(fallback);
+            var lang = LanguageHelper.NormalizeLang(language);
+            var fb = LanguageHelper.NormalizeLang(fallback);
 
             var match = _translations.FirstOrDefault(t => string.Equals(t.Language, lang, StringComparison.OrdinalIgnoreCase));
             if (match != null && !string.IsNullOrWhiteSpace(match.Observaciones))
@@ -185,23 +187,6 @@ namespace GoldBusiness.Domain.Entities
         public bool EstaBalanceado()
         {
             return Math.Abs(GetTotalDebito() - GetTotalCredito()) < 0.01m;
-        }
-
-        // ═══════════════════════════════════════════════════════════════
-        // 🔧 MÉTODOS PRIVADOS
-        // ═══════════════════════════════════════════════════════════════
-
-        private void ActualizarAuditoria(string usuario)
-        {
-            ModificadoPor = usuario ?? throw new ArgumentNullException(nameof(usuario));
-            FechaHoraModificado = DateTime.UtcNow;
-        }
-
-        private static string NormalizeLang(string? lang)
-        {
-            if (string.IsNullOrWhiteSpace(lang)) return "es";
-            var parts = lang.Split('-', StringSplitOptions.RemoveEmptyEntries);
-            return parts[0].ToLowerInvariant();
         }
     }
 }

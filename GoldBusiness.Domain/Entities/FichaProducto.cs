@@ -2,7 +2,7 @@
 
 namespace GoldBusiness.Domain.Entities
 {
-    public class FichaProducto
+    public class FichaProducto : BaseEntity
     {
         public int Id { get; private set; }
         public int ProductoId { get; private set; }
@@ -10,10 +10,6 @@ namespace GoldBusiness.Domain.Entities
         public int ComponenteId { get; private set; }
         public decimal Cantidad { get; private set; }
         public bool Cancelado { get; private set; }
-        public string CreadoPor { get; private set; } = string.Empty;
-        public DateTime FechaHoraCreado { get; private set; }
-        public string ModificadoPor { get; private set; } = string.Empty;
-        public DateTime? FechaHoraModificado { get; private set; }
 
         // Propiedades de navegación
         public Producto ProductoNavigation { get; private set; } = null!;
@@ -38,8 +34,7 @@ namespace GoldBusiness.Domain.Entities
             SetCantidad(cantidad);
             ValidarComponente(productoId, componenteId);
 
-            CreadoPor = creadoPor ?? throw new ArgumentNullException(nameof(creadoPor));
-            FechaHoraCreado = DateTime.UtcNow;
+            EstablecerCreador(creadoPor);
             Cancelado = false;
         }
 
@@ -97,16 +92,6 @@ namespace GoldBusiness.Domain.Entities
         public decimal CalcularCostoComponente(decimal costoUnitario)
         {
             return Cantidad * costoUnitario;
-        }
-
-        // ═══════════════════════════════════════════════════════════════
-        // 🔧 MÉTODOS PRIVADOS
-        // ═══════════════════════════════════════════════════════════════
-
-        private void ActualizarAuditoria(string usuario)
-        {
-            ModificadoPor = usuario ?? throw new ArgumentNullException(nameof(usuario));
-            FechaHoraModificado = DateTime.UtcNow;
         }
     }
 }

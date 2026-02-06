@@ -2,7 +2,7 @@
 
 namespace GoldBusiness.Domain.Entities
 {
-    public class EstadoCuenta
+    public class EstadoCuenta : BaseEntity
     {
         public int Id { get; private set; }
         public int EstablecimientoId { get; private set; }
@@ -12,8 +12,6 @@ namespace GoldBusiness.Domain.Entities
         public decimal Credito { get; private set; }
         public decimal Saldo { get; private set; }
         public string Referencia { get; private set; } = string.Empty;
-        public string CreadoPor { get; private set; } = string.Empty;
-        public DateTime FechaHoraCreado { get; private set; }
 
         // Propiedades de navegación
         public Establecimiento EstablecimientoNavigation { get; private set; } = null!;
@@ -40,8 +38,7 @@ namespace GoldBusiness.Domain.Entities
             SetCredito(credito);
             SetSaldo(saldo);
             SetReferencia(referencia);
-            CreadoPor = creadoPor ?? throw new ArgumentNullException(nameof(creadoPor));
-            FechaHoraCreado = DateTime.UtcNow;
+            EstablecerCreador(creadoPor);
         }
 
         // ═══════════════════════════════════════════════════════════════

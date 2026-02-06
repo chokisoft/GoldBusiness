@@ -3,17 +3,11 @@ using GoldBusiness.Domain.Exceptions;
 
 namespace GoldBusiness.Domain.Translation
 {
-    public class ComprobanteDetalleTranslation
+    public class ComprobanteDetalleTranslation : BaseTranslation
     {
         public int Id { get; private set; }
         public int ComprobanteDetalleId { get; private set; }
-        public string Language { get; private set; } = string.Empty;
         public string Nota { get; private set; } = string.Empty;
-
-        public string CreadoPor { get; private set; } = string.Empty;
-        public DateTime FechaHoraCreado { get; private set; }
-        public string ModificadoPor { get; private set; } = string.Empty;
-        public DateTime? FechaHoraModificado { get; private set; }
 
         public ComprobanteDetalle ComprobanteDetalle { get; private set; } = null!;
 
@@ -22,10 +16,9 @@ namespace GoldBusiness.Domain.Translation
         public ComprobanteDetalleTranslation(int comprobanteDetalleId, string language, string nota, string creadoPor)
         {
             ComprobanteDetalleId = comprobanteDetalleId;
-            Language = NormalizeLang(language);
+            EstablecerIdioma(language);
             SetNota(nota, creadoPor);
-            CreadoPor = creadoPor ?? throw new ArgumentNullException(nameof(creadoPor));
-            FechaHoraCreado = DateTime.UtcNow;
+            EstablecerCreador(creadoPor);
         }
 
         public void SetNota(string nota, string modificadoPor)
@@ -39,13 +32,6 @@ namespace GoldBusiness.Domain.Translation
             Nota = nota?.Trim() ?? string.Empty;
             ModificadoPor = modificadoPor;
             FechaHoraModificado = DateTime.UtcNow;
-        }
-
-        private static string NormalizeLang(string? lang)
-        {
-            if (string.IsNullOrWhiteSpace(lang)) return "es";
-            var parts = lang.Split('-', StringSplitOptions.RemoveEmptyEntries);
-            return parts[0].ToLowerInvariant();
         }
     }
 }

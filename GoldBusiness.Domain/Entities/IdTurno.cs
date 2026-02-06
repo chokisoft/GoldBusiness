@@ -2,7 +2,7 @@
 
 namespace GoldBusiness.Domain.Entities
 {
-    public class IdTurno
+    public class IdTurno : BaseEntity
     {
         private readonly HashSet<CajaRegistradora> _cajasRegistradoras = new();
 
@@ -13,10 +13,6 @@ namespace GoldBusiness.Domain.Entities
         public decimal? Fondo { get; private set; }
         public decimal? Extraccion { get; private set; }
         public DateTime? Cierre { get; private set; }
-        public string CreadoPor { get; private set; } = string.Empty;
-        public DateTime FechaHoraCreado { get; private set; }
-        public string ModificadoPor { get; private set; } = string.Empty;
-        public DateTime? FechaHoraModificado { get; private set; }
 
         // Colecciones de navegación (read-only)
         public IReadOnlyCollection<CajaRegistradora> CajasRegistradoras => _cajasRegistradoras;
@@ -31,8 +27,7 @@ namespace GoldBusiness.Domain.Entities
             SetCajero(cajero);
             SetInicio(inicio);
             SetFondo(fondo);
-            CreadoPor = creadoPor ?? throw new ArgumentNullException(nameof(creadoPor));
-            FechaHoraCreado = DateTime.UtcNow;
+            EstablecerCreador(creadoPor);
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -122,16 +117,6 @@ namespace GoldBusiness.Domain.Entities
         {
             var fin = Cierre ?? DateTime.UtcNow;
             return fin - Inicio;
-        }
-
-        // ═══════════════════════════════════════════════════════════════
-        // 🔧 MÉTODOS PRIVADOS
-        // ═══════════════════════════════════════════════════════════════
-
-        private void ActualizarAuditoria(string usuario)
-        {
-            ModificadoPor = usuario ?? throw new ArgumentNullException(nameof(usuario));
-            FechaHoraModificado = DateTime.UtcNow;
         }
     }
 }

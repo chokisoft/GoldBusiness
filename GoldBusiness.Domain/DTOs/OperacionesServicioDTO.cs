@@ -37,6 +37,17 @@ namespace GoldBusiness.Domain.DTOs
         [DisplayFormat(DataFormatString = "{0:C2}", ApplyFormatInEditMode = false)]
         public decimal ImporteCosto { get; set; }
 
+        [Display(Name = "Precio Venta")]
+        [DataType(DataType.Currency)]
+        [DisplayFormat(DataFormatString = "{0:C2}", ApplyFormatInEditMode = false)]
+        [Range(0, double.MaxValue, ErrorMessage = "El precio de venta debe ser mayor o igual a cero")]
+        public decimal Venta { get; set; }
+
+        [Display(Name = "Importe Venta")]
+        [DataType(DataType.Currency)]
+        [DisplayFormat(DataFormatString = "{0:C2}", ApplyFormatInEditMode = false)]
+        public decimal ImporteVenta { get; set; }
+
         public string CreadoPor { get; set; } = string.Empty;
         public DateTime FechaHoraCreado { get; set; }
         public string? ModificadoPor { get; set; }
@@ -48,5 +59,21 @@ namespace GoldBusiness.Domain.DTOs
         public string ProductoCodigo { get; set; } = string.Empty;
         public string ProductoDescripcion { get; set; } = string.Empty;
         public string UnidadMedida { get; set; } = string.Empty;
+
+        [Display(Name = "Margen Bruto")]
+        [DataType(DataType.Currency)]
+        [DisplayFormat(DataFormatString = "{0:C2}", ApplyFormatInEditMode = false)]
+        public decimal MargenBruto => ImporteVenta - ImporteCosto;
+
+        [Display(Name = "% Margen")]
+        [DisplayFormat(DataFormatString = "{0:N2}%", ApplyFormatInEditMode = false)]
+        public decimal PorcentajeMargen
+        {
+            get
+            {
+                if (ImporteCosto == 0 || Costo == 0) return 0;
+                return ((ImporteVenta - ImporteCosto) / ImporteCosto) * 100;
+            }
+        }
     }
 }

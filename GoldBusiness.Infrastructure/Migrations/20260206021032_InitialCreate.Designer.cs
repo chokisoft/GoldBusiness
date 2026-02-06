@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GoldBusiness.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260205201134_InitialCreate")]
+    [Migration("20260206021032_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -155,11 +155,18 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.Property<DateTime>("FechaHoraCreado")
                         .HasColumnType("datetime");
 
+                    b.Property<DateTime?>("FechaHoraModificado")
+                        .HasColumnType("datetime2");
+
                     b.Property<decimal>("ImporteVenta")
                         .HasColumnType("decimal(18, 2)");
 
                     b.Property<int>("LocalidadId")
                         .HasColumnType("int");
+
+                    b.Property<string>("ModificadoPor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ProductoId")
                         .HasColumnType("int");
@@ -462,8 +469,15 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.Property<DateTime>("FechaHoraCreado")
                         .HasColumnType("datetime");
 
+                    b.Property<DateTime?>("FechaHoraModificado")
+                        .HasColumnType("datetime2");
+
                     b.Property<bool>("Inventario")
                         .HasColumnType("bit");
+
+                    b.Property<string>("ModificadoPor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NoDocumento")
                         .IsRequired()
@@ -862,6 +876,13 @@ namespace GoldBusiness.Infrastructure.Migrations
 
                     b.Property<DateTime>("FechaHoraCreado")
                         .HasColumnType("datetime");
+
+                    b.Property<DateTime?>("FechaHoraModificado")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModificadoPor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Referencia")
                         .IsRequired()
@@ -1399,6 +1420,11 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .HasColumnType("decimal(18, 2)")
                         .HasDefaultValueSql("((0.00))");
 
+                    b.Property<decimal>("ImporteVenta")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("decimal(18, 2)")
+                        .HasDefaultValueSql("((0.00))");
+
                     b.Property<string>("ModificadoPor")
                         .IsRequired()
                         .HasMaxLength(256)
@@ -1409,6 +1435,11 @@ namespace GoldBusiness.Infrastructure.Migrations
 
                     b.Property<int>("ProductoId")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("Venta")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("decimal(18, 2)")
+                        .HasDefaultValueSql("((0.00))");
 
                     b.HasKey("Id");
 

@@ -2,7 +2,7 @@
 
 namespace GoldBusiness.Domain.Entities
 {
-    public class CajaRegistradoraDetalle
+    public class CajaRegistradoraDetalle : BaseEntity
     {
         public int Id { get; private set; }
         public int CajaRegistradoraId { get; private set; }
@@ -11,8 +11,6 @@ namespace GoldBusiness.Domain.Entities
         public decimal Cantidad { get; private set; }
         public decimal Venta { get; private set; }
         public decimal ImporteVenta { get; private set; }
-        public string CreadoPor { get; private set; } = string.Empty;
-        public DateTime FechaHoraCreado { get; private set; }
 
         // Propiedades de navegación
         public CajaRegistradora CajaRegistradoraNavigation { get; private set; } = null!;
@@ -36,8 +34,7 @@ namespace GoldBusiness.Domain.Entities
             ProductoId = productoId;
             SetCantidad(cantidad);
             SetVenta(venta);
-            CreadoPor = creadoPor ?? throw new ArgumentNullException(nameof(creadoPor));
-            FechaHoraCreado = DateTime.UtcNow;
+            EstablecerCreador(creadoPor);
 
             CalcularImporteVenta();
         }

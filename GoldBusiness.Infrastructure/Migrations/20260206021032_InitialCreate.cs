@@ -329,12 +329,12 @@ namespace GoldBusiness.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ClienteId = table.Column<int>(type: "int", nullable: false),
-                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
                     ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true)
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -354,12 +354,12 @@ namespace GoldBusiness.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     GrupoCuentaId = table.Column<int>(type: "int", nullable: false),
-                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
                     ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true)
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -429,12 +429,12 @@ namespace GoldBusiness.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     LineaId = table.Column<int>(type: "int", nullable: false),
-                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
                     ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true)
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -479,12 +479,12 @@ namespace GoldBusiness.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProveedorId = table.Column<int>(type: "int", nullable: false),
-                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
                     ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true)
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -504,12 +504,12 @@ namespace GoldBusiness.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TransaccionId = table.Column<int>(type: "int", nullable: false),
-                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
                     ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true)
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -529,12 +529,12 @@ namespace GoldBusiness.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UnidadMedidaId = table.Column<int>(type: "int", nullable: false),
-                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
                     ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true)
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -579,12 +579,12 @@ namespace GoldBusiness.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SubGrupoCuentaId = table.Column<int>(type: "int", nullable: false),
-                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
                     ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true)
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -604,12 +604,12 @@ namespace GoldBusiness.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SubLineaId = table.Column<int>(type: "int", nullable: false),
-                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
                     ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true)
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -655,12 +655,12 @@ namespace GoldBusiness.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CuentaId = table.Column<int>(type: "int", nullable: false),
-                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
                     ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true)
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -722,12 +722,12 @@ namespace GoldBusiness.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ConceptoAjusteId = table.Column<int>(type: "int", nullable: false),
-                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
                     ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true)
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -773,13 +773,13 @@ namespace GoldBusiness.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ConfiguracionId = table.Column<int>(type: "int", nullable: false),
-                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
                     NombreNegocio = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     Direccion = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
                     CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
                     ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true)
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -839,7 +839,9 @@ namespace GoldBusiness.Infrastructure.Migrations
                     Credito = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     Parcial = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false)
+                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
+                    ModificadoPor = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -946,12 +948,12 @@ namespace GoldBusiness.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     EstablecimientoId = table.Column<int>(type: "int", nullable: false),
-                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
                     ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true)
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -978,7 +980,9 @@ namespace GoldBusiness.Infrastructure.Migrations
                     Saldo = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Referencia = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false)
+                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
+                    ModificadoPor = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1227,12 +1231,12 @@ namespace GoldBusiness.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ComprobanteId = table.Column<int>(type: "int", nullable: false),
-                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
                     Observaciones = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: false),
                     CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
                     ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true)
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1252,12 +1256,12 @@ namespace GoldBusiness.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ComprobanteTemporalId = table.Column<int>(type: "int", nullable: false),
-                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
                     CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
                     ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true)
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1277,12 +1281,12 @@ namespace GoldBusiness.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     LocalidadId = table.Column<int>(type: "int", nullable: false),
-                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
                     ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true)
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1302,12 +1306,12 @@ namespace GoldBusiness.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     MonedaId = table.Column<int>(type: "int", nullable: false),
-                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
                     ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true)
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1327,13 +1331,13 @@ namespace GoldBusiness.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OperacionesEncabezadoId = table.Column<int>(type: "int", nullable: false),
-                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
                     Concepto = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
                     Observaciones = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: false),
                     CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
                     ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true)
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1359,7 +1363,9 @@ namespace GoldBusiness.Infrastructure.Migrations
                     Venta = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     ImporteVenta = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false)
+                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
+                    ModificadoPor = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1465,13 +1471,13 @@ namespace GoldBusiness.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProductoId = table.Column<int>(type: "int", nullable: false),
-                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     Caracteristicas = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: false),
                     CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
                     ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true)
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1553,12 +1559,12 @@ namespace GoldBusiness.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ComprobanteDetalleId = table.Column<int>(type: "int", nullable: false),
-                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
                     Nota = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
                     CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
                     ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true)
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1621,6 +1627,8 @@ namespace GoldBusiness.Infrastructure.Migrations
                     Cantidad = table.Column<decimal>(type: "decimal(18,3)", nullable: false, defaultValueSql: "((0.00))"),
                     Costo = table.Column<decimal>(type: "decimal(18,2)", nullable: false, defaultValueSql: "((0.00))"),
                     ImporteCosto = table.Column<decimal>(type: "decimal(18,2)", nullable: false, defaultValueSql: "((0.00))"),
+                    Venta = table.Column<decimal>(type: "decimal(18,2)", nullable: false, defaultValueSql: "((0.00))"),
+                    ImporteVenta = table.Column<decimal>(type: "decimal(18,2)", nullable: false, defaultValueSql: "((0.00))"),
                     Cancelado = table.Column<bool>(type: "bit", nullable: false),
                     CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),

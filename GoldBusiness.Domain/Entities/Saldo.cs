@@ -2,17 +2,13 @@
 
 namespace GoldBusiness.Domain.Entities
 {
-    public class Saldo
+    public class Saldo : BaseEntity
     {
         public int Id { get; private set; }
         public int LocalidadId { get; private set; }
         public int ProductoId { get; private set; }
         public decimal Existencia { get; private set; }
         public DateTime Fecha { get; private set; }
-        public string CreadoPor { get; private set; } = string.Empty;
-        public DateTime FechaHoraCreado { get; private set; }
-        public string ModificadoPor { get; private set; } = string.Empty;
-        public DateTime? FechaHoraModificado { get; private set; }
 
         // Propiedades de navegación
         public Localidad LocalidadNavigation { get; private set; } = null!;
@@ -35,8 +31,7 @@ namespace GoldBusiness.Domain.Entities
 
             SetExistencia(existencia);
 
-            CreadoPor = creadoPor ?? throw new ArgumentNullException(nameof(creadoPor));
-            FechaHoraCreado = DateTime.UtcNow;
+            EstablecerCreador(creadoPor);
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -110,16 +105,6 @@ namespace GoldBusiness.Domain.Entities
         public decimal GetExistencia()
         {
             return Existencia;
-        }
-
-        // ═══════════════════════════════════════════════════════════════
-        // 🔧 MÉTODOS PRIVADOS
-        // ═══════════════════════════════════════════════════════════════
-
-        private void ActualizarAuditoria(string usuario)
-        {
-            ModificadoPor = usuario ?? throw new ArgumentNullException(nameof(usuario));
-            FechaHoraModificado = DateTime.UtcNow;
         }
     }
 }

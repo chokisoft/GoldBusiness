@@ -14,6 +14,8 @@ namespace GoldBusiness.Infrastructure.Settings.Operations
             builder.Property(e => e.Cantidad).HasColumnType("decimal(18, 3)").HasDefaultValueSql("((0.00))");
             builder.Property(e => e.Costo).HasColumnType("decimal(18, 2)").HasDefaultValueSql("((0.00))");
             builder.Property(e => e.ImporteCosto).HasColumnType("decimal(18, 2)").HasDefaultValueSql("((0.00))");
+            builder.Property(e => e.Venta).HasColumnType("decimal(18, 2)").HasDefaultValueSql("((0.00))");
+            builder.Property(e => e.ImporteVenta).HasColumnType("decimal(18, 2)").HasDefaultValueSql("((0.00))");
             builder.Property(e => e.CreadoPor).IsRequired().HasMaxLength(256);
             builder.Property(e => e.ModificadoPor).IsRequired().HasMaxLength(256);
             builder.Property(e => e.FechaHoraCreado).HasColumnType("datetime");

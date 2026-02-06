@@ -3,18 +3,12 @@ using GoldBusiness.Domain.Exceptions;
 
 namespace GoldBusiness.Domain.Translation
 {
-    public class ProductoTranslation
+    public class ProductoTranslation : BaseTranslation
     {
         public int Id { get; private set; }
         public int ProductoId { get; private set; }
-        public string Language { get; private set; } = string.Empty;
         public string Descripcion { get; private set; } = string.Empty;
         public string Caracteristicas { get; private set; } = string.Empty;
-
-        public string CreadoPor { get; private set; } = string.Empty;
-        public DateTime FechaHoraCreado { get; private set; }
-        public string ModificadoPor { get; private set; } = string.Empty;
-        public DateTime? FechaHoraModificado { get; private set; }
 
         public Producto Producto { get; private set; } = null!;
 
@@ -23,11 +17,10 @@ namespace GoldBusiness.Domain.Translation
         public ProductoTranslation(int productoId, string language, string descripcion, string caracteristicas, string creadoPor)
         {
             ProductoId = productoId;
-            Language = NormalizeLang(language);
+            EstablecerIdioma(language);
             SetDescripcion(descripcion, creadoPor);
             SetCaracteristicas(caracteristicas, creadoPor);
-            CreadoPor = creadoPor ?? throw new ArgumentNullException(nameof(creadoPor));
-            FechaHoraCreado = DateTime.UtcNow;
+            EstablecerCreador(creadoPor);
         }
 
         public void SetDescripcion(string descripcion, string modificadoPor)
@@ -57,13 +50,6 @@ namespace GoldBusiness.Domain.Translation
             Caracteristicas = caracteristicas?.Trim() ?? string.Empty;
             ModificadoPor = modificadoPor;
             FechaHoraModificado = DateTime.UtcNow;
-        }
-
-        private static string NormalizeLang(string? lang)
-        {
-            if (string.IsNullOrWhiteSpace(lang)) return "es";
-            var parts = lang.Split('-', StringSplitOptions.RemoveEmptyEntries);
-            return parts[0].ToLowerInvariant();
         }
     }
 }

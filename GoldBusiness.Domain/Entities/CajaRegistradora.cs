@@ -2,7 +2,7 @@
 
 namespace GoldBusiness.Domain.Entities
 {
-    public class CajaRegistradora
+    public class CajaRegistradora : BaseEntity
     {
         private readonly HashSet<CajaRegistradoraDetalle> _detalles = new();
 
@@ -10,10 +10,6 @@ namespace GoldBusiness.Domain.Entities
         public int IdTurnoId { get; private set; }
         public int? Mesa { get; private set; }
         public bool Cerrado { get; private set; }
-        public string CreadoPor { get; private set; } = string.Empty;
-        public DateTime FechaHoraCreado { get; private set; }
-        public string ModificadoPor { get; private set; } = string.Empty;
-        public DateTime? FechaHoraModificado { get; private set; }
 
         // Propiedades de navegación
         public IdTurno IdTurnoNavigation { get; private set; } = null!;
@@ -29,8 +25,7 @@ namespace GoldBusiness.Domain.Entities
         {
             IdTurnoId = idTurnoId;
             SetMesa(mesa);
-            CreadoPor = creadoPor ?? throw new ArgumentNullException(nameof(creadoPor));
-            FechaHoraCreado = DateTime.UtcNow;
+            EstablecerCreador(creadoPor);
             Cerrado = false;
         }
 
@@ -83,16 +78,6 @@ namespace GoldBusiness.Domain.Entities
         public int GetCantidadArticulos()
         {
             return _detalles.Count;
-        }
-
-        // ═══════════════════════════════════════════════════════════════
-        // 🔧 MÉTODOS PRIVADOS
-        // ═══════════════════════════════════════════════════════════════
-
-        private void ActualizarAuditoria(string usuario)
-        {
-            ModificadoPor = usuario ?? throw new ArgumentNullException(nameof(usuario));
-            FechaHoraModificado = DateTime.UtcNow;
         }
     }
 }

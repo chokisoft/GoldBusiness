@@ -2,7 +2,7 @@
 
 namespace GoldBusiness.Domain.Entities
 {
-    public class OperacionesDetalle
+    public class OperacionesDetalle : BaseEntity
     {
         private readonly HashSet<ErroresVenta> _erroresVenta = new();
         private readonly HashSet<OperacionesServicio> _operacionesServicio = new();
@@ -18,10 +18,6 @@ namespace GoldBusiness.Domain.Entities
         public decimal ImporteVenta { get; private set; }
         public decimal Existencia { get; private set; }
         public bool Cancelado { get; private set; }
-        public string CreadoPor { get; private set; } = string.Empty;
-        public DateTime FechaHoraCreado { get; private set; }
-        public string ModificadoPor { get; private set; } = string.Empty;
-        public DateTime? FechaHoraModificado { get; private set; }
 
         // Propiedades de navegación
         public Producto ProductoNavigation { get; private set; } = null!;
@@ -55,8 +51,7 @@ namespace GoldBusiness.Domain.Entities
             SetCosto(costo);
             SetVenta(venta);
 
-            CreadoPor = creadoPor ?? throw new ArgumentNullException(nameof(creadoPor));
-            FechaHoraCreado = DateTime.UtcNow;
+            EstablecerCreador(creadoPor);
             Cancelado = false;
 
             CalcularImportes();
@@ -135,13 +130,125 @@ namespace GoldBusiness.Domain.Entities
         }
 
         // ═══════════════════════════════════════════════════════════════
+        // 🔧 GESTIÓN DE COLECCIONES - ERRORES DE VENTA
+        // ═══════════════════════════════════════════════════════════════
+
+        public void AgregarErrorVenta(ErroresVenta error)
+        {
+            if (error == null)
+                throw new ArgumentNullException(nameof(error));
+
+            if (Cancelado)
+                throw new DomainException("No se pueden agregar errores a un detalle cancelado.");
+
+            if (error.OperacionesDetalleId != 0 && error.OperacionesDetalleId != Id)
+                throw new DomainException("El error de venta pertenece a otro detalle de operación.");
+
+            if (_erroresVenta.Any(e => e.Id == error.Id && error.Id != 0))
+                throw new DomainException("El error de venta ya existe en la colección.");
+
+            _erroresVenta.Add(error);
+        }
+
+        public void RemoverErrorVenta(ErroresVenta error)
+        {
+            if (error == null)
+                throw new ArgumentNullException(nameof(error));
+
+            if (!_erroresVenta.Contains(error))
+                throw new DomainException("El error de venta no existe en la colección.");
+
+            _erroresVenta.Remove(error);
+        }
+
+        public void LimpiarErroresVenta()
+        {
+            if (Cancelado)
+                throw new DomainException("No se pueden limpiar errores de un detalle cancelado.");
+
+            _erroresVenta.Clear();
+        }
+
+        public bool TieneErroresVenta()
+        {
+            return _erroresVenta.Count > 0;
+        }
+
+        public ErroresVenta? BuscarErrorVentaPorId(int errorId)
+        {
+            return _erroresVenta.FirstOrDefault(e => e.Id == errorId);
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 🔧 GESTIÓN DE COLECCIONES - SERVICIOS
+        // ═══════════════════════════════════════════════════════════════
+
+        public void AgregarServicio(OperacionesServicio servicio)
+        {
+            if (servicio == null)
+                throw new ArgumentNullException(nameof(servicio));
+
+            if (Cancelado)
+                throw new DomainException("No se pueden agregar servicios a un detalle cancelado.");
+
+            if (servicio.OperacionesDetalleId != 0 && servicio.OperacionesDetalleId != Id)
+                throw new DomainException("El servicio pertenece a otro detalle de operación.");
+
+            if (_operacionesServicio.Any(s => s.Id == servicio.Id && servicio.Id != 0))
+                throw new DomainException("El servicio ya existe en la colección.");
+
+            _operacionesServicio.Add(servicio);
+        }
+
+        public void RemoverServicio(OperacionesServicio servicio)
+        {
+            if (servicio == null)
+                throw new ArgumentNullException(nameof(servicio));
+
+            if (!_operacionesServicio.Contains(servicio))
+                throw new DomainException("El servicio no existe en la colección.");
+
+            _operacionesServicio.Remove(servicio);
+        }
+
+        public void LimpiarServicios()
+        {
+            if (Cancelado)
+                throw new DomainException("No se pueden limpiar servicios de un detalle cancelado.");
+
+            _operacionesServicio.Clear();
+        }
+
+        public bool TieneServicios()
+        {
+            return _operacionesServicio.Count > 0;
+        }
+
+        public OperacionesServicio? BuscarServicioPorId(int servicioId)
+        {
+            return _operacionesServicio.FirstOrDefault(s => s.Id == servicioId);
+        }
+
+        public decimal GetTotalServicios()
+        {
+            return _operacionesServicio.Sum(s => s.ImporteVenta);
+        }
+
+        // ═══════════════════════════════════════════════════════════════
         // 📊 MÉTODOS DE CÁLCULO
         // ═══════════════════════════════════════════════════════════════
 
         private void CalcularImportes()
         {
-            ImporteCosto = Cantidad * Costo;
-            ImporteVenta = Cantidad * Venta;
+            try
+            {
+                ImporteCosto = checked(Cantidad * Costo);
+                ImporteVenta = checked(Cantidad * Venta);
+            }
+            catch (OverflowException)
+            {
+                throw new DomainException("El cálculo excede el límite permitido.");
+            }
         }
 
         public decimal GetMargenBruto()
@@ -151,7 +258,7 @@ namespace GoldBusiness.Domain.Entities
 
         public decimal GetPorcentajeMargen()
         {
-            if (ImporteCosto == 0) return 0;
+            if (ImporteCosto == 0 || Costo == 0) return 0;
             return ((ImporteVenta - ImporteCosto) / ImporteCosto) * 100;
         }
 
@@ -163,16 +270,6 @@ namespace GoldBusiness.Domain.Entities
         public bool EsDevolucion()
         {
             return Cantidad < 0;
-        }
-
-        // ═══════════════════════════════════════════════════════════════
-        // 🔧 MÉTODOS PRIVADOS
-        // ═══════════════════════════════════════════════════════════════
-
-        private void ActualizarAuditoria(string usuario)
-        {
-            ModificadoPor = usuario ?? throw new ArgumentNullException(nameof(usuario));
-            FechaHoraModificado = DateTime.UtcNow;
         }
     }
 }
