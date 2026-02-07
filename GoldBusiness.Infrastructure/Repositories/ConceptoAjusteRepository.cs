@@ -28,6 +28,33 @@ namespace GoldBusiness.Infrastructure.Repositories
                     .ThenInclude(s => s.Translations)
                 .FirstOrDefaultAsync(g => g.Id == id);
 
+        public async Task<ConceptoAjuste?> GetByCodigoAsync(string codigo, bool includeCanceled = false)
+        {
+            var query = _context.ConceptoAjuste
+                .Include(g => g.Translations)
+                .Include(g => g.Cuenta)
+                    .ThenInclude(s => s.Translations)
+                .Where(g => g.Codigo == codigo);
+
+            if (!includeCanceled)
+                query = query.Where(g => !g.Cancelado);
+
+            return await query.FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> ExistsByCodigoAsync(string codigo, int? excludeId = null, bool onlyActive = true)
+        {
+            var query = _context.ConceptoAjuste.Where(g => g.Codigo == codigo);
+
+            if (onlyActive)
+                query = query.Where(g => !g.Cancelado);
+
+            if (excludeId.HasValue)
+                query = query.Where(g => g.Id != excludeId.Value);
+
+            return await query.AnyAsync();
+        }
+
         public async Task AddAsync(ConceptoAjuste entity)
         {
             _context.ConceptoAjuste.Add(entity);

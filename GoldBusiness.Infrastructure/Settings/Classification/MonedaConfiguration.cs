@@ -9,6 +9,7 @@ namespace GoldBusiness.Infrastructure.Settings.Classification
         public void Configure(EntityTypeBuilder<Moneda> builder)
         {
             builder.HasKey(e => e.Id);
+            builder.HasIndex(e => new { e.Codigo, e.Cancelado }).HasDatabaseName("IX_Moneda").IsUnique();
             builder.Property(e => e.Codigo).IsRequired().HasMaxLength(3);
             builder.Property(e => e.Descripcion).IsRequired().HasMaxLength(256);
             builder.Property(e => e.CreadoPor).IsRequired().HasMaxLength(256);

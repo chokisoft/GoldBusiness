@@ -9,6 +9,7 @@ namespace GoldBusiness.Infrastructure.Settings.Operations
         public void Configure(EntityTypeBuilder<ConceptoAjuste> builder)
         {
             builder.HasKey(e => e.Id);
+            builder.HasIndex(e => new { e.Codigo, e.Cancelado }).HasDatabaseName("IX_ConceptoAjuste").IsUnique();
             builder.Property(e => e.Codigo).IsRequired().HasMaxLength(10);
             builder.Property(e => e.Descripcion).IsRequired().HasMaxLength(256);
             builder.Property(e => e.CreadoPor).IsRequired().HasMaxLength(256);

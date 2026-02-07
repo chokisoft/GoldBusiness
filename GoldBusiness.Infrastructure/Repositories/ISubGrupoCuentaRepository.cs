@@ -2,7 +2,7 @@ using GoldBusiness.Domain.Entities;
 
 namespace GoldBusiness.Infrastructure.Repositories
 {
-    public interface ISubGrupoCuentaRepository
+    public interface ISubGrupoCuentaRepository : IBaseRepositoryWithCode<SubGrupoCuenta>
     {
         Task<IEnumerable<SubGrupoCuenta>> GetAllAsync();
         Task<SubGrupoCuenta?> GetByIdAsync(int id);

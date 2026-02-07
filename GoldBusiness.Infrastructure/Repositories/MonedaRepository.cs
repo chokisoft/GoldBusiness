@@ -24,6 +24,31 @@ namespace GoldBusiness.Infrastructure.Repositories
                 .Include(g => g.Translations)
                 .FirstOrDefaultAsync(g => g.Id == id);
 
+        public async Task<Moneda?> GetByCodigoAsync(string codigo, bool includeCanceled = false)
+        {
+            var query = _context.Moneda
+                .Include(g => g.Translations)
+                .Where(g => g.Codigo == codigo);
+
+            if (!includeCanceled)
+                query = query.Where(g => !g.Cancelado);
+
+            return await query.FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> ExistsByCodigoAsync(string codigo, int? excludeId = null, bool onlyActive = true)
+        {
+            var query = _context.Moneda.Where(g => g.Codigo == codigo);
+
+            if (onlyActive)
+                query = query.Where(g => !g.Cancelado);
+
+            if (excludeId.HasValue)
+                query = query.Where(g => g.Id != excludeId.Value);
+
+            return await query.AnyAsync();
+        }
+
         public async Task AddAsync(Moneda entity)
         {
             _context.Moneda.Add(entity);

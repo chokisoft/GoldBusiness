@@ -1754,6 +1754,12 @@ namespace GoldBusiness.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_ConceptoAjuste",
+                table: "ConceptoAjuste",
+                columns: new[] { "Codigo", "Cancelado" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ConceptoAjuste_CuentaId",
                 table: "ConceptoAjuste",
                 column: "CuentaId");
@@ -1771,7 +1777,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cuenta_SubGrupo",
+                name: "IX_Cuenta_SubGrupoCuentaId",
                 table: "Cuenta",
                 column: "SubGrupoCuentaId");
 
@@ -1876,7 +1882,7 @@ namespace GoldBusiness.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_GrupoCuenta",
                 table: "GrupoCuenta",
-                columns: new[] { "Descripcion", "Cancelado" },
+                columns: new[] { "Codigo", "Cancelado" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -1927,6 +1933,12 @@ namespace GoldBusiness.Infrastructure.Migrations
                 name: "IX_LocalidadTranslation_LocalidadId_Language",
                 table: "LocalidadTranslation",
                 columns: new[] { "LocalidadId", "Language" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Moneda",
+                table: "Moneda",
+                columns: new[] { "Codigo", "Cancelado" },
                 unique: true);
 
             migrationBuilder.CreateIndex(

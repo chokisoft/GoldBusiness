@@ -2,7 +2,7 @@
 
 namespace GoldBusiness.Infrastructure.Repositories
 {
-    public interface ICuentaRepository
+    public interface ICuentaRepository : IBaseRepositoryWithCode<Cuenta>
     {
         Task<IEnumerable<Cuenta>> GetAllAsync();
         Task<Cuenta?> GetByIdAsync(int id);

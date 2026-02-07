@@ -2,7 +2,7 @@
 
 namespace GoldBusiness.Infrastructure.Repositories
 {
-    public interface IMonedaRepository
+    public interface IMonedaRepository : IBaseRepositoryWithCode<Moneda>
     {
         Task<IEnumerable<Moneda>> GetAllAsync();
         Task<Moneda?> GetByIdAsync(int id);

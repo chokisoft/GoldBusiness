@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GoldBusiness.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260206161620_InitialCreate")]
+    [Migration("20260207000632_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -543,6 +543,10 @@ namespace GoldBusiness.Infrastructure.Migrations
 
                     b.HasIndex("CuentaId");
 
+                    b.HasIndex("Codigo", "Cancelado")
+                        .IsUnique()
+                        .HasDatabaseName("IX_ConceptoAjuste");
+
                     b.ToTable("ConceptoAjuste");
                 });
 
@@ -588,8 +592,7 @@ namespace GoldBusiness.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SubGrupoCuentaId")
-                        .HasDatabaseName("IX_Cuenta_SubGrupo");
+                    b.HasIndex("SubGrupoCuentaId");
 
                     b.HasIndex("Codigo", "SubGrupoCuentaId", "Cancelado")
                         .IsUnique()
@@ -990,7 +993,7 @@ namespace GoldBusiness.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Descripcion", "Cancelado")
+                    b.HasIndex("Codigo", "Cancelado")
                         .IsUnique()
                         .HasDatabaseName("IX_GrupoCuenta");
 
@@ -1207,6 +1210,10 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Codigo", "Cancelado")
+                        .IsUnique()
+                        .HasDatabaseName("IX_Moneda");
 
                     b.ToTable("Moneda");
                 });
@@ -3138,14 +3145,14 @@ namespace GoldBusiness.Infrastructure.Migrations
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.ConceptoAjuste", b =>
                 {
-                    b.HasOne("GoldBusiness.Domain.Entities.Cuenta", "CuentaNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Cuenta", "Cuenta")
                         .WithMany()
                         .HasForeignKey("CuentaId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("FK_ConceptoAjuste_Cuenta");
 
-                    b.Navigation("CuentaNavigation");
+                    b.Navigation("Cuenta");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Cuenta", b =>
@@ -3607,7 +3614,7 @@ namespace GoldBusiness.Infrastructure.Migrations
             modelBuilder.Entity("GoldBusiness.Domain.Translation.ConceptoAjusteTranslation", b =>
                 {
                     b.HasOne("GoldBusiness.Domain.Entities.ConceptoAjuste", null)
-                        .WithMany()
+                        .WithMany("Translations")
                         .HasForeignKey("ConceptoAjusteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -3823,6 +3830,8 @@ namespace GoldBusiness.Infrastructure.Migrations
             modelBuilder.Entity("GoldBusiness.Domain.Entities.ConceptoAjuste", b =>
                 {
                     b.Navigation("OperacionesEncabezado");
+
+                    b.Navigation("Translations");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Cuenta", b =>

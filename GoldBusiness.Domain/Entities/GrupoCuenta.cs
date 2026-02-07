@@ -112,10 +112,12 @@ namespace GoldBusiness.Domain.Entities
             ActualizarAuditoria(modificadoPor);
         }
 
-        public void Reactivar(string modificadoPor)
+        public void Reactivar(string? descripcion, string modificadoPor)
         {
-            if (!Cancelado)
-                throw new DomainException("El grupo de cuenta no está cancelado.");
+            if (!string.IsNullOrWhiteSpace(descripcion))
+            {
+                SetDescripcion(descripcion);
+            }
 
             Cancelado = false;
             ActualizarAuditoria(modificadoPor);

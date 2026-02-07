@@ -9,7 +9,7 @@ namespace GoldBusiness.Infrastructure.Settings.AccountPlan
         public void Configure(EntityTypeBuilder<GrupoCuenta> builder)
         {
             builder.HasKey(e => e.Id);
-            builder.HasIndex(e => new { e.Descripcion, e.Cancelado }).HasDatabaseName("IX_GrupoCuenta").IsUnique();
+            builder.HasIndex(e => new { e.Codigo, e.Cancelado }).HasDatabaseName("IX_GrupoCuenta").IsUnique();
             builder.Property(e => e.Codigo).IsRequired().HasMaxLength(2);
             builder.Property(e => e.Descripcion).IsRequired().HasMaxLength(256);
             builder.Property(e => e.CreadoPor).IsRequired().HasMaxLength(256);

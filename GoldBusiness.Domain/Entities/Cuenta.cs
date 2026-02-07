@@ -119,10 +119,12 @@ namespace GoldBusiness.Domain.Entities
             ActualizarAuditoria(modificadoPor); // ✅ Usa método privado
         }
 
-        public void Reactivar(string modificadoPor) // ✅ Método nuevo
+        public void Reactivar(string? descripcion, string modificadoPor)
         {
-            if (!Cancelado)
-                throw new DomainException("La cuenta no está cancelada.");
+            if (!string.IsNullOrWhiteSpace(descripcion))
+            {
+                SetDescripcion(descripcion);
+            }
 
             Cancelado = false;
             ActualizarAuditoria(modificadoPor);

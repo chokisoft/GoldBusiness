@@ -1,17 +1,22 @@
+using GoldBusiness.Application.Helpers;
 using GoldBusiness.Application.Interfaces;
 using GoldBusiness.Domain.DTOs;
 using GoldBusiness.Domain.Entities;
 using GoldBusiness.Infrastructure.Repositories;
+using Microsoft.Extensions.Localization;
 
 namespace GoldBusiness.Application.Services
 {
     public class ConceptoAjusteService : IConceptoAjusteService
     {
         private readonly IConceptoAjusteRepository _repo;
+        private readonly IStringLocalizer<GoldBusiness.Domain.Resources.ValidationMessages> _localizer;
 
-        public ConceptoAjusteService(IConceptoAjusteRepository repo)
+        public ConceptoAjusteService(IConceptoAjusteRepository repo,
+            IStringLocalizer<GoldBusiness.Domain.Resources.ValidationMessages> localizer)
         {
             _repo = repo;
+            _localizer = localizer;
         }
 
         public async Task<IEnumerable<ConceptoAjusteDTO>> GetAllAsync(string lang = "es")
@@ -27,6 +32,32 @@ namespace GoldBusiness.Application.Services
         public async Task<ConceptoAjusteDTO> CreateAsync(ConceptoAjusteDTO dto, string user, string lang = "es")
         {
             var creador = user ?? "system";
+
+            // Usar el helper genérico
+            var (existe, estaCancelado, existingEntity) = await CodigoValidationHelper
+                .ValidateCodigoForCreateAsync(_repo, dto.Codigo);
+
+            if (existe)
+            {
+                if (estaCancelado && existingEntity != null)
+                {
+                    // Reactivar el registro existente
+                    existingEntity.Reactivar(dto.Descripcion, creador);
+                    existingEntity.AddOrUpdateTranslation(lang, dto.Descripcion, creador);
+                    await _repo.UpdateAsync(existingEntity);
+
+                    return MapToDTO(existingEntity, lang)!;
+                }
+                else
+                {
+                    // Lanzar error con mensaje genérico
+                    var errorMessage = CodigoValidationHelper.GetDuplicateCodeErrorMessage(
+                        _localizer, dto.Codigo, false);
+                    throw new InvalidOperationException(errorMessage);
+                }
+            }
+
+            // No existe, crear nuevo registro
             var entity = new ConceptoAjuste(dto.Codigo, dto.Descripcion, dto.CuentaId, creador);
 
             await _repo.AddAsync(entity);
@@ -41,6 +72,32 @@ namespace GoldBusiness.Application.Services
         {
             var entity = await _repo.GetByIdAsync(id);
             if (entity == null) throw new KeyNotFoundException();
+
+            // Si el código cambió, validar
+            if (entity.Codigo != dto.Codigo)
+            {
+                // Verificar si existe otro registro con el nuevo código (incluyendo cancelados)
+                var existingWithNewCode = await _repo.GetByCodigoAsync(dto.Codigo, includeCanceled: true);
+
+                if (existingWithNewCode != null && existingWithNewCode.Id != id)
+                {
+                    if (existingWithNewCode.Cancelado)
+                    {
+                        // Existe pero está cancelado - no permitir el cambio
+                        var errorMessage = $"Ya existe un registro cancelado con el código '{dto.Codigo}'. " +
+                                         $"Considere reactivar el registro existente (ID: {existingWithNewCode.Id}).";
+                        throw new InvalidOperationException(errorMessage);
+                    }
+                    else
+                    {
+                        // Existe y está activo
+                        var errorMessage = string.Format(_localizer["CodigoDuplicado"].Value, dto.Codigo);
+                        throw new InvalidOperationException(errorMessage);
+                    }
+                }
+
+                entity.SetCodigo(dto.Codigo);
+            }
 
             entity.Update(dto.Descripcion, dto.CuentaId, user);
 
@@ -82,6 +139,7 @@ namespace GoldBusiness.Application.Services
                 Id = g.Id,
                 Codigo = g.Codigo,
                 Descripcion = g.GetDescripcion(lang),
+                CuentaId = g.Cuenta?.Id ?? 0,
                 CuentaCodigo = g.Cuenta?.Codigo ?? string.Empty,
                 CuentaDescripcion = g.Cuenta?.GetDescripcion(lang) ?? string.Empty,
                 Cancelado = g.Cancelado,

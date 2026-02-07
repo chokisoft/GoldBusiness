@@ -2,7 +2,7 @@
 
 namespace GoldBusiness.Infrastructure.Repositories
 {
-    public interface IConceptoAjusteRepository
+    public interface IConceptoAjusteRepository : IBaseRepositoryWithCode<ConceptoAjuste>
     {
         Task<IEnumerable<ConceptoAjuste>> GetAllAsync();
         Task<ConceptoAjuste?> GetByIdAsync(int id);

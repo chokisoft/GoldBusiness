@@ -211,4 +211,13 @@
 	<data name="Field_Productos" xml:space="preserve">
   <value>Produits</value>
 </data>
+<data name="CodigoDuplicado" xml:space="preserve">
+	<value>Un enregistrement actif avec le code '{0}' existe déjà</value>
+</data>
+<data name="RegistroReactivado" xml:space="preserve">
+	<value>L'enregistrement existant avec le code '{0}' a été réactivé</value>
+</data>
+<data name="RegistroCanceladoExistente" xml:space="preserve">
+	<value>Un enregistrement annulé avec le code '{0}' existe déjà. Envisagez de réactiver l'enregistrement existant (ID: {1})</value>
+</data>
 </root>

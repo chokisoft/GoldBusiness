@@ -2,7 +2,7 @@
 
 namespace GoldBusiness.Infrastructure.Repositories
 {
-    public interface ILineaRepository
+    public interface ILineaRepository : IBaseRepositoryWithCode<Linea>
     {
         Task<IEnumerable<Linea>> GetAllAsync();
         Task<Linea?> GetByIdAsync(int id);

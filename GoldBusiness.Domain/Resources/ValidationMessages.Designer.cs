@@ -88,6 +88,15 @@ namespace GoldBusiness.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ya existe un registro activo con el código &apos;{0}&apos;.
+        /// </summary>
+        public static string CodigoDuplicado {
+            get {
+                return ResourceManager.GetString("CodigoDuplicado", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to El código debe contener solo números (00-99).
         /// </summary>
         public static string CodigoFormato {
@@ -390,6 +399,24 @@ namespace GoldBusiness.Domain.Resources {
         public static string ProvidedLanguage {
             get {
                 return ResourceManager.GetString("ProvidedLanguage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ya existe un registro cancelado con el código &apos;{0}&apos;. Considere reactivar el registro existente (ID: {1}).
+        /// </summary>
+        public static string RegistroCanceladoExistente {
+            get {
+                return ResourceManager.GetString("RegistroCanceladoExistente", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Se reactivó el registro existente con el código &apos;{0}&apos;.
+        /// </summary>
+        public static string RegistroReactivado {
+            get {
+                return ResourceManager.GetString("RegistroReactivado", resourceCulture);
             }
         }
         

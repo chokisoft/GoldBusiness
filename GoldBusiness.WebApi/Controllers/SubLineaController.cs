@@ -14,17 +14,15 @@ namespace GoldBusiness.WebApi.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize(Policy = "ERPFullAccess")]
-    public class SubLineaController : ControllerBase
+    public class SubLineaController : BaseEntityController
     {
         private readonly ISubLineaService _service;
-        private readonly IStringLocalizer<GoldBusiness.Domain.Resources.ValidationMessages> _localizer;
 
         public SubLineaController(
             ISubLineaService service,
-            IStringLocalizer<GoldBusiness.Domain.Resources.ValidationMessages> localizer)
+            IStringLocalizer<GoldBusiness.Domain.Resources.ValidationMessages> localizer) : base(localizer)
         {
             _service = service;
-            _localizer = localizer;
         }
 
         /// <summary>
@@ -62,10 +60,24 @@ namespace GoldBusiness.WebApi.Controllers
         [HttpPost]
         public async Task<ActionResult<SubLineaDTO>> Post([FromBody] SubLineaDTO dto)
         {
-            var lang = GetCurrentLanguage();
-            var usuario = User?.Identity?.Name ?? "system";
-            var result = await _service.CreateAsync(dto, usuario, lang);
-            return CreatedAtAction(nameof(Get), new { id = result.Id }, result);
+            try
+            {
+                var lang = GetCurrentLanguage();
+                var usuario = GetCurrentUser();
+                var result = await _service.CreateAsync(dto, usuario, lang);
+
+                // Detectar si fue reactivado
+                if (WasReactivated(result.FechaHoraCreado, result.FechaHoraModificado))
+                {
+                    return CreateReactivatedResponse(result, result.Codigo);
+                }
+
+                return CreatedAtAction(nameof(Get), new { id = result.Id }, result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return HandleDuplicateCodeError(nameof(dto.Codigo), ex.Message);
+            }
         }
 
         /// <summary>
