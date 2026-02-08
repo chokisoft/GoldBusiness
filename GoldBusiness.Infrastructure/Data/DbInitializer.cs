@@ -1,10 +1,8 @@
 ﻿using GoldBusiness.Domain.Entities;
 using GoldBusiness.Domain.Translation;
 using GoldBusiness.Infrastructure.Context;
-using Microsoft.Extensions.Logging;
-using System.Drawing;
-using System.Security.Cryptography;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using Microsoft.EntityFrameworkCore;
+using System.IO;
 
 namespace GoldBusiness.Infrastructure.Data
 {
@@ -18,31 +16,33 @@ namespace GoldBusiness.Infrastructure.Data
             {
                 logger.LogInformation("Iniciando seed de datos maestros...");
 
-                // Asegurar que la base de datos existe
-                await context.Database.EnsureCreatedAsync();
+                // ✅ Verificar si ya hay datos completos
+                if (context.SystemConfiguration.Any() && context.Cuenta.Count() > 1)
+                {
+                    logger.LogInformation("⚠️ Los datos ya existen. Saltando seed completo.");
+                    return;
+                }
 
-                // Seed de GrupoCuenta
+                // Plan de cuentas
                 await SeedGrupoCuentaAsync(context, logger);
-
-                // Seed de SubGrupoCuenta
                 await SeedSubGrupoCuentaAsync(context, logger);
 
-                // Seed de Cuenta
+                // SystemConfiguration
+                await SeedSystemConfigurationAsync(context, logger);
+
+                // Todas las cuentas reales
                 await SeedCuentaAsync(context, logger);
 
-                // Seed de Linea
+                // Actualizar SystemConfiguration con cuentas reales
+                await UpdateSystemConfigurationWithAccountsAsync(context, logger);
+
+                // Otros seeds
                 await SeedLineaAsync(context, logger);
-
-                // Seed de SubLinea
                 await SeedSubLineaAsync(context, logger);
-
-                // Seed de Moneda
                 await SeedMonedaAsync(context, logger);
-
-                // Seed de ConceptoAjuste
                 await SeedConceptoAjusteAsync(context, logger);
 
-                logger.LogInformation("Seed de datos maestros completado exitosamente!");
+                logger.LogInformation("✅ Seed de datos maestros completado exitosamente!");
             }
             catch (Exception ex)
             {
@@ -194,6 +194,51 @@ namespace GoldBusiness.Infrastructure.Data
 
         #endregion
 
+        #region SystemConfiguration
+
+        private static async Task SeedSystemConfigurationAsync(ApplicationDbContext context, ILogger logger)
+        {
+            if (context.SystemConfiguration.Any())
+            {
+                logger.LogInformation("SystemConfiguration ya tiene datos, omitiendo seed.");
+                return;
+            }
+
+            // ✅ Crear SystemConfiguration SIN cuentas (gracias a nullable)
+            var sysConfig = new SystemConfiguration(
+                "CHK",
+                "uxi/LeQnoZmyHjpkrS2J7RgiO6dKhwdapmg5r7TuwpnDzq2FPwwOWbLwRU6zUcRME2XktTsXkNmonkrYHFFPzg==",
+                "Chokisoft Development Software",
+                "Calle 172 #17830 e/ 180 y 182, Reparto 1ero de Mayo",
+                "Boyeros",
+                "La Habana",
+                "10800",
+                "http://localhost/imagen/imagen.jpg",
+                "http://localhost/",
+                "chokisoft@gmail.com",
+                "+53 55152424",
+                DateTime.UtcNow.AddYears(1),
+                "system");
+
+            context.SystemConfiguration.Add(sysConfig);
+            await context.SaveChangesAsync();
+
+            // Agregar traducciones
+            var traducciones = new List<SystemConfigurationTranslation>
+            {
+                new(sysConfig.Id, "es", "Chokisoft Development Software", "Calle 172 #17830 e/ 180 y 182, Reparto 1ero de Mayo", "system"),
+                new(sysConfig.Id, "en", "Chokisoft Development Software", "172nd Street #17830 between 180th and 182nd, 1st of May Neighborhood", "system"),
+                new(sysConfig.Id, "fr", "Chokisoft Development Software", "Rue 172 n°17830 entre 180 et 182, Quartier 1er Mai", "system")
+            };
+
+            context.SystemConfigurationTranslation.AddRange(traducciones);
+            await context.SaveChangesAsync();
+
+            logger.LogInformation("✅ SystemConfiguration creado (Id={Id})", sysConfig.Id);
+        }
+
+        #endregion
+
         #region Cuenta
 
         private static async Task SeedCuentaAsync(ApplicationDbContext context, ILogger logger)
@@ -204,8 +249,9 @@ namespace GoldBusiness.Infrastructure.Data
                 return;
             }
 
-            // Obtener los SubGrupoCuenta para referenciarlos
+            var sysConfig = context.SystemConfiguration.First();
             var subgrupos = context.SubGrupoCuenta.ToList();
+
             var sgActivoCirculante = subgrupos.First(s => s.Codigo == "10101");
             var sgActivosFijos = subgrupos.First(s => s.Codigo == "10102");
             var sgReguladoras = subgrupos.First(s => s.Codigo == "10103");
@@ -217,38 +263,38 @@ namespace GoldBusiness.Infrastructure.Data
 
             var cuentas = new[]
             {
-                new Cuenta("10000010", "EFECTIVO EN CAJA", sgActivoCirculante.Id, "system"),
-                new Cuenta("10101135", "CUENTAS POR COBRAR A CORTO PLAZO", sgActivoCirculante.Id, "system"),
-                new Cuenta("11000010", "EFECTIVO EN BANCO", sgActivoCirculante.Id, "system"),
-                new Cuenta("18800010", "PRODUCCIÓN TERMINADA", sgActivoCirculante.Id, "system"),
-                new Cuenta("18900010", "MERCANCÍAS PARA LA VENTA", sgActivoCirculante.Id, "system"),
-                new Cuenta("19200010", "VESTUARIO Y LENCERÍA", sgActivoCirculante.Id, "system"),
-                new Cuenta("19300010", "INSUMOS", sgActivoCirculante.Id, "system"),
-                new Cuenta("20000010", "ACTIVOS FIJOS TANGIBLES", sgActivosFijos.Id, "system"),
-                new Cuenta("30000010", "DEPRECIACIÓN DE ACTIVOS FIJOS TANGIBLES", sgReguladoras.Id, "system"),
-                new Cuenta("40500000", "CUENTAS POR PAGAR A CORTO PLAZO", sgPasivoCirculante.Id, "system"),
-                new Cuenta("42100000", "CUENTAS POR PAGAR - ACTIVOS FIJOS TANGIBLES", sgPasivoCirculante.Id, "system"),
-                new Cuenta("47000010", "PRÉSTAMOS BANCARIOS A CORTO PLAZO", sgPasivoCirculante.Id, "system"),
-                new Cuenta("52000010", "PRÉSTAMOS BANCARIOS A LARGO PLAZO", sgPasivoCirculante.Id, "system"),
-                new Cuenta("60000010", "PATRIMONIO DEL TCP", sgPatrimonio.Id, "system"),
-                new Cuenta("60010010", "SALDO AL INICIO DEL EJERCICIO", sgPatrimonio.Id, "system"),
-                new Cuenta("60020010", "INCREMENTOS DE APORTES DEL TCP EN EL EJERCICIO CONTABLE", sgPatrimonio.Id, "system"),
-                new Cuenta("60030010", "EROGACIONES EFECTUADAS POR EL TCP EN EL EJERCICIO CONTABLE", sgPatrimonio.Id, "system"),
-                new Cuenta("60040010", "PAGOS DE CUOTAS DEL IMPUESTO SOBRE INGRESOS PERSONALES", sgPatrimonio.Id, "system"),
-                new Cuenta("60050010", "CONTRIBUCION A LA SEGURIDAD SOCIAL", sgPatrimonio.Id, "system"),
-                new Cuenta("61000010", "UTILIDADES RETENIDAS", sgPatrimonio.Id, "system"),
-                new Cuenta("62000010", "PÉRDIDA", sgPatrimonio.Id, "system"),
-                new Cuenta("80000010", "GASTOS DE OPERACIÓN", sgNominalesDeudoras.Id, "system"),
-                new Cuenta("80400010", "DEVOLUCIONES Y REBAJAS EN VENTAS", sgNominalesDeudoras.Id, "system"),
-                new Cuenta("80600010", "COSTO DE VENTA DE LA PRODUCCIÓN", sgNominalesDeudoras.Id, "system"),
-                new Cuenta("80800010", "COSTO DE VENTA DE MERCANCÍAS", sgNominalesDeudoras.Id, "system"),
-                new Cuenta("81000010", "IMPUESTOS Y TASAS", sgNominalesDeudoras.Id, "system"),
-                new Cuenta("81010010", "IMPUESTOS SOBRE LAS VENTAS", sgNominalesDeudoras.Id, "system"),
-                new Cuenta("81020010", "IMPUESTO SOBRE LOS SERVICIOS PÚBLICOS", sgNominalesDeudoras.Id, "system"),
-                new Cuenta("81030010", "IMPUESTO POR LA UTILIZACIÓN DE LA FUERZA DE TRABAJO", sgNominalesDeudoras.Id, "system"),
-                new Cuenta("81040010", "OTROS IMPUESTOS Y TASAS", sgNominalesDeudoras.Id, "system"),
-                new Cuenta("90000001", "VENTAS", sgNominalesAcreedoras.Id, "system"),
-                new Cuenta("99900001", "RESULTADOS", sgCierre.Id, "system")
+                new Cuenta("10000010", "EFECTIVO EN CAJA", 1, sgActivoCirculante.Id, "system"),
+                new Cuenta("10101135", "CUENTAS POR COBRAR A CORTO PLAZO", 1, sgActivoCirculante.Id, "system"),
+                new Cuenta("11000010", "EFECTIVO EN BANCO", 1, sgActivoCirculante.Id, "system"),
+                new Cuenta("18800010", "PRODUCCIÓN TERMINADA", 1, sgActivoCirculante.Id, "system"),
+                new Cuenta("18900010", "MERCANCÍAS PARA LA VENTA", 1, sgActivoCirculante.Id, "system"),
+                new Cuenta("19200010", "VESTUARIO Y LENCERÍA", 1, sgActivoCirculante.Id, "system"),
+                new Cuenta("19300010", "INSUMOS", 1, sgActivoCirculante.Id, "system"),
+                new Cuenta("20000010", "ACTIVOS FIJOS TANGIBLES", 1, sgActivosFijos.Id, "system"),
+                new Cuenta("30000010", "DEPRECIACIÓN DE ACTIVOS FIJOS TANGIBLES", 1, sgReguladoras.Id, "system"),
+                new Cuenta("40500000", "CUENTAS POR PAGAR A CORTO PLAZO", 1, sgPasivoCirculante.Id, "system"),
+                new Cuenta("42100000", "CUENTAS POR PAGAR - ACTIVOS FIJOS TANGIBLES", 1, sgPasivoCirculante.Id, "system"),
+                new Cuenta("47000010", "PRÉSTAMOS BANCARIOS A CORTO PLAZO", 1, sgPasivoCirculante.Id, "system"),
+                new Cuenta("52000010", "PRÉSTAMOS BANCARIOS A LARGO PLAZO", 1, sgPasivoCirculante.Id, "system"),
+                new Cuenta("60000010", "PATRIMONIO DEL TCP", 1, sgPatrimonio.Id, "system"),
+                new Cuenta("60010010", "SALDO AL INICIO DEL EJERCICIO", 1, sgPatrimonio.Id, "system"),
+                new Cuenta("60020010", "INCREMENTOS DE APORTES DEL TCP EN EL EJERCICIO CONTABLE", 1, sgPatrimonio.Id, "system"),
+                new Cuenta("60030010", "EROGACIONES EFECTUADAS POR EL TCP EN EL EJERCICIO CONTABLE", 1, sgPatrimonio.Id, "system"),
+                new Cuenta("60040010", "PAGOS DE CUOTAS DEL IMPUESTO SOBRE INGRESOS PERSONALES", 1, sgPatrimonio.Id, "system"),
+                new Cuenta("60050010", "CONTRIBUCION A LA SEGURIDAD SOCIAL", 1, sgPatrimonio.Id, "system"),
+                new Cuenta("61000010", "UTILIDADES RETENIDAS", 1, sgPatrimonio.Id, "system"),
+                new Cuenta("62000010", "PÉRDIDA", 1, sgPatrimonio.Id, "system"),
+                new Cuenta("80000010", "GASTOS DE OPERACIÓN", 1, sgNominalesDeudoras.Id, "system"),
+                new Cuenta("80400010", "DEVOLUCIONES Y REBAJAS EN VENTAS", 1, sgNominalesDeudoras.Id, "system"),
+                new Cuenta("80600010", "COSTO DE VENTA DE LA PRODUCCIÓN", 1, sgNominalesDeudoras.Id, "system"),
+                new Cuenta("80800010", "COSTO DE VENTA DE MERCANCÍAS", 1, sgNominalesDeudoras.Id, "system"),
+                new Cuenta("81000010", "IMPUESTOS Y TASAS", 1, sgNominalesDeudoras.Id, "system"),
+                new Cuenta("81010010", "IMPUESTOS SOBRE LAS VENTAS", 1, sgNominalesDeudoras.Id, "system"),
+                new Cuenta("81020010", "IMPUESTO SOBRE LOS SERVICIOS PÚBLICOS", 1, sgNominalesDeudoras.Id, "system"),
+                new Cuenta("81030010", "IMPUESTO POR LA UTILIZACIÓN DE LA FUERZA DE TRABAJO", 1, sgNominalesDeudoras.Id, "system"),
+                new Cuenta("81040010", "OTROS IMPUESTOS Y TASAS", 1, sgNominalesDeudoras.Id, "system"),
+                new Cuenta("90000001", "VENTAS", 1, sgNominalesAcreedoras.Id, "system"),
+                new Cuenta("99900001", "RESULTADOS", 1, sgCierre.Id, "system")
             };
 
             context.Cuenta.AddRange(cuentas);
@@ -425,7 +471,42 @@ namespace GoldBusiness.Infrastructure.Data
         }
 
         #endregion
-        
+
+        #region Update SystemConfiguration
+
+        private static async Task UpdateSystemConfigurationWithAccountsAsync(ApplicationDbContext context, ILogger logger)
+        {
+            var sysConfig = context.SystemConfiguration.FirstOrDefault();
+            if (sysConfig == null)
+            {
+                logger.LogWarning("⚠️ No se encontró SystemConfiguration");
+                return;
+            }
+
+            // Buscar cuentas por pagar y cobrar
+            var cuentaCobrar = context.Cuenta.FirstOrDefault(c => c.Codigo == "10101135");
+            var cuentaPagar = context.Cuenta.FirstOrDefault(c => c.Codigo == "40500000");
+
+            if (cuentaCobrar != null && cuentaPagar != null)
+            {
+                sysConfig.SetCuentas(cuentaPagar.Id, cuentaCobrar.Id);
+
+                sysConfig.ActualizarAuditoria("system");
+
+                context.SystemConfiguration.Update(sysConfig);
+                await context.SaveChangesAsync();
+
+                logger.LogInformation("✅ Cuentas asignadas → CuentaPagar: {CuentaPagar}, CuentaCobrar: {CuentaCobrar}",
+                    cuentaPagar.Codigo, cuentaCobrar.Codigo);
+            }
+            else
+            {
+                logger.LogWarning("⚠️ No se encontraron las cuentas para asignar");
+            }
+        }
+
+        #endregion
+
         #region Linea
 
         private static async Task SeedLineaAsync(ApplicationDbContext context, ILogger logger)

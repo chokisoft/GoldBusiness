@@ -10,7 +10,7 @@ namespace GoldBusiness.Infrastructure.Settings.AccountPlan
         {
             builder.HasKey(e => e.Id);
             builder.HasIndex(e => e.SubGrupoCuentaId);
-            builder.HasIndex(e => new { e.Codigo, e.SubGrupoCuentaId, e.Cancelado }).HasDatabaseName("IX_Cuenta").IsUnique();
+            builder.HasIndex(e => new { e.Codigo, e.SystemConfigurationId, e.SubGrupoCuentaId, e.Cancelado }).HasDatabaseName("IX_Cuenta").IsUnique();
             builder.Property(e => e.Codigo).IsRequired().HasMaxLength(8);
             builder.Property(e => e.Descripcion).IsRequired().HasMaxLength(256);
             builder.Property(e => e.CreadoPor).IsRequired().HasMaxLength(256);
@@ -24,6 +24,7 @@ namespace GoldBusiness.Infrastructure.Settings.AccountPlan
             builder.Ignore(e => e.LocalidadCuentaDevolucionNavigation);
             builder.Ignore(e => e.ConfiguracionCuentaPagarNavigation);
             builder.Ignore(e => e.ConfiguracionCuentaCobrarNavigation);
+            builder.HasOne(d => d.SystemConfiguration).WithMany().HasForeignKey(d => d.SystemConfigurationId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Cuenta_SystemConfiguration");
             builder.HasOne(d => d.SubGrupoCuenta).WithMany().HasForeignKey(d => d.SubGrupoCuentaId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Cuenta_SubGrupoCuenta");
         }
     }

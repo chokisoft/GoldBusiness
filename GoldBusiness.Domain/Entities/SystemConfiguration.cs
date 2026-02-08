@@ -7,7 +7,7 @@ namespace GoldBusiness.Domain.Entities
     public class SystemConfiguration : BaseEntity
     {
         private readonly HashSet<SystemConfigurationTranslation> _translations = new();
-        private readonly HashSet<Establecimiento> _establecimientos = new();
+        private readonly HashSet<Establecimiento> _establecimiento = new();
 
         public int Id { get; private set; }
         public string CodigoSistema { get; private set; } = string.Empty;
@@ -17,42 +17,54 @@ namespace GoldBusiness.Domain.Entities
         public string Municipio { get; private set; } = string.Empty;
         public string Provincia { get; private set; } = string.Empty;
         public string CodPostal { get; private set; } = string.Empty;
-        public byte[] Imagen { get; private set; } = Array.Empty<byte>();
+        public string Imagen { get; private set; } = string.Empty;
         public string Web { get; private set; } = string.Empty;
         public string Email { get; private set; } = string.Empty;
         public string Telefono { get; private set; } = string.Empty;
-        public int CuentaPagarId { get; private set; }
-        public int CuentaCobrarId { get; private set; }
+
+        // ✅ NULLABLE
+        public int? CuentaPagarId { get; private set; }
+        public int? CuentaCobrarId { get; private set; }
+
         public DateTime Caducidad { get; private set; }
 
-        // Propiedades de navegación
-        public Cuenta CuentaCobrarNavigation { get; private set; } = null!;
-        public Cuenta CuentaPagarNavigation { get; private set; } = null!;
+        // ✅ Propiedades de navegación NULLABLE
+        public Cuenta? CuentaCobrarNavigation { get; private set; }
+        public Cuenta? CuentaPagarNavigation { get; private set; }
 
-        // Colecciones de navegación (read-only)
         public IReadOnlyCollection<SystemConfigurationTranslation> Translations => _translations;
-        public IReadOnlyCollection<Establecimiento> Establecimientos => _establecimientos;
+        public IReadOnlyCollection<Establecimiento> Establecimiento => _establecimiento;
 
-        // Constructor protegido para EF Core
         protected SystemConfiguration() { }
 
-        // Constructor con validaciones
+        // ✅ CONSTRUCTOR SIN REQUERIR CUENTAS
         public SystemConfiguration(
             string codigoSistema,
             string licencia,
             string nombreNegocio,
-            int cuentaPagarId,
-            int cuentaCobrarId,
+            string? direccion,
+            string? municipio,
+            string? provincia,
+            string? codPostal,
+            string? imagen,
+            string? web,
+            string? email,
+            string? telefono,
             DateTime caducidad,
             string creadoPor)
         {
             SetCodigoSistema(codigoSistema);
             SetLicencia(licencia);
             SetNombreNegocio(nombreNegocio);
-            CuentaPagarId = cuentaPagarId;
-            CuentaCobrarId = cuentaCobrarId;
+            SetDireccion(direccion ?? string.Empty);
+            SetMunicipio(municipio ?? string.Empty);
+            SetProvincia(provincia ?? string.Empty);
+            SetCodPostal(codPostal ?? string.Empty);
+            SetImagen(imagen ?? string.Empty);
+            SetWeb(web ?? string.Empty);
+            SetEmail(email ?? string.Empty);
+            SetTelefono(telefono ?? string.Empty);
             SetCaducidad(caducidad);
-
             EstablecerCreador(creadoPor);
         }
 
@@ -125,9 +137,22 @@ namespace GoldBusiness.Domain.Entities
             CodPostal = codPostal?.Trim() ?? string.Empty;
         }
 
-        public void SetImagen(byte[] imagen)
+        public void SetImagen(string imagen)
         {
-            Imagen = imagen ?? Array.Empty<byte>();
+            if (!string.IsNullOrWhiteSpace(imagen))
+            {
+                if (imagen.Length > 500)
+                    throw new DomainException("La URL de la imagen no puede exceder 500 caracteres.");
+
+                // Validación básica de URL
+                if (!Uri.TryCreate(imagen, UriKind.Absolute, out var uri) ||
+                    (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
+                {
+                    throw new DomainException("La URL de la imagen no es válida.");
+                }
+            }
+
+            Imagen = imagen?.Trim() ?? string.Empty;
         }
 
         public void SetWeb(string web)
@@ -137,8 +162,7 @@ namespace GoldBusiness.Domain.Entities
                 if (web.Length > 256)
                     throw new DomainException("La URL del sitio web no puede exceder 256 caracteres.");
 
-                // Validación básica de URL
-                if (!Uri.TryCreate(web, UriKind.Absolute, out var uri) || 
+                if (!Uri.TryCreate(web, UriKind.Absolute, out var uri) ||
                     (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
                 {
                     throw new DomainException("La URL del sitio web no es válida.");
@@ -155,8 +179,7 @@ namespace GoldBusiness.Domain.Entities
                 if (email.Length > 256)
                     throw new DomainException("El email no puede exceder 256 caracteres.");
 
-                // Validación básica de email
-                if (!System.Text.RegularExpressions.Regex.IsMatch(email, 
+                if (!System.Text.RegularExpressions.Regex.IsMatch(email,
                     @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
                 {
                     throw new DomainException("El email no es válido.");
@@ -173,7 +196,6 @@ namespace GoldBusiness.Domain.Entities
                 if (telefono.Length > 20)
                     throw new DomainException("El teléfono no puede exceder 20 caracteres.");
 
-                // Validación básica de teléfono (formato: (####) ####-#### o ####-####)
                 var telefonoLimpio = System.Text.RegularExpressions.Regex.Replace(telefono, @"[^\d]", "");
                 if (telefonoLimpio.Length < 8)
                 {
@@ -192,7 +214,8 @@ namespace GoldBusiness.Domain.Entities
             Caducidad = caducidad;
         }
 
-        public void SetCuentas(int cuentaPagarId, int cuentaCobrarId)
+        // ✅ CAMBIADO: Acepta valores nullable
+        public void SetCuentas(int? cuentaPagarId, int? cuentaCobrarId)
         {
             CuentaPagarId = cuentaPagarId;
             CuentaCobrarId = cuentaCobrarId;
@@ -203,15 +226,15 @@ namespace GoldBusiness.Domain.Entities
         // ═══════════════════════════════════════════════════════════════
 
         public void AddOrUpdateTranslation(
-            string language, 
-            string nombreNegocio, 
-            string direccion, 
+            string language,
+            string nombreNegocio,
+            string direccion,
             string usuario)
         {
             var lang = LanguageHelper.NormalizeLang(language);
-            var existing = _translations.FirstOrDefault(t => 
+            var existing = _translations.FirstOrDefault(t =>
                 string.Equals(t.Language, lang, StringComparison.OrdinalIgnoreCase));
-            
+
             if (existing != null)
             {
                 existing.SetNombreNegocio(nombreNegocio, usuario);
@@ -229,7 +252,7 @@ namespace GoldBusiness.Domain.Entities
             var lang = LanguageHelper.NormalizeLang(language);
             var fb = LanguageHelper.NormalizeLang(fallback);
 
-            var match = _translations.FirstOrDefault(t => 
+            var match = _translations.FirstOrDefault(t =>
                 string.Equals(t.Language, lang, StringComparison.OrdinalIgnoreCase));
             if (match != null && !string.IsNullOrWhiteSpace(match.NombreNegocio))
                 return match.NombreNegocio;
@@ -237,7 +260,7 @@ namespace GoldBusiness.Domain.Entities
             if (!string.IsNullOrWhiteSpace(NombreNegocio))
                 return NombreNegocio;
 
-            var fallbackMatch = _translations.FirstOrDefault(t => 
+            var fallbackMatch = _translations.FirstOrDefault(t =>
                 string.Equals(t.Language, fb, StringComparison.OrdinalIgnoreCase));
             if (fallbackMatch != null) return fallbackMatch.NombreNegocio;
 
@@ -249,7 +272,7 @@ namespace GoldBusiness.Domain.Entities
             var lang = LanguageHelper.NormalizeLang(language);
             var fb = LanguageHelper.NormalizeLang(fallback);
 
-            var match = _translations.FirstOrDefault(t => 
+            var match = _translations.FirstOrDefault(t =>
                 string.Equals(t.Language, lang, StringComparison.OrdinalIgnoreCase));
             if (match != null && !string.IsNullOrWhiteSpace(match.Direccion))
                 return match.Direccion;
@@ -257,7 +280,7 @@ namespace GoldBusiness.Domain.Entities
             if (!string.IsNullOrWhiteSpace(Direccion))
                 return Direccion;
 
-            var fallbackMatch = _translations.FirstOrDefault(t => 
+            var fallbackMatch = _translations.FirstOrDefault(t =>
                 string.Equals(t.Language, fb, StringComparison.OrdinalIgnoreCase));
             if (fallbackMatch != null) return fallbackMatch.Direccion;
 
@@ -268,6 +291,7 @@ namespace GoldBusiness.Domain.Entities
         // 🔧 MÉTODOS DE ACTUALIZACIÓN
         // ═══════════════════════════════════════════════════════════════
 
+        // ✅ CAMBIADO: Acepta cuentas nullable
         public void Update(
             string nombreNegocio,
             string direccion,
@@ -277,8 +301,8 @@ namespace GoldBusiness.Domain.Entities
             string web,
             string email,
             string telefono,
-            int cuentaPagarId,
-            int cuentaCobrarId,
+            int? cuentaPagarId,
+            int? cuentaCobrarId,
             DateTime caducidad,
             string modificadoPor)
         {
@@ -306,30 +330,13 @@ namespace GoldBusiness.Domain.Entities
         // 📊 MÉTODOS DE CONSULTA
         // ═══════════════════════════════════════════════════════════════
 
-        public bool EstaVigente()
-        {
-            return Caducidad > DateTime.UtcNow;
-        }
+        public bool EstaVigente() => Caducidad > DateTime.UtcNow;
+        public bool EstaProximoAVencer(int diasAnticipacion = 30) => Caducidad <= DateTime.UtcNow.AddDays(diasAnticipacion) && Caducidad > DateTime.UtcNow;
+        public bool EstaVencida() => Caducidad <= DateTime.UtcNow;
+        public int DiasRestantes() => (Caducidad - DateTime.UtcNow).Days > 0 ? (Caducidad - DateTime.UtcNow).Days : 0;
+        public bool TieneImagen() => Imagen != null && Imagen.Length > 0;
 
-        public bool EstaProximoAVencer(int diasAnticipacion = 30)
-        {
-            return Caducidad <= DateTime.UtcNow.AddDays(diasAnticipacion) && Caducidad > DateTime.UtcNow;
-        }
-
-        public bool EstaVencida()
-        {
-            return Caducidad <= DateTime.UtcNow;
-        }
-
-        public int DiasRestantes()
-        {
-            var dias = (Caducidad - DateTime.UtcNow).Days;
-            return dias > 0 ? dias : 0;
-        }
-
-        public bool TieneImagen()
-        {
-            return Imagen != null && Imagen.Length > 0;
-        }
+        // ✅ NUEVO: Método para verificar si tiene cuentas configuradas
+        public bool TieneCuentasConfiguradas() => CuentaPagarId.HasValue && CuentaCobrarId.HasValue;
     }
 }

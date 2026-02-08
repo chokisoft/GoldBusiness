@@ -592,31 +592,6 @@ namespace GoldBusiness.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Cuenta",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Codigo = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    SubGrupoCuentaId = table.Column<int>(type: "int", nullable: false),
-                    Cancelado = table.Column<bool>(type: "bit", nullable: false),
-                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
-                    ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Cuenta", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Cuenta_SubGrupoCuenta",
-                        column: x => x.SubGrupoCuentaId,
-                        principalTable: "SubGrupoCuenta",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "SubGrupoCuentaTranslation",
                 columns: table => new
                 {
@@ -667,6 +642,188 @@ namespace GoldBusiness.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CajaRegistradoraDetalle",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CajaRegistradoraId = table.Column<int>(type: "int", nullable: false),
+                    LocalidadId = table.Column<int>(type: "int", nullable: false),
+                    ProductoId = table.Column<int>(type: "int", nullable: false),
+                    Cantidad = table.Column<decimal>(type: "decimal(18,3)", nullable: false),
+                    Venta = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ImporteVenta = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
+                    ModificadoPor = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CajaRegistradoraDetalle", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CajaRegistradoraDetalle_CajaRegistradora",
+                        column: x => x.CajaRegistradoraId,
+                        principalTable: "CajaRegistradora",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Comprobante",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EstablecimientoId = table.Column<int>(type: "int", nullable: false),
+                    NoComprobante = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Fecha = table.Column<DateTime>(type: "datetime", nullable: false),
+                    Observaciones = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: false),
+                    Automatico = table.Column<bool>(type: "bit", nullable: false),
+                    Posteado = table.Column<bool>(type: "bit", nullable: false),
+                    Cancelado = table.Column<bool>(type: "bit", nullable: false),
+                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
+                    ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comprobante", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ComprobanteTranslation",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ComprobanteId = table.Column<int>(type: "int", nullable: false),
+                    Observaciones = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: false),
+                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
+                    ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ComprobanteTranslation", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ComprobanteTranslation_Comprobante",
+                        column: x => x.ComprobanteId,
+                        principalTable: "Comprobante",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ComprobanteDetalle",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ComprobanteId = table.Column<int>(type: "int", nullable: false),
+                    CuentaId = table.Column<int>(type: "int", nullable: false),
+                    Departamento = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Debito = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Credito = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Parcial = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Nota = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
+                    Cancelado = table.Column<bool>(type: "bit", nullable: false),
+                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
+                    ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ComprobanteDetalle", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ComprobanteDetalle_Comprobante",
+                        column: x => x.ComprobanteId,
+                        principalTable: "Comprobante",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ComprobanteDetalleTranslation",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ComprobanteDetalleId = table.Column<int>(type: "int", nullable: false),
+                    Nota = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
+                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
+                    ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ComprobanteDetalleTranslation", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ComprobanteDetalleTranslation_ComprobanteDetalle",
+                        column: x => x.ComprobanteDetalleId,
+                        principalTable: "ComprobanteDetalle",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ComprobanteTemporal",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EstablecimientoId = table.Column<int>(type: "int", nullable: false),
+                    CodigoTransaccion = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    Transaccion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    NoDocumento = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Fecha = table.Column<DateTime>(type: "datetime", nullable: false),
+                    Cuenta = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
+                    Departamento = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Inventario = table.Column<bool>(type: "bit", nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
+                    Debito = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    Credito = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    Parcial = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
+                    ModificadoPor = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ComprobanteTemporal", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ComprobanteTemporalTranslation",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ComprobanteTemporalId = table.Column<int>(type: "int", nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
+                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
+                    ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ComprobanteTemporalTranslation", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ComprobanteTemporalTranslation_ComprobanteTemporal",
+                        column: x => x.ComprobanteTemporalId,
+                        principalTable: "ComprobanteTemporal",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ConceptoAjuste",
                 columns: table => new
                 {
@@ -684,12 +841,57 @@ namespace GoldBusiness.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ConceptoAjuste", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ConceptoAjusteTranslation",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ConceptoAjusteId = table.Column<int>(type: "int", nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
+                    ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ConceptoAjusteTranslation", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ConceptoAjuste_Cuenta",
-                        column: x => x.CuentaId,
-                        principalTable: "Cuenta",
+                        name: "FK_ConceptoAjusteTranslation_ConceptoAjuste",
+                        column: x => x.ConceptoAjusteId,
+                        principalTable: "ConceptoAjuste",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Cuenta",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Codigo = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    SystemConfigurationId = table.Column<int>(type: "int", nullable: false),
+                    SubGrupoCuentaId = table.Column<int>(type: "int", nullable: false),
+                    Cancelado = table.Column<bool>(type: "bit", nullable: false),
+                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
+                    ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cuenta", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Cuenta_SubGrupoCuenta",
+                        column: x => x.SubGrupoCuentaId,
+                        principalTable: "SubGrupoCuenta",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -730,12 +932,12 @@ namespace GoldBusiness.Infrastructure.Migrations
                     Municipio = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     Provincia = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     CodPostal = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Imagen = table.Column<byte[]>(type: "image", nullable: false),
+                    Imagen = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     Web = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     Telefono = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    CuentaPagarId = table.Column<int>(type: "int", nullable: false),
-                    CuentaCobrarId = table.Column<int>(type: "int", nullable: false),
+                    CuentaPagarId = table.Column<int>(type: "int", nullable: true),
+                    CuentaCobrarId = table.Column<int>(type: "int", nullable: true),
                     Caducidad = table.Column<DateTime>(type: "datetime", nullable: false),
                     CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
@@ -757,31 +959,6 @@ namespace GoldBusiness.Infrastructure.Migrations
                         principalTable: "Cuenta",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ConceptoAjusteTranslation",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ConceptoAjusteId = table.Column<int>(type: "int", nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
-                    ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
-                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ConceptoAjusteTranslation", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ConceptoAjusteTranslation_ConceptoAjuste",
-                        column: x => x.ConceptoAjusteId,
-                        principalTable: "ConceptoAjuste",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -834,67 +1011,6 @@ namespace GoldBusiness.Infrastructure.Migrations
                         principalTable: "SystemConfiguration",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Comprobante",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    EstablecimientoId = table.Column<int>(type: "int", nullable: false),
-                    NoComprobante = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Fecha = table.Column<DateTime>(type: "datetime", nullable: false),
-                    Observaciones = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: false),
-                    Automatico = table.Column<bool>(type: "bit", nullable: false),
-                    Posteado = table.Column<bool>(type: "bit", nullable: false),
-                    Cancelado = table.Column<bool>(type: "bit", nullable: false),
-                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
-                    ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Comprobante", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Comprobante_Establecimiento",
-                        column: x => x.EstablecimientoId,
-                        principalTable: "Establecimiento",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ComprobanteTemporal",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    EstablecimientoId = table.Column<int>(type: "int", nullable: false),
-                    CodigoTransaccion = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    Transaccion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    NoDocumento = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Fecha = table.Column<DateTime>(type: "datetime", nullable: false),
-                    Cuenta = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
-                    Departamento = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Inventario = table.Column<bool>(type: "bit", nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
-                    Debito = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    Credito = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    Parcial = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
-                    ModificadoPor = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FechaHoraModificado = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ComprobanteTemporal", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ComprobanteTemporal_Establecimiento",
-                        column: x => x.EstablecimientoId,
-                        principalTable: "Establecimiento",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -1209,91 +1325,6 @@ namespace GoldBusiness.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ComprobanteDetalle",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ComprobanteId = table.Column<int>(type: "int", nullable: false),
-                    CuentaId = table.Column<int>(type: "int", nullable: false),
-                    Departamento = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Debito = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Credito = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Parcial = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Nota = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
-                    Cancelado = table.Column<bool>(type: "bit", nullable: false),
-                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
-                    ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ComprobanteDetalle", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ComprobanteDetalle_Comprobante",
-                        column: x => x.ComprobanteId,
-                        principalTable: "Comprobante",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_ComprobanteDetalle_Cuenta",
-                        column: x => x.CuentaId,
-                        principalTable: "Cuenta",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ComprobanteTranslation",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ComprobanteId = table.Column<int>(type: "int", nullable: false),
-                    Observaciones = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: false),
-                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
-                    ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
-                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ComprobanteTranslation", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ComprobanteTranslation_Comprobante",
-                        column: x => x.ComprobanteId,
-                        principalTable: "Comprobante",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ComprobanteTemporalTranslation",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ComprobanteTemporalId = table.Column<int>(type: "int", nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
-                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
-                    ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
-                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ComprobanteTemporalTranslation", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ComprobanteTemporalTranslation_ComprobanteTemporal",
-                        column: x => x.ComprobanteTemporalId,
-                        principalTable: "ComprobanteTemporal",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "LocalidadTranslation",
                 columns: table => new
                 {
@@ -1342,43 +1373,6 @@ namespace GoldBusiness.Infrastructure.Migrations
                         principalTable: "OperacionesEncabezado",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CajaRegistradoraDetalle",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CajaRegistradoraId = table.Column<int>(type: "int", nullable: false),
-                    LocalidadId = table.Column<int>(type: "int", nullable: false),
-                    ProductoId = table.Column<int>(type: "int", nullable: false),
-                    Cantidad = table.Column<decimal>(type: "decimal(18,3)", nullable: false),
-                    Venta = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    ImporteVenta = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
-                    ModificadoPor = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FechaHoraModificado = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CajaRegistradoraDetalle", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_CajaRegistradoraDetalle_CajaRegistradora",
-                        column: x => x.CajaRegistradoraId,
-                        principalTable: "CajaRegistradora",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_CajaRegistradoraDetalle_Localidad",
-                        column: x => x.LocalidadId,
-                        principalTable: "Localidad",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_CajaRegistradoraDetalle_Producto",
-                        column: x => x.ProductoId,
-                        principalTable: "Producto",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -1544,31 +1538,6 @@ namespace GoldBusiness.Infrastructure.Migrations
                         column: x => x.ProductoId,
                         principalTable: "Producto",
                         principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ComprobanteDetalleTranslation",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ComprobanteDetalleId = table.Column<int>(type: "int", nullable: false),
-                    Nota = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
-                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
-                    ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
-                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ComprobanteDetalleTranslation", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ComprobanteDetalleTranslation_ComprobanteDetalle",
-                        column: x => x.ComprobanteDetalleId,
-                        principalTable: "ComprobanteDetalle",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -1773,13 +1742,18 @@ namespace GoldBusiness.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Cuenta",
                 table: "Cuenta",
-                columns: new[] { "Codigo", "SubGrupoCuentaId", "Cancelado" },
+                columns: new[] { "Codigo", "SystemConfigurationId", "SubGrupoCuentaId", "Cancelado" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Cuenta_SubGrupoCuentaId",
                 table: "Cuenta",
                 column: "SubGrupoCuentaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cuenta_SystemConfigurationId",
+                table: "Cuenta",
+                column: "SystemConfigurationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CuentaCobrarPagar_ClienteId",
@@ -2140,11 +2114,70 @@ namespace GoldBusiness.Infrastructure.Migrations
                 table: "UnidadMedidaTranslation",
                 columns: new[] { "UnidadMedidaId", "Language" },
                 unique: true);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_CajaRegistradoraDetalle_Localidad",
+                table: "CajaRegistradoraDetalle",
+                column: "LocalidadId",
+                principalTable: "Localidad",
+                principalColumn: "Id");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_CajaRegistradoraDetalle_Producto",
+                table: "CajaRegistradoraDetalle",
+                column: "ProductoId",
+                principalTable: "Producto",
+                principalColumn: "Id");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Comprobante_Establecimiento",
+                table: "Comprobante",
+                column: "EstablecimientoId",
+                principalTable: "Establecimiento",
+                principalColumn: "Id");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_ComprobanteDetalle_Cuenta",
+                table: "ComprobanteDetalle",
+                column: "CuentaId",
+                principalTable: "Cuenta",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_ComprobanteTemporal_Establecimiento",
+                table: "ComprobanteTemporal",
+                column: "EstablecimientoId",
+                principalTable: "Establecimiento",
+                principalColumn: "Id");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_ConceptoAjuste_Cuenta",
+                table: "ConceptoAjuste",
+                column: "CuentaId",
+                principalTable: "Cuenta",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Cuenta_SystemConfiguration",
+                table: "Cuenta",
+                column: "SystemConfigurationId",
+                principalTable: "SystemConfiguration",
+                principalColumn: "Id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Configuracion_CuentaCobrar",
+                table: "SystemConfiguration");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Configuracion_CuentaPagar",
+                table: "SystemConfiguration");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -2299,9 +2332,6 @@ namespace GoldBusiness.Infrastructure.Migrations
                 name: "UnidadMedida");
 
             migrationBuilder.DropTable(
-                name: "SystemConfiguration");
-
-            migrationBuilder.DropTable(
                 name: "Linea");
 
             migrationBuilder.DropTable(
@@ -2309,6 +2339,9 @@ namespace GoldBusiness.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "SubGrupoCuenta");
+
+            migrationBuilder.DropTable(
+                name: "SystemConfiguration");
 
             migrationBuilder.DropTable(
                 name: "GrupoCuenta");

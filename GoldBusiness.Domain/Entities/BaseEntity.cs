@@ -24,7 +24,7 @@ namespace GoldBusiness.Domain.Entities
         /// <summary>
         /// Actualiza la auditoría con el usuario que modifica.
         /// </summary>
-        protected void ActualizarAuditoria(string usuario)
+        public void ActualizarAuditoria(string usuario)
         {
             ModificadoPor = ValidarUsuario(usuario, nameof(usuario));
             FechaHoraModificado = DateTime.UtcNow;

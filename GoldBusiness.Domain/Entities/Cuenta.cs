@@ -11,7 +11,9 @@ namespace GoldBusiness.Domain.Entities
         public int Id { get; private set; }
         public string Codigo { get; private set; } = string.Empty;
         public string Descripcion { get; private set; } = string.Empty;
+        public int SystemConfigurationId { get; set; }
         public int SubGrupoCuentaId { get; private set; }
+        public SystemConfiguration SystemConfiguration { get; private set; } = null!;
         public SubGrupoCuenta SubGrupoCuenta { get; private set; } = null!;
         public bool Cancelado { get; private set; }
 
@@ -27,11 +29,12 @@ namespace GoldBusiness.Domain.Entities
         protected Cuenta() { }
 
         // Constructor con validaciones
-        public Cuenta(string codigo, string descripcion, int subGrupoCuentaId, string creadoPor)
+        public Cuenta(string codigo, string descripcion, int systemConfigurationId, int subGrupoCuentaId, string creadoPor)
         {
             SetCodigo(codigo);
             SetDescripcion(descripcion);
 
+            SystemConfigurationId = systemConfigurationId;
             SubGrupoCuentaId = subGrupoCuentaId;
             EstablecerCreador(creadoPor);
             Cancelado = false;
@@ -103,9 +106,10 @@ namespace GoldBusiness.Domain.Entities
         // 🔧 MÉTODOS DE ACTUALIZACIÓN Y ESTADO
         // ═══════════════════════════════════════════════════════════════
 
-        public void Update(string descripcion, int subGrupoCuentaId, string modificadoPor)
+        public void Update(string descripcion, int systemConfigurationId, int subGrupoCuentaId, string modificadoPor)
         {
             SetDescripcion(descripcion);
+            SystemConfigurationId = systemConfigurationId;
             SubGrupoCuentaId = subGrupoCuentaId;
             ActualizarAuditoria(modificadoPor); // ✅ Usa método privado
         }

@@ -58,7 +58,7 @@ namespace GoldBusiness.Application.Services
             }
 
             // No existe, crear nuevo registro
-            var entity = new Cuenta(dto.Codigo, dto.Descripcion, dto.SubGrupoCuentaId, creador);
+            var entity = new Cuenta(dto.Codigo, dto.Descripcion, dto.SystemConfigurationId, dto.SubGrupoCuentaId, creador);
             await _repo.AddAsync(entity);
 
             entity.AddOrUpdateTranslation(lang, dto.Descripcion, creador);
@@ -98,7 +98,7 @@ namespace GoldBusiness.Application.Services
                 entity.SetCodigo(dto.Codigo);
             }
 
-            entity.Update(dto.Descripcion, dto.SubGrupoCuentaId, user);
+            entity.Update(dto.Descripcion, dto.SystemConfigurationId, dto.SubGrupoCuentaId, user);
 
             // Actualizar/crear traducción
             entity.AddOrUpdateTranslation(lang, dto.Descripcion, user ?? "system");

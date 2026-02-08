@@ -587,11 +587,16 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.Property<int>("SubGrupoCuentaId")
                         .HasColumnType("int");
 
+                    b.Property<int>("SystemConfigurationId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("SubGrupoCuentaId");
 
-                    b.HasIndex("Codigo", "SubGrupoCuentaId", "Cancelado")
+                    b.HasIndex("SystemConfigurationId");
+
+                    b.HasIndex("Codigo", "SystemConfigurationId", "SubGrupoCuentaId", "Cancelado")
                         .IsUnique()
                         .HasDatabaseName("IX_Cuenta");
 
@@ -1902,10 +1907,10 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<int>("CuentaCobrarId")
+                    b.Property<int?>("CuentaCobrarId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CuentaPagarId")
+                    b.Property<int?>("CuentaPagarId")
                         .HasColumnType("int");
 
                     b.Property<string>("Direccion")
@@ -1924,9 +1929,10 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.Property<DateTime?>("FechaHoraModificado")
                         .HasColumnType("datetime");
 
-                    b.Property<byte[]>("Imagen")
+                    b.Property<string>("Imagen")
                         .IsRequired()
-                        .HasColumnType("image");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Licencia")
                         .IsRequired()
@@ -1969,7 +1975,7 @@ namespace GoldBusiness.Infrastructure.Migrations
 
                     b.HasIndex("CuentaPagarId");
 
-                    b.ToTable("SystemConfiguration");
+                    b.ToTable("SystemConfiguration", (string)null);
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Transaccion", b =>
@@ -3160,7 +3166,15 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_Cuenta_SubGrupoCuenta");
 
+                    b.HasOne("GoldBusiness.Domain.Entities.SystemConfiguration", "SystemConfiguration")
+                        .WithMany()
+                        .HasForeignKey("SystemConfigurationId")
+                        .IsRequired()
+                        .HasConstraintName("FK_Cuenta_SystemConfiguration");
+
                     b.Navigation("SubGrupoCuenta");
+
+                    b.Navigation("SystemConfiguration");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.CuentaCobrarPagar", b =>
@@ -3553,14 +3567,12 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .WithMany("ConfiguracionCuentaCobrarNavigation")
                         .HasForeignKey("CuentaCobrarId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
                         .HasConstraintName("FK_Configuracion_CuentaCobrar");
 
                     b.HasOne("GoldBusiness.Domain.Entities.Cuenta", "CuentaPagarNavigation")
                         .WithMany("ConfiguracionCuentaPagarNavigation")
                         .HasForeignKey("CuentaPagarId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
                         .HasConstraintName("FK_Configuracion_CuentaPagar");
 
                     b.Navigation("CuentaCobrarNavigation");

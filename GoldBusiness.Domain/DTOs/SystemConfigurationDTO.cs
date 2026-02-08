@@ -41,8 +41,10 @@ namespace GoldBusiness.Domain.DTOs
         [StringLength(20, ErrorMessage = "El código postal no puede exceder 20 caracteres")]
         public string? CodPostal { get; set; }
 
-        [Display(Name = "Imagen/Logo")]
-        public byte[]? Imagen { get; set; }
+        [Display(Name = "URL de Imagen/Logo")]
+        [Url(ErrorMessage = "La URL de la imagen no es válida")]
+        [StringLength(500, ErrorMessage = "La URL no puede exceder 500 caracteres")]
+        public string? Imagen { get; set; }
 
         [Display(Name = "Sitio Web")]
         [Url(ErrorMessage = "La URL no es válida")]
@@ -62,12 +64,12 @@ namespace GoldBusiness.Domain.DTOs
         [Required(ErrorMessage = "La cuenta por pagar es obligatoria")]
         [Display(Name = "Cuenta Por Pagar")]
         [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar una cuenta válida")]
-        public int CuentaPagarId { get; set; }
+        public int? CuentaPagarId { get; set; }
 
         [Required(ErrorMessage = "La cuenta por cobrar es obligatoria")]
         [Display(Name = "Cuenta Por Cobrar")]
         [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar una cuenta válida")]
-        public int CuentaCobrarId { get; set; }
+        public int? CuentaCobrarId { get; set; }
 
         [Required(ErrorMessage = "La fecha de caducidad es obligatoria")]
         [Display(Name = "Caducidad")]
@@ -80,10 +82,10 @@ namespace GoldBusiness.Domain.DTOs
         public string? ModificadoPor { get; set; }
         public DateTime? FechaHoraModificado { get; set; }
 
-        public string CuentaPagarCodigo { get; set; } = string.Empty;
-        public string CuentaPagarDescripcion { get; set; } = string.Empty;
-        public string CuentaCobrarCodigo { get; set; } = string.Empty;
-        public string CuentaCobrarDescripcion { get; set; } = string.Empty;
+        public string? CuentaPagarCodigo { get; set; } = string.Empty;
+        public string? CuentaPagarDescripcion { get; set; } = string.Empty;
+        public string? CuentaCobrarCodigo { get; set; } = string.Empty;
+        public string? CuentaCobrarDescripcion { get; set; } = string.Empty;
 
         /// <summary>
         /// Propiedades calculadas para validación de licencia.
@@ -94,5 +96,6 @@ namespace GoldBusiness.Domain.DTOs
         public int DiasRestantes => EstaVigente ? (Caducidad - DateTime.UtcNow).Days : 0;
         public bool TieneImagen => Imagen != null && Imagen.Length > 0;
         public string EstadoLicencia => EstaVencida ? "Vencida" : (ProximoAVencer ? "Por Vencer" : "Vigente");
+        public bool TieneCuentasConfiguradas => CuentaPagarId.HasValue && CuentaCobrarId.HasValue;
     }
 }
