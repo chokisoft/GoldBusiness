@@ -29,8 +29,8 @@ namespace GoldBusiness.Domain.Entities
         public DateTime Caducidad { get; private set; }
 
         // ✅ Propiedades de navegación NULLABLE
-        public Cuenta? CuentaCobrarNavigation { get; private set; }
-        public Cuenta? CuentaPagarNavigation { get; private set; }
+        public Cuenta? CuentaCobrar { get; private set; }
+        public Cuenta? CuentaPagar { get; private set; }
 
         public IReadOnlyCollection<SystemConfigurationTranslation> Translations => _translations;
         public IReadOnlyCollection<Establecimiento> Establecimiento => _establecimiento;

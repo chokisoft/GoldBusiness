@@ -22,8 +22,8 @@ namespace GoldBusiness.Infrastructure.Settings.AccountPlan
             builder.Ignore(e => e.LocalidadCuentaCostoNavigation);
             builder.Ignore(e => e.LocalidadCuentaVentaNavigation);
             builder.Ignore(e => e.LocalidadCuentaDevolucionNavigation);
-            builder.Ignore(e => e.ConfiguracionCuentaPagarNavigation);
-            builder.Ignore(e => e.ConfiguracionCuentaCobrarNavigation);
+//            builder.Ignore(e => e.ConfiguracionCuentaPagar);
+//            builder.Ignore(e => e.ConfiguracionCuentaCobrar);
             builder.HasOne(d => d.SystemConfiguration).WithMany().HasForeignKey(d => d.SystemConfigurationId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Cuenta_SystemConfiguration");
             builder.HasOne(d => d.SubGrupoCuenta).WithMany().HasForeignKey(d => d.SubGrupoCuentaId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Cuenta_SubGrupoCuenta");
         }

@@ -15,18 +15,18 @@ namespace GoldBusiness.Infrastructure.Repositories
 
         public async Task<IEnumerable<SystemConfiguration>> GetAllAsync()
             => await _context.SystemConfiguration
-                .Include(s => s.CuentaPagarNavigation)
+                .Include(s => s.CuentaPagar)
                     .ThenInclude(c => c.Translations)
-                .Include(s => s.CuentaCobrarNavigation)
+                .Include(s => s.CuentaCobrar)
                     .ThenInclude(c => c.Translations)
                 .Include(s => s.Translations)
                 .ToListAsync();
 
         public async Task<SystemConfiguration?> GetByIdAsync(int id)
             => await _context.SystemConfiguration
-                .Include(s => s.CuentaPagarNavigation)
+                .Include(s => s.CuentaPagar)
                     .ThenInclude(c => c.Translations)
-                .Include(s => s.CuentaCobrarNavigation)
+                .Include(s => s.CuentaCobrar)
                     .ThenInclude(c => c.Translations)
                 .Include(s => s.Translations)
                 .FirstOrDefaultAsync(s => s.Id == id);
@@ -40,9 +40,9 @@ namespace GoldBusiness.Infrastructure.Repositories
         {
             // includeCanceled se ignora porque SystemConfiguration no tiene propiedad Cancelado
             return await _context.SystemConfiguration
-                .Include(s => s.CuentaPagarNavigation)
+                .Include(s => s.CuentaPagar)
                     .ThenInclude(c => c.Translations)
-                .Include(s => s.CuentaCobrarNavigation)
+                .Include(s => s.CuentaCobrar)
                     .ThenInclude(c => c.Translations)
                 .Include(s => s.Translations)
                 .FirstOrDefaultAsync(s => s.CodigoSistema == codigo);
@@ -77,13 +77,13 @@ namespace GoldBusiness.Infrastructure.Repositories
                 .LoadAsync();
 
             await _context.Entry(entity)
-                .Reference(e => e.CuentaPagarNavigation)
+                .Reference(e => e.CuentaPagar)
                 .Query()
                 .Include(c => c.Translations)
                 .LoadAsync();
 
             await _context.Entry(entity)
-                .Reference(e => e.CuentaCobrarNavigation)
+                .Reference(e => e.CuentaCobrar)
                 .Query()
                 .Include(c => c.Translations)
                 .LoadAsync();
@@ -100,13 +100,13 @@ namespace GoldBusiness.Infrastructure.Repositories
                 .LoadAsync();
 
             await _context.Entry(entity)
-                .Reference(e => e.CuentaPagarNavigation)
+                .Reference(e => e.CuentaPagar)
                 .Query()
                 .Include(c => c.Translations)
                 .LoadAsync();
 
             await _context.Entry(entity)
-                .Reference(e => e.CuentaCobrarNavigation)
+                .Reference(e => e.CuentaCobrar)
                 .Query()
                 .Include(c => c.Translations)
                 .LoadAsync();

@@ -1,4 +1,5 @@
-﻿using GoldBusiness.Application.Interfaces;
+﻿using GoldBusiness.Application.Helpers;
+using GoldBusiness.Application.Interfaces;
 using GoldBusiness.Domain.DTOs;
 using GoldBusiness.Domain.Entities;
 using GoldBusiness.Infrastructure.Repositories;
@@ -29,52 +30,87 @@ namespace GoldBusiness.Application.Services
         public async Task<SystemConfigurationDTO?> GetByIdAsync(int id, string lang = "es")
             => MapToDTO(await _repo.GetByIdAsync(id), lang);
 
-        // ✅ CAMBIADO: Constructor sin cuentas, las establece después
         public async Task<SystemConfigurationDTO> CreateAsync(
             SystemConfigurationDTO dto,
             string user,
             string lang = "es")
         {
+            var creador = user ?? "system";
+
+            // Usar el helper genérico
+            var (existe, estaCancelado, existingEntity) = await CodigoValidationHelper
+                .ValidateCodigoForCreateAsync(_repo, dto.CodigoSistema);
+
+            if (existe)
+            {
+                if (estaCancelado && existingEntity != null)
+                {
+                    existingEntity.AddOrUpdateTranslation(
+                        lang,
+                        dto.NombreNegocio,
+                        dto.Direccion ?? string.Empty,
+                        creador);
+
+                    existingEntity.ActualizarAuditoria(creador);
+                    await _repo.UpdateAsync(existingEntity);
+
+                    return MapToDTO(existingEntity, lang)!;
+                }
+                else
+                {
+                    var errorMessage = CodigoValidationHelper.GetDuplicateCodeErrorMessage(
+                        _localizer, dto.CodigoSistema, false);
+                    throw new InvalidOperationException(errorMessage);
+                }
+            }
+
+            // No existe, crear nuevo registro
             var entity = new SystemConfiguration(
+                dto.CodigoSistema,
+                dto.Licencia,
+                dto.NombreNegocio,
+                dto.Direccion,
+                dto.Municipio,
+                dto.Provincia,
+                dto.CodPostal,
+                dto.Imagen,
+                dto.Web,
+                dto.Email,
+                dto.Telefono,
+                dto.Caducidad,
+                creador);
 
-            dto.CodigoSistema,
-            dto.Licencia,
-            dto.NombreNegocio,
-            dto.Direccion,
-            dto.Municipio,
-            dto.Provincia,
-            dto.CodPostal,
-            dto.Imagen,
-            dto.Web,
-            dto.Email,
-            dto.Telefono,
-            dto.Caducidad,
-            user);
-
-            // ✅ Establecer cuentas (pueden ser null)
+            // Establecer cuentas si existen
             if (dto.CuentaPagarId.HasValue || dto.CuentaCobrarId.HasValue)
             {
                 entity.SetCuentas(dto.CuentaPagarId, dto.CuentaCobrarId);
             }
 
-            await _repo.AddAsync(entity);
+            // Agregar traducción
+            entity.AddOrUpdateTranslation(
+                lang,
+                dto.NombreNegocio,
+                dto.Direccion ?? string.Empty,
+                creador);
 
-            entity.AddOrUpdateTranslation(lang, dto.NombreNegocio, dto.Direccion ?? string.Empty, user);
-            await _repo.UpdateAsync(entity);
+            await _repo.AddAsync(entity);
 
             return MapToDTO(entity, lang)!;
         }
 
-        // ✅ CAMBIADO: Manejo de nullable
         public async Task<SystemConfigurationDTO> UpdateAsync(
             int id,
             SystemConfigurationDTO dto,
             string user,
             string lang = "es")
         {
-            var entity = await _repo.GetByIdAsync(id);
-            if (entity == null) throw new KeyNotFoundException();
+            var modificador = user ?? "system";
 
+            var entity = await _repo.GetByIdAsync(id);
+            if (entity == null)
+                throw new KeyNotFoundException($"SystemConfiguration con ID {id} no encontrada");
+
+            // Actualizar todas las propiedades
             entity.SetCodigoSistema(dto.CodigoSistema);
             entity.SetLicencia(dto.Licencia);
             entity.SetNombreNegocio(dto.NombreNegocio);
@@ -87,13 +123,17 @@ namespace GoldBusiness.Application.Services
             entity.SetEmail(dto.Email ?? string.Empty);
             entity.SetTelefono(dto.Telefono ?? string.Empty);
             entity.SetCaducidad(dto.Caducidad);
-
-            // ✅ Manejo de nullable
             entity.SetCuentas(dto.CuentaPagarId, dto.CuentaCobrarId);
 
-            entity.AddOrUpdateTranslation(lang, dto.NombreNegocio, dto.Direccion ?? string.Empty, user);
+            // Actualizar traducción
+            entity.AddOrUpdateTranslation(
+                lang,
+                dto.NombreNegocio,
+                dto.Direccion ?? string.Empty,
+                modificador);
 
-            entity.ActualizarAuditoria(user);
+            // Actualizar auditoría
+            entity.ActualizarAuditoria(modificador);
 
             await _repo.UpdateAsync(entity);
             return MapToDTO(entity, lang)!;
@@ -106,14 +146,26 @@ namespace GoldBusiness.Application.Services
             string? direccion,
             string user)
         {
-            var entity = await _repo.GetByIdAsync(id);
-            if (entity == null) throw new KeyNotFoundException();
+            var modificador = user ?? "system";
 
-            entity.AddOrUpdateTranslation(lang, nombreNegocio, direccion ?? string.Empty, user);
+            var entity = await _repo.GetByIdAsync(id);
+            if (entity == null)
+                throw new KeyNotFoundException($"SystemConfiguration con ID {id} no encontrada");
+
+            entity.AddOrUpdateTranslation(
+                lang,
+                nombreNegocio,
+                direccion ?? string.Empty,
+                modificador);
+
+            entity.ActualizarAuditoria(modificador);
+
             await _repo.UpdateAsync(entity);
         }
 
-        // ✅ CAMBIADO: Manejo correcto de propiedades nullable
+        /// <summary>
+        /// Mapea la entidad SystemConfiguration a DTO
+        /// </summary>
         private static SystemConfigurationDTO? MapToDTO(SystemConfiguration? s, string lang)
         {
             if (s == null) return null;
@@ -135,10 +187,14 @@ namespace GoldBusiness.Application.Services
                 CuentaPagarId = s.CuentaPagarId,
                 CuentaCobrarId = s.CuentaCobrarId,
                 Caducidad = s.Caducidad,
-                CuentaPagarCodigo = s.CuentaPagarNavigation?.Codigo,
-                CuentaPagarDescripcion = s.CuentaPagarNavigation?.GetDescripcion(lang),
-                CuentaCobrarCodigo = s.CuentaCobrarNavigation?.Codigo,
-                CuentaCobrarDescripcion = s.CuentaCobrarNavigation?.GetDescripcion(lang),
+
+                // Propiedades de navegación (nullable)
+                CuentaPagarCodigo = s.CuentaPagar?.Codigo,
+                CuentaPagarDescripcion = s.CuentaPagar?.GetDescripcion(lang),
+                CuentaCobrarCodigo = s.CuentaCobrar?.Codigo,
+                CuentaCobrarDescripcion = s.CuentaCobrar?.GetDescripcion(lang),
+
+                // Auditoría
                 CreadoPor = s.CreadoPor,
                 FechaHoraCreado = s.FechaHoraCreado,
                 ModificadoPor = s.ModificadoPor,

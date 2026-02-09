@@ -31,8 +31,8 @@ namespace GoldBusiness.Infrastructure.Settings.Setting
             builder.Property(e => e.FechaHoraModificado).HasColumnType("datetime");
             builder.Ignore(e => e.Translations);
             builder.Ignore(e => e.Establecimiento);
-            builder.HasOne(d => d.CuentaPagarNavigation).WithMany(p => p.ConfiguracionCuentaPagarNavigation).HasForeignKey(d => d.CuentaPagarId).OnDelete(DeleteBehavior.Restrict).IsRequired(false).HasConstraintName("FK_Configuracion_CuentaPagar");
-            builder.HasOne(d => d.CuentaCobrarNavigation).WithMany(p => p.ConfiguracionCuentaCobrarNavigation).HasForeignKey(d => d.CuentaCobrarId).OnDelete(DeleteBehavior.Restrict).IsRequired(false).HasConstraintName("FK_Configuracion_CuentaCobrar");
+            builder.HasOne(d => d.CuentaPagar).WithMany(p => p.ConfiguracionCuentaPagar).HasForeignKey(d => d.CuentaPagarId).OnDelete(DeleteBehavior.Restrict).IsRequired(false).HasConstraintName("FK_Configuracion_CuentaPagar");
+            builder.HasOne(d => d.CuentaCobrar).WithMany(p => p.ConfiguracionCuentaCobrar).HasForeignKey(d => d.CuentaCobrarId).OnDelete(DeleteBehavior.Restrict).IsRequired(false).HasConstraintName("FK_Configuracion_CuentaCobrar");
         }
     }
 }

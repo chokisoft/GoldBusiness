@@ -22,8 +22,8 @@ namespace GoldBusiness.Domain.Entities
         public IReadOnlyCollection<Localidad> LocalidadCuentaCostoNavigation { get; } = new HashSet<Localidad>();
         public IReadOnlyCollection<Localidad> LocalidadCuentaVentaNavigation { get; } = new HashSet<Localidad>();
         public IReadOnlyCollection<Localidad> LocalidadCuentaDevolucionNavigation { get; } = new HashSet<Localidad>();
-        public IReadOnlyCollection<SystemConfiguration> ConfiguracionCuentaPagarNavigation { get; } = new HashSet<SystemConfiguration>();
-        public IReadOnlyCollection<SystemConfiguration> ConfiguracionCuentaCobrarNavigation { get; } = new HashSet<SystemConfiguration>();
+        public IReadOnlyCollection<SystemConfiguration> ConfiguracionCuentaPagar { get; } = new HashSet<SystemConfiguration>();
+        public IReadOnlyCollection<SystemConfiguration> ConfiguracionCuentaCobrar { get; } = new HashSet<SystemConfiguration>();
 
         // Constructor protegido para EF Core
         protected Cuenta() { }

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GoldBusiness.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260208204928_InitialCreate")]
+    [Migration("20260209020450_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -3566,21 +3566,21 @@ namespace GoldBusiness.Infrastructure.Migrations
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.SystemConfiguration", b =>
                 {
-                    b.HasOne("GoldBusiness.Domain.Entities.Cuenta", "CuentaCobrarNavigation")
-                        .WithMany("ConfiguracionCuentaCobrarNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Cuenta", "CuentaCobrar")
+                        .WithMany("ConfiguracionCuentaCobrar")
                         .HasForeignKey("CuentaCobrarId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .HasConstraintName("FK_Configuracion_CuentaCobrar");
 
-                    b.HasOne("GoldBusiness.Domain.Entities.Cuenta", "CuentaPagarNavigation")
-                        .WithMany("ConfiguracionCuentaPagarNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Cuenta", "CuentaPagar")
+                        .WithMany("ConfiguracionCuentaPagar")
                         .HasForeignKey("CuentaPagarId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .HasConstraintName("FK_Configuracion_CuentaPagar");
 
-                    b.Navigation("CuentaCobrarNavigation");
+                    b.Navigation("CuentaCobrar");
 
-                    b.Navigation("CuentaPagarNavigation");
+                    b.Navigation("CuentaPagar");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.ClienteTranslation", b =>
@@ -3848,9 +3848,9 @@ namespace GoldBusiness.Infrastructure.Migrations
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Cuenta", b =>
                 {
-                    b.Navigation("ConfiguracionCuentaCobrarNavigation");
+                    b.Navigation("ConfiguracionCuentaCobrar");
 
-                    b.Navigation("ConfiguracionCuentaPagarNavigation");
+                    b.Navigation("ConfiguracionCuentaPagar");
 
                     b.Navigation("LocalidadCuentaCostoNavigation");
 
