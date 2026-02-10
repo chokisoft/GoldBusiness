@@ -14,9 +14,9 @@ namespace GoldBusiness.Domain.Entities
         public bool Servicio { get; private set; }
 
         // Propiedades de navegación
-        public Producto ProductoNavigation { get; private set; } = null!;
-        public Localidad LocalidadNavigation { get; private set; } = null!;
-        public OperacionesDetalle OperacionesDetalleNavigation { get; private set; } = null!;
+        public Producto Producto { get; private set; } = null!;
+        public Localidad Localidad { get; private set; } = null!;
+        public OperacionesDetalle OperacionesDetalle { get; private set; } = null!;
 
         // Constructor protegido para EF Core
         protected ErroresVenta() { }

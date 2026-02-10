@@ -19,9 +19,9 @@ namespace GoldBusiness.Infrastructure.Settings.Operations
             builder.Property(e => e.ModificadoPor).IsRequired().HasMaxLength(256);
             builder.Property(e => e.FechaHoraCreado).HasColumnType("datetime");
             builder.Property(e => e.FechaHoraModificado).HasColumnType("datetime");
-            builder.HasOne(d => d.OperacionesDetalleNavigation).WithMany().HasForeignKey(d => d.OperacionesDetalleId).OnDelete(DeleteBehavior.Cascade).HasConstraintName("FK_ErroresVenta_OperacionesDetalle");
-            builder.HasOne(d => d.LocalidadNavigation).WithMany(p => p.ErroresVenta).HasForeignKey(d => d.LocalidadId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_ErroresVenta_Localidad");
-            builder.HasOne(d => d.ProductoNavigation).WithMany(p => p.ErroresVenta).HasForeignKey(d => d.ProductoId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_ErroresVenta_Producto");
+            builder.HasOne(d => d.OperacionesDetalle).WithMany().HasForeignKey(d => d.OperacionesDetalleId).OnDelete(DeleteBehavior.Cascade).HasConstraintName("FK_ErroresVenta_OperacionesDetalle");
+            builder.HasOne(d => d.Localidad).WithMany(p => p.ErroresVenta).HasForeignKey(d => d.LocalidadId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_ErroresVenta_Localidad");
+            builder.HasOne(d => d.Producto).WithMany(p => p.ErroresVenta).HasForeignKey(d => d.ProductoId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_ErroresVenta_Producto");
         }
     }
 }

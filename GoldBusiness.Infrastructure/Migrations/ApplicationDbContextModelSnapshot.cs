@@ -3068,82 +3068,82 @@ namespace GoldBusiness.Infrastructure.Migrations
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.CajaRegistradora", b =>
                 {
-                    b.HasOne("GoldBusiness.Domain.Entities.IdTurno", "IdTurnoNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.IdTurno", "IdTurno")
                         .WithMany()
                         .HasForeignKey("IdTurnoId")
                         .IsRequired()
                         .HasConstraintName("FK_CajaRegistradora_IdTurno");
 
-                    b.Navigation("IdTurnoNavigation");
+                    b.Navigation("IdTurno");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.CajaRegistradoraDetalle", b =>
                 {
-                    b.HasOne("GoldBusiness.Domain.Entities.CajaRegistradora", "CajaRegistradoraNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.CajaRegistradora", "CajaRegistradora")
                         .WithMany("Detalles")
                         .HasForeignKey("CajaRegistradoraId")
                         .IsRequired()
                         .HasConstraintName("FK_CajaRegistradoraDetalle_CajaRegistradora");
 
-                    b.HasOne("GoldBusiness.Domain.Entities.Localidad", "LocalidadNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Localidad", "Localidad")
                         .WithMany()
                         .HasForeignKey("LocalidadId")
                         .IsRequired()
                         .HasConstraintName("FK_CajaRegistradoraDetalle_Localidad");
 
-                    b.HasOne("GoldBusiness.Domain.Entities.Producto", "ProductoNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Producto", "Producto")
                         .WithMany()
                         .HasForeignKey("ProductoId")
                         .IsRequired()
                         .HasConstraintName("FK_CajaRegistradoraDetalle_Producto");
 
-                    b.Navigation("CajaRegistradoraNavigation");
+                    b.Navigation("CajaRegistradora");
 
-                    b.Navigation("LocalidadNavigation");
+                    b.Navigation("Localidad");
 
-                    b.Navigation("ProductoNavigation");
+                    b.Navigation("Producto");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Comprobante", b =>
                 {
-                    b.HasOne("GoldBusiness.Domain.Entities.Establecimiento", "EstablecimientoNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Establecimiento", "Establecimiento")
                         .WithMany()
                         .HasForeignKey("EstablecimientoId")
                         .IsRequired()
                         .HasConstraintName("FK_Comprobante_Establecimiento");
 
-                    b.Navigation("EstablecimientoNavigation");
+                    b.Navigation("Establecimiento");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.ComprobanteDetalle", b =>
                 {
-                    b.HasOne("GoldBusiness.Domain.Entities.Comprobante", "ComprobanteNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Comprobante", "Comprobante")
                         .WithMany("Detalles")
                         .HasForeignKey("ComprobanteId")
                         .IsRequired()
                         .HasConstraintName("FK_ComprobanteDetalle_Comprobante");
 
-                    b.HasOne("GoldBusiness.Domain.Entities.Cuenta", "CuentaNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Cuenta", "Cuenta")
                         .WithMany()
                         .HasForeignKey("CuentaId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("FK_ComprobanteDetalle_Cuenta");
 
-                    b.Navigation("ComprobanteNavigation");
+                    b.Navigation("Comprobante");
 
-                    b.Navigation("CuentaNavigation");
+                    b.Navigation("Cuenta");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.ComprobanteTemporal", b =>
                 {
-                    b.HasOne("GoldBusiness.Domain.Entities.Establecimiento", "EstablecimientoNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Establecimiento", "Establecimiento")
                         .WithMany()
                         .HasForeignKey("EstablecimientoId")
                         .IsRequired()
                         .HasConstraintName("FK_ComprobanteTemporal_Establecimiento");
 
-                    b.Navigation("EstablecimientoNavigation");
+                    b.Navigation("Establecimiento");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.ConceptoAjuste", b =>
@@ -3179,364 +3179,364 @@ namespace GoldBusiness.Infrastructure.Migrations
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.CuentaCobrarPagar", b =>
                 {
-                    b.HasOne("GoldBusiness.Domain.Entities.Cliente", "ClienteNavigation")
-                        .WithMany()
+                    b.HasOne("GoldBusiness.Domain.Entities.Cliente", "Cliente")
+                        .WithMany("CuentasCobrarPagar")
                         .HasForeignKey("ClienteId")
                         .OnDelete(DeleteBehavior.SetNull)
                         .HasConstraintName("FK_CuentaCobrarPagar_Cliente");
 
-                    b.HasOne("GoldBusiness.Domain.Entities.Cuenta", "CuentaCobroEfectivoNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Cuenta", "CuentaCobroEfectivo")
                         .WithMany()
                         .HasForeignKey("CuentaCobroEfectivoId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .HasConstraintName("FK_CuentaCobrarPagar_CuentaCobroEfectivo");
 
-                    b.HasOne("GoldBusiness.Domain.Entities.Cuenta", "CuentaCobroElectronicoNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Cuenta", "CuentaCobroElectronico")
                         .WithMany()
                         .HasForeignKey("CuentaCobroElectronicoId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .HasConstraintName("FK_CuentaCobrarPagar_CuentaCobroElectronico");
 
-                    b.HasOne("GoldBusiness.Domain.Entities.Cuenta", "CuentaPagoEfectivoNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Cuenta", "CuentaPagoEfectivo")
                         .WithMany()
                         .HasForeignKey("CuentaPagoEfectivoId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .HasConstraintName("FK_CuentaCobrarPagar_CuentaPagoEfectivo");
 
-                    b.HasOne("GoldBusiness.Domain.Entities.Cuenta", "CuentaPagoElectronicoNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Cuenta", "CuentaPagoElectronico")
                         .WithMany()
                         .HasForeignKey("CuentaPagoElectronicoId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .HasConstraintName("FK_CuentaCobrarPagar_CuentaPagoElectronico");
 
-                    b.HasOne("GoldBusiness.Domain.Entities.Establecimiento", "EstablecimientoNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Establecimiento", "Establecimiento")
                         .WithMany()
                         .HasForeignKey("EstablecimientoId")
                         .IsRequired()
                         .HasConstraintName("FK_CuentaCobrarPagar_Establecimiento");
 
-                    b.HasOne("GoldBusiness.Domain.Entities.Proveedor", "ProveedorNavigation")
-                        .WithMany()
+                    b.HasOne("GoldBusiness.Domain.Entities.Proveedor", "Proveedor")
+                        .WithMany("CuentasCobrarPagar")
                         .HasForeignKey("ProveedorId")
                         .OnDelete(DeleteBehavior.SetNull)
                         .HasConstraintName("FK_CuentaCobrarPagar_Proveedor");
 
-                    b.HasOne("GoldBusiness.Domain.Entities.Transaccion", "TransaccionNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Transaccion", "Transaccion")
                         .WithMany()
                         .HasForeignKey("TransaccionId")
                         .IsRequired()
                         .HasConstraintName("FK_CuentaCobrarPagar_Transaccion");
 
-                    b.Navigation("ClienteNavigation");
+                    b.Navigation("Cliente");
 
-                    b.Navigation("CuentaCobroEfectivoNavigation");
+                    b.Navigation("CuentaCobroEfectivo");
 
-                    b.Navigation("CuentaCobroElectronicoNavigation");
+                    b.Navigation("CuentaCobroElectronico");
 
-                    b.Navigation("CuentaPagoEfectivoNavigation");
+                    b.Navigation("CuentaPagoEfectivo");
 
-                    b.Navigation("CuentaPagoElectronicoNavigation");
+                    b.Navigation("CuentaPagoElectronico");
 
-                    b.Navigation("EstablecimientoNavigation");
+                    b.Navigation("Establecimiento");
 
-                    b.Navigation("ProveedorNavigation");
+                    b.Navigation("Proveedor");
 
-                    b.Navigation("TransaccionNavigation");
+                    b.Navigation("Transaccion");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.ErroresVenta", b =>
                 {
-                    b.HasOne("GoldBusiness.Domain.Entities.Localidad", "LocalidadNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Localidad", "Localidad")
                         .WithMany("ErroresVenta")
                         .HasForeignKey("LocalidadId")
                         .IsRequired()
                         .HasConstraintName("FK_ErroresVenta_Localidad");
 
-                    b.HasOne("GoldBusiness.Domain.Entities.OperacionesDetalle", "OperacionesDetalleNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.OperacionesDetalle", "OperacionesDetalle")
                         .WithMany()
                         .HasForeignKey("OperacionesDetalleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_ErroresVenta_OperacionesDetalle");
 
-                    b.HasOne("GoldBusiness.Domain.Entities.Producto", "ProductoNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Producto", "Producto")
                         .WithMany("ErroresVenta")
                         .HasForeignKey("ProductoId")
                         .IsRequired()
                         .HasConstraintName("FK_ErroresVenta_Producto");
 
-                    b.Navigation("LocalidadNavigation");
+                    b.Navigation("Localidad");
 
-                    b.Navigation("OperacionesDetalleNavigation");
+                    b.Navigation("OperacionesDetalle");
 
-                    b.Navigation("ProductoNavigation");
+                    b.Navigation("Producto");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Establecimiento", b =>
                 {
-                    b.HasOne("GoldBusiness.Domain.Entities.SystemConfiguration", "NegocioNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.SystemConfiguration", "Negocio")
                         .WithMany()
                         .HasForeignKey("NegocioId")
                         .IsRequired()
                         .HasConstraintName("FK_Establecimiento_Configuracion");
 
-                    b.Navigation("NegocioNavigation");
+                    b.Navigation("Negocio");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.EstadoCuenta", b =>
                 {
-                    b.HasOne("GoldBusiness.Domain.Entities.Cuenta", "CuentaNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Cuenta", "Cuenta")
                         .WithMany()
                         .HasForeignKey("CuentaId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("FK_EstadoCuenta_Cuenta");
 
-                    b.HasOne("GoldBusiness.Domain.Entities.Establecimiento", "EstablecimientoNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Establecimiento", "Establecimiento")
                         .WithMany()
                         .HasForeignKey("EstablecimientoId")
                         .IsRequired()
                         .HasConstraintName("FK_EstadoCuenta_Establecimiento");
 
-                    b.Navigation("CuentaNavigation");
+                    b.Navigation("Cuenta");
 
-                    b.Navigation("EstablecimientoNavigation");
+                    b.Navigation("Establecimiento");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.FichaProducto", b =>
                 {
-                    b.HasOne("GoldBusiness.Domain.Entities.Producto", "ComponenteNavigation")
-                        .WithMany("FichaProductoCodigoNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Producto", "Componente")
+                        .WithMany("FichaProductoCodigo")
                         .HasForeignKey("ComponenteId")
                         .IsRequired()
                         .HasConstraintName("FK_FichaProducto_Componente");
 
-                    b.HasOne("GoldBusiness.Domain.Entities.Localidad", "LocalidadNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Localidad", "Localidad")
                         .WithMany("FichaProductos")
                         .HasForeignKey("LocalidadId")
                         .IsRequired()
                         .HasConstraintName("FK_FichaProducto_Localidad");
 
-                    b.HasOne("GoldBusiness.Domain.Entities.Producto", "ProductoNavigation")
-                        .WithMany("FichaProductoProductoNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Producto", "Producto")
+                        .WithMany("FichaProductoProducto")
                         .HasForeignKey("ProductoId")
                         .IsRequired()
                         .HasConstraintName("FK_FichaProducto_Producto");
 
-                    b.Navigation("ComponenteNavigation");
+                    b.Navigation("Componente");
 
-                    b.Navigation("LocalidadNavigation");
+                    b.Navigation("Localidad");
 
-                    b.Navigation("ProductoNavigation");
+                    b.Navigation("Producto");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Localidad", b =>
                 {
-                    b.HasOne("GoldBusiness.Domain.Entities.Cuenta", "CuentaCostoNavigation")
-                        .WithMany("LocalidadCuentaCostoNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Cuenta", "CuentaCosto")
+                        .WithMany("LocalidadCuentaCosto")
                         .HasForeignKey("CuentaCostoId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("FK_Localidad_CuentaCosto");
 
-                    b.HasOne("GoldBusiness.Domain.Entities.Cuenta", "CuentaDevolucionNavigation")
-                        .WithMany("LocalidadCuentaDevolucionNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Cuenta", "CuentaDevolucion")
+                        .WithMany("LocalidadCuentaDevolucion")
                         .HasForeignKey("CuentaDevolucionId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("FK_Localidad_CuentaDevolucion");
 
-                    b.HasOne("GoldBusiness.Domain.Entities.Cuenta", "CuentaInventarioNavigation")
-                        .WithMany("LocalidadCuentaInventarioNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Cuenta", "CuentaInventario")
+                        .WithMany("LocalidadCuentaInventario")
                         .HasForeignKey("CuentaInventarioId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("FK_Localidad_CuentaInventario");
 
-                    b.HasOne("GoldBusiness.Domain.Entities.Cuenta", "CuentaVentaNavigation")
-                        .WithMany("LocalidadCuentaVentaNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Cuenta", "CuentaVenta")
+                        .WithMany("LocalidadCuentaVenta")
                         .HasForeignKey("CuentaVentaId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("FK_Localidad_CuentaVenta");
 
-                    b.HasOne("GoldBusiness.Domain.Entities.Establecimiento", "EstablecimientoNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Establecimiento", "Establecimiento")
                         .WithMany("Localidades")
                         .HasForeignKey("EstablecimientoId")
                         .IsRequired()
                         .HasConstraintName("FK_Localidad_Establecimiento");
 
-                    b.Navigation("CuentaCostoNavigation");
+                    b.Navigation("CuentaCosto");
 
-                    b.Navigation("CuentaDevolucionNavigation");
+                    b.Navigation("CuentaDevolucion");
 
-                    b.Navigation("CuentaInventarioNavigation");
+                    b.Navigation("CuentaInventario");
 
-                    b.Navigation("CuentaVentaNavigation");
+                    b.Navigation("CuentaVenta");
 
-                    b.Navigation("EstablecimientoNavigation");
+                    b.Navigation("Establecimiento");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.OperacionesDetalle", b =>
                 {
-                    b.HasOne("GoldBusiness.Domain.Entities.Localidad", "LocalidadNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Localidad", "Localidad")
                         .WithMany("OperacionesDetalle")
                         .HasForeignKey("LocalidadId")
                         .IsRequired()
                         .HasConstraintName("FK_OperacionesDetalle_Localidad");
 
-                    b.HasOne("GoldBusiness.Domain.Entities.OperacionesEncabezado", "OperacionEncabezadoNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.OperacionesEncabezado", "OperacionEncabezado")
                         .WithMany()
                         .HasForeignKey("OperacionesEncabezadoId")
                         .IsRequired()
                         .HasConstraintName("FK_OperacionesDetalle_OperacionesEncabezado");
 
-                    b.HasOne("GoldBusiness.Domain.Entities.Producto", "ProductoNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Producto", "Producto")
                         .WithMany("OperacionesDetalle")
                         .HasForeignKey("ProductoId")
                         .IsRequired()
                         .HasConstraintName("FK_OperacionesDetalle_Producto");
 
-                    b.Navigation("LocalidadNavigation");
+                    b.Navigation("Localidad");
 
-                    b.Navigation("OperacionEncabezadoNavigation");
+                    b.Navigation("OperacionEncabezado");
 
-                    b.Navigation("ProductoNavigation");
+                    b.Navigation("Producto");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.OperacionesEncabezado", b =>
                 {
-                    b.HasOne("GoldBusiness.Domain.Entities.Cliente", "ClienteNavigation")
-                        .WithMany()
+                    b.HasOne("GoldBusiness.Domain.Entities.Cliente", "Cliente")
+                        .WithMany("OperacionesEncabezado")
                         .HasForeignKey("ClienteId")
                         .OnDelete(DeleteBehavior.SetNull)
                         .HasConstraintName("FK_OperacionesEncabezado_Cliente");
 
-                    b.HasOne("GoldBusiness.Domain.Entities.ConceptoAjuste", "ConceptoAjusteNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.ConceptoAjuste", "ConceptoAjuste")
                         .WithMany("OperacionesEncabezado")
                         .HasForeignKey("ConceptoAjusteId")
                         .OnDelete(DeleteBehavior.SetNull)
                         .HasConstraintName("FK_OperacionesEncabezado_ConceptoAjuste");
 
-                    b.HasOne("GoldBusiness.Domain.Entities.Establecimiento", "EstablecimientoNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Establecimiento", "Establecimiento")
                         .WithMany()
                         .HasForeignKey("EstablecimientoId")
                         .IsRequired()
                         .HasConstraintName("FK_OperacionesEncabezado_Establecimiento");
 
-                    b.HasOne("GoldBusiness.Domain.Entities.Proveedor", "ProveedorNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Proveedor", "Proveedor")
                         .WithMany()
                         .HasForeignKey("ProveedorId")
                         .OnDelete(DeleteBehavior.SetNull)
                         .HasConstraintName("FK_OperacionesEncabezado_Proveedor");
 
-                    b.HasOne("GoldBusiness.Domain.Entities.Transaccion", "TransaccionNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Transaccion", "Transaccion")
                         .WithMany()
                         .HasForeignKey("TransaccionId")
                         .IsRequired()
                         .HasConstraintName("FK_OperacionesEncabezado_Transaccion");
 
-                    b.Navigation("ClienteNavigation");
+                    b.Navigation("Cliente");
 
-                    b.Navigation("ConceptoAjusteNavigation");
+                    b.Navigation("ConceptoAjuste");
 
-                    b.Navigation("EstablecimientoNavigation");
+                    b.Navigation("Establecimiento");
 
-                    b.Navigation("ProveedorNavigation");
+                    b.Navigation("Proveedor");
 
-                    b.Navigation("TransaccionNavigation");
+                    b.Navigation("Transaccion");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.OperacionesServicio", b =>
                 {
-                    b.HasOne("GoldBusiness.Domain.Entities.OperacionesDetalle", "OperacionesDetalleNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.OperacionesDetalle", "OperacionesDetalle")
                         .WithMany("OperacionesServicio")
                         .HasForeignKey("OperacionesDetalleId")
                         .IsRequired()
                         .HasConstraintName("FK_OperacionesServicio_OperacionesDetalle");
 
-                    b.HasOne("GoldBusiness.Domain.Entities.Producto", "ProductoNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Producto", "Producto")
                         .WithMany("OperacionesServicio")
                         .HasForeignKey("ProductoId")
                         .IsRequired()
                         .HasConstraintName("FK_OperacionesServicio_Producto");
 
-                    b.Navigation("OperacionesDetalleNavigation");
+                    b.Navigation("OperacionesDetalle");
 
-                    b.Navigation("ProductoNavigation");
+                    b.Navigation("Producto");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Producto", b =>
                 {
-                    b.HasOne("GoldBusiness.Domain.Entities.Establecimiento", "EstablecimientoNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Establecimiento", "Establecimiento")
                         .WithMany("Productos")
                         .HasForeignKey("EstablecimientoId")
                         .IsRequired()
                         .HasConstraintName("FK_Producto_Establecimiento");
 
-                    b.HasOne("GoldBusiness.Domain.Entities.Proveedor", "ProveedorNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Proveedor", "Proveedor")
                         .WithMany("Productos")
                         .HasForeignKey("ProveedorId")
                         .IsRequired()
                         .HasConstraintName("FK_Producto_Proveedor");
 
-                    b.HasOne("GoldBusiness.Domain.Entities.SubLinea", "SubLineaNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.SubLinea", "SubLinea")
                         .WithMany("Productos")
                         .HasForeignKey("SubLineaId")
                         .IsRequired()
                         .HasConstraintName("FK_Producto_SubLinea");
 
-                    b.HasOne("GoldBusiness.Domain.Entities.UnidadMedida", "UnidadMedidaNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.UnidadMedida", "UnidadMedida")
                         .WithMany("Productos")
                         .HasForeignKey("UnidadMedidaId")
                         .IsRequired()
                         .HasConstraintName("FK_Producto_UnidadMedida");
 
-                    b.Navigation("EstablecimientoNavigation");
+                    b.Navigation("Establecimiento");
 
-                    b.Navigation("ProveedorNavigation");
+                    b.Navigation("Proveedor");
 
-                    b.Navigation("SubLineaNavigation");
+                    b.Navigation("SubLinea");
 
-                    b.Navigation("UnidadMedidaNavigation");
+                    b.Navigation("UnidadMedida");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Saldo", b =>
                 {
-                    b.HasOne("GoldBusiness.Domain.Entities.Localidad", "LocalidadNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Localidad", "Localidad")
                         .WithMany("Saldos")
                         .HasForeignKey("LocalidadId")
                         .IsRequired()
                         .HasConstraintName("FK_Saldo_Localidad");
 
-                    b.HasOne("GoldBusiness.Domain.Entities.Producto", "ProductoNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Producto", "Producto")
                         .WithMany("Saldos")
                         .HasForeignKey("ProductoId")
                         .IsRequired()
                         .HasConstraintName("FK_Saldo_Producto");
 
-                    b.Navigation("LocalidadNavigation");
+                    b.Navigation("Localidad");
 
-                    b.Navigation("ProductoNavigation");
+                    b.Navigation("Producto");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.SaldoAnterior", b =>
                 {
-                    b.HasOne("GoldBusiness.Domain.Entities.Localidad", "LocalidadNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Localidad", "Localidad")
                         .WithMany("SaldosAnteriores")
                         .HasForeignKey("LocalidadId")
                         .IsRequired()
                         .HasConstraintName("FK_SaldoAnterior_Localidad");
 
-                    b.HasOne("GoldBusiness.Domain.Entities.Producto", "ProductoNavigation")
+                    b.HasOne("GoldBusiness.Domain.Entities.Producto", "Producto")
                         .WithMany("SaldosAnteriores")
                         .HasForeignKey("ProductoId")
                         .IsRequired()
                         .HasConstraintName("FK_SaldoAnterior_Producto");
 
-                    b.Navigation("LocalidadNavigation");
+                    b.Navigation("Localidad");
 
-                    b.Navigation("ProductoNavigation");
+                    b.Navigation("Producto");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.SubGrupoCuenta", b =>
@@ -3583,7 +3583,7 @@ namespace GoldBusiness.Infrastructure.Migrations
             modelBuilder.Entity("GoldBusiness.Domain.Translation.ClienteTranslation", b =>
                 {
                     b.HasOne("GoldBusiness.Domain.Entities.Cliente", null)
-                        .WithMany()
+                        .WithMany("Translations")
                         .HasForeignKey("ClienteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -3716,7 +3716,7 @@ namespace GoldBusiness.Infrastructure.Migrations
             modelBuilder.Entity("GoldBusiness.Domain.Translation.ProveedorTranslation", b =>
                 {
                     b.HasOne("GoldBusiness.Domain.Entities.Proveedor", null)
-                        .WithMany()
+                        .WithMany("Translations")
                         .HasForeignKey("ProveedorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -3748,7 +3748,7 @@ namespace GoldBusiness.Infrastructure.Migrations
             modelBuilder.Entity("GoldBusiness.Domain.Translation.SystemConfigurationTranslation", b =>
                 {
                     b.HasOne("GoldBusiness.Domain.Entities.SystemConfiguration", null)
-                        .WithMany()
+                        .WithMany("Translations")
                         .HasForeignKey("ConfiguracionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -3831,6 +3831,15 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.Navigation("Detalles");
                 });
 
+            modelBuilder.Entity("GoldBusiness.Domain.Entities.Cliente", b =>
+                {
+                    b.Navigation("CuentasCobrarPagar");
+
+                    b.Navigation("OperacionesEncabezado");
+
+                    b.Navigation("Translations");
+                });
+
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Comprobante", b =>
                 {
                     b.Navigation("Detalles");
@@ -3849,13 +3858,13 @@ namespace GoldBusiness.Infrastructure.Migrations
 
                     b.Navigation("ConfiguracionCuentaPagar");
 
-                    b.Navigation("LocalidadCuentaCostoNavigation");
+                    b.Navigation("LocalidadCuentaCosto");
 
-                    b.Navigation("LocalidadCuentaDevolucionNavigation");
+                    b.Navigation("LocalidadCuentaDevolucion");
 
-                    b.Navigation("LocalidadCuentaInventarioNavigation");
+                    b.Navigation("LocalidadCuentaInventario");
 
-                    b.Navigation("LocalidadCuentaVentaNavigation");
+                    b.Navigation("LocalidadCuentaVenta");
 
                     b.Navigation("Translations");
                 });
@@ -3908,9 +3917,9 @@ namespace GoldBusiness.Infrastructure.Migrations
                 {
                     b.Navigation("ErroresVenta");
 
-                    b.Navigation("FichaProductoCodigoNavigation");
+                    b.Navigation("FichaProductoCodigo");
 
-                    b.Navigation("FichaProductoProductoNavigation");
+                    b.Navigation("FichaProductoProducto");
 
                     b.Navigation("OperacionesDetalle");
 
@@ -3923,7 +3932,11 @@ namespace GoldBusiness.Infrastructure.Migrations
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Proveedor", b =>
                 {
+                    b.Navigation("CuentasCobrarPagar");
+
                     b.Navigation("Productos");
+
+                    b.Navigation("Translations");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.SubGrupoCuenta", b =>
@@ -3935,6 +3948,11 @@ namespace GoldBusiness.Infrastructure.Migrations
                 {
                     b.Navigation("Productos");
 
+                    b.Navigation("Translations");
+                });
+
+            modelBuilder.Entity("GoldBusiness.Domain.Entities.SystemConfiguration", b =>
+                {
                     b.Navigation("Translations");
                 });
 

@@ -14,8 +14,8 @@ namespace GoldBusiness.Domain.Entities
         public string Referencia { get; private set; } = string.Empty;
 
         // Propiedades de navegación
-        public Establecimiento EstablecimientoNavigation { get; private set; } = null!;
-        public Cuenta CuentaNavigation { get; private set; } = null!;
+        public Establecimiento Establecimiento { get; private set; } = null!;
+        public Cuenta Cuenta { get; private set; } = null!;
 
         // Constructor protegido para EF Core
         protected EstadoCuenta() { }

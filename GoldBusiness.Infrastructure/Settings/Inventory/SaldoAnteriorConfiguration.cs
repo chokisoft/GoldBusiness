@@ -20,8 +20,8 @@ namespace GoldBusiness.Infrastructure.Settings.Inventory
             builder.Property(e => e.ModificadoPor).IsRequired().HasMaxLength(256);
             builder.Property(e => e.FechaHoraCreado).HasColumnType("datetime");
             builder.Property(e => e.FechaHoraModificado).HasColumnType("datetime");
-            builder.HasOne(d => d.LocalidadNavigation).WithMany(p => p.SaldosAnteriores).HasForeignKey(d => d.LocalidadId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_SaldoAnterior_Localidad");
-            builder.HasOne(d => d.ProductoNavigation).WithMany(p => p.SaldosAnteriores).HasForeignKey(d => d.ProductoId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_SaldoAnterior_Producto");
+            builder.HasOne(d => d.Localidad).WithMany(p => p.SaldosAnteriores).HasForeignKey(d => d.LocalidadId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_SaldoAnterior_Localidad");
+            builder.HasOne(d => d.Producto).WithMany(p => p.SaldosAnteriores).HasForeignKey(d => d.ProductoId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_SaldoAnterior_Producto");
         }
     }
 }

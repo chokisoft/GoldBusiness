@@ -23,11 +23,11 @@ namespace GoldBusiness.Infrastructure.Settings.EstablishmentLocations
             builder.Ignore(e => e.OperacionesDetalle);
             builder.Ignore(e => e.Saldos);
             builder.Ignore(e => e.SaldosAnteriores);
-            builder.HasOne(d => d.EstablecimientoNavigation).WithMany(p => p.Localidades).HasForeignKey(d => d.EstablecimientoId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Localidad_Establecimiento");
-            builder.HasOne(d => d.CuentaInventarioNavigation).WithMany(p => p.LocalidadCuentaInventarioNavigation).HasForeignKey(d => d.CuentaInventarioId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Localidad_CuentaInventario");
-            builder.HasOne(d => d.CuentaCostoNavigation).WithMany(p => p.LocalidadCuentaCostoNavigation).HasForeignKey(d => d.CuentaCostoId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Localidad_CuentaCosto");
-            builder.HasOne(d => d.CuentaVentaNavigation).WithMany(p => p.LocalidadCuentaVentaNavigation).HasForeignKey(d => d.CuentaVentaId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Localidad_CuentaVenta");
-            builder.HasOne(d => d.CuentaDevolucionNavigation).WithMany(p => p.LocalidadCuentaDevolucionNavigation).HasForeignKey(d => d.CuentaDevolucionId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Localidad_CuentaDevolucion");
+            builder.HasOne(d => d.Establecimiento).WithMany(p => p.Localidades).HasForeignKey(d => d.EstablecimientoId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Localidad_Establecimiento");
+            builder.HasOne(d => d.CuentaInventario).WithMany(p => p.LocalidadCuentaInventario).HasForeignKey(d => d.CuentaInventarioId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Localidad_CuentaInventario");
+            builder.HasOne(d => d.CuentaCosto).WithMany(p => p.LocalidadCuentaCosto).HasForeignKey(d => d.CuentaCostoId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Localidad_CuentaCosto");
+            builder.HasOne(d => d.CuentaVenta).WithMany(p => p.LocalidadCuentaVenta).HasForeignKey(d => d.CuentaVentaId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Localidad_CuentaVenta");
+            builder.HasOne(d => d.CuentaDevolucion).WithMany(p => p.LocalidadCuentaDevolucion).HasForeignKey(d => d.CuentaDevolucionId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Localidad_CuentaDevolucion");
         }
     }
 }

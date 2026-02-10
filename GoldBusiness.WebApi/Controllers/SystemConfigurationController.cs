@@ -64,17 +64,6 @@ namespace GoldBusiness.WebApi.Controllers
             return NoContent();
         }
 
-        private string GetCurrentLanguage()
-        {
-            var acceptLanguage = Request.Headers["Accept-Language"].ToString();
-            if (string.IsNullOrEmpty(acceptLanguage)) return "es";
-
-            var firstLang = acceptLanguage.Split(',')[0];
-            var culture = firstLang.Split(';')[0].Trim();
-
-            return culture.Length >= 2 ? culture.Substring(0, 2).ToLower() : "es";
-        }
-
         public class TranslationRequest
         {
             public string Language { get; set; } = string.Empty;

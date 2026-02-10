@@ -18,10 +18,10 @@ namespace GoldBusiness.Domain.Entities
         public bool Cancelado { get; private set; }
 
         public IReadOnlyCollection<CuentaTranslation> Translations => _translations;
-        public IReadOnlyCollection<Localidad> LocalidadCuentaInventarioNavigation { get; } = new HashSet<Localidad>();
-        public IReadOnlyCollection<Localidad> LocalidadCuentaCostoNavigation { get; } = new HashSet<Localidad>();
-        public IReadOnlyCollection<Localidad> LocalidadCuentaVentaNavigation { get; } = new HashSet<Localidad>();
-        public IReadOnlyCollection<Localidad> LocalidadCuentaDevolucionNavigation { get; } = new HashSet<Localidad>();
+        public IReadOnlyCollection<Localidad> LocalidadCuentaInventario { get; } = new HashSet<Localidad>();
+        public IReadOnlyCollection<Localidad> LocalidadCuentaCosto { get; } = new HashSet<Localidad>();
+        public IReadOnlyCollection<Localidad> LocalidadCuentaVenta { get; } = new HashSet<Localidad>();
+        public IReadOnlyCollection<Localidad> LocalidadCuentaDevolucion { get; } = new HashSet<Localidad>();
         public IReadOnlyCollection<SystemConfiguration> ConfiguracionCuentaPagar { get; } = new HashSet<SystemConfiguration>();
         public IReadOnlyCollection<SystemConfiguration> ConfiguracionCuentaCobrar { get; } = new HashSet<SystemConfiguration>();
 

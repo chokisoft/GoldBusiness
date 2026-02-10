@@ -32,10 +32,10 @@ namespace GoldBusiness.Infrastructure.Settings.Inventory
             builder.Ignore(e => e.OperacionesServicio);
             builder.Ignore(e => e.Saldos);
             builder.Ignore(e => e.SaldosAnteriores);
-            builder.HasOne(d => d.EstablecimientoNavigation).WithMany(p => p.Productos).HasForeignKey(d => d.EstablecimientoId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Producto_Establecimiento");
-            builder.HasOne(d => d.ProveedorNavigation).WithMany(p => p.Productos).HasForeignKey(d => d.ProveedorId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Producto_Proveedor");
-            builder.HasOne(d => d.SubLineaNavigation).WithMany(p => p.Productos).HasForeignKey(d => d.SubLineaId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Producto_SubLinea");
-            builder.HasOne(d => d.UnidadMedidaNavigation).WithMany(p => p.Productos).HasForeignKey(d => d.UnidadMedidaId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Producto_UnidadMedida");
+            builder.HasOne(d => d.Establecimiento).WithMany(p => p.Productos).HasForeignKey(d => d.EstablecimientoId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Producto_Establecimiento");
+            builder.HasOne(d => d.Proveedor).WithMany(p => p.Productos).HasForeignKey(d => d.ProveedorId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Producto_Proveedor");
+            builder.HasOne(d => d.SubLinea).WithMany(p => p.Productos).HasForeignKey(d => d.SubLineaId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Producto_SubLinea");
+            builder.HasOne(d => d.UnidadMedida).WithMany(p => p.Productos).HasForeignKey(d => d.UnidadMedidaId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Producto_UnidadMedida");
         }
     }
 }

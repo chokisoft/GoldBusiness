@@ -19,7 +19,7 @@ namespace GoldBusiness.Infrastructure.Settings.Accounting
             builder.Property(e => e.FechaHoraModificado).HasColumnType("datetime");
             builder.Ignore(e => e.Translations);
             builder.Ignore(e => e.Detalles);
-            builder.HasOne(d => d.EstablecimientoNavigation).WithMany().HasForeignKey(d => d.EstablecimientoId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Comprobante_Establecimiento");
+            builder.HasOne(d => d.Establecimiento).WithMany().HasForeignKey(d => d.EstablecimientoId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Comprobante_Establecimiento");
         }
     }
 }

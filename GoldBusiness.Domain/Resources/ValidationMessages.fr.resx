@@ -220,4 +220,118 @@
 <data name="RegistroCanceladoExistente" xml:space="preserve">
 	<value>Un enregistrement annulé avec le code '{0}' existe déjà. Envisagez de réactiver l'enregistrement existant (ID: {1})</value>
 </data>
+	<data name="ClienteCodigoLongitud" xml:space="preserve">
+  <value>Le code client doit avoir exactement 8 caractères</value>
+</data>
+	<data name="ClienteCodigoFormato" xml:space="preserve">
+  <value>Le code client doit être alphanumérique de 8 caractères</value>
+</data>
+	<data name="Field_Cliente" xml:space="preserve">
+  <value>Client</value>
+</data>
+	<data name="Field_Nif" xml:space="preserve">
+  <value>Numéro d'identification fiscale</value>
+</data>
+	<data name="Field_Iban" xml:space="preserve">
+  <value>IBAN</value>
+</data>
+	<data name="Field_BicoSwift" xml:space="preserve">
+  <value>BIC/SWIFT</value>
+</data>
+	<data name="Field_Iva" xml:space="preserve">
+  <value>TVA (%)</value>
+</data>
+	<data name="Field_Direccion" xml:space="preserve">
+  <value>Adresse</value>
+</data>
+	<data name="Field_Municipio" xml:space="preserve">
+  <value>Ville</value>
+</data>
+	<data name="Field_Provincia" xml:space="preserve">
+  <value>Province/État</value>
+</data>
+	<data name="Field_CodPostal" xml:space="preserve">
+  <value>Code postal</value>
+</data>
+	<data name="Field_Web" xml:space="preserve">
+  <value>Site Web</value>
+</data>
+	<data name="Field_Email1" xml:space="preserve">
+  <value>Email principal</value>
+</data>
+	<data name="Field_Email2" xml:space="preserve">
+  <value>Email secondaire</value>
+</data>
+	<data name="Field_Telefono1" xml:space="preserve">
+  <value>Téléphone principal</value>
+</data>
+	<data name="Field_Telefono2" xml:space="preserve">
+  <value>Téléphone secondaire</value>
+</data>
+	<data name="Field_Fax1" xml:space="preserve">
+  <value>Fax principal</value>
+</data>
+	<data name="Field_Fax2" xml:space="preserve">
+  <value>Fax secondaire</value>
+</data>
+	<data name="NifLongitud" xml:space="preserve">
+  <value>Le numéro d'identification fiscale ne peut pas dépasser 11 caractères</value>
+</data>
+	<data name="IbanLongitud" xml:space="preserve">
+  <value>L'IBAN ne peut pas dépasser 27 caractères</value>
+</data>
+	<data name="BicoSwiftLongitud" xml:space="preserve">
+  <value>Le BIC/SWIFT ne peut pas dépasser 11 caractères</value>
+</data>
+	<data name="IvaRango" xml:space="preserve">
+  <value>La TVA doit être comprise entre -0,01 et 99,99</value>
+</data>
+	<data name="DireccionLongitud" xml:space="preserve">
+  <value>L'adresse ne peut pas dépasser 256 caractères</value>
+</data>
+	<data name="MunicipioLongitud" xml:space="preserve">
+  <value>La ville ne peut pas dépasser 50 caractères</value>
+</data>
+	<data name="ProvinciaLongitud" xml:space="preserve">
+  <value>La province/état ne peut pas dépasser 50 caractères</value>
+</data>
+	<data name="CodPostalLongitud" xml:space="preserve">
+  <value>Le code postal ne peut pas dépasser 5 caractères</value>
+</data>
+	<data name="WebFormato" xml:space="preserve">
+  <value>L'URL n'est pas valide</value>
+</data>
+	<data name="WebLongitud" xml:space="preserve">
+  <value>L'URL ne peut pas dépasser 256 caractères</value>
+</data>
+	<data name="EmailFormato" xml:space="preserve">
+  <value>L'email n'est pas valide</value>
+</data>
+	<data name="EmailLongitud" xml:space="preserve">
+  <value>L'email ne peut pas dépasser 256 caractères</value>
+</data>
+	<data name="TelefonoFormato" xml:space="preserve">
+  <value>Le format doit être ####-####</value>
+</data>
+	<data name="TelefonoFormatoInvalido" xml:space="preserve">
+  <value>Le numéro de téléphone n'est pas valide</value>
+</data>
+	<data name="TelefonoLongitud" xml:space="preserve">
+  <value>Le téléphone ne peut pas dépasser 50 caractères</value>
+</data>
+	<data name="FaxLongitud" xml:space="preserve">
+  <value>Le fax ne peut pas dépasser 50 caractères</value>
+</data>
+<data name="ProveedorCodigoLongitud" xml:space="preserve">
+  <value>Le code fournisseur doit avoir exactement 5 caractères</value>
+</data>
+	<data name="ProveedorCodigoFormato" xml:space="preserve">
+  <value>Le code fournisseur doit être alphanumérique de 5 caractères</value>
+</data>
+	<data name="Field_Proveedor" xml:space="preserve">
+  <value>Fournisseur</value>
+</data>
+	<data name="Field_CantidadProductos" xml:space="preserve">
+  <value>Nombre de produits</value>
+</data>
 </root>

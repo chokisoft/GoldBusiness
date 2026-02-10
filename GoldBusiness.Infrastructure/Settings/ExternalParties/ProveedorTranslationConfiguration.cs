@@ -18,7 +18,7 @@ namespace GoldBusiness.Infrastructure.Settings.ExternalParties
             builder.Property(e => e.FechaHoraCreado).HasColumnType("datetime");
             builder.Property(e => e.FechaHoraModificado).HasColumnType("datetime");
             builder.Ignore(e => e.Proveedor);
-            builder.HasOne<Proveedor>().WithMany().HasForeignKey(e => e.ProveedorId).OnDelete(DeleteBehavior.Cascade).HasConstraintName("FK_ProveedorTranslation_Proveedor");
+            builder.HasOne<Proveedor>().WithMany(c => c.Translations).HasForeignKey(e => e.ProveedorId).OnDelete(DeleteBehavior.Cascade).HasConstraintName("FK_ProveedorTranslation_Proveedor");
         }
     }
 }

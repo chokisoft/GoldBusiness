@@ -23,7 +23,7 @@ namespace GoldBusiness.Domain.Entities
         public bool Cancelado { get; private set; }
 
         // Propiedades de navegación
-        public SystemConfiguration NegocioNavigation { get; private set; } = null!;
+        public SystemConfiguration Negocio { get; private set; } = null!;
 
         // Colecciones de navegación (read-only)
         public IReadOnlyCollection<EstablecimientoTranslation> Translations => _translations;

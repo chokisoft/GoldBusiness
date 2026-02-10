@@ -23,7 +23,7 @@ namespace GoldBusiness.Domain.Entities
         public decimal? Parcial { get; private set; }
 
         // Propiedades de navegación
-        public Establecimiento EstablecimientoNavigation { get; private set; } = null!;
+        public Establecimiento Establecimiento { get; private set; } = null!;
 
         // Colecciones de navegación (read-only)
         public IReadOnlyCollection<ComprobanteTemporalTranslation> Translations => _translations;

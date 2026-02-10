@@ -41,10 +41,43 @@ namespace GoldBusiness.Domain.Entities
         protected Proveedor() { }
 
         // Constructor con validaciones
-        public Proveedor(string codigo, string descripcion, string creadoPor)
+        public Proveedor(
+            string codigo,
+            string descripcion,
+            string? nif,
+            string? iban,
+            string? bicoSwift,
+            decimal iva,
+            string? direccion,
+            string? municipio,
+            string? provincia,
+            string? codPostal,
+            string? web,
+            string? email1,
+            string? email2,
+            string? telefono1,
+            string? telefono2,
+            string? fax1,
+            string? fax2,
+            string creadoPor)
         {
             SetCodigo(codigo);
             SetDescripcion(descripcion);
+            SetNif(nif ?? string.Empty);
+            SetIban(iban ?? string.Empty);
+            SetBicoSwift(bicoSwift ?? string.Empty);
+            SetIva(iva);
+            SetDireccion(direccion ?? string.Empty);
+            SetMunicipio(municipio ?? string.Empty);
+            SetProvincia(provincia ?? string.Empty);
+            SetCodPostal(codPostal ?? string.Empty);
+            SetWeb(web ?? string.Empty);
+            SetEmails(email1 ?? string.Empty);
+            SetEmails(email2 ?? string.Empty);
+            SetTelefonos(telefono1 ?? string.Empty);
+            SetTelefonos(telefono2 ?? string.Empty);
+            SetFaxes(fax1 ?? string.Empty);
+            SetFaxes(fax2 ?? string.Empty);
             EstablecerCreador(creadoPor);
             Cancelado = false;
             Iva = 0;

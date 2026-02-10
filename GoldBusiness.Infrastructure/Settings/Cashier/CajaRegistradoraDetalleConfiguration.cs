@@ -17,9 +17,9 @@ namespace GoldBusiness.Infrastructure.Settings.Cashier
             builder.Property(e => e.ImporteVenta).HasColumnType("decimal(18, 2)");
             builder.Property(e => e.CreadoPor).IsRequired().HasMaxLength(256);
             builder.Property(e => e.FechaHoraCreado).HasColumnType("datetime");
-            builder.HasOne(d => d.CajaRegistradoraNavigation).WithMany(p => p.Detalles).HasForeignKey(d => d.CajaRegistradoraId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_CajaRegistradoraDetalle_CajaRegistradora");
-            builder.HasOne(d => d.LocalidadNavigation).WithMany().HasForeignKey(d => d.LocalidadId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_CajaRegistradoraDetalle_Localidad");
-            builder.HasOne(d => d.ProductoNavigation).WithMany().HasForeignKey(d => d.ProductoId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_CajaRegistradoraDetalle_Producto");
+            builder.HasOne(d => d.CajaRegistradora).WithMany(p => p.Detalles).HasForeignKey(d => d.CajaRegistradoraId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_CajaRegistradoraDetalle_CajaRegistradora");
+            builder.HasOne(d => d.Localidad).WithMany().HasForeignKey(d => d.LocalidadId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_CajaRegistradoraDetalle_Localidad");
+            builder.HasOne(d => d.Producto).WithMany().HasForeignKey(d => d.ProductoId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_CajaRegistradoraDetalle_Producto");
         }
     }
 }

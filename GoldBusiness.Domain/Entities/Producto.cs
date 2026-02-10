@@ -33,16 +33,16 @@ namespace GoldBusiness.Domain.Entities
         public bool Cancelado { get; private set; }
 
         // Propiedades de navegación
-        public Establecimiento EstablecimientoNavigation { get; private set; } = null!;
-        public Proveedor ProveedorNavigation { get; private set; } = null!;
-        public SubLinea SubLineaNavigation { get; private set; } = null!;
-        public UnidadMedida UnidadMedidaNavigation { get; private set; } = null!;
+        public Establecimiento Establecimiento { get; private set; } = null!;
+        public Proveedor Proveedor { get; private set; } = null!;
+        public SubLinea SubLinea { get; private set; } = null!;
+        public UnidadMedida UnidadMedida { get; private set; } = null!;
 
         // Colecciones de navegación (read-only)
         public IReadOnlyCollection<ProductoTranslation> Translations => _translations;
         public IReadOnlyCollection<ErroresVenta> ErroresVenta => _erroresVenta;
-        public IReadOnlyCollection<FichaProducto> FichaProductoCodigoNavigation => _fichaProductoCodigo;
-        public IReadOnlyCollection<FichaProducto> FichaProductoProductoNavigation => _fichaProductoProducto;
+        public IReadOnlyCollection<FichaProducto> FichaProductoCodigo => _fichaProductoCodigo;
+        public IReadOnlyCollection<FichaProducto> FichaProductoProducto => _fichaProductoProducto;
         public IReadOnlyCollection<OperacionesDetalle> OperacionesDetalle => _operacionesDetalle;
         public IReadOnlyCollection<OperacionesServicio> OperacionesServicio => _operacionesServicio;
         public IReadOnlyCollection<Saldo> Saldos => _saldos;

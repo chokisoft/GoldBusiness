@@ -220,4 +220,118 @@
 <data name="RegistroCanceladoExistente" xml:space="preserve">
 	<value>Ya existe un registro cancelado con el código '{0}'. Considere reactivar el registro existente (ID: {1})</value>
 </data>
+<data name="ClienteCodigoLongitud" xml:space="preserve">
+  <value>El código del cliente debe tener exactamente 8 caracteres</value>
+</data>
+<data name="ClienteCodigoFormato" xml:space="preserve">
+  <value>El código del cliente debe ser alfanumérico de 8 caracteres</value>
+</data>
+<data name="Field_Cliente" xml:space="preserve">
+  <value>Cliente</value>
+</data>
+<data name="Field_Nif" xml:space="preserve">
+  <value>NIF/CIF</value>
+</data>
+<data name="Field_Iban" xml:space="preserve">
+  <value>IBAN</value>
+</data>
+<data name="Field_BicoSwift" xml:space="preserve">
+  <value>BIC/SWIFT</value>
+</data>
+<data name="Field_Iva" xml:space="preserve">
+  <value>IVA (%)</value>
+</data>
+<data name="Field_Direccion" xml:space="preserve">
+  <value>Dirección</value>
+</data>
+<data name="Field_Municipio" xml:space="preserve">
+  <value>Municipio</value>
+</data>
+<data name="Field_Provincia" xml:space="preserve">
+  <value>Provincia</value>
+</data>
+<data name="Field_CodPostal" xml:space="preserve">
+  <value>Código Postal</value>
+</data>
+<data name="Field_Web" xml:space="preserve">
+  <value>Sitio Web</value>
+</data>
+<data name="Field_Email1" xml:space="preserve">
+  <value>Email Principal</value>
+</data>
+<data name="Field_Email2" xml:space="preserve">
+  <value>Email Secundario</value>
+</data>
+<data name="Field_Telefono1" xml:space="preserve">
+  <value>Teléfono Principal</value>
+</data>
+<data name="Field_Telefono2" xml:space="preserve">
+  <value>Teléfono Secundario</value>
+</data>
+<data name="Field_Fax1" xml:space="preserve">
+  <value>Fax Principal</value>
+</data>
+<data name="Field_Fax2" xml:space="preserve">
+  <value>Fax Secundario</value>
+</data>
+<data name="NifLongitud" xml:space="preserve">
+  <value>El NIF no puede exceder 11 caracteres</value>
+</data>
+<data name="IbanLongitud" xml:space="preserve">
+  <value>El IBAN no puede exceder 27 caracteres</value>
+</data>
+<data name="BicoSwiftLongitud" xml:space="preserve">
+  <value>El BIC/SWIFT no puede exceder 11 caracteres</value>
+</data>
+<data name="IvaRango" xml:space="preserve">
+  <value>El IVA debe estar entre -0.01 y 99.99</value>
+</data>
+<data name="DireccionLongitud" xml:space="preserve">
+  <value>La dirección no puede exceder 256 caracteres</value>
+</data>
+<data name="MunicipioLongitud" xml:space="preserve">
+  <value>El municipio no puede exceder 50 caracteres</value>
+</data>
+<data name="ProvinciaLongitud" xml:space="preserve">
+  <value>La provincia no puede exceder 50 caracteres</value>
+</data>
+<data name="CodPostalLongitud" xml:space="preserve">
+  <value>El código postal no puede exceder 5 caracteres</value>
+</data>
+<data name="WebFormato" xml:space="preserve">
+  <value>La URL no es válida</value>
+</data>
+<data name="WebLongitud" xml:space="preserve">
+  <value>La URL no puede exceder 256 caracteres</value>
+</data>
+<data name="EmailFormato" xml:space="preserve">
+  <value>El email no es válido</value>
+</data>
+<data name="EmailLongitud" xml:space="preserve">
+  <value>El email no puede exceder 256 caracteres</value>
+</data>
+<data name="TelefonoFormato" xml:space="preserve">
+  <value>El formato debe ser ####-####</value>
+</data>
+<data name="TelefonoFormatoInvalido" xml:space="preserve">
+  <value>El teléfono no es válido</value>
+</data>
+<data name="TelefonoLongitud" xml:space="preserve">
+  <value>El teléfono no puede exceder 50 caracteres</value>
+</data>
+<data name="FaxLongitud" xml:space="preserve">
+  <value>El fax no puede exceder 50 caracteres</value>
+</data>
+<data name="ProveedorCodigoLongitud" xml:space="preserve">
+  <value>El código del proveedor debe tener exactamente 5 caracteres</value>
+</data>
+<data name="ProveedorCodigoFormato" xml:space="preserve">
+  <value>El código del proveedor debe ser alfanumérico de 5 caracteres</value>
+</data>
+<data name="Field_Proveedor" xml:space="preserve">
+  <value>Proveedor</value>
+</data>
+<data name="Field_CantidadProductos" xml:space="preserve">
+  <value>Cantidad de Productos</value>
+</data>
 </root>

@@ -13,9 +13,9 @@ namespace GoldBusiness.Domain.Entities
         public decimal ImporteVenta { get; private set; }
 
         // Propiedades de navegación
-        public CajaRegistradora CajaRegistradoraNavigation { get; private set; } = null!;
-        public Localidad LocalidadNavigation { get; private set; } = null!;
-        public Producto ProductoNavigation { get; private set; } = null!;
+        public CajaRegistradora CajaRegistradora { get; private set; } = null!;
+        public Localidad Localidad { get; private set; } = null!;
+        public Producto Producto { get; private set; } = null!;
 
         // Constructor protegido para EF Core
         protected CajaRegistradoraDetalle() { }

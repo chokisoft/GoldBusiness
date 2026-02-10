@@ -25,11 +25,11 @@ namespace GoldBusiness.Infrastructure.Settings.Operations
             builder.Property(e => e.FechaHoraModificado).HasColumnType("datetime");
             builder.Ignore(e => e.Translations);
             builder.Ignore(e => e.OperacionesDetalle);
-            builder.HasOne(d => d.EstablecimientoNavigation).WithMany().HasForeignKey(d => d.EstablecimientoId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_OperacionesEncabezado_Establecimiento");
-            builder.HasOne(d => d.TransaccionNavigation).WithMany().HasForeignKey(d => d.TransaccionId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_OperacionesEncabezado_Transaccion");
-            builder.HasOne(d => d.ProveedorNavigation).WithMany().HasForeignKey(d => d.ProveedorId).OnDelete(DeleteBehavior.SetNull).HasConstraintName("FK_OperacionesEncabezado_Proveedor");
-            builder.HasOne(d => d.ClienteNavigation).WithMany().HasForeignKey(d => d.ClienteId).OnDelete(DeleteBehavior.SetNull).HasConstraintName("FK_OperacionesEncabezado_Cliente");
-            builder.HasOne(d => d.ConceptoAjusteNavigation).WithMany(p => p.OperacionesEncabezado).HasForeignKey(d => d.ConceptoAjusteId).OnDelete(DeleteBehavior.SetNull).HasConstraintName("FK_OperacionesEncabezado_ConceptoAjuste");
+            builder.HasOne(d => d.Establecimiento).WithMany().HasForeignKey(d => d.EstablecimientoId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_OperacionesEncabezado_Establecimiento");
+            builder.HasOne(d => d.Transaccion).WithMany().HasForeignKey(d => d.TransaccionId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_OperacionesEncabezado_Transaccion");
+            builder.HasOne(d => d.Proveedor).WithMany().HasForeignKey(d => d.ProveedorId).OnDelete(DeleteBehavior.SetNull).HasConstraintName("FK_OperacionesEncabezado_Proveedor");
+            builder.HasOne(d => d.Cliente).WithMany(c => c.OperacionesEncabezado).HasForeignKey(d => d.ClienteId).OnDelete(DeleteBehavior.SetNull).HasConstraintName("FK_OperacionesEncabezado_Cliente");
+            builder.HasOne(d => d.ConceptoAjuste).WithMany(p => p.OperacionesEncabezado).HasForeignKey(d => d.ConceptoAjusteId).OnDelete(DeleteBehavior.SetNull).HasConstraintName("FK_OperacionesEncabezado_ConceptoAjuste");
         }
     }
 }

@@ -1,4 +1,4 @@
-ï»¿using GoldBusiness.Application.Interfaces;
+using GoldBusiness.Application.Interfaces;
 using GoldBusiness.Domain.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,43 +8,43 @@ using System.Globalization;
 namespace GoldBusiness.WebApi.Controllers
 {
     /// <summary>
-    /// Controlador para gestiÃ³n de Sub Linea.
-    /// Segundo nivel del plan de lineas, pertenece a un Linea.
+    /// Controlador para gestión de Clientes.
+    /// Gestiona información de clientes, proveedores y terceros del negocio.
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
     [Authorize(Policy = "ERPFullAccess")]
-    public class SubLineaController : BaseEntityController
+    public class ClienteController : BaseEntityController
     {
-        private readonly ISubLineaService _service;
+        private readonly IClienteService _service;
 
-        public SubLineaController(
-            ISubLineaService service,
+        public ClienteController(
+            IClienteService service,
             IStringLocalizer<GoldBusiness.Domain.Resources.ValidationMessages> localizer) : base(localizer)
         {
             _service = service;
         }
 
         /// <summary>
-        /// Obtiene todos los sub lineass de cuenta.
-        /// El idioma se detecta automÃ¡ticamente del header Accept-Language.
+        /// Obtiene todos los clientes.
+        /// El idioma se detecta automáticamente del header Accept-Language.
         /// </summary>
-        /// <returns>Lista de sub lineas de cuenta localizados</returns>
+        /// <returns>Lista de clientes localizados</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<SubLineaDTO>>> Get()
+        public async Task<ActionResult<IEnumerable<ClienteDTO>>> Get()
         {
             var lang = GetCurrentLanguage();
             return Ok(await _service.GetAllAsync(lang));
         }
 
         /// <summary>
-        /// Obtiene un sub lineas por ID.
-        /// El idioma se detecta automÃ¡ticamente del header Accept-Language.
+        /// Obtiene un cliente por ID.
+        /// El idioma se detecta automáticamente del header Accept-Language.
         /// </summary>
-        /// <param name="id">ID del sub linea</param>
-        /// <returns>Sub linea localizado</returns>
+        /// <param name="id">ID del cliente</param>
+        /// <returns>Cliente localizado</returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<SubLineaDTO>> Get(int id)
+        public async Task<ActionResult<ClienteDTO>> Get(int id)
         {
             var lang = GetCurrentLanguage();
             var dto = await _service.GetByIdAsync(id, lang);
@@ -52,13 +52,13 @@ namespace GoldBusiness.WebApi.Controllers
         }
 
         /// <summary>
-        /// Crea un nuevo sub lineas.
-        /// El idioma se detecta automÃ¡ticamente del header Accept-Language.
+        /// Crea un nuevo cliente.
+        /// El idioma se detecta automáticamente del header Accept-Language.
         /// </summary>
-        /// <param name="dto">Datos del nuevo sub linea</param>
-        /// <returns>Sub linea de cuenta creado</returns>
+        /// <param name="dto">Datos del nuevo cliente</param>
+        /// <returns>Cliente creado</returns>
         [HttpPost]
-        public async Task<ActionResult<SubLineaDTO>> Post([FromBody] SubLineaDTO dto)
+        public async Task<ActionResult<ClienteDTO>> Post([FromBody] ClienteDTO dto)
         {
             try
             {
@@ -81,14 +81,14 @@ namespace GoldBusiness.WebApi.Controllers
         }
 
         /// <summary>
-        /// Actualiza un sub linea existente.
-        /// El idioma se detecta automÃ¡ticamente del header Accept-Language.
+        /// Actualiza un cliente existente.
+        /// El idioma se detecta automáticamente del header Accept-Language.
         /// </summary>
-        /// <param name="id">ID del sub linea a actualizar</param>
-        /// <param name="dto">Datos actualizados del sub linea</param>
-        /// <returns>Sub linea actualizado</returns>
+        /// <param name="id">ID del cliente a actualizar</param>
+        /// <param name="dto">Datos actualizados del cliente</param>
+        /// <returns>Cliente actualizado</returns>
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] SubLineaDTO dto)
+        public async Task<IActionResult> Put(int id, [FromBody] ClienteDTO dto)
         {
             var lang = GetCurrentLanguage();
             var usuario = User?.Identity?.Name ?? "system";
@@ -97,10 +97,10 @@ namespace GoldBusiness.WebApi.Controllers
         }
 
         /// <summary>
-        /// Elimina (soft delete) un sub linea de cuenta.
+        /// Elimina (soft delete) un cliente.
         /// </summary>
-        /// <param name="id">ID del sub linea de cuenta a eliminar</param>
-        /// <returns>Sub linea eliminado</returns>
+        /// <param name="id">ID del cliente a eliminar</param>
+        /// <returns>Cliente eliminado</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -110,24 +110,24 @@ namespace GoldBusiness.WebApi.Controllers
         }
 
         /// <summary>
-        /// Agrega o actualiza una traducciÃ³n para un sub linea.
+        /// Agrega o actualiza una traducción para un cliente.
         /// </summary>
-        /// <param name="id">ID del sub linea</param>
-        /// <param name="dto">Datos de la traducciÃ³n (idioma y texto)</param>
-        /// <returns>Resultado de la operaciÃ³n</returns>
+        /// <param name="id">ID del cliente</param>
+        /// <param name="dto">Datos de la traducción (idioma y texto)</param>
+        /// <returns>Resultado de la operación</returns>
         [HttpPost("{id}/translations")]
         public async Task<IActionResult> AddOrUpdateTranslation(int id, [FromBody] TranslationInputDTO dto)
         {
             var supportedLanguages = new[] { "es", "en", "fr" };
-            
-            var lang = string.IsNullOrWhiteSpace(dto.Language) 
-                ? "es" 
+
+            var lang = string.IsNullOrWhiteSpace(dto.Language)
+                ? "es"
                 : dto.Language.Split('-', StringSplitOptions.RemoveEmptyEntries)[0].ToLowerInvariant();
-            
+
             if (!supportedLanguages.Contains(lang))
             {
-                return BadRequest(new 
-                { 
+                return BadRequest(new
+                {
                     Message = _localizer["UnsupportedLanguage"].Value,
                     ProvidedLanguage = dto.Language,
                     SupportedLanguages = supportedLanguages
@@ -136,11 +136,11 @@ namespace GoldBusiness.WebApi.Controllers
 
             var usuario = User?.Identity?.Name ?? "system";
             await _service.AddOrUpdateTranslationAsync(id, lang, dto.TranslatedText, usuario);
-            
-            return Ok(new 
-            { 
+
+            return Ok(new
+            {
                 Message = _localizer["TranslationUpdated"].Value,
-                SubGroupId = id,
+                ClienteId = id,
                 Language = lang
             });
         }

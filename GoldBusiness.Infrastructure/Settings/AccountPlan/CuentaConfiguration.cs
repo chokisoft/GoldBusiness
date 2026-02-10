@@ -18,10 +18,10 @@ namespace GoldBusiness.Infrastructure.Settings.AccountPlan
             builder.Property(e => e.FechaHoraCreado).HasColumnType("datetime");
             builder.Property(e => e.FechaHoraModificado).HasColumnType("datetime");
             builder.Ignore(e => e.Translations);
-            builder.Ignore(e => e.LocalidadCuentaInventarioNavigation);
-            builder.Ignore(e => e.LocalidadCuentaCostoNavigation);
-            builder.Ignore(e => e.LocalidadCuentaVentaNavigation);
-            builder.Ignore(e => e.LocalidadCuentaDevolucionNavigation);
+            builder.Ignore(e => e.LocalidadCuentaInventario);
+            builder.Ignore(e => e.LocalidadCuentaCosto);
+            builder.Ignore(e => e.LocalidadCuentaVenta);
+            builder.Ignore(e => e.LocalidadCuentaDevolucion);
 //            builder.Ignore(e => e.ConfiguracionCuentaPagar);
 //            builder.Ignore(e => e.ConfiguracionCuentaCobrar);
             builder.HasOne(d => d.SystemConfiguration).WithMany().HasForeignKey(d => d.SystemConfigurationId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Cuenta_SystemConfiguration");

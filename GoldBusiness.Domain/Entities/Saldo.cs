@@ -11,8 +11,8 @@ namespace GoldBusiness.Domain.Entities
         public DateTime Fecha { get; private set; }
 
         // Propiedades de navegación
-        public Localidad LocalidadNavigation { get; private set; } = null!;
-        public Producto ProductoNavigation { get; private set; } = null!;
+        public Localidad Localidad { get; private set; } = null!;
+        public Producto Producto { get; private set; } = null!;
 
         // Constructor protegido para EF Core
         protected Saldo() { }

@@ -12,7 +12,7 @@ namespace GoldBusiness.Domain.Entities
         public bool Cerrado { get; private set; }
 
         // Propiedades de navegación
-        public IdTurno IdTurnoNavigation { get; private set; } = null!;
+        public IdTurno IdTurno { get; private set; } = null!;
         
         // Colecciones de navegación (read-only)
         public IReadOnlyCollection<CajaRegistradoraDetalle> Detalles => _detalles;

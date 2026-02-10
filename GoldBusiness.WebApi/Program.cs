@@ -122,6 +122,12 @@ builder.Services.AddScoped<IMonedaService, MonedaService>();
 builder.Services.AddScoped<IConceptoAjusteRepository, ConceptoAjusteRepository>();
 builder.Services.AddScoped<IConceptoAjusteService, ConceptoAjusteService>();
 
+// Externos
+builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
+builder.Services.AddScoped<IClienteService, ClienteService>();
+builder.Services.AddScoped<IProveedorRepository, ProveedorRepository>();
+builder.Services.AddScoped<IProveedorService, ProveedorService>();
+
 // ============================================
 // 🔐 JWT AUTHENTICATION
 // ============================================

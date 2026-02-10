@@ -15,7 +15,7 @@ namespace GoldBusiness.Infrastructure.Settings.Cashier
             builder.Property(e => e.FechaHoraCreado).HasColumnType("datetime");
             builder.Property(e => e.FechaHoraModificado).HasColumnType("datetime");
             builder.Ignore(e => e.Detalles);
-            builder.HasOne(d => d.IdTurnoNavigation).WithMany().HasForeignKey(d => d.IdTurnoId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_CajaRegistradora_IdTurno");
+            builder.HasOne(d => d.IdTurno).WithMany().HasForeignKey(d => d.IdTurnoId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_CajaRegistradora_IdTurno");
         }
     }
 }

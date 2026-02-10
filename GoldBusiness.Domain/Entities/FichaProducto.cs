@@ -12,9 +12,9 @@ namespace GoldBusiness.Domain.Entities
         public bool Cancelado { get; private set; }
 
         // Propiedades de navegación
-        public Producto ProductoNavigation { get; private set; } = null!;
-        public Producto ComponenteNavigation { get; private set; } = null!;
-        public Localidad LocalidadNavigation { get; private set; } = null!;
+        public Producto Producto { get; private set; } = null!;
+        public Producto Componente { get; private set; } = null!;
+        public Localidad Localidad { get; private set; } = null!;
 
         // Constructor protegido para EF Core
         protected FichaProducto() { }

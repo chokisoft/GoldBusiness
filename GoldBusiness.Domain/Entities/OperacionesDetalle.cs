@@ -20,9 +20,9 @@ namespace GoldBusiness.Domain.Entities
         public bool Cancelado { get; private set; }
 
         // Propiedades de navegación
-        public Producto ProductoNavigation { get; private set; } = null!;
-        public Localidad LocalidadNavigation { get; private set; } = null!;
-        public OperacionesEncabezado OperacionEncabezadoNavigation { get; private set; } = null!;
+        public Producto Producto { get; private set; } = null!;
+        public Localidad Localidad { get; private set; } = null!;
+        public OperacionesEncabezado OperacionEncabezado { get; private set; } = null!;
 
         // Colecciones de navegación (read-only)
         public IReadOnlyCollection<ErroresVenta> ErroresVenta => _erroresVenta;

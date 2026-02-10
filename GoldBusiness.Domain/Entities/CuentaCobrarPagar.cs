@@ -42,14 +42,15 @@ namespace GoldBusiness.Domain.Entities
         public bool Cancelado { get; private set; }
 
         // Propiedades de navegación
-        public Establecimiento EstablecimientoNavigation { get; private set; } = null!;
-        public Transaccion TransaccionNavigation { get; private set; } = null!;
-        public Proveedor? ProveedorNavigation { get; private set; }
-        public Cliente? ClienteNavigation { get; private set; }
-        public Cuenta? CuentaPagoEfectivoNavigation { get; private set; }
-        public Cuenta? CuentaPagoElectronicoNavigation { get; private set; }
-        public Cuenta? CuentaCobroEfectivoNavigation { get; private set; }
-        public Cuenta? CuentaCobroElectronicoNavigation { get; private set; }
+        public Establecimiento Establecimiento { get; private set; } = null!;
+        public Transaccion Transaccion { get; private set; } = null!;
+        public Proveedor? Proveedor { get; private set; }
+        
+        public Cliente Cliente { get; private set; } = null!;
+        public Cuenta? CuentaPagoEfectivo { get; private set; }
+        public Cuenta? CuentaPagoElectronico { get; private set; }
+        public Cuenta? CuentaCobroEfectivo { get; private set; }
+        public Cuenta? CuentaCobroElectronico { get; private set; }
 
         // Constructor protegido para EF Core
         protected CuentaCobrarPagar() { }

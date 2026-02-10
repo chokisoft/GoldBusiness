@@ -26,11 +26,11 @@ namespace GoldBusiness.Domain.Entities
         public bool Cancelado { get; private set; }
 
         // Propiedades de navegación
-        public Establecimiento EstablecimientoNavigation { get; private set; } = null!;
-        public Transaccion TransaccionNavigation { get; private set; } = null!;
-        public Proveedor? ProveedorNavigation { get; private set; }
-        public Cliente? ClienteNavigation { get; private set; }
-        public ConceptoAjuste? ConceptoAjusteNavigation { get; private set; }
+        public Establecimiento Establecimiento { get; private set; } = null!;
+        public Transaccion Transaccion { get; private set; } = null!;
+        public Proveedor? Proveedor { get; private set; }
+        public Cliente? Cliente { get; private set; }
+        public ConceptoAjuste? ConceptoAjuste { get; private set; }
 
         public IReadOnlyCollection<OperacionesEncabezadoTranslation> Translations => _translations;
         public IReadOnlyCollection<OperacionesDetalle> OperacionesDetalle => _operacionesDetalle;
