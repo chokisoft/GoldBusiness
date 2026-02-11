@@ -345,7 +345,131 @@ builder.Services.AddSwaggerGen(c =>
     {
         Title = "GoldBusiness API",
         Version = apiVersion,
-        Description = "API REST para sistema ERP con soporte multiidioma (es, en, fr)"
+        Description = "API REST para sistema ERP con soporte multiidioma (es, en, fr).",
+        Contact = new OpenApiContact
+        {
+            Name = "Chokisoft Development",
+            Email = "chokisoft@gmail.com",
+            Url = new Uri("https://github.com/chokisoft/GoldBusiness")
+        }
+    });
+
+    // ✅ SOLUCIÓN: Asignar prefijos a los tags ANTES del ordenamiento
+    c.TagActionsBy(api =>
+    {
+        var controller = api.ActionDescriptor.RouteValues["controller"];
+
+        // Mapeo de controladores a tags con prefijos numéricos
+        var tagPrefix = controller switch
+        {
+            "ApiInfo" => "01",
+            "Auth" => "02",
+
+            "GrupoCuenta" => "10",
+            "SubGrupoCuenta" => "11",
+            "Cuenta" => "12",
+
+            "Moneda" => "20",
+            "ConceptoAjuste" => "21",
+            "Transaccion" => "22",
+
+            "Establecimiento" => "30",
+            "Localidad" => "31",
+
+            "Cliente" => "40",
+            "Proveedor" => "41",
+
+            "Linea" => "50",
+            "SubLinea" => "51",
+            "UnidadMedida" => "52",
+            "Producto" => "53",
+            "FichaProducto" => "54",
+
+            "SystemConfiguration" => "70",
+
+            _ => "99"
+        };
+
+        var displayName = controller switch
+        {
+            "ApiInfo" => "📊 Información de la API",
+            
+            "Auth" => "🔐 Autenticación",
+
+            "GrupoCuenta" => "💰 Contabilidad - Grupo de Cuentas",
+            "SubGrupoCuenta" => "💰 Contabilidad - SubGrupo de Cuentas",
+            "Cuenta" => "💰 Contabilidad - Cuentas",
+
+            "Moneda" => "💵 Finanzas - Monedas",
+            "ConceptoAjuste" => "💵 Finanzas - Conceptos de Ajuste",
+            "Transaccion" => "📋 Operaciones - Transacciones",
+
+            "Establecimiento" => "🏢 Organización - Establecimientos",
+            "Localidad" => "🏢 Organización - Localidades",
+
+            "Cliente" => "👥 Terceros - Clientes",
+            "Proveedor" => "👥 Terceros - Proveedores",
+
+            "Linea" => "📦 Inventario - Líneas",
+            "SubLinea" => "📦 Inventario - SubLíneas",
+            "UnidadMedida" => "📦 Inventario - Unidades de Medida",
+            "Producto" => "📦 Inventario - Productos",
+            "FichaProducto" => "📦 Inventario - Fichas de Producto (BOM)",
+
+            "SystemConfiguration" => "⚙️ Configuración del Sistema",
+
+            _ => controller ?? "Otros"
+        };
+
+        return new[] { $"{tagPrefix}. {displayName}" };
+    });
+
+    // ✅ Ordenar operaciones dentro de cada tag por método HTTP
+    c.OrderActionsBy(apiDesc =>
+    {
+        var controllerName = apiDesc.ActionDescriptor.RouteValues["controller"] ?? "Unknown";
+        var httpMethod = apiDesc.HttpMethod ?? "GET";
+
+        var tagPrefix = controllerName switch
+        {
+            "ApiInfo" => "01",
+            "Auth" => "02",
+
+            "GrupoCuenta" => "10",
+            "SubGrupoCuenta" => "11",
+            "Cuenta" => "12",
+
+            "Moneda" => "20",
+            "ConceptoAjuste" => "21",
+            "Transaccion" => "22",
+
+            "Establecimiento" => "30",
+            "Localidad" => "31",
+
+            "Cliente" => "40",
+            "Proveedor" => "41",
+
+            "Linea" => "50",
+            "SubLinea" => "51",
+            "UnidadMedida" => "52",
+            "Producto" => "53",
+            "FichaProducto" => "54",
+
+            "SystemConfiguration" => "70",
+            _ => "99"
+        };
+
+        var methodOrder = httpMethod switch
+        {
+            "GET" => "1",
+            "POST" => "2",
+            "PUT" => "3",
+            "PATCH" => "4",
+            "DELETE" => "5",
+            _ => "9"
+        };
+
+        return $"{tagPrefix}_{methodOrder}_{apiDesc.RelativePath}";
     });
 
     c.OperationFilter<AcceptLanguageHeaderOperationFilter>();
@@ -515,7 +639,29 @@ using (var scope = app.Services.CreateScope())
             foreach (var item in systemConfigSinTrad)
             {
                 db.SystemConfigurationTranslation.Add(
-                    new SystemConfigurationTranslation(item.Id, "es", item.NombreNegocio, item.Direccion, "system"));
+                    new SystemConfigurationTranslation(item.Id, "es", item.NombreNegocio, item.Direccion, item.Municipio, item.Provincia, "system"));
+                traduccionesAgregadas++;
+            }
+        }
+
+        // Establecimientos
+        var establecimientoIds = await db.Establecimiento.Select(x => x.Id).ToListAsync();
+        var establecimientoConTradIds = await db.EstablecimientoTranslation
+            .Select(t => t.EstablecimientoId)
+            .Distinct()
+            .ToListAsync();
+        var establecimientoSinTradIds = establecimientoIds.Except(establecimientoConTradIds).ToList();
+
+        if (establecimientoSinTradIds.Any())
+        {
+            var establecimientoSinTrad = await db.Establecimiento
+                .Where(x => establecimientoSinTradIds.Contains(x.Id))
+                .ToListAsync();
+
+            foreach (var item in establecimientoSinTrad)
+            {
+                db.EstablecimientoTranslation.Add(
+                    new EstablecimientoTranslation(item.Id, "es", item.Descripcion, "system"));
                 traduccionesAgregadas++;
             }
         }

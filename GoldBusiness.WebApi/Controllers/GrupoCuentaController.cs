@@ -1,4 +1,4 @@
-using GoldBusiness.Application.Interfaces;
+﻿using GoldBusiness.Application.Interfaces;
 using GoldBusiness.Domain.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +8,7 @@ using System.Globalization;
 namespace GoldBusiness.WebApi.Controllers
 {
     /// <summary>
-    /// Controlador para gesti�n de Grupos de Cuenta.
+    /// Controlador para gestión de Grupos de Cuenta.
     /// Nivel superior del plan de cuentas (Activo, Pasivo, Patrimonio, Ingresos, Gastos).
     /// </summary>
     [ApiController]
@@ -27,7 +27,7 @@ namespace GoldBusiness.WebApi.Controllers
 
         /// <summary>
         /// Obtiene todos los grupos de cuenta.
-        /// El idioma se detecta autom�ticamente del header Accept-Language.
+        /// El idioma se detecta automáticamente del header Accept-Language.
         /// </summary>
         /// <returns>Lista de grupos de cuenta localizados</returns>
         [HttpGet]
@@ -39,7 +39,7 @@ namespace GoldBusiness.WebApi.Controllers
 
         /// <summary>
         /// Obtiene un grupo de cuenta por ID.
-        /// El idioma se detecta autom�ticamente del header Accept-Language.
+        /// El idioma se detecta automáticamente del header Accept-Language.
         /// </summary>
         /// <param name="id">ID del grupo de cuenta</param>
         /// <returns>Grupo de cuenta localizado</returns>
@@ -53,8 +53,8 @@ namespace GoldBusiness.WebApi.Controllers
 
         /// <summary>
         /// Crea un nuevo grupo de cuenta.
-        /// Si existe un c�digo cancelado, lo reactiva autom�ticamente.
-        /// El idioma se detecta autom�ticamente del header Accept-Language.
+        /// Si existe un código cancelado, lo reactiva automáticamente.
+        /// El idioma se detecta automáticamente del header Accept-Language.
         /// </summary>
         /// <param name="dto">Datos del nuevo grupo de cuenta</param>
         /// <returns>Grupo de cuenta creado o reactivado</returns>
@@ -83,7 +83,7 @@ namespace GoldBusiness.WebApi.Controllers
 
         /// <summary>
         /// Actualiza un grupo de cuenta existente.
-        /// El idioma se detecta autom�ticamente del header Accept-Language.
+        /// El idioma se detecta automáticamente del header Accept-Language.
         /// </summary>
         /// <param name="id">ID del grupo de cuenta a actualizar</param>
         /// <param name="dto">Datos actualizados del grupo</param>
@@ -122,11 +122,11 @@ namespace GoldBusiness.WebApi.Controllers
         }
 
         /// <summary>
-        /// Agrega o actualiza una traducci�n para un grupo de cuenta.
+        /// Agrega o actualiza una traducción para un grupo de cuenta.
         /// </summary>
         /// <param name="id">ID del grupo de cuenta</param>
-        /// <param name="dto">Datos de la traducci�n (idioma y texto)</param>
-        /// <returns>Resultado de la operaci�n</returns>
+        /// <param name="dto">Datos de la traducción (idioma y texto)</param>
+        /// <returns>Resultado de la operación</returns>
         [HttpPost("{id}/translations")]
         public async Task<IActionResult> AddOrUpdateTranslation(int id, [FromBody] TranslationInputDTO dto)
         {

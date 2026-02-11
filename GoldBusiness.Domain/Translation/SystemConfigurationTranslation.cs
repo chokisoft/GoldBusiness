@@ -9,6 +9,8 @@ namespace GoldBusiness.Domain.Translation
         public int ConfiguracionId { get; private set; }
         public string NombreNegocio { get; private set; } = string.Empty;
         public string Direccion { get; private set; } = string.Empty;
+        public string Municipio { get; private set; } = string.Empty;
+        public string Provincia { get; private set; } = string.Empty;
 
         public Entities.SystemConfiguration Configuracion { get; private set; } = null!;
 
@@ -18,13 +20,17 @@ namespace GoldBusiness.Domain.Translation
             int configuracionId, 
             string language, 
             string nombreNegocio, 
-            string direccion, 
+            string direccion,
+            string municipio,
+            string provincia,
             string creadoPor)
         {
             ConfiguracionId = configuracionId;
             EstablecerIdioma(language);
             SetNombreNegocio(nombreNegocio, creadoPor);
             SetDireccion(direccion, creadoPor);
+            SetMunicipio(municipio, creadoPor);
+            SetProvincia(provincia, creadoPor);
             EstablecerCreador(creadoPor);
         }
 
@@ -53,6 +59,32 @@ namespace GoldBusiness.Domain.Translation
                 throw new ArgumentNullException(nameof(modificadoPor));
 
             Direccion = direccion?.Trim() ?? string.Empty;
+            ModificadoPor = modificadoPor;
+            FechaHoraModificado = DateTime.UtcNow;
+        }
+
+        public void SetMunicipio(string municipio, string modificadoPor)
+        {
+            if (!string.IsNullOrWhiteSpace(municipio) && municipio.Length > 512)
+                throw new DomainException("El municipio no puede exceder 512 caracteres.");
+
+            if (string.IsNullOrWhiteSpace(modificadoPor))
+                throw new ArgumentNullException(nameof(modificadoPor));
+
+            Municipio = municipio?.Trim() ?? string.Empty;
+            ModificadoPor = modificadoPor;
+            FechaHoraModificado = DateTime.UtcNow;
+
+        }
+        public void SetProvincia(string provincia, string modificadoPor)
+        {
+            if (!string.IsNullOrWhiteSpace(provincia) && provincia.Length > 512)
+                throw new DomainException("la provincia no puede exceder 512 caracteres.");
+
+            if (string.IsNullOrWhiteSpace(modificadoPor))
+                throw new ArgumentNullException(nameof(modificadoPor));
+
+            Provincia = provincia?.Trim() ?? string.Empty;
             ModificadoPor = modificadoPor;
             FechaHoraModificado = DateTime.UtcNow;
         }

@@ -9,6 +9,6 @@ namespace GoldBusiness.Application.Interfaces
         Task<SystemConfigurationDTO> CreateAsync(SystemConfigurationDTO dto, string user, string lang = "es");
         Task<SystemConfigurationDTO> UpdateAsync(int id, SystemConfigurationDTO dto, string user, string lang = "es");
 
-        Task AddOrUpdateTranslationAsync(int id, string lang, string nombreNegocio, string? direccion, string user);
+        Task AddOrUpdateTranslationAsync(int id, string lang, string nombreNegocio, string? direccion,string? municipio, string? provincia, string user);
     }
 }

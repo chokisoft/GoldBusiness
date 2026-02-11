@@ -996,6 +996,8 @@ namespace GoldBusiness.Infrastructure.Migrations
                     ConfiguracionId = table.Column<int>(type: "int", nullable: false),
                     NombreNegocio = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     Direccion = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
+                    Municipio = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
+                    Provincia = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
                     CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
                     ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),

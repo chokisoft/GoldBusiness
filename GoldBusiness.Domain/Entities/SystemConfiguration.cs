@@ -229,6 +229,8 @@ namespace GoldBusiness.Domain.Entities
             string language,
             string nombreNegocio,
             string direccion,
+            string municipio,
+            string provincia,
             string usuario)
         {
             var lang = LanguageHelper.NormalizeLang(language);
@@ -239,11 +241,13 @@ namespace GoldBusiness.Domain.Entities
             {
                 existing.SetNombreNegocio(nombreNegocio, usuario);
                 existing.SetDireccion(direccion, usuario);
+                existing.SetMunicipio(direccion, usuario);
+                existing.SetProvincia(direccion, usuario);
             }
             else
             {
                 _translations.Add(new SystemConfigurationTranslation(
-                    Id, lang, nombreNegocio, direccion, usuario));
+                    Id, lang, nombreNegocio, direccion, municipio, provincia, usuario));
             }
         }
 
@@ -286,6 +290,47 @@ namespace GoldBusiness.Domain.Entities
 
             return string.Empty;
         }
+
+        public string GetMunicipio(string language, string fallback = "es")
+        {
+            var lang = LanguageHelper.NormalizeLang(language);
+            var fb = LanguageHelper.NormalizeLang(fallback);
+
+            var match = _translations.FirstOrDefault(t =>
+                string.Equals(t.Language, lang, StringComparison.OrdinalIgnoreCase));
+            if (match != null && !string.IsNullOrWhiteSpace(match.Direccion))
+                return match.Municipio;
+
+            if (!string.IsNullOrWhiteSpace(Municipio))
+                return Municipio;
+
+            var fallbackMatch = _translations.FirstOrDefault(t =>
+                string.Equals(t.Language, fb, StringComparison.OrdinalIgnoreCase));
+            if (fallbackMatch != null) return fallbackMatch.Municipio;
+
+            return string.Empty;
+        }
+
+        public string GetProvincia(string language, string fallback = "es")
+        {
+            var lang = LanguageHelper.NormalizeLang(language);
+            var fb = LanguageHelper.NormalizeLang(fallback);
+
+            var match = _translations.FirstOrDefault(t =>
+                string.Equals(t.Language, lang, StringComparison.OrdinalIgnoreCase));
+            if (match != null && !string.IsNullOrWhiteSpace(match.Provincia))
+                return match.Provincia;
+
+            if (!string.IsNullOrWhiteSpace(Provincia))
+                return Provincia;
+
+            var fallbackMatch = _translations.FirstOrDefault(t =>
+                string.Equals(t.Language, fb, StringComparison.OrdinalIgnoreCase));
+            if (fallbackMatch != null) return fallbackMatch.Provincia;
+
+            return string.Empty;
+        }
+
 
         // ═══════════════════════════════════════════════════════════════
         // 🔧 MÉTODOS DE ACTUALIZACIÓN

@@ -49,6 +49,8 @@ namespace GoldBusiness.Application.Services
                         lang,
                         dto.NombreNegocio,
                         dto.Direccion ?? string.Empty,
+                        dto.Municipio ?? string.Empty,
+                        dto.Provincia ?? string.Empty,
                         creador);
 
                     existingEntity.ActualizarAuditoria(creador);
@@ -91,6 +93,8 @@ namespace GoldBusiness.Application.Services
                 lang,
                 dto.NombreNegocio,
                 dto.Direccion ?? string.Empty,
+                dto.Municipio ?? string.Empty,
+                dto.Provincia ?? string.Empty,
                 creador);
 
             await _repo.AddAsync(entity);
@@ -130,6 +134,8 @@ namespace GoldBusiness.Application.Services
                 lang,
                 dto.NombreNegocio,
                 dto.Direccion ?? string.Empty,
+                dto.Municipio ?? string.Empty,
+                dto.Provincia ?? string.Empty,
                 modificador);
 
             // Actualizar auditoría
@@ -144,6 +150,8 @@ namespace GoldBusiness.Application.Services
             string lang,
             string nombreNegocio,
             string? direccion,
+            string? municipio,
+            string? provincia,
             string user)
         {
             var modificador = user ?? "system";
@@ -156,6 +164,8 @@ namespace GoldBusiness.Application.Services
                 lang,
                 nombreNegocio,
                 direccion ?? string.Empty,
+                municipio ?? string.Empty,
+                provincia ?? string.Empty,
                 modificador);
 
             entity.ActualizarAuditoria(modificador);
@@ -177,8 +187,8 @@ namespace GoldBusiness.Application.Services
                 Licencia = s.Licencia,
                 NombreNegocio = s.GetNombreNegocio(lang),
                 Direccion = s.GetDireccion(lang),
-                Municipio = s.Municipio,
-                Provincia = s.Provincia,
+                Municipio = s.GetMunicipio(lang),
+                Provincia = s.GetProvincia(lang),
                 CodPostal = s.CodPostal,
                 Imagen = s.Imagen,
                 Web = s.Web,

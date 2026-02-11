@@ -60,7 +60,7 @@ namespace GoldBusiness.WebApi.Controllers
         {
             var usuario = User?.Identity?.Name ?? "system";
             await _service.AddOrUpdateTranslationAsync(
-                id, request.Language, request.NombreNegocio, request.Direccion, usuario);
+                id, request.Language, request.NombreNegocio, request.Direccion, request.Municipio, request.Provincia, usuario);
             return NoContent();
         }
 
@@ -69,6 +69,8 @@ namespace GoldBusiness.WebApi.Controllers
             public string Language { get; set; } = string.Empty;
             public string NombreNegocio { get; set; } = string.Empty;
             public string? Direccion { get; set; }
+            public string? Municipio { get; set; }
+            public string? Provincia { get; set; }
         }
     }
 }

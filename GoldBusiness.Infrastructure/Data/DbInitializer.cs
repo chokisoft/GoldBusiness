@@ -34,6 +34,7 @@ namespace GoldBusiness.Infrastructure.Data
 
                 // SystemConfiguration
                 await SeedSystemConfigurationAsync(context, logger);
+                await SeedEstablecimientoAsync(context, logger);
 
                 // Todas las cuentas reales
                 await SeedCuentaAsync(context, logger);
@@ -48,6 +49,7 @@ namespace GoldBusiness.Infrastructure.Data
                 await SeedConceptoAjusteAsync(context, logger);
                 await SeedUnidadMedidaAsync(context, logger);
                 await SeedTransaccionAsync(context, logger);
+
 
                 logger.LogInformation("✅ Seed de datos maestros completado exitosamente!");
             }
@@ -215,10 +217,10 @@ namespace GoldBusiness.Infrastructure.Data
             var sysConfig = new SystemConfiguration(
                 "CHK",
                 "uxi/LeQnoZmyHjpkrS2J7RgiO6dKhwdapmg5r7TuwpnDzq2FPwwOWbLwRU6zUcRME2XktTsXkNmonkrYHFFPzg==",
-                "Chokisoft Development Software",
-                "Calle 172 #17830 e/ 180 y 182, Reparto 1ero de Mayo",
-                "Boyeros",
-                "La Habana",
+                "CHOKISOFT SOLUCIONES TECNOLÓGICAS",
+                "CALLE 172 #17830 E/ 180 y 182, REPARTO 1ERO DE MAYO",
+                "BOYEROS",
+                "LA HABANA",
                 "10800",
                 "http://localhost/imagen/imagen.jpg",
                 "http://localhost/",
@@ -233,9 +235,9 @@ namespace GoldBusiness.Infrastructure.Data
             // Agregar traducciones
             var traducciones = new List<SystemConfigurationTranslation>
             {
-                new(sysConfig.Id, "es", "Chokisoft Development Software", "Calle 172 #17830 e/ 180 y 182, Reparto 1ero de Mayo", "system"),
-                new(sysConfig.Id, "en", "Chokisoft Development Software", "172nd Street #17830 between 180th and 182nd, 1st of May Neighborhood", "system"),
-                new(sysConfig.Id, "fr", "Chokisoft Development Software", "Rue 172 n°17830 entre 180 et 182, Quartier 1er Mai", "system")
+                new(sysConfig.Id, "es", "CHOKISOFT SOLUCIONES TECNOLÓGICAS", "CALLE 172 #17830 E/ 180 y 182, REPARTO 1ERO DE MAYO", "BOYEROS", "LA HABANA", "system"),
+                new(sysConfig.Id, "en", "CHOKISOFT TECHNOLOGY SOLUTIONS", "172ND STREET #17830 BETWEEN 180TH AND 182ND, 1ST OF MAY NEIGHBORHOOD", "BOYEROS", "HAVANA", "system"),
+                new(sysConfig.Id, "fr", "CHOKISOFT SOLUTIONS TECHNOLOGIQUES", "RUE 172 N°17830 ENTRE 180 ET 182, QUARTIER 1ER MAI", "BOYEROS", "LA HAVANE", "system")
             };
 
             context.SystemConfigurationTranslation.AddRange(traducciones);
@@ -513,6 +515,41 @@ namespace GoldBusiness.Infrastructure.Data
         }
 
         #endregion
+
+        #region Establecimiento
+
+        private static async Task SeedEstablecimientoAsync(ApplicationDbContext context, ILogger logger)
+        {
+            if (context.Establecimiento.Any())
+            {
+                logger.LogInformation("Establecimiento ya tiene datos, omitiendo seed.");
+                return;
+            }
+
+            var establecimiento = new[]
+            {
+                new Establecimiento("CHK001", "DESARROLLO DE SOFTWARE", 1, "system"),
+            };
+
+            context.Establecimiento.AddRange(establecimiento);
+            await context.SaveChangesAsync();
+
+            // Agregar traducciones
+            var traducciones = new List<EstablecimientoTranslation>
+            {
+                new(establecimiento[0].Id, "es", "DESARROLLO DE SOFTWARE", "system"),
+                new(establecimiento[0].Id, "en", "SOFTWARE DEVELOPMENT", "system"),
+                new(establecimiento[0].Id, "fr", "DÉVELOPPEMENT LOGICIEL", "system"),
+            };
+
+            context.EstablecimientoTranslation.AddRange(traducciones);
+            await context.SaveChangesAsync();
+
+            logger.LogInformation("Seed de Establecimiento completado: {Count} establecimientos agregadas", establecimiento.Length);
+        }
+
+        #endregion
+
 
         #region Linea
 

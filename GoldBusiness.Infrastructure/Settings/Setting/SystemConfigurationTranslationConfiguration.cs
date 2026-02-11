@@ -14,6 +14,8 @@ namespace GoldBusiness.Infrastructure.Settings.Setting
             builder.Property(e => e.Language).IsRequired().HasMaxLength(5);
             builder.Property(e => e.NombreNegocio).IsRequired().HasMaxLength(256);
             builder.Property(e => e.Direccion).HasMaxLength(512);
+            builder.Property(e => e.Municipio).HasMaxLength(512);
+            builder.Property(e => e.Provincia).HasMaxLength(512);
             builder.Property(e => e.CreadoPor).IsRequired().HasMaxLength(256);
             builder.Property(e => e.ModificadoPor).IsRequired().HasMaxLength(256);
             builder.Property(e => e.FechaHoraCreado).HasColumnType("datetime");
