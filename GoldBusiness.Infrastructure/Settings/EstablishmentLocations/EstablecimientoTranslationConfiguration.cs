@@ -17,8 +17,7 @@ namespace GoldBusiness.Infrastructure.Settings.EstablishmentLocations
             builder.Property(e => e.ModificadoPor).IsRequired().HasMaxLength(256);
             builder.Property(e => e.FechaHoraCreado).HasColumnType("datetime");
             builder.Property(e => e.FechaHoraModificado).HasColumnType("datetime");
-            builder.Ignore(e => e.Establecimiento);
-            builder.HasOne<Establecimiento>().WithMany().HasForeignKey(e => e.EstablecimientoId).OnDelete(DeleteBehavior.Cascade).HasConstraintName("FK_EstablecimientoTranslation_Establecimiento");
+            builder.HasOne(t => t.Establecimiento).WithMany(e => e.Translations).HasForeignKey(e => e.EstablecimientoId).OnDelete(DeleteBehavior.Cascade).HasConstraintName("FK_EstablecimientoTranslation_Establecimiento");
         }
     }
 }

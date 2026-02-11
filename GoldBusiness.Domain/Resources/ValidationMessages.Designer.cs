@@ -97,6 +97,33 @@ namespace GoldBusiness.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to La cantidad es obligatoria..
+        /// </summary>
+        public static string CantidadObligatoria {
+            get {
+                return ResourceManager.GetString("CantidadObligatoria", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to La cantidad debe ser mayor que cero..
+        /// </summary>
+        public static string CantidadRango {
+            get {
+                return ResourceManager.GetString("CantidadRango", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Las características no pueden exceder 1024 caracteres..
+        /// </summary>
+        public static string CaracteristicasLongitud {
+            get {
+                return ResourceManager.GetString("CaracteristicasLongitud", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to El código del cliente debe ser alfanumérico de 8 caracteres.
         /// </summary>
         public static string ClienteCodigoFormato {
@@ -151,11 +178,38 @@ namespace GoldBusiness.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to El código de referencia no puede exceder 50 caracteres..
+        /// </summary>
+        public static string CodigoReferenciaLongitud {
+            get {
+                return ResourceManager.GetString("CodigoReferenciaLongitud", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to El código postal no puede exceder 5 caracteres.
         /// </summary>
         public static string CodPostalLongitud {
             get {
                 return ResourceManager.GetString("CodPostalLongitud", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El ID del componente es obligatorio..
+        /// </summary>
+        public static string ComponenteIdObligatorio {
+            get {
+                return ResourceManager.GetString("ComponenteIdObligatorio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Debe seleccionar un componente válido..
+        /// </summary>
+        public static string ComponenteSeleccion {
+            get {
+                return ResourceManager.GetString("ComponenteSeleccion", resourceCulture);
             }
         }
         
@@ -174,6 +228,42 @@ namespace GoldBusiness.Domain.Resources {
         public static string CuentaCodigoLongitud {
             get {
                 return ResourceManager.GetString("CuentaCodigoLongitud", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El ID de la cuenta de costo es obligatorio..
+        /// </summary>
+        public static string CuentaCostoIdObligatorio {
+            get {
+                return ResourceManager.GetString("CuentaCostoIdObligatorio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El ID de la cuenta de devolución es obligatorio..
+        /// </summary>
+        public static string CuentaDevolucionIdObligatorio {
+            get {
+                return ResourceManager.GetString("CuentaDevolucionIdObligatorio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El ID de la cuenta de inventario es obligatorio..
+        /// </summary>
+        public static string CuentaInventarioIdObligatorio {
+            get {
+                return ResourceManager.GetString("CuentaInventarioIdObligatorio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El ID de la cuenta de venta es obligatorio..
+        /// </summary>
+        public static string CuentaVentaIdObligatorio {
+            get {
+                return ResourceManager.GetString("CuentaVentaIdObligatorio", resourceCulture);
             }
         }
         
@@ -223,11 +313,56 @@ namespace GoldBusiness.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to El código del establecimiento debe tener exactamente 6 caracteres..
+        /// </summary>
+        public static string EstablecimientoCodigoLongitud {
+            get {
+                return ResourceManager.GetString("EstablecimientoCodigoLongitud", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El ID del establecimiento es obligatorio..
+        /// </summary>
+        public static string EstablecimientoIdObligatorio {
+            get {
+                return ResourceManager.GetString("EstablecimientoIdObligatorio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El establecimiento es obligatorio..
+        /// </summary>
+        public static string EstablecimientoObligatorio {
+            get {
+                return ResourceManager.GetString("EstablecimientoObligatorio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Debe seleccionar un establecimiento válido..
+        /// </summary>
+        public static string EstablecimientoSeleccion {
+            get {
+                return ResourceManager.GetString("EstablecimientoSeleccion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to El fax no puede exceder 50 caracteres.
         /// </summary>
         public static string FaxLongitud {
             get {
                 return ResourceManager.GetString("FaxLongitud", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Es Almacén.
+        /// </summary>
+        public static string Field_Almacen {
+            get {
+                return ResourceManager.GetString("Field_Almacen", resourceCulture);
             }
         }
         
@@ -250,11 +385,29 @@ namespace GoldBusiness.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cantidad.
+        /// </summary>
+        public static string Field_Cantidad {
+            get {
+                return ResourceManager.GetString("Field_Cantidad", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cantidad de Productos.
         /// </summary>
         public static string Field_CantidadProductos {
             get {
                 return ResourceManager.GetString("Field_CantidadProductos", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Características.
+        /// </summary>
+        public static string Field_Caracteristicas {
+            get {
+                return ResourceManager.GetString("Field_Caracteristicas", resourceCulture);
             }
         }
         
@@ -277,11 +430,29 @@ namespace GoldBusiness.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Código de Referencia.
+        /// </summary>
+        public static string Field_CodigoReferencia {
+            get {
+                return ResourceManager.GetString("Field_CodigoReferencia", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Código Postal.
         /// </summary>
         public static string Field_CodPostal {
             get {
                 return ResourceManager.GetString("Field_CodPostal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Componente.
+        /// </summary>
+        public static string Field_Componente {
+            get {
+                return ResourceManager.GetString("Field_Componente", resourceCulture);
             }
         }
         
@@ -295,11 +466,47 @@ namespace GoldBusiness.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cuenta de Costo.
+        /// </summary>
+        public static string Field_CuentaCosto {
+            get {
+                return ResourceManager.GetString("Field_CuentaCosto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cuenta de Devolución.
+        /// </summary>
+        public static string Field_CuentaDevolucion {
+            get {
+                return ResourceManager.GetString("Field_CuentaDevolucion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cuenta de Inventario.
+        /// </summary>
+        public static string Field_CuentaInventario {
+            get {
+                return ResourceManager.GetString("Field_CuentaInventario", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cuentas.
         /// </summary>
         public static string Field_Cuentas {
             get {
                 return ResourceManager.GetString("Field_Cuentas", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cuenta de Venta.
+        /// </summary>
+        public static string Field_CuentaVenta {
+            get {
+                return ResourceManager.GetString("Field_CuentaVenta", resourceCulture);
             }
         }
         
@@ -349,6 +556,15 @@ namespace GoldBusiness.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Establecimiento.
+        /// </summary>
+        public static string Field_Establecimiento {
+            get {
+                return ResourceManager.GetString("Field_Establecimiento", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fax Principal.
         /// </summary>
         public static string Field_Fax1 {
@@ -385,6 +601,15 @@ namespace GoldBusiness.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ficha de Producto.
+        /// </summary>
+        public static string Field_FichaProducto {
+            get {
+                return ResourceManager.GetString("Field_FichaProducto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Grupo de Cuenta.
         /// </summary>
         public static string Field_GrupoCuenta {
@@ -399,6 +624,15 @@ namespace GoldBusiness.Domain.Resources {
         public static string Field_Iban {
             get {
                 return ResourceManager.GetString("Field_Iban", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Imagen.
+        /// </summary>
+        public static string Field_Imagen {
+            get {
+                return ResourceManager.GetString("Field_Imagen", resourceCulture);
             }
         }
         
@@ -421,6 +655,15 @@ namespace GoldBusiness.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Localidad.
+        /// </summary>
+        public static string Field_Localidad {
+            get {
+                return ResourceManager.GetString("Field_Localidad", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Modificado por.
         /// </summary>
         public static string Field_ModificadoPor {
@@ -439,6 +682,15 @@ namespace GoldBusiness.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Negocio.
+        /// </summary>
+        public static string Field_Negocio {
+            get {
+                return ResourceManager.GetString("Field_Negocio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to NIF/CIF.
         /// </summary>
         public static string Field_Nif {
@@ -453,6 +705,33 @@ namespace GoldBusiness.Domain.Resources {
         public static string Field_Password {
             get {
                 return ResourceManager.GetString("Field_Password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Precio de Costo.
+        /// </summary>
+        public static string Field_PrecioCosto {
+            get {
+                return ResourceManager.GetString("Field_PrecioCosto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Precio de Venta.
+        /// </summary>
+        public static string Field_PrecioVenta {
+            get {
+                return ResourceManager.GetString("Field_PrecioVenta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Producto.
+        /// </summary>
+        public static string Field_Producto {
+            get {
+                return ResourceManager.GetString("Field_Producto", resourceCulture);
             }
         }
         
@@ -480,6 +759,24 @@ namespace GoldBusiness.Domain.Resources {
         public static string Field_Provincia {
             get {
                 return ResourceManager.GetString("Field_Provincia", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Es Servicio.
+        /// </summary>
+        public static string Field_Servicio {
+            get {
+                return ResourceManager.GetString("Field_Servicio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stock Mínimo.
+        /// </summary>
+        public static string Field_StockMinimo {
+            get {
+                return ResourceManager.GetString("Field_StockMinimo", resourceCulture);
             }
         }
         
@@ -525,6 +822,24 @@ namespace GoldBusiness.Domain.Resources {
         public static string Field_Telefono2 {
             get {
                 return ResourceManager.GetString("Field_Telefono2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transacción.
+        /// </summary>
+        public static string Field_Transaccion {
+            get {
+                return ResourceManager.GetString("Field_Transaccion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unidad de Medida.
+        /// </summary>
+        public static string Field_UnidadMedida {
+            get {
+                return ResourceManager.GetString("Field_UnidadMedida", resourceCulture);
             }
         }
         
@@ -637,6 +952,33 @@ namespace GoldBusiness.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to El código de la localidad debe tener exactamente 9 caracteres..
+        /// </summary>
+        public static string LocalidadCodigoLongitud {
+            get {
+                return ResourceManager.GetString("LocalidadCodigoLongitud", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to La localidad es obligatoria..
+        /// </summary>
+        public static string LocalidadObligatoria {
+            get {
+                return ResourceManager.GetString("LocalidadObligatoria", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Debe seleccionar una localidad válida..
+        /// </summary>
+        public static string LocalidadSeleccion {
+            get {
+                return ResourceManager.GetString("LocalidadSeleccion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error en el inicio de sesión.
         /// </summary>
         public static string LoginFailed {
@@ -655,11 +997,74 @@ namespace GoldBusiness.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to El ID del negocio es obligatorio..
+        /// </summary>
+        public static string NegocioIdObligatorio {
+            get {
+                return ResourceManager.GetString("NegocioIdObligatorio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to El NIF no puede exceder 11 caracteres.
         /// </summary>
         public static string NifLongitud {
             get {
                 return ResourceManager.GetString("NifLongitud", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El precio de costo es obligatorio..
+        /// </summary>
+        public static string PrecioCostoObligatorio {
+            get {
+                return ResourceManager.GetString("PrecioCostoObligatorio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El precio de costo debe ser mayor o igual a cero..
+        /// </summary>
+        public static string PrecioCostoRango {
+            get {
+                return ResourceManager.GetString("PrecioCostoRango", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El precio de venta es obligatorio..
+        /// </summary>
+        public static string PrecioVentaObligatorio {
+            get {
+                return ResourceManager.GetString("PrecioVentaObligatorio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El precio de venta debe ser mayor o igual a cero..
+        /// </summary>
+        public static string PrecioVentaRango {
+            get {
+                return ResourceManager.GetString("PrecioVentaRango", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El código del producto no puede exceder 13 caracteres..
+        /// </summary>
+        public static string ProductoCodigoLongitud {
+            get {
+                return ResourceManager.GetString("ProductoCodigoLongitud", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El ID del producto es obligatorio..
+        /// </summary>
+        public static string ProductoIdObligatorio {
+            get {
+                return ResourceManager.GetString("ProductoIdObligatorio", resourceCulture);
             }
         }
         
@@ -678,6 +1083,24 @@ namespace GoldBusiness.Domain.Resources {
         public static string ProveedorCodigoLongitud {
             get {
                 return ResourceManager.GetString("ProveedorCodigoLongitud", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El proveedor es obligatorio..
+        /// </summary>
+        public static string ProveedorObligatorio {
+            get {
+                return ResourceManager.GetString("ProveedorObligatorio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Debe seleccionar un proveedor válido..
+        /// </summary>
+        public static string ProveedorSeleccion {
+            get {
+                return ResourceManager.GetString("ProveedorSeleccion", resourceCulture);
             }
         }
         
@@ -732,6 +1155,15 @@ namespace GoldBusiness.Domain.Resources {
         public static string RequiredFemale {
             get {
                 return ResourceManager.GetString("RequiredFemale", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El stock mínimo debe ser mayor o igual a cero..
+        /// </summary>
+        public static string StockMinimoRango {
+            get {
+                return ResourceManager.GetString("StockMinimoRango", resourceCulture);
             }
         }
         
@@ -817,6 +1249,24 @@ namespace GoldBusiness.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to La sublínea es obligatoria..
+        /// </summary>
+        public static string SubLineaObligatoria {
+            get {
+                return ResourceManager.GetString("SubLineaObligatoria", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Debe seleccionar una sublínea válida..
+        /// </summary>
+        public static string SubLineaSeleccion {
+            get {
+                return ResourceManager.GetString("SubLineaSeleccion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Idiomas Soportados.
         /// </summary>
         public static string SupportedLanguages {
@@ -853,11 +1303,47 @@ namespace GoldBusiness.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to El código de la transacción no puede exceder 10 caracteres..
+        /// </summary>
+        public static string TransaccionCodigoLongitud {
+            get {
+                return ResourceManager.GetString("TransaccionCodigoLongitud", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Traducción actualizada exitosamente.
         /// </summary>
         public static string TranslationUpdated {
             get {
                 return ResourceManager.GetString("TranslationUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El código de la unidad de medida no puede exceder 3 caracteres..
+        /// </summary>
+        public static string UnidadMedidaCodigoLongitud {
+            get {
+                return ResourceManager.GetString("UnidadMedidaCodigoLongitud", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to La unidad de medida es obligatoria..
+        /// </summary>
+        public static string UnidadMedidaObligatoria {
+            get {
+                return ResourceManager.GetString("UnidadMedidaObligatoria", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Debe seleccionar una unidad de medida válida..
+        /// </summary>
+        public static string UnidadMedidaSeleccion {
+            get {
+                return ResourceManager.GetString("UnidadMedidaSeleccion", resourceCulture);
             }
         }
         

@@ -33,7 +33,7 @@ namespace GoldBusiness.Infrastructure.Settings.ExternalParties
             builder.Property(e => e.FechaHoraModificado).HasColumnType("datetime");
             builder.Ignore(e => e.Translations);
             builder.Ignore(e => e.OperacionesEncabezado);
-            builder.Ignore(e => e.Productos);
+            builder.Ignore(e => e.Producto);
         }
     }
 }

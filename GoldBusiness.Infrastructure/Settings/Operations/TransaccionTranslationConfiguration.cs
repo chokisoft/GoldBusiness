@@ -17,8 +17,7 @@ namespace GoldBusiness.Infrastructure.Settings.Operations
             builder.Property(e => e.ModificadoPor).IsRequired().HasMaxLength(256);
             builder.Property(e => e.FechaHoraCreado).HasColumnType("datetime");
             builder.Property(e => e.FechaHoraModificado).HasColumnType("datetime");
-            builder.Ignore(e => e.Transaccion);
-            builder.HasOne<Transaccion>().WithMany().HasForeignKey(e => e.TransaccionId).OnDelete(DeleteBehavior.Cascade).HasConstraintName("FK_TransaccionTranslation_Transaccion");
+            builder.HasOne(t => t.Transaccion).WithMany(e => e.Translations).HasForeignKey(e => e.TransaccionId).OnDelete(DeleteBehavior.Cascade).HasConstraintName("FK_TransaccionTranslation_Transaccion");
         }
     }
 }

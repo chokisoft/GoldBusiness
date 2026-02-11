@@ -3,24 +3,38 @@ using System.ComponentModel.DataAnnotations;
 namespace GoldBusiness.Domain.DTOs
 {
     /// <summary>
-    /// DTO para Transacción - Tipo de operación de inventario.
-    /// Ejemplos: Compra, Venta, Ajuste, Devolución, Transferencia.
+    /// DTO para Transaccion - Tipo de operación o movimiento en el sistema.
     /// </summary>
     public class TransaccionDTO
     {
         public int Id { get; set; }
 
-        /// <summary>
-        /// Código de la transacción (hasta 10 caracteres).
-        /// </summary>
-        [Required(ErrorMessage = "El código es obligatorio")]
-        [Display(Name = "Código")]
-        [StringLength(10, ErrorMessage = "El código no puede exceder 10 caracteres")]
+        [Required(
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.CodigoObligatorio)
+        )]
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Codigo),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
+        [StringLength(10,
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.TransaccionCodigoLongitud)
+        )]
         public string Codigo { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "La descripción es obligatoria")]
-        [Display(Name = "Descripción")]
-        [StringLength(256, ErrorMessage = "La descripción no puede exceder 256 caracteres")]
+        [Required(
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.DescripcionObligatoria)
+        )]
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Descripcion),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
+        [StringLength(256,
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.DescripcionLongitud)
+        )]
         public string Descripcion { get; set; } = string.Empty;
 
         public string CreadoPor { get; set; } = string.Empty;

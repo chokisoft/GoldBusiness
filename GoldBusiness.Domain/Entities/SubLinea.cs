@@ -7,7 +7,7 @@ namespace GoldBusiness.Domain.Entities
     public class SubLinea : BaseEntity
     {
         private readonly HashSet<SubLineaTranslation> _translations = new();
-        private readonly HashSet<Producto> _productos = new();
+        private readonly HashSet<Producto> _producto = new();
 
         public int Id { get; private set; }
         public string Codigo { get; private set; } = string.Empty;
@@ -19,7 +19,7 @@ namespace GoldBusiness.Domain.Entities
 
         // Colecciones de navegación (read-only)
         public IReadOnlyCollection<SubLineaTranslation> Translations => _translations;
-        public IReadOnlyCollection<Producto> Productos => _productos;
+        public IReadOnlyCollection<Producto> Producto => _producto;
 
         // Constructor protegido para EF Core
         protected SubLinea() { }
@@ -113,7 +113,7 @@ namespace GoldBusiness.Domain.Entities
             if (Cancelado)
                 throw new DomainException("La sublínea ya está cancelada.");
             
-            if (_productos.Any(p => !p.Cancelado))
+            if (_producto.Any(p => !p.Cancelado))
                 throw new DomainException("No se puede cancelar una sublínea con productos activos.");
             
             Cancelado = true;

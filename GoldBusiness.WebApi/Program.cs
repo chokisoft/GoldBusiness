@@ -128,6 +128,24 @@ builder.Services.AddScoped<IClienteService, ClienteService>();
 builder.Services.AddScoped<IProveedorRepository, ProveedorRepository>();
 builder.Services.AddScoped<IProveedorService, ProveedorService>();
 
+// Establecimiento y Localidad
+builder.Services.AddScoped<IEstablecimientoRepository, EstablecimientoRepository>();
+builder.Services.AddScoped<IEstablecimientoService, EstablecimientoService>();
+builder.Services.AddScoped<ILocalidadRepository, LocalidadRepository>();
+builder.Services.AddScoped<ILocalidadService, LocalidadService>();
+
+// Transacciones
+builder.Services.AddScoped<ITransaccionRepository, TransaccionRepository>();
+builder.Services.AddScoped<ITransaccionService, TransaccionService>();
+
+// Productos y Fichas
+builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
+builder.Services.AddScoped<IProductoService, ProductoService>();
+builder.Services.AddScoped<IFichaProductoRepository, FichaProductoRepository>();
+builder.Services.AddScoped<IFichaProductoService, FichaProductoService>();
+builder.Services.AddScoped<IUnidadMedidaRepository, UnidadMedidaRepository>();
+builder.Services.AddScoped<IUnidadMedidaService, UnidadMedidaService>();
+
 // ============================================
 // 🔐 JWT AUTHENTICATION
 // ============================================
@@ -645,6 +663,47 @@ using (var scope = app.Services.CreateScope())
             foreach (var item in conceptosSinTrad)
             {
                 db.ConceptoAjusteTranslation.Add(new ConceptoAjusteTranslation(item.Id, "es", item.Descripcion, "system"));
+                traduccionesAgregadas++;
+            }
+        }
+
+        // UnidadMedida
+        var unidadMedidaIds = await db.UnidadMedida.Select(x => x.Id).ToListAsync();
+        var unidadMedidaConTradIds = await db.UnidadMedidaTranslation
+            .Select(t => t.UnidadMedidaId)
+            .Distinct()
+            .ToListAsync();
+        var unidadMedidaSinTradIds = unidadMedidaIds.Except(unidadMedidaConTradIds).ToList();
+
+        if (unidadMedidaSinTradIds.Any())
+        {
+            var unidadMedidaSinTrad = await db.UnidadMedida
+                .Where(x => unidadMedidaSinTradIds.Contains(x.Id))
+                .ToListAsync();
+
+            foreach (var item in unidadMedidaSinTrad)
+            {
+                db.UnidadMedidaTranslation.Add(new UnidadMedidaTranslation(item.Id, "es", item.Descripcion, "system"));
+                traduccionesAgregadas++;
+            }
+        }
+
+        var transaccionIds = await db.Transaccion.Select(x => x.Id).ToListAsync();
+        var transaccionConTradIds = await db.TransaccionTranslation
+            .Select(t => t.TransaccionId)
+            .Distinct()
+            .ToListAsync();
+        var transaccionSinTradIds = transaccionIds.Except(transaccionConTradIds).ToList();
+
+        if (transaccionSinTradIds.Any())
+        {
+            var transaccionSinTrad = await db.Transaccion
+                .Where(x => transaccionSinTradIds.Contains(x.Id))
+                .ToListAsync();
+
+            foreach (var item in transaccionSinTrad)
+            {
+                db.TransaccionTranslation.Add(new TransaccionTranslation(item.Id, "es", item.Descripcion, "system"));
                 traduccionesAgregadas++;
             }
         }

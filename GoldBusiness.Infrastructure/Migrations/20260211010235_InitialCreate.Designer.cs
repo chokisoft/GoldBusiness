@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GoldBusiness.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260210154749_InitialCreate")]
+    [Migration("20260211010235_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -3472,25 +3472,25 @@ namespace GoldBusiness.Infrastructure.Migrations
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Producto", b =>
                 {
                     b.HasOne("GoldBusiness.Domain.Entities.Establecimiento", "Establecimiento")
-                        .WithMany("Productos")
+                        .WithMany("Producto")
                         .HasForeignKey("EstablecimientoId")
                         .IsRequired()
                         .HasConstraintName("FK_Producto_Establecimiento");
 
                     b.HasOne("GoldBusiness.Domain.Entities.Proveedor", "Proveedor")
-                        .WithMany("Productos")
+                        .WithMany("Producto")
                         .HasForeignKey("ProveedorId")
                         .IsRequired()
                         .HasConstraintName("FK_Producto_Proveedor");
 
                     b.HasOne("GoldBusiness.Domain.Entities.SubLinea", "SubLinea")
-                        .WithMany("Productos")
+                        .WithMany("Producto")
                         .HasForeignKey("SubLineaId")
                         .IsRequired()
                         .HasConstraintName("FK_Producto_SubLinea");
 
                     b.HasOne("GoldBusiness.Domain.Entities.UnidadMedida", "UnidadMedida")
-                        .WithMany("Productos")
+                        .WithMany("Producto")
                         .HasForeignKey("UnidadMedidaId")
                         .IsRequired()
                         .HasConstraintName("FK_Producto_UnidadMedida");
@@ -3646,12 +3646,14 @@ namespace GoldBusiness.Infrastructure.Migrations
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.EstablecimientoTranslation", b =>
                 {
-                    b.HasOne("GoldBusiness.Domain.Entities.Establecimiento", null)
-                        .WithMany()
+                    b.HasOne("GoldBusiness.Domain.Entities.Establecimiento", "Establecimiento")
+                        .WithMany("Translations")
                         .HasForeignKey("EstablecimientoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_EstablecimientoTranslation_Establecimiento");
+
+                    b.Navigation("Establecimiento");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.GrupoCuentaTranslation", b =>
@@ -3678,12 +3680,14 @@ namespace GoldBusiness.Infrastructure.Migrations
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.LocalidadTranslation", b =>
                 {
-                    b.HasOne("GoldBusiness.Domain.Entities.Localidad", null)
-                        .WithMany()
+                    b.HasOne("GoldBusiness.Domain.Entities.Localidad", "Localidad")
+                        .WithMany("Translations")
                         .HasForeignKey("LocalidadId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_LocalidadTranslation_Localidad");
+
+                    b.Navigation("Localidad");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.MonedaTranslation", b =>
@@ -3708,12 +3712,14 @@ namespace GoldBusiness.Infrastructure.Migrations
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.ProductoTranslation", b =>
                 {
-                    b.HasOne("GoldBusiness.Domain.Entities.Producto", null)
-                        .WithMany()
+                    b.HasOne("GoldBusiness.Domain.Entities.Producto", "Producto")
+                        .WithMany("Translations")
                         .HasForeignKey("ProductoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_ProductoTranslation_Producto");
+
+                    b.Navigation("Producto");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.ProveedorTranslation", b =>
@@ -3760,22 +3766,26 @@ namespace GoldBusiness.Infrastructure.Migrations
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.TransaccionTranslation", b =>
                 {
-                    b.HasOne("GoldBusiness.Domain.Entities.Transaccion", null)
-                        .WithMany()
+                    b.HasOne("GoldBusiness.Domain.Entities.Transaccion", "Transaccion")
+                        .WithMany("Translations")
                         .HasForeignKey("TransaccionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_TransaccionTranslation_Transaccion");
+
+                    b.Navigation("Transaccion");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.UnidadMedidaTranslation", b =>
                 {
-                    b.HasOne("GoldBusiness.Domain.Entities.UnidadMedida", null)
-                        .WithMany()
+                    b.HasOne("GoldBusiness.Domain.Entities.UnidadMedida", "UnidadMedida")
+                        .WithMany("Translations")
                         .HasForeignKey("UnidadMedidaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_UnidadMedidaTranslation_UnidadMedida");
+
+                    b.Navigation("UnidadMedida");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -3876,7 +3886,9 @@ namespace GoldBusiness.Infrastructure.Migrations
                 {
                     b.Navigation("Localidades");
 
-                    b.Navigation("Productos");
+                    b.Navigation("Producto");
+
+                    b.Navigation("Translations");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.GrupoCuenta", b =>
@@ -3904,6 +3916,8 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.Navigation("Saldos");
 
                     b.Navigation("SaldosAnteriores");
+
+                    b.Navigation("Translations");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Moneda", b =>
@@ -3931,13 +3945,15 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.Navigation("Saldos");
 
                     b.Navigation("SaldosAnteriores");
+
+                    b.Navigation("Translations");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Proveedor", b =>
                 {
                     b.Navigation("CuentasCobrarPagar");
 
-                    b.Navigation("Productos");
+                    b.Navigation("Producto");
 
                     b.Navigation("Translations");
                 });
@@ -3949,7 +3965,7 @@ namespace GoldBusiness.Infrastructure.Migrations
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.SubLinea", b =>
                 {
-                    b.Navigation("Productos");
+                    b.Navigation("Producto");
 
                     b.Navigation("Translations");
                 });
@@ -3959,9 +3975,16 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.Navigation("Translations");
                 });
 
+            modelBuilder.Entity("GoldBusiness.Domain.Entities.Transaccion", b =>
+                {
+                    b.Navigation("Translations");
+                });
+
             modelBuilder.Entity("GoldBusiness.Domain.Entities.UnidadMedida", b =>
                 {
-                    b.Navigation("Productos");
+                    b.Navigation("Producto");
+
+                    b.Navigation("Translations");
                 });
 #pragma warning restore 612, 618
         }

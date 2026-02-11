@@ -17,7 +17,7 @@ namespace GoldBusiness.Infrastructure.Settings.Classification
             builder.Property(e => e.FechaHoraCreado).HasColumnType("datetime");
             builder.Property(e => e.FechaHoraModificado).HasColumnType("datetime");
             builder.Ignore(e => e.Translations);
-            builder.Ignore(e => e.Productos);
+            builder.Ignore(e => e.Producto);
         }
     }
 }

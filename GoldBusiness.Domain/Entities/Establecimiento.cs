@@ -13,7 +13,7 @@ namespace GoldBusiness.Domain.Entities
         private readonly HashSet<EstadoCuenta> _estadosCuenta = new();
         private readonly HashSet<Localidad> _localidades = new();
         private readonly HashSet<OperacionesEncabezado> _operacionesEncabezado = new();
-        private readonly HashSet<Producto> _productos = new();
+        private readonly HashSet<Producto> _producto = new();
 
         public int Id { get; private set; }
         public int NegocioId { get; private set; }
@@ -33,7 +33,7 @@ namespace GoldBusiness.Domain.Entities
         public IReadOnlyCollection<EstadoCuenta> EstadosCuenta => _estadosCuenta;
         public IReadOnlyCollection<Localidad> Localidades => _localidades;
         public IReadOnlyCollection<OperacionesEncabezado> OperacionesEncabezado => _operacionesEncabezado;
-        public IReadOnlyCollection<Producto> Productos => _productos;
+        public IReadOnlyCollection<Producto> Producto => _producto;
 
         // Constructor protegido para EF Core
         protected Establecimiento() { }
@@ -142,7 +142,7 @@ namespace GoldBusiness.Domain.Entities
             if (Cancelado)
                 throw new DomainException("El establecimiento ya está cancelado.");
 
-            if (_productos.Any(p => !p.Cancelado))
+            if (_producto.Any(p => !p.Cancelado))
                 throw new DomainException("No se puede cancelar un establecimiento con productos activos.");
 
             if (_localidades.Any(l => !l.Cancelado))
@@ -175,7 +175,7 @@ namespace GoldBusiness.Domain.Entities
 
         public bool TieneProductosActivos()
         {
-            return _productos.Any(p => !p.Cancelado);
+            return _producto.Any(p => !p.Cancelado);
         }
 
         public bool TieneLocalidadesActivas()
@@ -185,7 +185,7 @@ namespace GoldBusiness.Domain.Entities
 
         public int GetCantidadProductos()
         {
-            return _productos.Count(p => !p.Cancelado);
+            return _producto.Count(p => !p.Cancelado);
         }
 
         public int GetCantidadLocalidades()

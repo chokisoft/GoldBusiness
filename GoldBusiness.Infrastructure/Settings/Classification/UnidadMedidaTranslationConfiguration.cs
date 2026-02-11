@@ -17,8 +17,7 @@ namespace GoldBusiness.Infrastructure.Settings.Classification
             builder.Property(e => e.ModificadoPor).IsRequired().HasMaxLength(256);
             builder.Property(e => e.FechaHoraCreado).HasColumnType("datetime");
             builder.Property(e => e.FechaHoraModificado).HasColumnType("datetime");
-            builder.Ignore(e => e.UnidadMedida);
-            builder.HasOne<UnidadMedida>().WithMany().HasForeignKey(e => e.UnidadMedidaId).OnDelete(DeleteBehavior.Cascade).HasConstraintName("FK_UnidadMedidaTranslation_UnidadMedida");
+            builder.HasOne(t => t.UnidadMedida).WithMany(r => r.Translations ).HasForeignKey(e => e.UnidadMedidaId).OnDelete(DeleteBehavior.Cascade).HasConstraintName("FK_UnidadMedidaTranslation_UnidadMedida");
         }
     }
 }

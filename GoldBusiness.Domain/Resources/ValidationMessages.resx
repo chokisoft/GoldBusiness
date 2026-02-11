@@ -334,4 +334,179 @@
 <data name="Field_CantidadProductos" xml:space="preserve">
   <value>Cantidad de Productos</value>
 </data>
+	<!-- Establecimiento -->
+	<data name="EstablecimientoCodigoLongitud" xml:space="preserve">
+  <value>El código del establecimiento debe tener exactamente 6 caracteres.</value>
+</data>
+	<data name="NegocioIdObligatorio" xml:space="preserve">
+  <value>El ID del negocio es obligatorio.</value>
+</data>
+
+	<!-- Localidad -->
+	<data name="LocalidadCodigoLongitud" xml:space="preserve">
+  <value>El código de la localidad debe tener exactamente 9 caracteres.</value>
+</data>
+	<data name="EstablecimientoIdObligatorio" xml:space="preserve">
+  <value>El ID del establecimiento es obligatorio.</value>
+</data>
+	<data name="CuentaInventarioIdObligatorio" xml:space="preserve">
+  <value>El ID de la cuenta de inventario es obligatorio.</value>
+</data>
+	<data name="CuentaCostoIdObligatorio" xml:space="preserve">
+  <value>El ID de la cuenta de costo es obligatorio.</value>
+</data>
+	<data name="CuentaVentaIdObligatorio" xml:space="preserve">
+  <value>El ID de la cuenta de venta es obligatorio.</value>
+</data>
+	<data name="CuentaDevolucionIdObligatorio" xml:space="preserve">
+  <value>El ID de la cuenta de devolución es obligatorio.</value>
+</data>
+
+	<!-- Fields Display Names -->
+	<data name="Field_Establecimiento" xml:space="preserve">
+  <value>Establecimiento</value>
+</data>
+	<data name="Field_Localidad" xml:space="preserve">
+  <value>Localidad</value>
+</data>
+	<data name="Field_Negocio" xml:space="preserve">
+  <value>Negocio</value>
+</data>
+	<data name="Field_CuentaInventario" xml:space="preserve">
+  <value>Cuenta de Inventario</value>
+</data>
+	<data name="Field_CuentaCosto" xml:space="preserve">
+  <value>Cuenta de Costo</value>
+</data>
+	<data name="Field_CuentaVenta" xml:space="preserve">
+  <value>Cuenta de Venta</value>
+</data>
+	<data name="Field_CuentaDevolucion" xml:space="preserve">
+  <value>Cuenta de Devolución</value>
+</data>
+	<data name="Field_Almacen" xml:space="preserve">
+  <value>Es Almacén</value>
+</data>
+	<!-- Transaccion -->
+	<data name="TransaccionCodigoLongitud" xml:space="preserve">
+  <value>El código de la transacción no puede exceder 10 caracteres.</value>
+</data>
+	<data name="Field_Transaccion" xml:space="preserve">
+  <value>Transacción</value>
+</data>
+
+	<!-- Producto -->
+	<data name="ProductoCodigoLongitud" xml:space="preserve">
+  <value>El código del producto no puede exceder 13 caracteres.</value>
+</data>
+	<data name="EstablecimientoObligatorio" xml:space="preserve">
+  <value>El establecimiento es obligatorio.</value>
+</data>
+	<data name="EstablecimientoSeleccion" xml:space="preserve">
+  <value>Debe seleccionar un establecimiento válido.</value>
+</data>
+	<data name="UnidadMedidaObligatoria" xml:space="preserve">
+  <value>La unidad de medida es obligatoria.</value>
+</data>
+	<data name="UnidadMedidaSeleccion" xml:space="preserve">
+  <value>Debe seleccionar una unidad de medida válida.</value>
+</data>
+	<data name="ProveedorObligatorio" xml:space="preserve">
+  <value>El proveedor es obligatorio.</value>
+</data>
+	<data name="ProveedorSeleccion" xml:space="preserve">
+  <value>Debe seleccionar un proveedor válido.</value>
+</data>
+	<data name="PrecioVentaObligatorio" xml:space="preserve">
+  <value>El precio de venta es obligatorio.</value>
+</data>
+	<data name="PrecioVentaRango" xml:space="preserve">
+  <value>El precio de venta debe ser mayor o igual a cero.</value>
+</data>
+	<data name="PrecioCostoObligatorio" xml:space="preserve">
+  <value>El precio de costo es obligatorio.</value>
+</data>
+	<data name="PrecioCostoRango" xml:space="preserve">
+  <value>El precio de costo debe ser mayor o igual a cero.</value>
+</data>
+	<data name="CodigoReferenciaLongitud" xml:space="preserve">
+  <value>El código de referencia no puede exceder 50 caracteres.</value>
+</data>
+	<data name="StockMinimoRango" xml:space="preserve">
+  <value>El stock mínimo debe ser mayor o igual a cero.</value>
+</data>
+	<data name="SubLineaObligatoria" xml:space="preserve">
+  <value>La sublínea es obligatoria.</value>
+</data>
+	<data name="SubLineaSeleccion" xml:space="preserve">
+  <value>Debe seleccionar una sublínea válida.</value>
+</data>
+	<data name="CaracteristicasLongitud" xml:space="preserve">
+  <value>Las características no pueden exceder 1024 caracteres.</value>
+</data>
+	<data name="Field_Producto" xml:space="preserve">
+  <value>Producto</value>
+</data>
+	<data name="Field_UnidadMedida" xml:space="preserve">
+  <value>Unidad de Medida</value>
+</data>
+	<data name="Field_PrecioVenta" xml:space="preserve">
+  <value>Precio de Venta</value>
+</data>
+	<data name="Field_PrecioCosto" xml:space="preserve">
+  <value>Precio de Costo</value>
+</data>
+	<data name="Field_CodigoReferencia" xml:space="preserve">
+  <value>Código de Referencia</value>
+</data>
+	<data name="Field_StockMinimo" xml:space="preserve">
+  <value>Stock Mínimo</value>
+</data>
+	<data name="Field_Servicio" xml:space="preserve">
+  <value>Es Servicio</value>
+</data>
+	<data name="Field_Imagen" xml:space="preserve">
+  <value>Imagen</value>
+</data>
+	<data name="Field_Caracteristicas" xml:space="preserve">
+  <value>Características</value>
+</data>
+
+	<!-- FichaProducto -->
+	<data name="ProductoIdObligatorio" xml:space="preserve">
+  <value>El ID del producto es obligatorio.</value>
+</data>
+	<data name="LocalidadObligatoria" xml:space="preserve">
+  <value>La localidad es obligatoria.</value>
+</data>
+	<data name="LocalidadSeleccion" xml:space="preserve">
+  <value>Debe seleccionar una localidad válida.</value>
+</data>
+	<data name="ComponenteIdObligatorio" xml:space="preserve">
+  <value>El ID del componente es obligatorio.</value>
+</data>
+	<data name="ComponenteSeleccion" xml:space="preserve">
+  <value>Debe seleccionar un componente válido.</value>
+</data>
+	<data name="CantidadObligatoria" xml:space="preserve">
+  <value>La cantidad es obligatoria.</value>
+</data>
+	<data name="CantidadRango" xml:space="preserve">
+  <value>La cantidad debe ser mayor que cero.</value>
+</data>
+	<data name="Field_FichaProducto" xml:space="preserve">
+  <value>Ficha de Producto</value>
+</data>
+	<data name="Field_Componente" xml:space="preserve">
+  <value>Componente</value>
+</data>
+	<data name="Field_Cantidad" xml:space="preserve">
+  <value>Cantidad</value>
+</data>
+	<data name="UnidadMedidaCodigoLongitud" xml:space="preserve">
+  <value>El código de la unidad de medida no puede exceder 3 caracteres.</value>
+</data>
+	<data name="Field_UnidadMedida" xml:space="preserve">
+  <value>Unidad de Medida</value>
+</data>
 </root>

@@ -9,7 +9,7 @@ namespace GoldBusiness.Domain.Entities
         private readonly HashSet<ProveedorTranslation> _translations = new();
         private readonly HashSet<CuentaCobrarPagar> _cuentasCobrarPagar = new();
         private readonly HashSet<OperacionesEncabezado> _operacionesEncabezado = new();
-        private readonly HashSet<Producto> _productos = new();
+        private readonly HashSet<Producto> _producto = new();
 
         public int Id { get; private set; }
         public string Codigo { get; private set; } = string.Empty;
@@ -35,7 +35,7 @@ namespace GoldBusiness.Domain.Entities
         public IReadOnlyCollection<ProveedorTranslation> Translations => _translations;
         public IReadOnlyCollection<CuentaCobrarPagar> CuentasCobrarPagar => _cuentasCobrarPagar;
         public IReadOnlyCollection<OperacionesEncabezado> OperacionesEncabezado => _operacionesEncabezado;
-        public IReadOnlyCollection<Producto> Productos => _productos;
+        public IReadOnlyCollection<Producto> Producto => _producto;
 
         // Constructor protegido para EF Core
         protected Proveedor() { }

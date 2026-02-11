@@ -1,8 +1,13 @@
 ﻿using GoldBusiness.Domain.Entities;
 using GoldBusiness.Domain.Translation;
 using GoldBusiness.Infrastructure.Context;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Drawing;
 using System.IO;
+using System.Runtime.ConstrainedExecution;
+using System.Security.Cryptography;
 
 namespace GoldBusiness.Infrastructure.Data
 {
@@ -41,6 +46,8 @@ namespace GoldBusiness.Infrastructure.Data
                 await SeedSubLineaAsync(context, logger);
                 await SeedMonedaAsync(context, logger);
                 await SeedConceptoAjusteAsync(context, logger);
+                await SeedUnidadMedidaAsync(context, logger);
+                await SeedTransaccionAsync(context, logger);
 
                 logger.LogInformation("✅ Seed de datos maestros completado exitosamente!");
             }
@@ -1078,6 +1085,409 @@ namespace GoldBusiness.Infrastructure.Data
             await context.SaveChangesAsync();
 
             logger.LogInformation("Seed de Concepto Ajuste completado: {Count} coceptoAjuste agregados", conceptoAjuste.Length);
+        }
+
+        #endregion
+
+        #region Unidad Medida
+
+        private static async Task SeedUnidadMedidaAsync(ApplicationDbContext context, ILogger logger)
+        {
+            if (context.UnidadMedida.Any())
+            {
+                logger.LogInformation("UnidadMedida ya tiene datos, omitiendo seed.");
+                return;
+            }
+
+            var unidadMedida = new[]
+            {
+                new UnidadMedida("UNO", "UNIDAD", "system"),
+                new UnidadMedida("PKG", "PAQUETE", "system"),
+                new UnidadMedida("SET", "JUEGO", "system"),
+                new UnidadMedida("BAG", "BOLSA", "system"),
+                new UnidadMedida("BOX", "CAJA", "system"),
+                new UnidadMedida("ROL", "ROLLO", "system"),
+                new UnidadMedida("PLT", "TARIMA", "system"),
+                new UnidadMedida("BND", "BANDA", "system"),
+
+                new UnidadMedida("MTR", "METRO", "system"),
+                new UnidadMedida("KMT", "KILÓMETRO", "system"),
+                new UnidadMedida("CMT", "CENTÍMETRO", "system"),
+                new UnidadMedida("MMT", "MILÍMETRO", "system"),
+                new UnidadMedida("INH", "PULGADA", "system"),
+                new UnidadMedida("FOT", "PIE", "system"),
+                new UnidadMedida("YRD", "YARDA", "system"),
+
+                new UnidadMedida("SQM", "METRO CUADRADO", "system"),
+                new UnidadMedida("SFT", "PIE CUADRADO", "system"),
+                new UnidadMedida("SYD", "YARDA CUADRADA", "system"),
+                new UnidadMedida("HEC", "HECTÁREA", "system"),
+
+                new UnidadMedida("LTR", "LITRO", "system"),
+                new UnidadMedida("MLT", "MILILITRO", "system"),
+                new UnidadMedida("GLN", "GALÓN", "system"),
+                new UnidadMedida("PTA", "PINTA", "system"),
+                new UnidadMedida("QRT", "CUARTO (QUART)", "system"),
+
+                new UnidadMedida("KGM", "KILOGRAMO", "system"),
+                new UnidadMedida("GRM", "GRAMO", "system"),
+                new UnidadMedida("LBR", "LIBRA", "system"),
+                new UnidadMedida("ONZ", "ONZA", "system"),
+                new UnidadMedida("TON", "TONELADA", "system"),
+
+                new UnidadMedida("HRS", "HORAS", "system"),
+                new UnidadMedida("MIN", "MINUTOS", "system"),
+                new UnidadMedida("SEC", "SEGUNDOS", "system"),
+                new UnidadMedida("DAY", "DÍA", "system"),
+                new UnidadMedida("WKS", "SEMANAS", "system"),
+                new UnidadMedida("MTH", "MES", "system"),
+
+                new UnidadMedida("KWH", "KILOVATIO-HORA", "system"),
+                new UnidadMedida("KVA", "KILOVOLT-AMPERIO", "system"),
+                new UnidadMedida("MAH", "MILIAMPERIO-HORA", "system"),
+                new UnidadMedida("BTU", "UNIDAD TÉRMICA BRITÁNICA", "system"),
+
+                new UnidadMedida("PSI", "LIBRA POR PULGADA CUADRADA", "system"),
+                new UnidadMedida("BAR", "BAR", "system"),
+            };
+
+            context.UnidadMedida.AddRange(unidadMedida);
+            await context.SaveChangesAsync();
+
+            // ✅ TRADUCCIONES CORREGIDAS
+            var traducciones = new List<UnidadMedidaTranslation>
+            {
+                // UNO - UNIDAD
+                new(unidadMedida[0].Id, "es", "UNIDAD", "system"),
+                new(unidadMedida[0].Id, "en", "UNIT", "system"),
+                new(unidadMedida[0].Id, "fr", "UNITÉ", "system"),
+
+                // PKG - PAQUETE
+                new(unidadMedida[1].Id, "es", "PAQUETE", "system"),
+                new(unidadMedida[1].Id, "en", "PACKAGE", "system"),
+                new(unidadMedida[1].Id, "fr", "PAQUET", "system"),
+
+                // SET - JUEGO
+                new(unidadMedida[2].Id, "es", "JUEGO", "system"),
+                new(unidadMedida[2].Id, "en", "SET", "system"),
+                new(unidadMedida[2].Id, "fr", "ENSEMBLE", "system"),
+
+                // BAG - BOLSA
+                new(unidadMedida[3].Id, "es", "BOLSA", "system"),
+                new(unidadMedida[3].Id, "en", "BAG", "system"),
+                new(unidadMedida[3].Id, "fr", "SAC", "system"),
+
+                // BOX - CAJA
+                new(unidadMedida[4].Id, "es", "CAJA", "system"),
+                new(unidadMedida[4].Id, "en", "BOX", "system"),
+                new(unidadMedida[4].Id, "fr", "BOÎTE", "system"),
+
+                // ROL - ROLLO
+                new(unidadMedida[5].Id, "es", "ROLLO", "system"),
+                new(unidadMedida[5].Id, "en", "ROLL", "system"),
+                new(unidadMedida[5].Id, "fr", "ROULEAU", "system"),
+
+                // PLT - TARIMA
+                new(unidadMedida[6].Id, "es", "TARIMA", "system"),
+                new(unidadMedida[6].Id, "en", "PALLET", "system"),
+                new(unidadMedida[6].Id, "fr", "PALETTE", "system"),
+
+                // BND - BANDA
+                new(unidadMedida[7].Id, "es", "BANDA", "system"),
+                new(unidadMedida[7].Id, "en", "BAND", "system"),
+                new(unidadMedida[7].Id, "fr", "BANDE", "system"),
+
+                // MTR - METRO
+                new(unidadMedida[8].Id, "es", "METRO", "system"),
+                new(unidadMedida[8].Id, "en", "METER", "system"),
+                new(unidadMedida[8].Id, "fr", "MÈTRE", "system"),
+
+                // KMT - KILÓMETRO
+                new(unidadMedida[9].Id, "es", "KILÓMETRO", "system"),
+                new(unidadMedida[9].Id, "en", "KILOMETER", "system"),
+                new(unidadMedida[9].Id, "fr", "KILOMÈTRE", "system"),
+
+                // CMT - CENTÍMETRO
+                new(unidadMedida[10].Id, "es", "CENTÍMETRO", "system"),
+                new(unidadMedida[10].Id, "en", "CENTIMETER", "system"),
+                new(unidadMedida[10].Id, "fr", "CENTIMÈTRE", "system"),
+
+                // MMT - MILÍMETRO
+                new(unidadMedida[11].Id, "es", "MILÍMETRO", "system"),
+                new(unidadMedida[11].Id, "en", "MILLIMETER", "system"),
+                new(unidadMedida[11].Id, "fr", "MILLIMÈTRE", "system"),
+
+                // INH - PULGADA
+                new(unidadMedida[12].Id, "es", "PULGADA", "system"),
+                new(unidadMedida[12].Id, "en", "INCH", "system"),
+                new(unidadMedida[12].Id, "fr", "POUCE", "system"),
+
+                // FOT - PIE
+                new(unidadMedida[13].Id, "es", "PIE", "system"),
+                new(unidadMedida[13].Id, "en", "FOOT", "system"),
+                new(unidadMedida[13].Id, "fr", "PIED", "system"),
+
+                // YRD - YARDA
+                new(unidadMedida[14].Id, "es", "YARDA", "system"),
+                new(unidadMedida[14].Id, "en", "YARD", "system"),
+                new(unidadMedida[14].Id, "fr", "YARD", "system"),
+
+                // SQM - METRO CUADRADO
+                new(unidadMedida[15].Id, "es", "METRO CUADRADO", "system"),
+                new(unidadMedida[15].Id, "en", "SQUARE METER", "system"),
+                new(unidadMedida[15].Id, "fr", "MÈTRE CARRÉ", "system"),
+
+                // SFT - PIE CUADRADO
+                new(unidadMedida[16].Id, "es", "PIE CUADRADO", "system"),
+                new(unidadMedida[16].Id, "en", "SQUARE FOOT", "system"),
+                new(unidadMedida[16].Id, "fr", "PIED CARRÉ", "system"),
+
+                // SYD - YARDA CUADRADA
+                new(unidadMedida[17].Id, "es", "YARDA CUADRADA", "system"),
+                new(unidadMedida[17].Id, "en", "SQUARE YARD", "system"),
+                new(unidadMedida[17].Id, "fr", "YARD CARRÉ", "system"),
+
+                // HEC - HECTÁREA
+                new(unidadMedida[18].Id, "es", "HECTÁREA", "system"),
+                new(unidadMedida[18].Id, "en", "HECTARE", "system"),
+                new(unidadMedida[18].Id, "fr", "HECTARE", "system"),
+
+                // LTR - LITRO
+                new(unidadMedida[19].Id, "es", "LITRO", "system"),
+                new(unidadMedida[19].Id, "en", "LITER", "system"),
+                new(unidadMedida[19].Id, "fr", "LITRE", "system"),
+
+                // MLT - MILILITRO
+                new(unidadMedida[20].Id, "es", "MILILITRO", "system"),
+                new(unidadMedida[20].Id, "en", "MILLILITER", "system"),
+                new(unidadMedida[20].Id, "fr", "MILLILITRE", "system"),
+
+                // GLN - GALÓN
+                new(unidadMedida[21].Id, "es", "GALÓN", "system"),
+                new(unidadMedida[21].Id, "en", "GALLON", "system"),
+                new(unidadMedida[21].Id, "fr", "GALLON", "system"),
+
+                // PTA - PINTA
+                new(unidadMedida[22].Id, "es", "PINTA", "system"),
+                new(unidadMedida[22].Id, "en", "PINT", "system"),
+                new(unidadMedida[22].Id, "fr", "PINTE", "system"),
+
+                // QRT - CUARTO (QUART)
+                new(unidadMedida[23].Id, "es", "CUARTO (QUART)", "system"),
+                new(unidadMedida[23].Id, "en", "QUART", "system"),
+                new(unidadMedida[23].Id, "fr", "QUART", "system"),
+
+                // KGM - KILOGRAMO
+                new(unidadMedida[24].Id, "es", "KILOGRAMO", "system"),
+                new(unidadMedida[24].Id, "en", "KILOGRAM", "system"),
+                new(unidadMedida[24].Id, "fr", "KILOGRAMME", "system"),
+
+                // GRM - GRAMO
+                new(unidadMedida[25].Id, "es", "GRAMO", "system"),
+                new(unidadMedida[25].Id, "en", "GRAM", "system"),
+                new(unidadMedida[25].Id, "fr", "GRAMME", "system"),
+
+                // LBR - LIBRA
+                new(unidadMedida[26].Id, "es", "LIBRA", "system"),
+                new(unidadMedida[26].Id, "en", "POUND", "system"),
+                new(unidadMedida[26].Id, "fr", "LIVRE", "system"),
+
+                // ONZ - ONZA
+                new(unidadMedida[27].Id, "es", "ONZA", "system"),
+                new(unidadMedida[27].Id, "en", "OUNCE", "system"),
+                new(unidadMedida[27].Id, "fr", "ONCE", "system"),
+
+                // TON - TONELADA
+                new(unidadMedida[28].Id, "es", "TONELADA", "system"),
+                new(unidadMedida[28].Id, "en", "TON", "system"),
+                new(unidadMedida[28].Id, "fr", "TONNE", "system"),
+
+                // HRS - HORAS
+                new(unidadMedida[29].Id, "es", "HORAS", "system"),
+                new(unidadMedida[29].Id, "en", "HOURS", "system"),
+                new(unidadMedida[29].Id, "fr", "HEURES", "system"),
+
+                // MIN - MINUTOS
+                new(unidadMedida[30].Id, "es", "MINUTOS", "system"),
+                new(unidadMedida[30].Id, "en", "MINUTES", "system"),
+                new(unidadMedida[30].Id, "fr", "MINUTES", "system"),
+
+                // SEC - SEGUNDOS
+                new(unidadMedida[31].Id, "es", "SEGUNDOS", "system"),
+                new(unidadMedida[31].Id, "en", "SECONDS", "system"),
+                new(unidadMedida[31].Id, "fr", "SECONDES", "system"),
+
+                // DAY - DÍA
+                new(unidadMedida[32].Id, "es", "DÍA", "system"),
+                new(unidadMedida[32].Id, "en", "DAY", "system"),
+                new(unidadMedida[32].Id, "fr", "JOUR", "system"),
+
+                // WKS - SEMANAS
+                new(unidadMedida[33].Id, "es", "SEMANAS", "system"),
+                new(unidadMedida[33].Id, "en", "WEEKS", "system"),
+                new(unidadMedida[33].Id, "fr", "SEMAINES", "system"),
+
+                // MTH - MES
+                new(unidadMedida[34].Id, "es", "MES", "system"),
+                new(unidadMedida[34].Id, "en", "MONTH", "system"),
+                new(unidadMedida[34].Id, "fr", "MOIS", "system"),
+
+                // KWH - KILOVATIO-HORA
+                new(unidadMedida[35].Id, "es", "KILOVATIO-HORA", "system"),
+                new(unidadMedida[35].Id, "en", "KILOWATT-HOUR", "system"),
+                new(unidadMedida[35].Id, "fr", "KILOWATT-HEURE", "system"),
+
+                // KVA - KILOVOLT-AMPERIO
+                new(unidadMedida[36].Id, "es", "KILOVOLT-AMPERIO", "system"),
+                new(unidadMedida[36].Id, "en", "KILOVOLT-AMPERE", "system"),
+                new(unidadMedida[36].Id, "fr", "KILOVOLT-AMPÈRE", "system"),
+
+                // MAH - MILIAMPERIO-HORA
+                new(unidadMedida[37].Id, "es", "MILIAMPERIO-HORA", "system"),
+                new(unidadMedida[37].Id, "en", "MILLIAMPERE-HOUR", "system"),
+                new(unidadMedida[37].Id, "fr", "MILLIAMPÈRE-HEURE", "system"),
+
+                // BTU - UNIDAD TÉRMICA BRITÁNICA
+                new(unidadMedida[38].Id, "es", "UNIDAD TÉRMICA BRITÁNICA", "system"),
+                new(unidadMedida[38].Id, "en", "BRITISH THERMAL UNIT", "system"),
+                new(unidadMedida[38].Id, "fr", "UNITÉ THERMIQUE BRITANNIQUE", "system"),
+
+                // PSI - LIBRA POR PULGADA CUADRADA
+                new(unidadMedida[39].Id, "es", "LIBRA POR PULGADA CUADRADA", "system"),
+                new(unidadMedida[39].Id, "en", "POUND PER SQUARE INCH", "system"),
+                new(unidadMedida[39].Id, "fr", "LIVRE PAR POUCE CARRÉ", "system"),
+
+                // BAR - BAR
+                new(unidadMedida[40].Id, "es", "BAR", "system"),
+                new(unidadMedida[40].Id, "en", "BAR", "system"),
+                new(unidadMedida[40].Id, "fr", "BAR", "system")
+            };
+
+            context.UnidadMedidaTranslation.AddRange(traducciones);
+            await context.SaveChangesAsync();
+
+            logger.LogInformation("Seed de UnidadMedida completado: {Count} unidades con {TransCount} traducciones agregadas",
+                unidadMedida.Length, traducciones.Count);
+        }
+
+        #endregion
+
+        #region Transaccion
+
+        private static async Task SeedTransaccionAsync(ApplicationDbContext context, ILogger logger)
+        {
+            if (context.Transaccion.Any())
+            {
+                logger.LogInformation("Transacción ya tiene datos, omitiendo seed.");
+                return;
+            }
+
+            var transaccion = new[]
+            {
+                new Transaccion("11", "RECEPCIÓN", "system"),
+                new Transaccion("13", "NOTA DE CRÉDITO EN VENTA", "system"),
+                new Transaccion("14", "AJUSTE POSITIVO", "system"),
+                new Transaccion("15", "DEVOLUCIÓN DE VENTA", "system"),
+                new Transaccion("16", "DEVOLUCIÓN EN VALE DE ENTREGA", "system"),
+                new Transaccion("17", "NOTA DE CRÉDITO EN COMPRA", "system"),
+                new Transaccion("18", "TRANSFERENCIA INTERNA DE ENTRADA", "system"),
+                
+                new Transaccion("21", "FACTURA", "system"),
+                new Transaccion("23", "NOTA DE DÉBITO EN VENTA", "system"),
+                new Transaccion("24", "AJUSTE NEGATIVO", "system"),
+                new Transaccion("25", "DEVOLUCIÓN DE COMPRA", "system"),
+                new Transaccion("26", "VALE DE ENTREGA", "system"),
+                new Transaccion("27", "NOTA DE DÉBITO EN COMPRA", "system"),
+                new Transaccion("28", "TRANSFERENCIA INTERNA DE SALIDA", "system"),
+                new Transaccion("35", "ORDEN DE SERVICIO", "system"),
+            };
+
+            context.Transaccion.AddRange(transaccion);
+            await context.SaveChangesAsync();
+
+            // Agregar traducciones
+            var traducciones = new List<TransaccionTranslation>
+            {
+                // 11 - RECEPCIÓN
+                new(transaccion[0].Id, "es", "RECEPCIÓN", "system"),
+                new(transaccion[0].Id, "en", "RECEIPT", "system"),
+                new(transaccion[0].Id, "fr", "RÉCEPTION", "system"),
+
+                // 13 - NOTA DE CRÉDITO EN VENTA
+                new(transaccion[1].Id, "es", "NOTA DE CRÉDITO EN VENTA", "system"),
+                new(transaccion[1].Id, "en", "SALES CREDIT NOTE", "system"),
+                new(transaccion[1].Id, "fr", "NOTE DE CRÉDIT EN VENTE", "system"),
+
+                // 14 - AJUSTE POSITIVO
+                new(transaccion[2].Id, "es", "AJUSTE POSITIVO", "system"),
+                new(transaccion[2].Id, "en", "POSITIVE ADJUSTMENT", "system"),
+                new(transaccion[2].Id, "fr", "AJUSTEMENT POSITIF", "system"),
+
+                // 15 - DEVOLUCIÓN DE VENTA
+                new(transaccion[3].Id, "es", "DEVOLUCIÓN DE VENTA", "system"),
+                new(transaccion[3].Id, "en", "SALES RETURN", "system"),
+                new(transaccion[3].Id, "fr", "RETOUR DE VENTE", "system"),
+
+                // 16 - DEVOLUCIÓN EN VALE DE ENTREGA
+                new(transaccion[4].Id, "es", "DEVOLUCIÓN EN VALE DE ENTREGA", "system"),
+                new(transaccion[4].Id, "en", "DELIVERY NOTE RETURN", "system"),
+                new(transaccion[4].Id, "fr", "RETOUR DE BON DE LIVRAISON", "system"),
+
+                // 17 - NOTA DE CRÉDITO EN COMPRA
+                new(transaccion[5].Id, "es", "NOTA DE CRÉDITO EN COMPRA", "system"),
+                new(transaccion[5].Id, "en", "PURCHASE CREDIT NOTE", "system"),
+                new(transaccion[5].Id, "fr", "NOTE DE CRÉDIT EN ACHAT", "system"),
+
+                // 18 - TRANSFERENCIA INTERNA DE ENTRADA
+                new(transaccion[6].Id, "es", "TRANSFERENCIA INTERNA DE ENTRADA", "system"),
+                new(transaccion[6].Id, "en", "INTERNAL TRANSFER INBOUND", "system"),
+                new(transaccion[6].Id, "fr", "TRANSFERT INTERNE D'ENTRÉE", "system"),
+
+                // 21 - FACTURA
+                new(transaccion[7].Id, "es", "FACTURA", "system"),
+                new(transaccion[7].Id, "en", "INVOICE", "system"),
+                new(transaccion[7].Id, "fr", "FACTURE", "system"),
+
+                // 23 - NOTA DE DÉBITO EN VENTA
+                new(transaccion[8].Id, "es", "NOTA DE DÉBITO EN VENTA", "system"),
+                new(transaccion[8].Id, "en", "SALES DEBIT NOTE", "system"),
+                new(transaccion[8].Id, "fr", "NOTE DE DÉBIT EN VENTE", "system"),
+
+                // 24 - AJUSTE NEGATIVO
+                new(transaccion[9].Id, "es", "AJUSTE NEGATIVO", "system"),
+                new(transaccion[9].Id, "en", "NEGATIVE ADJUSTMENT", "system"),
+                new(transaccion[9].Id, "fr", "AJUSTEMENT NÉGATIF", "system"),
+
+                // 25 - DEVOLUCIÓN DE COMPRA
+                new(transaccion[10].Id, "es", "DEVOLUCIÓN DE COMPRA", "system"),
+                new(transaccion[10].Id, "en", "PURCHASE RETURN", "system"),
+                new(transaccion[10].Id, "fr", "RETOUR D'ACHAT", "system"),
+
+                // 26 - VALE DE ENTREGA
+                new(transaccion[11].Id, "es", "VALE DE ENTREGA", "system"),
+                new(transaccion[11].Id, "en", "DELIVERY NOTE", "system"),
+                new(transaccion[11].Id, "fr", "BON DE LIVRAISON", "system"),
+
+                // 27 - NOTA DE DÉBITO EN COMPRA
+                new(transaccion[12].Id, "es", "NOTA DE DÉBITO EN COMPRA", "system"),
+                new(transaccion[12].Id, "en", "PURCHASE DEBIT NOTE", "system"),
+                new(transaccion[12].Id, "fr", "NOTE DE DÉBIT EN ACHAT", "system"),
+
+                // 28 - TRANSFERENCIA INTERNA DE SALIDA
+                new(transaccion[13].Id, "es", "TRANSFERENCIA INTERNA DE SALIDA", "system"),
+                new(transaccion[13].Id, "en", "INTERNAL TRANSFER OUTBOUND", "system"),
+                new(transaccion[13].Id, "fr", "TRANSFERT INTERNE DE SORTIE", "system"),
+
+                // 35 - ORDEN DE SERVICIO
+                new(transaccion[14].Id, "es", "ORDEN DE SERVICIO", "system"),
+                new(transaccion[14].Id, "en", "SERVICE ORDER", "system"),
+                new(transaccion[14].Id, "fr", "ORDRE DE SERVICE", "system"),
+            };
+
+            context.TransaccionTranslation.AddRange(traducciones);
+            await context.SaveChangesAsync();
+
+            logger.LogInformation("Seed de Transaccion completado: {Count} transaccion agregadas", transaccion.Length);
         }
 
         #endregion

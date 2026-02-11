@@ -4,113 +4,198 @@ namespace GoldBusiness.Domain.DTOs
 {
     /// <summary>
     /// DTO para Producto - Artículo o servicio del inventario.
-    /// Contiene información de precios, stock y clasificación.
     /// </summary>
     public class ProductoDTO
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "El establecimiento es obligatorio")]
-        [Display(Name = "Establecimiento")]
-        [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar un establecimiento válido")]
+        [Required(
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.EstablecimientoObligatorio)
+        )]
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Establecimiento),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
+        [Range(1, int.MaxValue,
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.EstablecimientoSeleccion)
+        )]
         public int EstablecimientoId { get; set; }
 
-        /// <summary>
-        /// Código único del producto (hasta 13 caracteres para códigos de barras).
-        /// </summary>
-        [Required(ErrorMessage = "El código es obligatorio")]
-        [Display(Name = "Código")]
-        [StringLength(13, ErrorMessage = "El código no puede exceder 13 caracteres")]
+        public string EstablecimientoCodigo { get; set; } = string.Empty;
+        public string EstablecimientoDescripcion { get; set; } = string.Empty;
+
+        [Required(
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.CodigoObligatorio)
+        )]
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Codigo),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
+        [StringLength(13,
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.ProductoCodigoLongitud)
+        )]
         public string Codigo { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "La descripción es obligatoria")]
-        [Display(Name = "Descripción")]
-        [StringLength(256, ErrorMessage = "La descripción no puede exceder 256 caracteres")]
+        [Required(
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.DescripcionObligatoria)
+        )]
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Descripcion),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
+        [StringLength(256,
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.DescripcionLongitud)
+        )]
         public string Descripcion { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "La unidad de medida es obligatoria")]
-        [Display(Name = "Unidad de Medida")]
-        [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar una unidad válida")]
+        [Required(
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.UnidadMedidaObligatoria)
+        )]
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_UnidadMedida),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
+        [Range(1, int.MaxValue,
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.UnidadMedidaSeleccion)
+        )]
         public int UnidadMedidaId { get; set; }
 
-        [Required(ErrorMessage = "El proveedor es obligatorio")]
-        [Display(Name = "Proveedor")]
-        [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar un proveedor válido")]
+        public string UnidadMedidaCodigo { get; set; } = string.Empty;
+        public string UnidadMedidaDescripcion { get; set; } = string.Empty;
+
+        [Required(
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.ProveedorObligatorio)
+        )]
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Proveedor),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
+        [Range(1, int.MaxValue,
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.ProveedorSeleccion)
+        )]
         public int ProveedorId { get; set; }
 
-        [Required(ErrorMessage = "El precio de venta es obligatorio")]
-        [Display(Name = "Precio Venta")]
-        [DataType(DataType.Currency)]
-        [DisplayFormat(DataFormatString = "{0:C2}", ApplyFormatInEditMode = false)]
-        [Range(0, double.MaxValue, ErrorMessage = "El precio debe ser mayor o igual a cero")]
+        public string ProveedorCodigo { get; set; } = string.Empty;
+        public string ProveedorDescripcion { get; set; } = string.Empty;
+
+        [Required(
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.PrecioVentaObligatorio)
+        )]
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_PrecioVenta),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
+        [Range(0, double.MaxValue,
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.PrecioVentaRango)
+        )]
         public decimal PrecioVenta { get; set; }
 
-        [Required(ErrorMessage = "El precio de costo es obligatorio")]
-        [Display(Name = "Precio Costo")]
-        [DataType(DataType.Currency)]
-        [DisplayFormat(DataFormatString = "{0:C2}", ApplyFormatInEditMode = false)]
-        [Range(0, double.MaxValue, ErrorMessage = "El costo debe ser mayor o igual a cero")]
+        [Required(
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.PrecioCostoObligatorio)
+        )]
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_PrecioCosto),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
+        [Range(0, double.MaxValue,
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.PrecioCostoRango)
+        )]
         public decimal PrecioCosto { get; set; }
 
-        /// <summary>
-        /// Porcentaje de IVA aplicable.
-        /// </summary>
-        [Display(Name = "IVA (%)")]
-        [Range(-0.01, 99.99, ErrorMessage = "El IVA debe estar entre -0.01 y 99.99")]
-        [DisplayFormat(DataFormatString = "{0:N2}%", ApplyFormatInEditMode = false)]
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Iva),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
+        [Range(-0.01, 99.99,
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.IvaRango)
+        )]
         public decimal Iva { get; set; }
 
-        [Display(Name = "Código Referencia")]
-        [StringLength(50, ErrorMessage = "El código de referencia no puede exceder 50 caracteres")]
-        public string? CodigoReferencia { get; set; }
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_CodigoReferencia),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
+        [StringLength(50,
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.CodigoReferenciaLongitud)
+        )]
+        public string CodigoReferencia { get; set; } = string.Empty;
 
-        [Display(Name = "Stock Mínimo")]
-        [Range(0, double.MaxValue, ErrorMessage = "El stock mínimo debe ser mayor o igual a cero")]
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_StockMinimo),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
+        [Range(0, double.MaxValue,
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.StockMinimoRango)
+        )]
         public decimal StockMinimo { get; set; }
 
-        /// <summary>
-        /// Indica si es un servicio (no maneja inventario físico).
-        /// </summary>
-        [Display(Name = "Es Servicio")]
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Servicio),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
         public bool Servicio { get; set; }
 
-        [Required(ErrorMessage = "La sublínea es obligatoria")]
-        [Display(Name = "Sublínea")]
-        [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar una sublínea válida")]
+        [Required(
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.SubLineaObligatoria)
+        )]
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Linea),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
+        [Range(1, int.MaxValue,
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.SubLineaSeleccion)
+        )]
         public int SubLineaId { get; set; }
 
-        [Display(Name = "Imagen")]
+        public string SubLineaCodigo { get; set; } = string.Empty;
+        public string SubLineaDescripcion { get; set; } = string.Empty;
+        public string LineaCodigo { get; set; } = string.Empty;
+        public string LineaDescripcion { get; set; } = string.Empty;
+
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Imagen),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
         public byte[]? Imagen { get; set; }
 
-        [Display(Name = "Características")]
-        [StringLength(1024, ErrorMessage = "Las características no pueden exceder 1024 caracteres")]
-        [DataType(DataType.MultilineText)]
-        public string? Caracteristicas { get; set; }
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Caracteristicas),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
+        [StringLength(1024,
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.CaracteristicasLongitud)
+        )]
+        public string Caracteristicas { get; set; } = string.Empty;
 
-        [Display(Name = "Cancelado")]
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Cancelado),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
         public bool Cancelado { get; set; }
 
         public string CreadoPor { get; set; } = string.Empty;
         public DateTime FechaHoraCreado { get; set; }
         public string? ModificadoPor { get; set; }
         public DateTime? FechaHoraModificado { get; set; }
-
-        /// <summary>
-        /// Datos de navegación.
-        /// </summary>
-        public string EstablecimientoDescripcion { get; set; } = string.Empty;
-        public string UnidadMedidaCodigo { get; set; } = string.Empty;
-        public string ProveedorDescripcion { get; set; } = string.Empty;
-        public string SubLineaDescripcion { get; set; } = string.Empty;
-        public string LineaDescripcion { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Propiedades calculadas.
-        /// </summary>
-        public decimal PrecioVentaConIva => PrecioVenta * (1 + (Iva / 100));
-        public decimal MargenBeneficio => PrecioCosto > 0 ? ((PrecioVenta - PrecioCosto) / PrecioCosto) * 100 : 0;
-        public bool TieneImagen => Imagen != null && Imagen.Length > 0;
-        public string TipoProducto => Servicio ? "Servicio" : "Producto";
-        public string CodigoDescripcion => $"{Codigo} | {Descripcion}";
     }
 }

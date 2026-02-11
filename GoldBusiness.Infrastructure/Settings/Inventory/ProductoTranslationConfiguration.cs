@@ -19,7 +19,7 @@ namespace GoldBusiness.Infrastructure.Settings.Inventory
             builder.Property(e => e.FechaHoraCreado).HasColumnType("datetime");
             builder.Property(e => e.FechaHoraModificado).HasColumnType("datetime");
             builder.Ignore(e => e.Producto);
-            builder.HasOne<Producto>().WithMany().HasForeignKey(e => e.ProductoId).OnDelete(DeleteBehavior.Cascade).HasConstraintName("FK_ProductoTranslation_Producto");
+            builder.HasOne(t => t.Producto).WithMany(r => r.Translations).HasForeignKey(e => e.ProductoId).OnDelete(DeleteBehavior.Cascade).HasConstraintName("FK_ProductoTranslation_Producto");
         }
     }
 }
