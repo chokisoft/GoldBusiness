@@ -353,6 +353,7 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 
+    // ✅ Configuración de tags con prefijos numéricos (ocultos para Nomencladores y Configuracion)
     c.TagActionsBy(api =>
     {
         var controller = api.ActionDescriptor.RouteValues["controller"];
@@ -407,9 +408,20 @@ builder.Services.AddSwaggerGen(c =>
             _ => controller ?? "Otros"
         };
 
-        return new[] { $"{tagPrefix}. {displayName}" };
+        // ✅ Ocultar prefijo numérico solo para "Nomencladores" y "Configuracion"
+        var tagName = controller switch
+        {
+            "ApiInfo" => displayName,
+            "Auth" => displayName,
+            "Nomencladores" => displayName,
+            "Configuracion" => displayName,
+            _ => $"{tagPrefix}. {displayName}"
+        };
+
+        return new[] { tagName };
     });
 
+    // ✅ Ordenar operaciones dentro de cada tag por método HTTP
     c.OrderActionsBy(apiDesc =>
     {
         var controllerName = apiDesc.ActionDescriptor.RouteValues["controller"] ?? "Unknown";
@@ -710,7 +722,7 @@ using (var scope = app.Services.CreateScope())
             }
         }
 
-        // Establecimientos
+        // Localidad
         var localidadIds = await db.Localidad.Select(x => x.Id).ToListAsync();
         var localidadConTradIds = await db.LocalidadTranslation
             .Select(t => t.LocalidadId)
@@ -837,6 +849,7 @@ using (var scope = app.Services.CreateScope())
             }
         }
 
+        // Transaccion
         var transaccionIds = await db.Transaccion.Select(x => x.Id).ToListAsync();
         var transaccionConTradIds = await db.TransaccionTranslation
             .Select(t => t.TransaccionId)
