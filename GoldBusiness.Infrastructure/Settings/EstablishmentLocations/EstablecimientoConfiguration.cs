@@ -9,7 +9,7 @@ namespace GoldBusiness.Infrastructure.Settings.EstablishmentLocations
         public void Configure(EntityTypeBuilder<Establecimiento> builder)
         {
             builder.HasKey(e => e.Id);
-            builder.HasIndex(e => new { e.NegocioId, e.Codigo, e.Cancelado }).HasDatabaseName("IX_Establecimiento").IsUnique();
+            builder.HasIndex(e => new { e.Codigo, e.NegocioId, e.Cancelado }).HasDatabaseName("IX_Establecimiento").IsUnique();
             builder.Property(e => e.Activo).HasDefaultValue(true).HasSentinel(false);
             builder.Property(e => e.Codigo).IsRequired().HasMaxLength(6);
             builder.Property(e => e.CreadoPor).IsRequired().HasMaxLength(256);

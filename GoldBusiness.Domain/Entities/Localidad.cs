@@ -45,9 +45,9 @@ namespace GoldBusiness.Domain.Entities
 
         // Constructor con validaciones
         public Localidad(
-            int establecimientoId,
             string codigo,
             string descripcion,
+            int establecimientoId,
             int cuentaInventarioId,
             int cuentaCostoId,
             int cuentaVentaId,

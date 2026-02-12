@@ -1,32 +1,17 @@
 ﻿using GoldBusiness.Domain.Entities;
 using GoldBusiness.Domain.Translation;
 using GoldBusiness.Infrastructure.Context;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Drawing;
-using System.IO;
-using System.Runtime.ConstrainedExecution;
-using System.Security.Cryptography;
 
 namespace GoldBusiness.Infrastructure.Data
 {
     public static class DbInitializer
     {
-        public static async Task InitializeAsync(
-            ApplicationDbContext context,
-            ILogger logger)
+        public static async Task InitializeAsync(ApplicationDbContext context, ILogger logger)
         {
             try
             {
                 logger.LogInformation("Iniciando seed de datos maestros...");
-
-                // ✅ Verificar si ya hay datos completos
-                if (context.SystemConfiguration.Any() && context.Cuenta.Count() > 1)
-                {
-                    logger.LogInformation("⚠️ Los datos ya existen. Saltando seed completo.");
-                    return;
-                }
 
                 // Plan de cuentas
                 await SeedGrupoCuentaAsync(context, logger);
@@ -39,6 +24,9 @@ namespace GoldBusiness.Infrastructure.Data
                 // Todas las cuentas reales
                 await SeedCuentaAsync(context, logger);
 
+                // Todas las localidades
+                await SeedLocalidadAsync(context, logger);
+
                 // Actualizar SystemConfiguration con cuentas reales
                 await UpdateSystemConfigurationWithAccountsAsync(context, logger);
 
@@ -49,7 +37,6 @@ namespace GoldBusiness.Infrastructure.Data
                 await SeedConceptoAjusteAsync(context, logger);
                 await SeedUnidadMedidaAsync(context, logger);
                 await SeedTransaccionAsync(context, logger);
-
 
                 logger.LogInformation("✅ Seed de datos maestros completado exitosamente!");
             }
@@ -550,6 +537,49 @@ namespace GoldBusiness.Infrastructure.Data
 
         #endregion
 
+        #region Localidad
+
+        private static async Task SeedLocalidadAsync(ApplicationDbContext context, ILogger logger)
+        {
+            if (context.Localidad.Any())
+            {
+                logger.LogInformation("Localidad ya tiene datos, omitiendo seed.");
+                return;
+            }
+
+            var localidad = new[]
+            {
+                new Localidad("CHK001001", "GERENCIA GENERAL", 1,  5, 25, 31, 23, false, "system"),
+                new Localidad("CHK001002", "ALMACÉN CENTRAL", 1,  5, 25, 31, 23, true, "system"),
+                new Localidad("CHK001003", "DESARROLLO SOFTWARE", 1,  5, 25, 31, 23, false, "system"),
+            };
+
+            context.Localidad.AddRange(localidad);
+            await context.SaveChangesAsync();
+
+            // Agregar traducciones
+            var traducciones = new List<LocalidadTranslation>
+            {
+                new(localidad[0].Id, "es", "GERENCIA GENERAL", "system"),
+                new(localidad[0].Id, "en", "GENERAL MANAGEMENT", "system"),
+                new(localidad[0].Id, "fr", "DIRECTION GÉNÉRALE", "system"),
+
+                new(localidad[1].Id, "es", "ALMACÉN CENTRAL", "system"),
+                new(localidad[1].Id, "en", "CENTRAL WAREHOUSE", "system"),
+                new(localidad[1].Id, "fr", "ENTREPÔT CENTRAL", "system"),
+
+                new(localidad[2].Id, "es", "DESARROLLO SOFTWARE", "system"),
+                new(localidad[2].Id, "en", "SOFTWARE DEVELOPMENT", "system"),
+                new(localidad[2].Id, "fr", "DÉVELOPPEMENT LOGICIEL", "system"),
+            };
+
+            context.LocalidadTranslation.AddRange(traducciones);
+            await context.SaveChangesAsync();
+
+            logger.LogInformation("Seed de Localidad completado: {Count} localidad agregadas", localidad.Length);
+        }
+
+        #endregion
 
         #region Linea
 

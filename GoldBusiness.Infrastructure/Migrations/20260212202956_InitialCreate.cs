@@ -1821,8 +1821,13 @@ namespace GoldBusiness.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Establecimiento",
                 table: "Establecimiento",
-                columns: new[] { "NegocioId", "Codigo", "Cancelado" },
+                columns: new[] { "Codigo", "NegocioId", "Cancelado" },
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Establecimiento_NegocioId",
+                table: "Establecimiento",
+                column: "NegocioId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EstablecimientoTranslation_EstablecimientoId_Language",
@@ -1882,7 +1887,7 @@ namespace GoldBusiness.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Localidad",
                 table: "Localidad",
-                columns: new[] { "EstablecimientoId", "Codigo", "Cancelado" },
+                columns: new[] { "Codigo", "EstablecimientoId", "Cancelado" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -1904,6 +1909,11 @@ namespace GoldBusiness.Infrastructure.Migrations
                 name: "IX_Localidad_CuentaVentaId",
                 table: "Localidad",
                 column: "CuentaVentaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Localidad_EstablecimientoId",
+                table: "Localidad",
+                column: "EstablecimientoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LocalidadTranslation_LocalidadId_Language",

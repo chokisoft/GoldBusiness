@@ -7,33 +7,67 @@
 		<LangVersion>14.0</LangVersion>
 	</PropertyGroup>
 
-	<!-- ✅ AGREGAR ESTA REFERENCIA SI NO EXISTE -->
+	<!-- ✅ Referencias de paquetes NuGet -->
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.0" />
 	</ItemGroup>
 
-	<!-- Configuración de recursos -->
+	<!-- ✅ Configuración de archivos .Designer.cs generados -->
 	<ItemGroup>
 		<Compile Update="Resources\ValidationMessages.Designer.cs">
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>
 			<DependentUpon>ValidationMessages.resx</DependentUpon>
 		</Compile>
+		<Compile Update="Resources\NomencladoresResources.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>NomencladoresResources.resx</DependentUpon>
+		</Compile>
+		<Compile Update="Resources\ConfiguracionResources.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>ConfiguracionResources.resx</DependentUpon>
+		</Compile>
 	</ItemGroup>
 
+	<!-- ✅ Configuración de archivos de recursos .resx -->
 	<ItemGroup>
+		<!-- ValidationMessages (Base - Español) -->
 		<EmbeddedResource Update="Resources\ValidationMessages.resx">
 			<Generator>PublicResXFileCodeGenerator</Generator>
 			<LastGenOutput>ValidationMessages.Designer.cs</LastGenOutput>
 		</EmbeddedResource>
-
 		<EmbeddedResource Update="Resources\ValidationMessages.en.resx">
 			<DependentUpon>ValidationMessages.resx</DependentUpon>
 		</EmbeddedResource>
-
 		<EmbeddedResource Update="Resources\ValidationMessages.fr.resx">
 			<DependentUpon>ValidationMessages.resx</DependentUpon>
+		</EmbeddedResource>
+
+		<!-- NomencladoresResources (Base - Español) -->
+		<EmbeddedResource Update="Resources\NomencladoresResources.resx">
+			<Generator>PublicResXFileCodeGenerator</Generator>
+			<LastGenOutput>NomencladoresResources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Resources\NomencladoresResources.en.resx">
+			<DependentUpon>NomencladoresResources.resx</DependentUpon>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Resources\NomencladoresResources.fr.resx">
+			<DependentUpon>NomencladoresResources.resx</DependentUpon>
+		</EmbeddedResource>
+
+		<!-- ConfiguracionResources (Base - Español) -->
+		<EmbeddedResource Update="Resources\ConfiguracionResources.resx">
+			<Generator>PublicResXFileCodeGenerator</Generator>
+			<LastGenOutput>ConfiguracionResources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Resources\ConfiguracionResources.en.resx">
+			<DependentUpon>ConfiguracionResources.resx</DependentUpon>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Resources\ConfiguracionResources.fr.resx">
+			<DependentUpon>ConfiguracionResources.resx</DependentUpon>
 		</EmbeddedResource>
 	</ItemGroup>
 

@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -348,83 +347,69 @@ builder.Services.AddSwaggerGen(c =>
         Description = "API REST para sistema ERP con soporte multiidioma (es, en, fr).",
         Contact = new OpenApiContact
         {
-            Name = "Chokisoft Development",
+            Name = "Chokisoft Soluciones Tecnológicas",
             Email = "chokisoft@gmail.com",
             Url = new Uri("https://github.com/chokisoft/GoldBusiness")
         }
     });
 
-    // ✅ SOLUCIÓN: Asignar prefijos a los tags ANTES del ordenamiento
     c.TagActionsBy(api =>
     {
         var controller = api.ActionDescriptor.RouteValues["controller"];
 
-        // Mapeo de controladores a tags con prefijos numéricos
         var tagPrefix = controller switch
         {
             "ApiInfo" => "01",
             "Auth" => "02",
-
-            "GrupoCuenta" => "10",
-            "SubGrupoCuenta" => "11",
-            "Cuenta" => "12",
-
-            "Moneda" => "20",
-            "ConceptoAjuste" => "21",
-            "Transaccion" => "22",
-
-            "Establecimiento" => "30",
-            "Localidad" => "31",
-
-            "Cliente" => "40",
-            "Proveedor" => "41",
-
-            "Linea" => "50",
-            "SubLinea" => "51",
-            "UnidadMedida" => "52",
-            "Producto" => "53",
-            "FichaProducto" => "54",
-
-            "SystemConfiguration" => "70",
-
+            "Nomencladores" => "10",
+            "GrupoCuenta" => "11",
+            "SubGrupoCuenta" => "12",
+            "Cuenta" => "13",
+            "Moneda" => "14",
+            "ConceptoAjuste" => "15",
+            "Transaccion" => "16",
+            "Establecimiento" => "17",
+            "Localidad" => "18",
+            "Cliente" => "19",
+            "Proveedor" => "20",
+            "Linea" => "21",
+            "SubLinea" => "22",
+            "UnidadMedida" => "23",
+            "Producto" => "24",
+            "FichaProducto" => "25",
+            "Configuracion" => "70",
+            "SystemConfiguration" => "71",
             _ => "99"
         };
 
         var displayName = controller switch
         {
             "ApiInfo" => "📊 Información de la API",
-            
             "Auth" => "🔐 Autenticación",
-
-            "GrupoCuenta" => "💰 Contabilidad - Grupo de Cuentas",
-            "SubGrupoCuenta" => "💰 Contabilidad - SubGrupo de Cuentas",
-            "Cuenta" => "💰 Contabilidad - Cuentas",
-
-            "Moneda" => "💵 Finanzas - Monedas",
-            "ConceptoAjuste" => "💵 Finanzas - Conceptos de Ajuste",
-            "Transaccion" => "📋 Operaciones - Transacciones",
-
-            "Establecimiento" => "🏢 Organización - Establecimientos",
-            "Localidad" => "🏢 Organización - Localidades",
-
-            "Cliente" => "👥 Terceros - Clientes",
-            "Proveedor" => "👥 Terceros - Proveedores",
-
-            "Linea" => "📦 Inventario - Líneas",
-            "SubLinea" => "📦 Inventario - SubLíneas",
-            "UnidadMedida" => "📦 Inventario - Unidades de Medida",
-            "Producto" => "📦 Inventario - Productos",
-            "FichaProducto" => "📦 Inventario - Fichas de Producto (BOM)",
-
-            "SystemConfiguration" => "⚙️ Configuración del Sistema",
-
+            "Nomencladores" => "🗂️ Nomencladores",
+            "GrupoCuenta" => "Grupo de Cuentas",
+            "SubGrupoCuenta" => "SubGrupo de Cuentas",
+            "Cuenta" => "Cuentas",
+            "Moneda" => "Monedas",
+            "ConceptoAjuste" => "Conceptos de Ajuste",
+            "Transaccion" => "Transacciones",
+            "Establecimiento" => "Establecimientos",
+            "Localidad" => "Localidades",
+            "Cliente" => "Clientes",
+            "Proveedor" => "Proveedores",
+            "Linea" => "Líneas",
+            "SubLinea" => "SubLíneas",
+            "UnidadMedida" => "Unidades de Medida",
+            "Producto" => "Productos",
+            "FichaProducto" => "Fichas de Producto (BOM)",
+            "Configuracion" => "⚙️ Configuración",
+            "SystemConfiguration" => "Configuración del Sistema",
             _ => controller ?? "Otros"
         };
 
         return new[] { $"{tagPrefix}. {displayName}" };
     });
 
-    // ✅ Ordenar operaciones dentro de cada tag por método HTTP
     c.OrderActionsBy(apiDesc =>
     {
         var controllerName = apiDesc.ActionDescriptor.RouteValues["controller"] ?? "Unknown";
@@ -434,28 +419,24 @@ builder.Services.AddSwaggerGen(c =>
         {
             "ApiInfo" => "01",
             "Auth" => "02",
-
-            "GrupoCuenta" => "10",
-            "SubGrupoCuenta" => "11",
-            "Cuenta" => "12",
-
-            "Moneda" => "20",
-            "ConceptoAjuste" => "21",
-            "Transaccion" => "22",
-
-            "Establecimiento" => "30",
-            "Localidad" => "31",
-
-            "Cliente" => "40",
-            "Proveedor" => "41",
-
-            "Linea" => "50",
-            "SubLinea" => "51",
-            "UnidadMedida" => "52",
-            "Producto" => "53",
-            "FichaProducto" => "54",
-
-            "SystemConfiguration" => "70",
+            "Nomencladores" => "10",
+            "GrupoCuenta" => "11",
+            "SubGrupoCuenta" => "12",
+            "Cuenta" => "13",
+            "Moneda" => "14",
+            "ConceptoAjuste" => "15",
+            "Transaccion" => "16",
+            "Establecimiento" => "17",
+            "Localidad" => "18",
+            "Cliente" => "19",
+            "Proveedor" => "20",
+            "Linea" => "21",
+            "SubLinea" => "22",
+            "UnidadMedida" => "23",
+            "Producto" => "24",
+            "FichaProducto" => "25",
+            "Configuracion" => "70",
+            "SystemConfiguration" => "71",
             _ => "99"
         };
 
@@ -725,6 +706,28 @@ using (var scope = app.Services.CreateScope())
             foreach (var item in cuentasSinTrad)
             {
                 db.CuentaTranslation.Add(new CuentaTranslation(item.Id, "es", item.Descripcion, "system"));
+                traduccionesAgregadas++;
+            }
+        }
+
+        // Establecimientos
+        var localidadIds = await db.Localidad.Select(x => x.Id).ToListAsync();
+        var localidadConTradIds = await db.LocalidadTranslation
+            .Select(t => t.LocalidadId)
+            .Distinct()
+            .ToListAsync();
+        var localidadSinTradIds = localidadIds.Except(localidadConTradIds).ToList();
+
+        if (localidadSinTradIds.Any())
+        {
+            var localidadSinTrad = await db.Localidad
+                .Where(x => localidadSinTradIds.Contains(x.Id))
+                .ToListAsync();
+
+            foreach (var item in localidadSinTrad)
+            {
+                db.LocalidadTranslation.Add(
+                    new LocalidadTranslation(item.Id, "es", item.Descripcion, "system"));
                 traduccionesAgregadas++;
             }
         }

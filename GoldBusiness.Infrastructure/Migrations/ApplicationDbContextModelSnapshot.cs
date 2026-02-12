@@ -844,7 +844,9 @@ namespace GoldBusiness.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("NegocioId", "Codigo", "Cancelado")
+                    b.HasIndex("NegocioId");
+
+                    b.HasIndex("Codigo", "NegocioId", "Cancelado")
                         .IsUnique()
                         .HasDatabaseName("IX_Establecimiento");
 
@@ -1167,7 +1169,9 @@ namespace GoldBusiness.Infrastructure.Migrations
 
                     b.HasIndex("CuentaVentaId");
 
-                    b.HasIndex("EstablecimientoId", "Codigo", "Cancelado")
+                    b.HasIndex("EstablecimientoId");
+
+                    b.HasIndex("Codigo", "EstablecimientoId", "Cancelado")
                         .IsUnique()
                         .HasDatabaseName("IX_Localidad");
 

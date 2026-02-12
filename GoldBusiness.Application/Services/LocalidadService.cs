@@ -63,9 +63,9 @@ namespace GoldBusiness.Application.Services
             }
 
             var entity = new Localidad(
-                dto.EstablecimientoId,
                 dto.Codigo,
                 dto.Descripcion,
+                dto.EstablecimientoId,
                 dto.CuentaInventarioId,
                 dto.CuentaCostoId,
                 dto.CuentaVentaId,

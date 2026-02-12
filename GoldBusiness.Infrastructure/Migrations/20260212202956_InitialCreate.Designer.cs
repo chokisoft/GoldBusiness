@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GoldBusiness.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260211200755_InitialCreate")]
+    [Migration("20260212202956_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -847,7 +847,9 @@ namespace GoldBusiness.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("NegocioId", "Codigo", "Cancelado")
+                    b.HasIndex("NegocioId");
+
+                    b.HasIndex("Codigo", "NegocioId", "Cancelado")
                         .IsUnique()
                         .HasDatabaseName("IX_Establecimiento");
 
@@ -1170,7 +1172,9 @@ namespace GoldBusiness.Infrastructure.Migrations
 
                     b.HasIndex("CuentaVentaId");
 
-                    b.HasIndex("EstablecimientoId", "Codigo", "Cancelado")
+                    b.HasIndex("EstablecimientoId");
+
+                    b.HasIndex("Codigo", "EstablecimientoId", "Cancelado")
                         .IsUnique()
                         .HasDatabaseName("IX_Localidad");
 
