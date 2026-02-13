@@ -1,0 +1,12 @@
+<div class="language-selector">
+  <label for="language-select">🌍 Idioma:</label>
+  <select id="language-select"
+          [value]="currentLanguage.code"
+          (change)="changeLanguage($any($event.target).value)"
+          class="language-dropdown">
+    <option *ngFor="let lang of availableLanguages"
+            [value]="lang.code">
+      {{ lang.flag }} {{ lang.name }}
+    </option>
+  </select>
+</div>

@@ -16,6 +16,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Readme.txt = Readme.txt
 	EndProjectSection
 EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "GoldBusiness.Client", "GoldBusiness.Client\GoldBusiness.Client.esproj", "{A7968B8A-AED9-EFE7-425C-F889337343C2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,6 +40,12 @@ Global
 		{4D2D8341-CCBE-53F1-A6FD-A1B5F543A400}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D2D8341-CCBE-53F1-A6FD-A1B5F543A400}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D2D8341-CCBE-53F1-A6FD-A1B5F543A400}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7968B8A-AED9-EFE7-425C-F889337343C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7968B8A-AED9-EFE7-425C-F889337343C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7968B8A-AED9-EFE7-425C-F889337343C2}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{A7968B8A-AED9-EFE7-425C-F889337343C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7968B8A-AED9-EFE7-425C-F889337343C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7968B8A-AED9-EFE7-425C-F889337343C2}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
