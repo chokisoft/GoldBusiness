@@ -6,11 +6,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace GoldBusiness.Application.Services
 {
-    public class AuthService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration config) : IAuthService
+    public class AuthService(
+        UserManager<ApplicationUser> userManager,
+        RoleManager<IdentityRole> roleManager,
+        IConfiguration config) : IAuthService
     {
         private readonly UserManager<ApplicationUser> _userManager = userManager;
         private readonly RoleManager<IdentityRole> _roleManager = roleManager;
@@ -20,11 +24,27 @@ namespace GoldBusiness.Application.Services
         {
             // Validar usuario
             var user = await _userManager.FindByNameAsync(login.Username);
-            if (user == null || !user.IsActive) return null;
+            if (user == null || !user.IsActive)
+            {
+                return new AuthResponseDTO
+                {
+                    Succeeded = false,
+                    Message = "Usuario o contraseña incorrectos",
+                    Data = null
+                };
+            }
 
             // Validar contraseña
             var validPassword = await _userManager.CheckPasswordAsync(user, login.Password);
-            if (!validPassword) return null;
+            if (!validPassword)
+            {
+                return new AuthResponseDTO
+                {
+                    Succeeded = false,
+                    Message = "Usuario o contraseña incorrectos",
+                    Data = null
+                };
+            }
 
             // 1. Claims del usuario
             var userClaims = await _userManager.GetClaimsAsync(user);
@@ -50,7 +70,8 @@ namespace GoldBusiness.Application.Services
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.UserName ?? ""),
-                new Claim(ClaimTypes.NameIdentifier, user.Id)
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Email, user.Email ?? "")
             };
 
             // 5. Agregar claims del usuario y del rol
@@ -58,28 +79,63 @@ namespace GoldBusiness.Application.Services
             claims.AddRange(roleClaims);
 
             // 6. Validar configuración JWT
-            var jwtKey = _config["Jwt:Key"] 
+            var jwtKey = _config["Jwt:Key"]
                 ?? throw new InvalidOperationException("JWT Key is not configured in appsettings.json");
-            var jwtIssuer = _config["Jwt:Issuer"] 
+            var jwtIssuer = _config["Jwt:Issuer"]
                 ?? throw new InvalidOperationException("JWT Issuer is not configured in appsettings.json");
-            var expirationMinutes = _config.GetValue<int>("Jwt:AccessTokenExpirationMinutes", 15);
+            var expirationMinutes = _config.GetValue<int>("Jwt:AccessTokenExpirationMinutes", 30);
 
-            // 7. Generar token
+            // 7. Generar token de acceso
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var expiresAt = DateTime.UtcNow.AddMinutes(expirationMinutes);
 
             var token = new JwtSecurityToken(
                 issuer: jwtIssuer,
                 audience: null,
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(expirationMinutes),
+                expires: expiresAt,
                 signingCredentials: creds);
 
+            var accessToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+            // 8. Generar refresh token
+            var refreshToken = GenerateRefreshToken();
+
+            // 9. Obtener el nombre completo del claim "fullName" si existe
+            var fullNameClaim = userClaims.FirstOrDefault(c => c.Type == "fullName");
+            var fullName = fullNameClaim?.Value ?? user.UserName ?? "";
+
+            // 10. Construir respuesta
             return new AuthResponseDTO
             {
-                Token = new JwtSecurityTokenHandler().WriteToken(token),
-                Expiration = token.ValidTo
+                Succeeded = true,
+                Message = "Autenticación exitosa",
+                Data = new AuthDataDTO
+                {
+                    Token = accessToken,
+                    RefreshToken = refreshToken,
+                    ExpiresAt = expiresAt.ToString("o"), // Formato ISO 8601
+                    User = new UserInfoDTO
+                    {
+                        UserName = user.UserName ?? "",
+                        Email = user.Email ?? "",
+                        FullName = fullName,
+                        Roles = roles.ToList()
+                    }
+                }
             };
+        }
+
+        /// <summary>
+        /// Genera un refresh token aleatorio seguro.
+        /// </summary>
+        private static string GenerateRefreshToken()
+        {
+            var randomNumber = new byte[64];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+            return Convert.ToBase64String(randomNumber);
         }
     }
 }

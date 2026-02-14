@@ -7,10 +7,6 @@ using Microsoft.Extensions.Localization;
 
 namespace GoldBusiness.WebApi.Controllers
 {
-    /// <summary>
-    /// Controlador de autenticación para gestionar login y tokens JWT.
-    /// Version 2.0 con rate limiting y seguridad mejorada.
-    /// </summary>
     [ApiController]
     [Route("api/[controller]")]
     [AllowAnonymous]
@@ -30,39 +26,29 @@ namespace GoldBusiness.WebApi.Controllers
             _logger = logger;
         }
 
-        /// <summary>
-        /// Autentica a un usuario y devuelve un token JWT.
-        /// Rate limited: 10 intentos por minuto por IP.
-        /// </summary>
-        /// <param name="login">Credenciales del usuario</param>
-        /// <returns>Token JWT y fecha de expiración</returns>
         [HttpPost("login")]
         [EnableRateLimiting("auth")]
         public async Task<IActionResult> Login([FromBody] LoginDTO login)
         {
             var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
-            
-            // ✅ Solo registrar IP (no el username) para evitar exposición
             _logger.LogDebug("Login attempt from IP: {IpAddress}", ipAddress);
-            
-            var result = await _authService.AuthenticateAsync(login);
-            if (result == null)
-            {
-                var errorMessage = _localizer["InvalidCredentials"].Value ?? "Credenciales inválidas";
 
-                // ✅ En caso de fallo, solo registrar IP (sin username)
+            var result = await _authService.AuthenticateAsync(login);
+
+            if (result == null || !result.Succeeded)
+            {
+                var errorMessage = result?.Message ?? _localizer["InvalidCredentials"].Value ?? "Credenciales inválidas";
                 _logger.LogWarning("Failed login attempt from IP: {IpAddress}", ipAddress);
 
-                return Unauthorized(new
+                return Unauthorized(new AuthResponseDTO
                 {
+                    Succeeded = false,
                     Message = errorMessage,
-                    Status = 401,
-                    Timestamp = DateTime.UtcNow
+                    Data = null
                 });
             }
 
-            // ✅ En caso de éxito, SÍ registrar el usuario (para auditoría)
-            _logger.LogInformation("Successful login - User: {Username}, IP: {IpAddress}", 
+            _logger.LogInformation("Successful login - User: {Username}, IP: {IpAddress}",
                 login.Username, ipAddress);
 
             return Ok(result);

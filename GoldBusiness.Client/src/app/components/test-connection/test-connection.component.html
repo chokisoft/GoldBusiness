@@ -1,26 +1,29 @@
 <div class="container">
-  <h2>🧪 Prueba de Conexión con la API</h2>
+  <h2>{{ translations.title }}</h2>
 
-  <!-- Contenedor para el selector -->
-  <div class="language-section">
+  <!-- Sección de configuración -->
+  <div class="config-section">
+    <h3>{{ translations.configTitle }}</h3>
     <app-language-selector></app-language-selector>
   </div>
 
-  <!-- Contenedor para el botón -->
+  <!-- Sección de prueba -->
   <div class="test-section">
+    <h3>{{ translations.connectionTitle }}</h3>
     <button (click)="testConnection()"
             [disabled]="isLoading"
             class="btn-primary">
-      {{ isLoading ? 'Probando...' : 'Probar Conexión' }}
+      {{ isLoading ? translations.testing : translations.testButton }}
     </button>
   </div>
 
+  <!-- Resultados -->
   <div *ngIf="error" class="error">
-    ❌ Error: {{ error }}
+    {{ translations.errorLabel }}: {{ error }}
   </div>
 
   <div *ngIf="apiResponse" class="success">
-    <h3>✅ Conexión Exitosa</h3>
+    <h3>{{ translations.successTitle }}</h3>
     <pre>{{ apiResponse | json }}</pre>
   </div>
 </div>

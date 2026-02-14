@@ -1,10 +1,42 @@
-<header style="background: #2d2f5b; color: white; padding: 10px;">
-  <div style="display: flex; justify-content: space-between; align-items: center; margin: 0 auto;">
-    <h1 style="margin: 0; font-family: Calibri">GoldBusiness ERP</h1>
-    <app-language-selector></app-language-selector>
+<!-- Header con navegación -->
+<header class="app-header" *ngIf="authService.isAuthenticated()">
+  <div class="header-content">
+    <div class="logo-section">
+      <h1>💼 {{ title }}</h1>
+      <span class="env-badge" [ngClass]="{'production': isProduction, 'development': !isProduction}">
+        {{ translations.environmentBadge }}
+      </span>
+    </div>
+
+    <div class="header-right">
+      <!-- Usuario actual -->
+      <div class="user-info" *ngIf="currentUser">
+        <span class="user-name">👤 {{ currentUser.fullName || currentUser.userName }}</span>
+        <button class="btn-logout" (click)="logout()">
+          {{ translations.logout }}
+        </button>
+      </div>
+
+      <!-- Selector de idioma -->
+      <app-language-selector></app-language-selector>
+    </div>
   </div>
 </header>
 
-<main>
+<!-- Contenido principal -->
+<main class="app-main">
   <router-outlet></router-outlet>
 </main>
+
+<!-- Footer -->
+<footer class="app-footer" *ngIf="authService.isAuthenticated()">
+  <div class="footer-content">
+    <p>
+      {{ translations.footer }}
+      <span class="version">v{{ apiVersion }}</span>
+    </p>
+    <p class="api-info" *ngIf="!isProduction">
+      🔗 API: {{ apiUrl }}
+    </p>
+  </div>
+</footer>
