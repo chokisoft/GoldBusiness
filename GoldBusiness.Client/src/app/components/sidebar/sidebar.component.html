@@ -1,0 +1,58 @@
+<aside class="sidebar" [class.collapsed]="isCollapsed">
+  <button class="toggle-btn" (click)="toggleSidebar()">
+    <span>{{ isCollapsed ? '▶' : '◀' }}</span>
+  </button>
+
+  <nav class="sidebar-nav">
+    <ng-container *ngFor="let item of menuItems">
+      <div class="menu-item" [class.has-children]="item.children">
+        <div class="menu-header" (click)="toggleItem(item)" [class.expanded]="item.expanded">
+          <div class="menu-title">
+            <span class="menu-icon">{{ item.icon }}</span>
+            <span class="menu-text" *ngIf="!isCollapsed">{{ item.title }}</span>
+          </div>
+          <span class="expand-icon" *ngIf="item.children && !isCollapsed">
+            {{ item.expanded ? '▼' : '▶' }}
+          </span>
+        </div>
+
+        <div class="submenu" *ngIf="item.children && item.expanded && !isCollapsed">
+          <ng-container *ngFor="let subItem of item.children">
+            <!-- Nivel 2 -->
+            <div class="menu-item submenu-item" *ngIf="!subItem.route">
+              <div class="menu-header" (click)="toggleItem(subItem)" [class.expanded]="subItem.expanded">
+                <div class="menu-title">
+                  <span class="menu-icon">{{ subItem.icon }}</span>
+                  <span class="menu-text">{{ subItem.title }}</span>
+                </div>
+                <span class="expand-icon" *ngIf="subItem.children">
+                  {{ subItem.expanded ? '▼' : '▶' }}
+                </span>
+              </div>
+
+              <!-- Nivel 3 -->
+              <div class="submenu submenu-level-2" *ngIf="subItem.children && subItem.expanded">
+                <a *ngFor="let childItem of subItem.children"
+                   [routerLink]="childItem.route"
+                   routerLinkActive="active"
+                   class="menu-link">
+                  <span class="menu-icon">{{ childItem.icon }}</span>
+                  <span class="menu-text">{{ childItem.title }}</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- Item con ruta directa -->
+            <a *ngIf="subItem.route"
+               [routerLink]="subItem.route"
+               routerLinkActive="active"
+               class="menu-link submenu-item">
+              <span class="menu-icon">{{ subItem.icon }}</span>
+              <span class="menu-text">{{ subItem.title }}</span>
+            </a>
+          </ng-container>
+        </div>
+      </div>
+    </ng-container>
+  </nav>
+</aside>

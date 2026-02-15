@@ -1,0 +1,35 @@
+<nav class="navbar">
+  <div class="navbar-container">
+    <div class="navbar-brand">
+      <a routerLink="/inicio" class="brand-link">
+        <span class="brand-icon">💼</span>
+        <span class="brand-text">GoldBusiness ERP</span>
+      </a>
+    </div>
+
+    <div class="navbar-menu">
+      <a routerLink="/inicio" routerLinkActive="active" class="nav-link">
+        <span class="nav-icon">🏠</span>
+        <span>Inicio</span>
+      </a>
+      <a routerLink="/acerca" routerLinkActive="active" class="nav-link">
+        <span class="nav-icon">ℹ️</span>
+        <span>Acerca</span>
+      </a>
+    </div>
+
+    <div class="navbar-user" *ngIf="currentUser$ | async as user">
+      <div class="user-info">
+        <span class="user-icon">👤</span>
+        <div class="user-details">
+          <span class="user-name">{{ user.fullName }}</span>
+          <span class="user-role">{{ user.roles[0] }}</span>
+        </div>
+      </div>
+      <button class="btn-logout" (click)="logout()">
+        <span class="logout-icon">🚪</span>
+        <span>Cerrar Sesión</span>
+      </button>
+    </div>
+  </div>
+</nav>

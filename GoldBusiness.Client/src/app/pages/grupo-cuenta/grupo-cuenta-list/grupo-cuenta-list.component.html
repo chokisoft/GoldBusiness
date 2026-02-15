@@ -1,0 +1,77 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">📁 Grupos de Cuenta</h1>
+      <p class="page-subtitle">Nivel superior del plan de cuentas (Activo, Pasivo, Patrimonio, Ingresos, Gastos)</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-primary" [routerLink]="['nuevo']">
+        <span class="btn-icon">➕</span>
+        Nuevo Grupo
+      </button>
+    </div>
+  </div>
+
+  <div class="alert alert-error" *ngIf="error">
+    <span class="alert-icon">⚠️</span>
+    {{ error }}
+  </div>
+
+  <div class="card" *ngIf="!loading && !error">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Nombre</th>
+              <th>Descripción</th>
+              <th>Estado</th>
+              <th>Fecha Creación</th>
+              <th class="actions-column">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let grupo of gruposCuenta">
+              <td><span class="badge badge-code">{{ grupo.codigo }}</span></td>
+              <td class="font-weight-bold">{{ grupo.nombre }}</td>
+              <td>{{ grupo.descripcion || '-' }}</td>
+              <td>
+                <span class="badge" [class.badge-success]="grupo.activo" [class.badge-danger]="!grupo.activo">
+                  {{ grupo.activo ? '✓ Activo' : '✗ Inactivo' }}
+                </span>
+              </td>
+              <td>{{ grupo.fechaHoraCreado | date:'short' }}</td>
+              <td class="actions-column">
+                <div class="action-buttons">
+                  <button class="btn btn-sm btn-info" [routerLink]="[grupo.id]" title="Ver detalles">
+                    <span>👁️</span>
+                  </button>
+                  <button class="btn btn-sm btn-warning" [routerLink]="['editar', grupo.id]" title="Editar">
+                    <span>✏️</span>
+                  </button>
+                  <button class="btn btn-sm btn-danger" (click)="delete(grupo.id!, grupo.nombre)" title="Eliminar">
+                    <span>🗑️</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="gruposCuenta.length === 0">
+              <td colspan="6" class="text-center">
+                <div class="empty-state">
+                  <span class="empty-icon">📭</span>
+                  <p>No hay grupos de cuenta registrados</p>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="loading-spinner" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Cargando datos...</p>
+  </div>
+</div>

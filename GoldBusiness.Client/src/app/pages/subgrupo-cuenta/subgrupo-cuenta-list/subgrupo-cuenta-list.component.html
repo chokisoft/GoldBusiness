@@ -1,0 +1,87 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">📂 SubGrupos de Cuenta</h1>
+      <p class="page-subtitle">Segundo nivel del plan de cuentas, agrupa cuentas relacionadas dentro de un Grupo</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-primary" [routerLink]="['nuevo']">
+        <span class="btn-icon">➕</span>
+        Nuevo SubGrupo
+      </button>
+    </div>
+  </div>
+
+  <div class="alert alert-error" *ngIf="error">
+    <span class="alert-icon">⚠️</span>
+    {{ error }}
+  </div>
+
+  <div class="card" *ngIf="!loading && !error">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Descripción</th>
+              <th>Grupo</th>
+              <th>Tipo</th>
+              <th>Estado</th>
+              <th>Fecha Creación</th>
+              <th class="actions-column">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let subgrupo of subgrupos">
+              <td><span class="badge badge-code">{{ subgrupo.codigo }}</span></td>
+              <td class="font-weight-bold">{{ subgrupo.descripcion }}</td>
+              <td>
+                <span class="badge badge-info">
+                  {{ subgrupo.grupoCuentaCodigo }} - {{ subgrupo.grupoCuentaNombre }}
+                </span>
+              </td>
+              <td>
+                <span class="badge" [class.badge-success]="subgrupo.deudora" [class.badge-warning]="!subgrupo.deudora">
+                  {{ subgrupo.deudora ? '💰 Deudora' : '💳 Acreedora' }}
+                </span>
+              </td>
+              <td>
+                <span class="badge" [class.badge-success]="!subgrupo.cancelado" [class.badge-danger]="subgrupo.cancelado">
+                  {{ subgrupo.cancelado ? '✗ Cancelado' : '✓ Activo' }}
+                </span>
+              </td>
+              <td>{{ subgrupo.fechaHoraCreado | date:'short' }}</td>
+              <td class="actions-column">
+                <div class="action-buttons">
+                  <button class="btn btn-sm btn-info" [routerLink]="[subgrupo.id]" title="Ver detalles">
+                    <span>👁️</span>
+                  </button>
+                  <button class="btn btn-sm btn-warning" [routerLink]="['editar', subgrupo.id]" title="Editar">
+                    <span>✏️</span>
+                  </button>
+                  <button class="btn btn-sm btn-danger" (click)="delete(subgrupo.id!, subgrupo.descripcion)" title="Eliminar">
+                    <span>🗑️</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="subgrupos.length === 0">
+              <td colspan="7" class="text-center">
+                <div class="empty-state">
+                  <span class="empty-icon">📭</span>
+                  <p>No hay subgrupos de cuenta registrados</p>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="loading-spinner" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Cargando datos...</p>
+  </div>
+</div>

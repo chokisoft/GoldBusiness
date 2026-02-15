@@ -1,0 +1,70 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1 class="page-title">
+      {{ isEditMode ? '✏️ Editar' : '➕ Nuevo' }} Grupo de Cuenta
+    </h1>
+  </div>
+
+  <div class="alert alert-error" *ngIf="error">
+    <span class="alert-icon">⚠️</span>
+    {{ error }}
+  </div>
+
+  <div class="card">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="codigo" class="form-label">Código *</label>
+          <input type="text"
+                 id="codigo"
+                 formControlName="codigo"
+                 class="form-control"
+                 [class.is-invalid]="form.get('codigo')?.invalid && form.get('codigo')?.touched"
+                 placeholder="Ej: 01" />
+          <div class="invalid-feedback" *ngIf="form.get('codigo')?.invalid && form.get('codigo')?.touched">
+            {{ getErrorMessage('codigo') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="nombre" class="form-label">Nombre *</label>
+          <input type="text"
+                 id="nombre"
+                 formControlName="nombre"
+                 class="form-control"
+                 [class.is-invalid]="form.get('nombre')?.invalid && form.get('nombre')?.touched"
+                 placeholder="Ej: Activo" />
+          <div class="invalid-feedback" *ngIf="form.get('nombre')?.invalid && form.get('nombre')?.touched">
+            {{ getErrorMessage('nombre') }}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="descripcion" class="form-label">Descripción</label>
+        <textarea id="descripcion"
+                  formControlName="descripcion"
+                  class="form-control"
+                  rows="4"
+                  placeholder="Descripción opcional del grupo de cuenta"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="checkbox-label">
+          <input type="checkbox" formControlName="activo" class="form-checkbox" />
+          <span>Activo</span>
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="loading">
+          ❌ Cancelar
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="loading || form.invalid">
+          <span *ngIf="!loading">💾 {{ isEditMode ? 'Actualizar' : 'Guardar' }}</span>
+          <span *ngIf="loading">⏳ Guardando...</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

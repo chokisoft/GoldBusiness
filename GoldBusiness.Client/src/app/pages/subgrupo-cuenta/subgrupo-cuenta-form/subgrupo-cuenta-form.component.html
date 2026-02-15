@@ -1,0 +1,78 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1 class="page-title">
+      {{ isEditMode ? '✏️ Editar' : '➕ Nuevo' }} SubGrupo de Cuenta
+    </h1>
+  </div>
+
+  <div class="alert alert-error" *ngIf="error">
+    <span class="alert-icon">⚠️</span>
+    {{ error }}
+  </div>
+
+  <div class="card">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="codigo" class="form-label">Código * (5 dígitos)</label>
+          <input type="text"
+                 id="codigo"
+                 formControlName="codigo"
+                 class="form-control"
+                 [class.is-invalid]="form.get('codigo')?.invalid && form.get('codigo')?.touched"
+                 placeholder="Ej: 01001"
+                 maxlength="5" />
+          <div class="invalid-feedback" *ngIf="form.get('codigo')?.invalid && form.get('codigo')?.touched">
+            {{ getErrorMessage('codigo') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="grupoCuentaId" class="form-label">Grupo de Cuenta *</label>
+          <select id="grupoCuentaId"
+                  formControlName="grupoCuentaId"
+                  class="form-control"
+                  [class.is-invalid]="form.get('grupoCuentaId')?.invalid && form.get('grupoCuentaId')?.touched">
+            <option [value]="null">Seleccione un grupo...</option>
+            <option *ngFor="let grupo of gruposCuenta" [value]="grupo.id">
+              {{ grupo.codigo }} - {{ grupo.nombre }}
+            </option>
+          </select>
+          <div class="invalid-feedback" *ngIf="form.get('grupoCuentaId')?.invalid && form.get('grupoCuentaId')?.touched">
+            {{ getErrorMessage('grupoCuentaId') }}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="descripcion" class="form-label">Descripción *</label>
+        <textarea id="descripcion"
+                  formControlName="descripcion"
+                  class="form-control"
+                  [class.is-invalid]="form.get('descripcion')?.invalid && form.get('descripcion')?.touched"
+                  rows="3"
+                  placeholder="Descripción del subgrupo de cuenta"></textarea>
+        <div class="invalid-feedback" *ngIf="form.get('descripcion')?.invalid && form.get('descripcion')?.touched">
+          {{ getErrorMessage('descripcion') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="checkbox-label">
+          <input type="checkbox" formControlName="deudora" class="form-checkbox" />
+          <span>Deudora (marcar para cuentas de activo y gastos, desmarcar para pasivo e ingresos)</span>
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="loading">
+          ❌ Cancelar
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="loading || form.invalid">
+          <span *ngIf="!loading">💾 {{ isEditMode ? 'Actualizar' : 'Guardar' }}</span>
+          <span *ngIf="loading">⏳ Guardando...</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

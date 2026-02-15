@@ -1,0 +1,81 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">📄 Cuentas Contables</h1>
+      <p class="page-subtitle">Nivel más detallado del plan de cuentas donde se registran las transacciones</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-primary" [routerLink]="['nuevo']">
+        <span class="btn-icon">➕</span>
+        Nueva Cuenta
+      </button>
+    </div>
+  </div>
+
+  <div class="alert alert-error" *ngIf="error">
+    <span class="alert-icon">⚠️</span>
+    {{ error }}
+  </div>
+
+  <div class="card" *ngIf="!loading && !error">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Descripción</th>
+              <th>SubGrupo</th>
+              <th>Estado</th>
+              <th>Fecha Creación</th>
+              <th class="actions-column">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let cuenta of cuentas">
+              <td><span class="badge badge-code">{{ cuenta.codigo }}</span></td>
+              <td class="font-weight-bold">{{ cuenta.descripcion }}</td>
+              <td>
+                <span class="badge badge-info">
+                  {{ cuenta.subGrupoCuentaCodigo }} - {{ cuenta.subGrupoCuentaDescripcion }}
+                </span>
+              </td>
+              <td>
+                <span class="badge" [class.badge-success]="!cuenta.cancelado" [class.badge-danger]="cuenta.cancelado">
+                  {{ cuenta.cancelado ? '✗ Cancelado' : '✓ Activo' }}
+                </span>
+              </td>
+              <td>{{ cuenta.fechaHoraCreado | date:'short' }}</td>
+              <td class="actions-column">
+                <div class="action-buttons">
+                  <button class="btn btn-sm btn-info" [routerLink]="[cuenta.id]" title="Ver detalles">
+                    <span>👁️</span>
+                  </button>
+                  <button class="btn btn-sm btn-warning" [routerLink]="['editar', cuenta.id]" title="Editar">
+                    <span>✏️</span>
+                  </button>
+                  <button class="btn btn-sm btn-danger" (click)="delete(cuenta.id!, cuenta.descripcion)" title="Eliminar">
+                    <span>🗑️</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="cuentas.length === 0">
+              <td colspan="6" class="text-center">
+                <div class="empty-state">
+                  <span class="empty-icon">📭</span>
+                  <p>No hay cuentas registradas</p>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="loading-spinner" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Cargando datos...</p>
+  </div>
+</div>
