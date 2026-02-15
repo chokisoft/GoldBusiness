@@ -27,8 +27,6 @@
               <th>Descripción</th>
               <th>Grupo</th>
               <th>Tipo</th>
-              <th>Estado</th>
-              <th>Fecha Creación</th>
               <th class="actions-column">Acciones</th>
             </tr>
           </thead>
@@ -38,7 +36,7 @@
               <td class="font-weight-bold">{{ subgrupo.descripcion }}</td>
               <td>
                 <span class="badge badge-info">
-                  {{ subgrupo.grupoCuentaCodigo }} - {{ subgrupo.grupoCuentaNombre }}
+                  {{ subgrupo.grupoCuentaCodigo }} - {{ subgrupo.grupoCuentaDescripcion }}
                 </span>
               </td>
               <td>
@@ -46,12 +44,6 @@
                   {{ subgrupo.deudora ? '💰 Deudora' : '💳 Acreedora' }}
                 </span>
               </td>
-              <td>
-                <span class="badge" [class.badge-success]="!subgrupo.cancelado" [class.badge-danger]="subgrupo.cancelado">
-                  {{ subgrupo.cancelado ? '✗ Cancelado' : '✓ Activo' }}
-                </span>
-              </td>
-              <td>{{ subgrupo.fechaHoraCreado | date:'short' }}</td>
               <td class="actions-column">
                 <div class="action-buttons">
                   <button class="btn btn-sm btn-info" [routerLink]="[subgrupo.id]" title="Ver detalles">

@@ -1,0 +1,197 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">👁️ Detalle de Configuración del Sistema</h1>
+      <p class="page-subtitle">Información completa de la configuración</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary" (click)="goBack()">
+        <span class="btn-icon">⬅️</span>
+        Volver
+      </button>
+      <button class="btn btn-warning" (click)="goToEdit()" *ngIf="configuration">
+        <span class="btn-icon">✏️</span>
+        Editar
+      </button>
+    </div>
+  </div>
+
+  <div class="alert alert-error" *ngIf="error">
+    <span class="alert-icon">⚠️</span>
+    {{ error }}
+  </div>
+
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Cargando información...</p>
+  </div>
+
+  <div *ngIf="!loading && configuration">
+    <!-- Estado de la Licencia -->
+    <div class="alert" [ngClass]="{
+      'alert-success': configuration!.estaVigente && !configuration!.proximoAVencer,
+      'alert-warning': configuration!.proximoAVencer,
+      'alert-error': configuration!.estaVencida
+    }">
+      <div class="license-status">
+        <span class="status-icon">{{ getEstadoIcon() }}</span>
+        <div class="status-info">
+          <strong>Estado de Licencia: {{ configuration!.estadoLicencia }}</strong>
+          <div *ngIf="configuration!.estaVigente">
+            Vence en {{ configuration!.diasRestantes }} días ({{ configuration!.caducidad | date:'dd/MM/yyyy' }})
+          </div>
+          <div *ngIf="configuration!.estaVencida">
+            La licencia venció el {{ configuration!.caducidad | date:'dd/MM/yyyy' }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Información Básica -->
+    <div class="card">
+      <div class="card-body">
+        <div class="detail-section">
+          <h3 class="section-title">📋 Información Básica</h3>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <label class="detail-label">Código del Sistema:</label>
+              <div class="detail-value">
+                <span class="badge badge-code badge-lg">{{ configuration!.codigoSistema }}</span>
+              </div>
+            </div>
+
+            <div class="detail-item">
+              <label class="detail-label">Licencia:</label>
+              <div class="detail-value">
+                <span class="badge badge-info badge-lg">{{ configuration!.licencia }}</span>
+              </div>
+            </div>
+
+            <div class="detail-item full-width">
+              <label class="detail-label">Nombre del Negocio:</label>
+              <div class="detail-value font-weight-bold">{{ configuration!.nombreNegocio }}</div>
+            </div>
+
+            <div class="detail-item">
+              <label class="detail-label">Fecha de Caducidad:</label>
+              <div class="detail-value">
+                <span class="badge" [ngClass]="getEstadoBadgeClass()">
+                  {{ getEstadoIcon() }} {{ configuration!.caducidad | date:'dd/MM/yyyy' }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Información de Contacto -->
+        <div class="detail-section">
+          <h3 class="section-title">📞 Información de Contacto</h3>
+          <div class="detail-grid">
+            <div class="detail-item full-width" *ngIf="configuration!.direccion">
+              <label class="detail-label">Dirección:</label>
+              <div class="detail-value">{{ configuration!.direccion }}</div>
+            </div>
+
+            <div class="detail-item" *ngIf="configuration!.municipio">
+              <label class="detail-label">Municipio:</label>
+              <div class="detail-value">{{ configuration!.municipio }}</div>
+            </div>
+
+            <div class="detail-item" *ngIf="configuration!.provincia">
+              <label class="detail-label">Provincia:</label>
+              <div class="detail-value">{{ configuration!.provincia }}</div>
+            </div>
+
+            <div class="detail-item" *ngIf="configuration!.codPostal">
+              <label class="detail-label">Código Postal:</label>
+              <div class="detail-value">{{ configuration!.codPostal }}</div>
+            </div>
+
+            <div class="detail-item" *ngIf="configuration!.email">
+              <label class="detail-label">Email:</label>
+              <div class="detail-value">
+                <a [href]="'mailto:' + configuration!.email" class="link">{{ configuration!.email }}</a>
+              </div>
+            </div>
+
+            <div class="detail-item" *ngIf="configuration!.telefono">
+              <label class="detail-label">Teléfono:</label>
+              <div class="detail-value">
+                <a [href]="'tel:' + configuration!.telefono" class="link">{{ configuration!.telefono }}</a>
+              </div>
+            </div>
+
+            <div class="detail-item" *ngIf="configuration!.web">
+              <label class="detail-label">Sitio Web:</label>
+              <div class="detail-value">
+                <a [href]="configuration!.web" target="_blank" class="link">{{ configuration!.web }} 🔗</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Logo/Imagen -->
+          <div class="detail-item full-width" *ngIf="configuration!.imagen">
+            <label class="detail-label">Logo/Imagen:</label>
+            <div class="detail-value">
+              <div class="image-preview">
+                <img [src]="configuration!.imagen"
+                     [alt]="configuration!.nombreNegocio"
+                     (error)="onImageError($event)"
+                     class="business-logo" />
+              </div>
+              <a [href]="configuration!.imagen" target="_blank" class="link">Ver imagen completa 🔗</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cuentas Contables -->
+        <div class="detail-section">
+          <h3 class="section-title">💰 Cuentas Contables Predeterminadas</h3>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <label class="detail-label">Cuenta Por Pagar:</label>
+              <div class="detail-value">
+                <span class="badge badge-success badge-lg" *ngIf="configuration!.cuentaPagarCodigo">
+                  {{ configuration!.cuentaPagarCodigo }} - {{ configuration!.cuentaPagarDescripcion }}
+                </span>
+                <span class="text-muted" *ngIf="!configuration!.cuentaPagarCodigo">No configurada</span>
+              </div>
+            </div>
+
+            <div class="detail-item">
+              <label class="detail-label">Cuenta Por Cobrar:</label>
+              <div class="detail-value">
+                <span class="badge badge-success badge-lg" *ngIf="configuration!.cuentaCobrarCodigo">
+                  {{ configuration!.cuentaCobrarCodigo }} - {{ configuration!.cuentaCobrarDescripcion }}
+                </span>
+                <span class="text-muted" *ngIf="!configuration!.cuentaCobrarCodigo">No configurada</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Auditoría -->
+        <div class="detail-section" *ngIf="configuration!.fechaHoraCreado || configuration!.fechaHoraModificado">
+          <h3 class="section-title">🕒 Auditoría</h3>
+          <div class="detail-grid">
+            <div class="detail-item" *ngIf="configuration!.fechaHoraCreado">
+              <label class="detail-label">Creado:</label>
+              <div class="detail-value">
+                {{ configuration!.fechaHoraCreado | date:'dd/MM/yyyy HH:mm' }}
+                <span *ngIf="configuration!.creadoPor" class="text-muted"> por {{ configuration!.creadoPor }}</span>
+              </div>
+            </div>
+
+            <div class="detail-item" *ngIf="configuration!.fechaHoraModificado">
+              <label class="detail-label">Última modificación:</label>
+              <div class="detail-value">
+                {{ configuration!.fechaHoraModificado | date:'dd/MM/yyyy HH:mm' }}
+                <span *ngIf="configuration!.modificadoPor" class="text-muted"> por {{ configuration!.modificadoPor }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

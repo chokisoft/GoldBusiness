@@ -1,0 +1,88 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">👁️ Detalle del Grupo de Cuenta</h1>
+      <p class="page-subtitle">Información completa del grupo de cuenta</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary" (click)="goBack()">
+        <span class="btn-icon">⬅️</span>
+        Volver
+      </button>
+      <button class="btn btn-warning" (click)="goToEdit()" *ngIf="grupo">
+        <span class="btn-icon">✏️</span>
+        Editar
+      </button>
+      <button class="btn btn-danger" (click)="delete()" *ngIf="grupo">
+        <span class="btn-icon">🗑️</span>
+        Eliminar
+      </button>
+    </div>
+  </div>
+
+  <div class="alert alert-error" *ngIf="error">
+    <span class="alert-icon">⚠️</span>
+    {{ error }}
+  </div>
+
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Cargando información...</p>
+  </div>
+
+  <div class="card" *ngIf="!loading && grupo">
+    <div class="card-body">
+      <div class="detail-section">
+        <h3 class="section-title">📋 Información General</h3>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label class="detail-label">Código:</label>
+            <div class="detail-value">
+              <span class="badge badge-code badge-lg">{{ grupo!.codigo }}</span>
+            </div>
+          </div>
+
+          <div class="detail-item">
+            <label class="detail-label">Nombre:</label>
+            <div class="detail-value font-weight-bold">{{ grupo!.nombre }}</div>
+          </div>
+
+          <div class="detail-item full-width">
+            <label class="detail-label">Descripción:</label>
+            <div class="detail-value">{{ grupo!.descripcion || 'Sin descripción' }}</div>
+          </div>
+
+          <div class="detail-item">
+            <label class="detail-label">Estado:</label>
+            <div class="detail-value">
+              <span class="badge" [class.badge-success]="grupo!.activo" [class.badge-secondary]="!grupo!.activo">
+                {{ grupo!.activo ? '✅ Activo' : '❌ Inactivo' }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-section" *ngIf="grupo!.fechaHoraCreado || grupo!.fechaHoraModificado">
+        <h3 class="section-title">🕒 Auditoría</h3>
+        <div class="detail-grid">
+          <div class="detail-item" *ngIf="grupo!.fechaHoraCreado">
+            <label class="detail-label">Creado:</label>
+            <div class="detail-value">
+              {{ grupo!.fechaHoraCreado | date:'dd/MM/yyyy HH:mm' }}
+              <span *ngIf="grupo!.creadoPor" class="text-muted"> por {{ grupo!.creadoPor }}</span>
+            </div>
+          </div>
+
+          <div class="detail-item" *ngIf="grupo!.fechaHoraModificado">
+            <label class="detail-label">Última modificación:</label>
+            <div class="detail-value">
+              {{ grupo!.fechaHoraModificado | date:'dd/MM/yyyy HH:mm' }}
+              <span *ngIf="grupo!.modificadoPor" class="text-muted"> por {{ grupo!.modificadoPor }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

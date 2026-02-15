@@ -1,0 +1,92 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">👁️ Detalle de la Cuenta</h1>
+      <p class="page-subtitle">Información completa de la cuenta contable</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary" (click)="goBack()">
+        <span class="btn-icon">⬅️</span>
+        Volver
+      </button>
+      <button class="btn btn-warning" (click)="goToEdit()" *ngIf="cuenta">
+        <span class="btn-icon">✏️</span>
+        Editar
+      </button>
+      <button class="btn btn-danger" (click)="delete()" *ngIf="cuenta">
+        <span class="btn-icon">🗑️</span>
+        Eliminar
+      </button>
+    </div>
+  </div>
+
+  <div class="alert alert-error" *ngIf="error">
+    <span class="alert-icon">⚠️</span>
+    {{ error }}
+  </div>
+
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Cargando información...</p>
+  </div>
+
+  <div class="card" *ngIf="!loading && cuenta">
+    <div class="card-body">
+      <div class="detail-section">
+        <h3 class="section-title">📋 Información General</h3>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label class="detail-label">Código:</label>
+            <div class="detail-value">
+              <span class="badge badge-code badge-lg">{{ cuenta!.codigo }}</span>
+            </div>
+          </div>
+
+          <div class="detail-item">
+            <label class="detail-label">SubGrupo de Cuenta:</label>
+            <div class="detail-value">
+              <span class="badge badge-info badge-lg">
+                {{ cuenta!.subGrupoCuentaCodigo }} - {{ cuenta!.subGrupoCuentaDescripcion }}
+              </span>
+            </div>
+          </div>
+
+          <div class="detail-item full-width">
+            <label class="detail-label">Descripción:</label>
+            <div class="detail-value font-weight-bold">{{ cuenta!.descripcion }}</div>
+          </div>
+
+          <div class="detail-item">
+            <label class="detail-label">Estado:</label>
+            <div class="detail-value">
+              <span class="badge badge-lg" [class.badge-success]="!cuenta!.cancelado" [class.badge-secondary]="cuenta!.cancelado">
+                {{ !cuenta!.cancelado ? '✅ Activa' : '❌ Cancelada' }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-section" *ngIf="cuenta!.fechaHoraCreado || cuenta!.fechaHoraModificado">
+        <h3 class="section-title">🕒 Auditoría</h3>
+        <div class="detail-grid">
+          <div class="detail-item" *ngIf="cuenta!.fechaHoraCreado">
+            <label class="detail-label">Creado:</label>
+            <div class="detail-value">
+              {{ cuenta!.fechaHoraCreado | date:'dd/MM/yyyy HH:mm' }}
+              <span *ngIf="cuenta!.creadoPor" class="text-muted"> por {{ cuenta!.creadoPor }}</span>
+            </div>
+          </div>
+
+          <div class="detail-item" *ngIf="cuenta!.fechaHoraModificado">
+            <label class="detail-label">Última modificación:</label>
+            <div class="detail-value">
+              {{ cuenta!.fechaHoraModificado | date:'dd/MM/yyyy HH:mm' }}
+              <span *ngIf="cuenta!.modificadoPor" class="text-muted"> por {{ cuenta!.modificadoPor }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

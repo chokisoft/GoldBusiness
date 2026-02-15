@@ -1,0 +1,210 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1 class="page-title">
+      {{ isEditMode ? '✏️ Editar' : '➕ Nueva' }} Configuración del Sistema
+    </h1>
+  </div>
+
+  <div class="alert alert-error" *ngIf="error">
+    <span class="alert-icon">⚠️</span>
+    {{ error }}
+  </div>
+
+  <div class="card">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
+      <!-- Información Básica -->
+      <div class="form-section">
+        <h3 class="section-title">📋 Información Básica</h3>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="codigoSistema" class="form-label">Código del Sistema *</label>
+            <input type="text"
+                   id="codigoSistema"
+                   formControlName="codigoSistema"
+                   class="form-control"
+                   [class.is-invalid]="form.get('codigoSistema')?.invalid && form.get('codigoSistema')?.touched"
+                   placeholder="Ej: GOLD-ERP-001" />
+            <div class="invalid-feedback" *ngIf="form.get('codigoSistema')?.invalid && form.get('codigoSistema')?.touched">
+              {{ getErrorMessage('codigoSistema') }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="licencia" class="form-label">Licencia *</label>
+            <input type="text"
+                   id="licencia"
+                   formControlName="licencia"
+                   class="form-control"
+                   [class.is-invalid]="form.get('licencia')?.invalid && form.get('licencia')?.touched"
+                   placeholder="Código de licencia" />
+            <div class="invalid-feedback" *ngIf="form.get('licencia')?.invalid && form.get('licencia')?.touched">
+              {{ getErrorMessage('licencia') }}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="nombreNegocio" class="form-label">Nombre del Negocio *</label>
+          <input type="text"
+                 id="nombreNegocio"
+                 formControlName="nombreNegocio"
+                 class="form-control"
+                 [class.is-invalid]="form.get('nombreNegocio')?.invalid && form.get('nombreNegocio')?.touched"
+                 placeholder="Nombre completo del negocio" />
+          <div class="invalid-feedback" *ngIf="form.get('nombreNegocio')?.invalid && form.get('nombreNegocio')?.touched">
+            {{ getErrorMessage('nombreNegocio') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="caducidad" class="form-label">Fecha de Caducidad *</label>
+          <input type="date"
+                 id="caducidad"
+                 formControlName="caducidad"
+                 class="form-control"
+                 [class.is-invalid]="form.get('caducidad')?.invalid && form.get('caducidad')?.touched" />
+          <div class="invalid-feedback" *ngIf="form.get('caducidad')?.invalid && form.get('caducidad')?.touched">
+            {{ getErrorMessage('caducidad') }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Información de Contacto -->
+      <div class="form-section">
+        <h3 class="section-title">📞 Información de Contacto</h3>
+
+        <div class="form-group">
+          <label for="direccion" class="form-label">Dirección</label>
+          <textarea id="direccion"
+                    formControlName="direccion"
+                    class="form-control"
+                    rows="2"
+                    placeholder="Dirección completa del negocio"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="municipio" class="form-label">Municipio</label>
+            <input type="text"
+                   id="municipio"
+                   formControlName="municipio"
+                   class="form-control"
+                   placeholder="Municipio" />
+          </div>
+
+          <div class="form-group">
+            <label for="provincia" class="form-label">Provincia</label>
+            <input type="text"
+                   id="provincia"
+                   formControlName="provincia"
+                   class="form-control"
+                   placeholder="Provincia" />
+          </div>
+
+          <div class="form-group">
+            <label for="codPostal" class="form-label">Código Postal</label>
+            <input type="text"
+                   id="codPostal"
+                   formControlName="codPostal"
+                   class="form-control"
+                   placeholder="CP" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="email" class="form-label">Email</label>
+            <input type="email"
+                   id="email"
+                   formControlName="email"
+                   class="form-control"
+                   [class.is-invalid]="form.get('email')?.invalid && form.get('email')?.touched"
+                   placeholder="correo@empresa.com" />
+            <div class="invalid-feedback" *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
+              {{ getErrorMessage('email') }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="telefono" class="form-label">Teléfono</label>
+            <input type="tel"
+                   id="telefono"
+                   formControlName="telefono"
+                   class="form-control"
+                   placeholder="+1 (555) 123-4567" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="web" class="form-label">Sitio Web</label>
+            <input type="url"
+                   id="web"
+                   formControlName="web"
+                   class="form-control"
+                   placeholder="https://www.empresa.com" />
+          </div>
+
+          <div class="form-group">
+            <label for="imagen" class="form-label">URL Logo/Imagen</label>
+            <input type="url"
+                   id="imagen"
+                   formControlName="imagen"
+                   class="form-control"
+                   placeholder="https://ejemplo.com/logo.png" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Cuentas Contables -->
+      <div class="form-section">
+        <h3 class="section-title">💰 Cuentas Contables Predeterminadas</h3>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="cuentaPagarId" class="form-label">Cuenta Por Pagar *</label>
+            <select id="cuentaPagarId"
+                    formControlName="cuentaPagarId"
+                    class="form-control"
+                    [class.is-invalid]="form.get('cuentaPagarId')?.invalid && form.get('cuentaPagarId')?.touched">
+              <option [value]="null">Seleccionar cuenta</option>
+              <option *ngFor="let cuenta of cuentas" [value]="cuenta.id">
+                {{ cuenta.codigo }} - {{ cuenta.descripcion }}
+              </option>
+            </select>
+            <div class="invalid-feedback" *ngIf="form.get('cuentaPagarId')?.invalid && form.get('cuentaPagarId')?.touched">
+              {{ getErrorMessage('cuentaPagarId') }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="cuentaCobrarId" class="form-label">Cuenta Por Cobrar *</label>
+            <select id="cuentaCobrarId"
+                    formControlName="cuentaCobrarId"
+                    class="form-control"
+                    [class.is-invalid]="form.get('cuentaCobrarId')?.invalid && form.get('cuentaCobrarId')?.touched">
+              <option [value]="null">Seleccionar cuenta</option>
+              <option *ngFor="let cuenta of cuentas" [value]="cuenta.id">
+                {{ cuenta.codigo }} - {{ cuenta.descripcion }}
+              </option>
+            </select>
+            <div class="invalid-feedback" *ngIf="form.get('cuentaCobrarId')?.invalid && form.get('cuentaCobrarId')?.touched">
+              {{ getErrorMessage('cuentaCobrarId') }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="loading">
+          ❌ Cancelar
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="loading || form.invalid || loadingCuentas">
+          <span *ngIf="!loading">💾 {{ isEditMode ? 'Actualizar' : 'Guardar' }}</span>
+          <span *ngIf="loading">⏳ Guardando...</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

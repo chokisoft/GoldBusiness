@@ -1,0 +1,74 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">⚙️ Configuración del Sistema</h1>
+      <p class="page-subtitle">Gestión de configuración general y licencias del sistema</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-primary" [routerLink]="['nuevo']">
+        <span class="btn-icon">➕</span>
+        Nueva Configuración
+      </button>
+    </div>
+  </div>
+
+  <div class="alert alert-error" *ngIf="error">
+    <span class="alert-icon">⚠️</span>
+    {{ error }}
+  </div>
+
+  <div class="card" *ngIf="!loading && !error">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Nombre del Negocio</th>
+              <th>Email</th>
+              <th>Teléfono</th>
+              <th>Caducidad</th>
+              <th class="actions-column">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let config of configurations">
+              <td><span class="badge badge-code">{{ config.codigoSistema }}</span></td>
+              <td class="font-weight-bold">{{ config.nombreNegocio }}</td>
+              <td>{{ config.email || '-' }}</td>
+              <td>{{ config.telefono || '-' }}</td>
+              <td>
+                <span class="badge badge-info">
+                  {{ config.caducidad | date:'dd/MM/yyyy' }}
+                </span>
+                <div class="text-muted" *ngIf="config.diasRestantes">
+                  {{ config.diasRestantes }} días restantes
+                </div>
+              </td>
+              <td class="actions-column">
+                <div class="action-buttons">
+                  <button class="btn btn-sm btn-info" [routerLink]="[config.id]" title="Ver detalles">
+                    <span>👁️</span>
+                  </button>
+                  <button class="btn btn-sm btn-warning" [routerLink]="['editar', config.id]" title="Editar">
+                    <span>✏️</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="configurations.length === 0">
+              <td colspan="8" class="text-center">
+                No hay configuraciones registradas
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Cargando configuraciones...</p>
+  </div>
+</div>

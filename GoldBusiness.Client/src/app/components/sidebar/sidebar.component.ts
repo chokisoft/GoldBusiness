@@ -75,6 +75,18 @@ export class SidebarComponent implements OnInit {
             ]
           }
         ]
+      },
+      // ═══════════════════════════════════════════════════════════
+      // ⚙️ CONFIGURACIÓN
+      // ═══════════════════════════════════════════════════════════
+      {
+        title: 'Configuración',
+        icon: '⚙️',
+        expanded: false,
+        children: [
+          { title: 'Negocio', icon: '🏢', route: '/configuracion' },
+          { title: 'Usuarios', icon: '👤', route: '/usuarios' }
+        ]
       }
     ];
   }

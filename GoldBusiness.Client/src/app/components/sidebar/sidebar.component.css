@@ -95,13 +95,31 @@
   overflow: hidden;
 }
 
+/* Nivel 2 - Contenedor de items que tienen sub-items */
 .submenu-item {
+  padding-left: 0;
+}
+
+  /* Nivel 2 - Headers de items con sub-items (como "Plan de Cuentas") */
+  .submenu-item .menu-header {
+    padding-left: 1.5rem;
+  }
+
+/* Nivel 2 - Items con ruta directa (como "Negocio", "Usuarios") */
+.submenu > .menu-link {
   padding-left: 1.5rem;
 }
 
+/* Nivel 3 - Contenedor de sub-sub-menús */
 .submenu-level-2 {
-  padding-left: 1rem;
+  background: rgba(0, 0, 0, 0.3);
+  padding-left: 0;
 }
+
+  /* Nivel 3 - Items dentro de sub-sub-menús (como "Grupos de Cuenta") */
+  .submenu-level-2 .menu-link {
+    padding-left: 3rem;
+  }
 
 .menu-link {
   display: flex;
@@ -126,6 +144,11 @@
     border-left-color: #667eea;
     font-weight: 600;
   }
+
+/* Ajuste de iconos para nivel 2 */
+.submenu-item .menu-icon {
+  font-size: 1.3rem;
+}
 
 .sidebar.collapsed .menu-text,
 .sidebar.collapsed .expand-icon {

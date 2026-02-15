@@ -24,24 +24,14 @@
           <thead>
             <tr>
               <th>Código</th>
-              <th>Nombre</th>
               <th>Descripción</th>
-              <th>Estado</th>
-              <th>Fecha Creación</th>
               <th class="actions-column">Acciones</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let grupo of gruposCuenta">
               <td><span class="badge badge-code">{{ grupo.codigo }}</span></td>
-              <td class="font-weight-bold">{{ grupo.nombre }}</td>
               <td>{{ grupo.descripcion || '-' }}</td>
-              <td>
-                <span class="badge" [class.badge-success]="grupo.activo" [class.badge-danger]="!grupo.activo">
-                  {{ grupo.activo ? '✓ Activo' : '✗ Inactivo' }}
-                </span>
-              </td>
-              <td>{{ grupo.fechaHoraCreado | date:'short' }}</td>
               <td class="actions-column">
                 <div class="action-buttons">
                   <button class="btn btn-sm btn-info" [routerLink]="[grupo.id]" title="Ver detalles">

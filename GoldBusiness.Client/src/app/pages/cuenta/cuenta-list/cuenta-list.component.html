@@ -26,8 +26,6 @@
               <th>Código</th>
               <th>Descripción</th>
               <th>SubGrupo</th>
-              <th>Estado</th>
-              <th>Fecha Creación</th>
               <th class="actions-column">Acciones</th>
             </tr>
           </thead>
@@ -40,12 +38,6 @@
                   {{ cuenta.subGrupoCuentaCodigo }} - {{ cuenta.subGrupoCuentaDescripcion }}
                 </span>
               </td>
-              <td>
-                <span class="badge" [class.badge-success]="!cuenta.cancelado" [class.badge-danger]="cuenta.cancelado">
-                  {{ cuenta.cancelado ? '✗ Cancelado' : '✓ Activo' }}
-                </span>
-              </td>
-              <td>{{ cuenta.fechaHoraCreado | date:'short' }}</td>
               <td class="actions-column">
                 <div class="action-buttons">
                   <button class="btn btn-sm btn-info" [routerLink]="[cuenta.id]" title="Ver detalles">

@@ -15,7 +15,7 @@ export interface SubGrupoCuentaDTO {
   fechaHoraModificado?: string;
   // Propiedades adicionales para visualización
   grupoCuentaCodigo?: string;
-  grupoCuentaNombre?: string;
+  grupoCuentaDescripcion?: string;
 }
 
 @Injectable({
