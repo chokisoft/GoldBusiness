@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { GrupoCuentaService, GrupoCuentaDTO } from '../../../services/grupo-cuenta.service';
+import { TranslationService } from '../../../services/translation.service';
 
 @Component({
   selector: 'app-grupo-cuenta-form',
@@ -19,7 +20,8 @@ export class GrupoCuentaFormComponent implements OnInit {
     private fb: FormBuilder,
     private grupoCuentaService: GrupoCuentaService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private translate: TranslationService // ← AGREGAR
   ) {
     this.form = this.fb.group({
       codigo: ['', [Validators.required, Validators.maxLength(10)]],
@@ -48,7 +50,7 @@ export class GrupoCuentaFormComponent implements OnInit {
         this.loading = false;
       },
       error: (err) => {
-        this.error = 'Error al cargar el grupo de cuenta';
+        this.error = this.translate.translate('error.loading');
         this.loading = false;
         console.error('Error:', err);
       }
@@ -75,7 +77,7 @@ export class GrupoCuentaFormComponent implements OnInit {
         this.router.navigate(['/nomencladores/grupo-cuenta']);
       },
       error: (err) => {
-        this.error = err.error?.message || 'Error al guardar el grupo de cuenta';
+        this.error = this.translate.translate('error.saving');
         this.loading = false;
         console.error('Error:', err);
       }
@@ -89,11 +91,11 @@ export class GrupoCuentaFormComponent implements OnInit {
   getErrorMessage(fieldName: string): string {
     const control = this.form.get(fieldName);
     if (control?.hasError('required')) {
-      return 'Este campo es requerido';
+      return this.translate.translate('validation.required');
     }
     if (control?.hasError('maxlength')) {
       const maxLength = control.errors?.['maxlength'].requiredLength;
-      return `Máximo ${maxLength} caracteres`;
+      return this.translate.translate('validation.maxLength', [maxLength]);
     }
     return '';
   }

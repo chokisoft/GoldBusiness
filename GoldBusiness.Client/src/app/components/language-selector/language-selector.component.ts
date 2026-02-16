@@ -10,17 +10,17 @@ import { Subscription } from 'rxjs';
 })
 export class LanguageSelectorComponent implements OnInit, OnDestroy {
   availableLanguages: Language[] = [];
-  selectedLanguageCode: string = 'es'; // ← NUEVA propiedad para ngModel
+  selectedLanguageCode: string = 'es';
   label: string = '';
 
   private languageSubscription?: Subscription;
 
   constructor(
     private languageService: LanguageService,
-    private translate: TranslationService
+    private translationService: TranslationService
   ) {
     this.availableLanguages = this.languageService.availableLanguages;
-    this.selectedLanguageCode = this.languageService.getCurrentLanguage(); // ← Usar código directamente
+    this.selectedLanguageCode = this.languageService.getCurrentLanguage();
     console.log('🎨 LanguageSelector inicializado con idioma:', this.selectedLanguageCode);
   }
 
@@ -31,13 +31,12 @@ export class LanguageSelectorComponent implements OnInit, OnDestroy {
     // Suscribirse a cambios de idioma
     this.languageSubscription = this.languageService.currentLanguage$.subscribe(langCode => {
       console.log('🔄 LanguageSelector: Idioma cambiado a', langCode);
-      this.selectedLanguageCode = langCode; // ← Actualizar el código seleccionado
+      this.selectedLanguageCode = langCode;
       this.loadLabel();
     });
   }
 
   ngOnDestroy(): void {
-    // Cancelar suscripción para evitar memory leaks
     this.languageSubscription?.unsubscribe();
     console.log('🧹 LanguageSelector destruido');
   }
@@ -46,7 +45,7 @@ export class LanguageSelectorComponent implements OnInit, OnDestroy {
    * Cargar el label traducido
    */
   private loadLabel(): void {
-    this.label = this.translate.t('language.label');
+    this.label = this.translationService.translate('language.label');
     console.log('📝 Label actualizado:', this.label);
   }
 

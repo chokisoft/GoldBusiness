@@ -1,13 +1,13 @@
 <div class="page-container">
   <div class="page-header">
     <div class="header-content">
-      <h1 class="page-title">📁 Grupos de Cuenta</h1>
-      <p class="page-subtitle">Nivel superior del plan de cuentas (Activo, Pasivo, Patrimonio, Ingresos, Gastos)</p>
+      <h1 class="page-title">📁 {{ 'grupoCuenta.title' | translate }}</h1>
+      <p class="page-subtitle">{{ 'grupoCuenta.subtitle' | translate }}</p>
     </div>
     <div class="header-actions">
       <button class="btn btn-primary" [routerLink]="['nuevo']">
         <span class="btn-icon">➕</span>
-        Nuevo Grupo
+        {{ 'common.new' | translate }}
       </button>
     </div>
   </div>
@@ -23,9 +23,9 @@
         <table class="data-table">
           <thead>
             <tr>
-              <th>Código</th>
-              <th>Descripción</th>
-              <th class="actions-column">Acciones</th>
+              <th>{{ 'grupoCuenta.codigo' | translate }}</th>
+              <th>{{ 'grupoCuenta.descripcion' | translate }}</th>
+              <th class="actions-column">{{ 'common.actions' | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -34,24 +34,27 @@
               <td>{{ grupo.descripcion || '-' }}</td>
               <td class="actions-column">
                 <div class="action-buttons">
-                  <button class="btn btn-sm btn-info" [routerLink]="[grupo.id]" title="Ver detalles">
+                  <button class="btn btn-sm btn-info"
+                          [routerLink]="[grupo.id]"
+                          [title]="'common.view' | translate">
                     <span>👁️</span>
                   </button>
-                  <button class="btn btn-sm btn-warning" [routerLink]="['editar', grupo.id]" title="Editar">
+                  <button class="btn btn-sm btn-warning"
+                          [routerLink]="['editar', grupo.id]"
+                          [title]="'common.edit' | translate">
                     <span>✏️</span>
                   </button>
-                  <button class="btn btn-sm btn-danger" (click)="delete(grupo.id!, grupo.nombre)" title="Eliminar">
+                  <button class="btn btn-sm btn-danger"
+                          (click)="delete(grupo.id!, grupo.nombre)"
+                          [title]="'common.delete' | translate">
                     <span>🗑️</span>
                   </button>
                 </div>
               </td>
             </tr>
             <tr *ngIf="gruposCuenta.length === 0">
-              <td colspan="6" class="text-center">
-                <div class="empty-state">
-                  <span class="empty-icon">📭</span>
-                  <p>No hay grupos de cuenta registrados</p>
-                </div>
+              <td colspan="3" class="text-center">
+                {{ 'common.noData' | translate }}
               </td>
             </tr>
           </tbody>
@@ -60,8 +63,8 @@
     </div>
   </div>
 
-  <div class="loading-spinner" *ngIf="loading">
+  <div *ngIf="loading" class="loading-container">
     <div class="spinner"></div>
-    <p>Cargando datos...</p>
+    <p>{{ 'common.loading' | translate }}</p>
   </div>
 </div>

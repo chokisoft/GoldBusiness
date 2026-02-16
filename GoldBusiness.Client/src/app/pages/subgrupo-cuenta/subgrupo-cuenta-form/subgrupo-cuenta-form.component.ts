@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SubGrupoCuentaService, SubGrupoCuentaDTO } from '../../../services/subgrupo-cuenta.service';
 import { GrupoCuentaService, GrupoCuentaDTO } from '../../../services/grupo-cuenta.service';
+import { TranslationService } from '../../../services/translation.service';
 
 @Component({
   selector: 'app-subgrupo-cuenta-form',
@@ -11,22 +12,24 @@ import { GrupoCuentaService, GrupoCuentaDTO } from '../../../services/grupo-cuen
 })
 export class SubGrupoCuentaFormComponent implements OnInit {
   form: FormGroup;
-  gruposCuenta: GrupoCuentaDTO[] = [];
   isEditMode = false;
   subgrupoId: number | null = null;
   loading = false;
+  loadingGrupos = true;
   error: string | null = null;
+  gruposCuenta: GrupoCuentaDTO[] = [];
 
   constructor(
     private fb: FormBuilder,
     private subGrupoCuentaService: SubGrupoCuentaService,
     private grupoCuentaService: GrupoCuentaService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private translate: TranslationService
   ) {
     this.form = this.fb.group({
-      codigo: ['', [Validators.required, Validators.pattern(/^\d{5}$/)]],
-      grupoCuentaId: [null, [Validators.required, Validators.min(1)]],
+      codigo: ['', [Validators.required, Validators.maxLength(5)]],
+      grupoCuentaId: [null, Validators.required],
       descripcion: ['', [Validators.required, Validators.maxLength(256)]],
       deudora: [true]
     });
@@ -34,7 +37,7 @@ export class SubGrupoCuentaFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadGruposCuenta();
-    
+
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.isEditMode = true;
@@ -44,12 +47,15 @@ export class SubGrupoCuentaFormComponent implements OnInit {
   }
 
   loadGruposCuenta(): void {
+    this.loadingGrupos = true;
     this.grupoCuentaService.getAll().subscribe({
       next: (data) => {
         this.gruposCuenta = data.filter(g => g.activo);
+        this.loadingGrupos = false;
       },
       error: (err) => {
-        console.error('Error al cargar grupos de cuenta:', err);
+        console.error('Error al cargar grupos:', err);
+        this.loadingGrupos = false;
       }
     });
   }
@@ -64,7 +70,7 @@ export class SubGrupoCuentaFormComponent implements OnInit {
         this.loading = false;
       },
       error: (err) => {
-        this.error = 'Error al cargar el subgrupo de cuenta';
+        this.error = this.translate.translate('error.loading');
         this.loading = false;
         console.error('Error:', err);
       }
@@ -91,7 +97,7 @@ export class SubGrupoCuentaFormComponent implements OnInit {
         this.router.navigate(['/nomencladores/subgrupo-cuenta']);
       },
       error: (err) => {
-        this.error = err.error?.message || 'Error al guardar el subgrupo de cuenta';
+        this.error = this.translate.translate('error.saving');
         this.loading = false;
         console.error('Error:', err);
       }
@@ -105,17 +111,11 @@ export class SubGrupoCuentaFormComponent implements OnInit {
   getErrorMessage(fieldName: string): string {
     const control = this.form.get(fieldName);
     if (control?.hasError('required')) {
-      return 'Este campo es requerido';
-    }
-    if (control?.hasError('pattern')) {
-      return 'Debe ser un código de 5 dígitos (ej: 01001)';
-    }
-    if (control?.hasError('min')) {
-      return 'Debe seleccionar un grupo de cuenta';
+      return this.translate.translate('validation.required');
     }
     if (control?.hasError('maxlength')) {
       const maxLength = control.errors?.['maxlength'].requiredLength;
-      return `Máximo ${maxLength} caracteres`;
+      return this.translate.translate('validation.maxLength', [maxLength]);
     }
     return '';
   }

@@ -1,13 +1,13 @@
 <div class="page-container">
   <div class="page-header">
     <div class="header-content">
-      <h1 class="page-title">📂 SubGrupos de Cuenta</h1>
-      <p class="page-subtitle">Segundo nivel del plan de cuentas, agrupa cuentas relacionadas dentro de un Grupo</p>
+      <h1 class="page-title">📂 {{ 'subgrupoCuenta.title' | translate }}</h1>
+      <p class="page-subtitle">{{ 'subgrupoCuenta.subtitle' | translate }}</p>
     </div>
     <div class="header-actions">
       <button class="btn btn-primary" [routerLink]="['nuevo']">
         <span class="btn-icon">➕</span>
-        Nuevo SubGrupo
+        {{ 'common.new' | translate }}
       </button>
     </div>
   </div>
@@ -23,11 +23,11 @@
         <table class="data-table">
           <thead>
             <tr>
-              <th>Código</th>
-              <th>Descripción</th>
-              <th>Grupo</th>
-              <th>Tipo</th>
-              <th class="actions-column">Acciones</th>
+              <th>{{ 'subgrupoCuenta.codigo' | translate }}</th>
+              <th>{{ 'grupoCuenta.descripcion' | translate }}</th>
+              <th>{{ 'subgrupoCuenta.grupoCuenta' | translate }}</th>
+              <th>{{ 'subgrupoCuenta.tipo' | translate }}</th>
+              <th class="actions-column">{{ 'common.actions' | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -41,29 +41,32 @@
               </td>
               <td>
                 <span class="badge" [class.badge-success]="subgrupo.deudora" [class.badge-warning]="!subgrupo.deudora">
-                  {{ subgrupo.deudora ? '💰 Deudora' : '💳 Acreedora' }}
+                  {{ subgrupo.deudora ? ('💰 ' + ('subgrupoCuenta.deudora' | translate)) : ('💳 ' + ('subgrupoCuenta.acreedora' | translate)) }}
                 </span>
               </td>
               <td class="actions-column">
                 <div class="action-buttons">
-                  <button class="btn btn-sm btn-info" [routerLink]="[subgrupo.id]" title="Ver detalles">
+                  <button class="btn btn-sm btn-info"
+                          [routerLink]="[subgrupo.id]"
+                          [title]="'common.view' | translate">
                     <span>👁️</span>
                   </button>
-                  <button class="btn btn-sm btn-warning" [routerLink]="['editar', subgrupo.id]" title="Editar">
+                  <button class="btn btn-sm btn-warning"
+                          [routerLink]="['editar', subgrupo.id]"
+                          [title]="'common.edit' | translate">
                     <span>✏️</span>
                   </button>
-                  <button class="btn btn-sm btn-danger" (click)="delete(subgrupo.id!, subgrupo.descripcion)" title="Eliminar">
+                  <button class="btn btn-sm btn-danger"
+                          (click)="delete(subgrupo.id!, subgrupo.descripcion)"
+                          [title]="'common.delete' | translate">
                     <span>🗑️</span>
                   </button>
                 </div>
               </td>
             </tr>
             <tr *ngIf="subgrupos.length === 0">
-              <td colspan="7" class="text-center">
-                <div class="empty-state">
-                  <span class="empty-icon">📭</span>
-                  <p>No hay subgrupos de cuenta registrados</p>
-                </div>
+              <td colspan="5" class="text-center">
+                {{ 'common.noData' | translate }}
               </td>
             </tr>
           </tbody>
@@ -72,8 +75,8 @@
     </div>
   </div>
 
-  <div class="loading-spinner" *ngIf="loading">
+  <div *ngIf="loading" class="loading-container">
     <div class="spinner"></div>
-    <p>Cargando datos...</p>
+    <p>{{ 'common.loading' | translate }}</p>
   </div>
 </div>

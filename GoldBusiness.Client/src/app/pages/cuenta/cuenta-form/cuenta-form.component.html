@@ -1,7 +1,7 @@
 <div class="page-container">
   <div class="page-header">
     <h1 class="page-title">
-      {{ isEditMode ? '✏️ Editar' : '➕ Nueva' }} Cuenta Contable
+      {{ isEditMode ? ('cuenta.editTitle' | translate) : ('cuenta.newTitle' | translate) }}
     </h1>
   </div>
 
@@ -14,27 +14,26 @@
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
       <div class="form-row">
         <div class="form-group">
-          <label for="codigo" class="form-label">Código * (8 dígitos)</label>
+          <label for="codigo" class="form-label">{{ 'cuenta.codigo' | translate }} *</label>
           <input type="text"
                  id="codigo"
                  formControlName="codigo"
                  class="form-control"
                  [class.is-invalid]="form.get('codigo')?.invalid && form.get('codigo')?.touched"
-                 placeholder="Ej: 10000010"
-                 maxlength="8" />
+                 placeholder="Ej: 0100101001" />
           <div class="invalid-feedback" *ngIf="form.get('codigo')?.invalid && form.get('codigo')?.touched">
             {{ getErrorMessage('codigo') }}
           </div>
         </div>
 
         <div class="form-group">
-          <label for="subGrupoCuentaId" class="form-label">SubGrupo de Cuenta *</label>
+          <label for="subGrupoCuentaId" class="form-label">{{ 'cuenta.subgrupoCuenta' | translate }} *</label>
           <select id="subGrupoCuentaId"
                   formControlName="subGrupoCuentaId"
                   class="form-control"
                   [class.is-invalid]="form.get('subGrupoCuentaId')?.invalid && form.get('subGrupoCuentaId')?.touched">
-            <option [value]="null">Seleccione un subgrupo...</option>
-            <option *ngFor="let subgrupo of subgrupos" [value]="subgrupo.id">
+            <option [value]="null">{{ 'common.select' | translate }}</option>
+            <option *ngFor="let subgrupo of subgruposCuenta" [value]="subgrupo.id">
               {{ subgrupo.codigo }} - {{ subgrupo.descripcion }}
             </option>
           </select>
@@ -45,13 +44,13 @@
       </div>
 
       <div class="form-group">
-        <label for="descripcion" class="form-label">Descripción *</label>
-        <textarea id="descripcion"
-                  formControlName="descripcion"
-                  class="form-control"
-                  [class.is-invalid]="form.get('descripcion')?.invalid && form.get('descripcion')?.touched"
-                  rows="3"
-                  placeholder="Descripción de la cuenta contable"></textarea>
+        <label for="descripcion" class="form-label">{{ 'grupoCuenta.descripcion' | translate }} *</label>
+        <input type="text"
+               id="descripcion"
+               formControlName="descripcion"
+               class="form-control"
+               [class.is-invalid]="form.get('descripcion')?.invalid && form.get('descripcion')?.touched"
+               placeholder="Descripción de la cuenta" />
         <div class="invalid-feedback" *ngIf="form.get('descripcion')?.invalid && form.get('descripcion')?.touched">
           {{ getErrorMessage('descripcion') }}
         </div>
@@ -59,11 +58,11 @@
 
       <div class="form-actions">
         <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="loading">
-          ❌ Cancelar
+          ❌ {{ 'common.cancel' | translate }}
         </button>
-        <button type="submit" class="btn btn-primary" [disabled]="loading || form.invalid">
-          <span *ngIf="!loading">💾 {{ isEditMode ? 'Actualizar' : 'Guardar' }}</span>
-          <span *ngIf="loading">⏳ Guardando...</span>
+        <button type="submit" class="btn btn-primary" [disabled]="loading || form.invalid || loadingSubgrupos">
+          <span *ngIf="!loading">💾 {{ 'common.save' | translate }}</span>
+          <span *ngIf="loading">⏳ {{ 'common.saving' | translate }}</span>
         </button>
       </div>
     </form>

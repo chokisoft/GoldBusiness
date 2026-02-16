@@ -1,13 +1,13 @@
 <div class="page-container">
   <div class="page-header">
     <div class="header-content">
-      <h1 class="page-title">⚙️ Configuración del Sistema</h1>
-      <p class="page-subtitle">Gestión de configuración general y licencias del sistema</p>
+      <h1 class="page-title">⚙️ {{ 'systemConfig.title' | translate }}</h1>
+      <p class="page-subtitle">{{ 'systemConfig.subtitle' | translate }}</p>
     </div>
     <div class="header-actions">
       <button class="btn btn-primary" [routerLink]="['nuevo']">
         <span class="btn-icon">➕</span>
-        Nueva Configuración
+        {{ 'common.new' | translate }}
       </button>
     </div>
   </div>
@@ -23,12 +23,13 @@
         <table class="data-table">
           <thead>
             <tr>
-              <th>Código</th>
-              <th>Nombre del Negocio</th>
-              <th>Email</th>
-              <th>Teléfono</th>
-              <th>Caducidad</th>
-              <th class="actions-column">Acciones</th>
+              <th>{{ 'systemConfig.codigoSistema' | translate }}</th>
+              <th>{{ 'systemConfig.nombreNegocio' | translate }}</th>
+              <th>{{ 'systemConfig.email' | translate }}</th>
+              <th>{{ 'systemConfig.telefono' | translate }}</th>
+              <th>{{ 'systemConfig.caducidad' | translate }}</th>
+              <th>{{ 'subgrupoCuenta.estado' | translate }}</th>
+              <th class="actions-column">{{ 'common.actions' | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -42,15 +43,24 @@
                   {{ config.caducidad | date:'dd/MM/yyyy' }}
                 </span>
                 <div class="text-muted" *ngIf="config.diasRestantes">
-                  {{ config.diasRestantes }} días restantes
+                  {{ config.diasRestantes }} {{ 'systemConfig.diasRestantes' | translate }}
                 </div>
+              </td>
+              <td>
+                <span class="badge" [ngClass]="getEstadoBadgeClass(config.estadoLicencia)">
+                  {{ getEstadoIcon(config.estadoLicencia) }} {{ config.estadoLicencia }}
+                </span>
               </td>
               <td class="actions-column">
                 <div class="action-buttons">
-                  <button class="btn btn-sm btn-info" [routerLink]="[config.id]" title="Ver detalles">
+                  <button class="btn btn-sm btn-info"
+                          [routerLink]="[config.id]"
+                          [title]="'common.view' | translate">
                     <span>👁️</span>
                   </button>
-                  <button class="btn btn-sm btn-warning" [routerLink]="['editar', config.id]" title="Editar">
+                  <button class="btn btn-sm btn-warning"
+                          [routerLink]="['editar', config.id]"
+                          [title]="'common.edit' | translate">
                     <span>✏️</span>
                   </button>
                 </div>
@@ -58,7 +68,7 @@
             </tr>
             <tr *ngIf="configurations.length === 0">
               <td colspan="8" class="text-center">
-                No hay configuraciones registradas
+                {{ 'common.noData' | translate }}
               </td>
             </tr>
           </tbody>
@@ -69,6 +79,6 @@
 
   <div *ngIf="loading" class="loading-container">
     <div class="spinner"></div>
-    <p>Cargando configuraciones...</p>
+    <p>{{ 'common.loading' | translate }}</p>
   </div>
 </div>

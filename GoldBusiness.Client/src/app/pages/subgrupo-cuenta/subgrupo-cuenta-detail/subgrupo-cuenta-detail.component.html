@@ -1,21 +1,21 @@
 <div class="page-container">
   <div class="page-header">
     <div class="header-content">
-      <h1 class="page-title">👁️ Detalle del SubGrupo de Cuenta</h1>
-      <p class="page-subtitle">Información completa del subgrupo de cuenta</p>
+      <h1 class="page-title">👁️ {{ 'subgrupoCuenta.detailTitle' | translate }}</h1>
+      <p class="page-subtitle">{{ 'grupoCuenta.infoBasica' | translate }}</p>
     </div>
     <div class="header-actions">
       <button class="btn btn-secondary" (click)="goBack()">
         <span class="btn-icon">⬅️</span>
-        Volver
+        {{ 'common.back' | translate }}
       </button>
       <button class="btn btn-warning" (click)="goToEdit()" *ngIf="subgrupo">
         <span class="btn-icon">✏️</span>
-        Editar
+        {{ 'common.edit' | translate }}
       </button>
       <button class="btn btn-danger" (click)="delete()" *ngIf="subgrupo">
         <span class="btn-icon">🗑️</span>
-        Eliminar
+        {{ 'common.delete' | translate }}
       </button>
     </div>
   </div>
@@ -27,23 +27,23 @@
 
   <div *ngIf="loading" class="loading-container">
     <div class="spinner"></div>
-    <p>Cargando información...</p>
+    <p>{{ 'common.loading' | translate }}</p>
   </div>
 
   <div class="card" *ngIf="!loading && subgrupo">
     <div class="card-body">
       <div class="detail-section">
-        <h3 class="section-title">📋 Información General</h3>
+        <h3 class="section-title">📋 {{ 'grupoCuenta.infoBasica' | translate }}</h3>
         <div class="detail-grid">
           <div class="detail-item">
-            <label class="detail-label">Código:</label>
+            <label class="detail-label">{{ 'subgrupoCuenta.codigo' | translate }}:</label>
             <div class="detail-value">
               <span class="badge badge-code badge-lg">{{ subgrupo!.codigo }}</span>
             </div>
           </div>
 
           <div class="detail-item">
-            <label class="detail-label">Grupo de Cuenta:</label>
+            <label class="detail-label">{{ 'subgrupoCuenta.grupoCuenta' | translate }}:</label>
             <div class="detail-value">
               <span class="badge badge-info badge-lg">
                 {{ subgrupo!.grupoCuentaCodigo }} - {{ subgrupo!.grupoCuentaDescripcion }}
@@ -52,21 +52,21 @@
           </div>
 
           <div class="detail-item full-width">
-            <label class="detail-label">Descripción:</label>
+            <label class="detail-label">{{ 'grupoCuenta.descripcion' | translate }}:</label>
             <div class="detail-value font-weight-bold">{{ subgrupo!.descripcion }}</div>
           </div>
 
           <div class="detail-item">
-            <label class="detail-label">Tipo:</label>
+            <label class="detail-label">{{ 'subgrupoCuenta.tipo' | translate }}:</label>
             <div class="detail-value">
               <span class="badge badge-lg" [class.badge-success]="subgrupo!.deudora" [class.badge-warning]="!subgrupo!.deudora">
-                {{ subgrupo!.deudora ? '💰 Deudora' : '💳 Acreedora' }}
+                {{ subgrupo!.deudora ? ('💰 ' + ('subgrupoCuenta.deudora' | translate)) : ('💳 ' + ('subgrupoCuenta.acreedora' | translate)) }}
               </span>
             </div>
           </div>
 
           <div class="detail-item">
-            <label class="detail-label">Estado:</label>
+            <label class="detail-label">{{ 'subgrupoCuenta.estado' | translate }}:</label>
             <div class="detail-value">
               <span class="badge badge-lg" [class.badge-success]="!subgrupo!.cancelado" [class.badge-secondary]="subgrupo!.cancelado">
                 {{ !subgrupo!.cancelado ? '✅ Activo' : '❌ Cancelado' }}
@@ -77,21 +77,21 @@
       </div>
 
       <div class="detail-section" *ngIf="subgrupo!.fechaHoraCreado || subgrupo!.fechaHoraModificado">
-        <h3 class="section-title">🕒 Auditoría</h3>
+        <h3 class="section-title">🕒 {{ 'audit.title' | translate }}</h3>
         <div class="detail-grid">
           <div class="detail-item" *ngIf="subgrupo!.fechaHoraCreado">
-            <label class="detail-label">Creado:</label>
+            <label class="detail-label">{{ 'audit.createdAt' | translate }}:</label>
             <div class="detail-value">
               {{ subgrupo!.fechaHoraCreado | date:'dd/MM/yyyy HH:mm' }}
-              <span *ngIf="subgrupo!.creadoPor" class="text-muted"> por {{ subgrupo!.creadoPor }}</span>
+              <span *ngIf="subgrupo!.creadoPor" class="text-muted"> {{ 'audit.createdBy' | translate }} {{ subgrupo!.creadoPor }}</span>
             </div>
           </div>
 
           <div class="detail-item" *ngIf="subgrupo!.fechaHoraModificado">
-            <label class="detail-label">Última modificación:</label>
+            <label class="detail-label">{{ 'audit.modifiedAt' | translate }}:</label>
             <div class="detail-value">
               {{ subgrupo!.fechaHoraModificado | date:'dd/MM/yyyy HH:mm' }}
-              <span *ngIf="subgrupo!.modificadoPor" class="text-muted"> por {{ subgrupo!.modificadoPor }}</span>
+              <span *ngIf="subgrupo!.modificadoPor" class="text-muted"> {{ 'audit.modifiedBy' | translate }} {{ subgrupo!.modificadoPor }}</span>
             </div>
           </div>
         </div>

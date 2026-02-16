@@ -9,7 +9,7 @@
         <div class="menu-header" (click)="toggleItem(item)" [class.expanded]="item.expanded">
           <div class="menu-title">
             <span class="menu-icon">{{ item.icon }}</span>
-            <span class="menu-text" *ngIf="!isCollapsed">{{ item.title }}</span>
+            <span class="menu-text" *ngIf="!isCollapsed">{{ getTitle(item) }}</span>
           </div>
           <span class="expand-icon" *ngIf="item.children && !isCollapsed">
             {{ item.expanded ? '▼' : '▶' }}
@@ -23,7 +23,7 @@
               <div class="menu-header" (click)="toggleItem(subItem)" [class.expanded]="subItem.expanded">
                 <div class="menu-title">
                   <span class="menu-icon">{{ subItem.icon }}</span>
-                  <span class="menu-text">{{ subItem.title }}</span>
+                  <span class="menu-text">{{ getTitle(subItem) }}</span>
                 </div>
                 <span class="expand-icon" *ngIf="subItem.children">
                   {{ subItem.expanded ? '▼' : '▶' }}
@@ -37,7 +37,7 @@
                    routerLinkActive="active"
                    class="menu-link">
                   <span class="menu-icon">{{ childItem.icon }}</span>
-                  <span class="menu-text">{{ childItem.title }}</span>
+                  <span class="menu-text">{{ getTitle(childItem) }}</span>
                 </a>
               </div>
             </div>
@@ -48,7 +48,7 @@
                routerLinkActive="active"
                class="menu-link submenu-item">
               <span class="menu-icon">{{ subItem.icon }}</span>
-              <span class="menu-text">{{ subItem.title }}</span>
+              <span class="menu-text">{{ getTitle(subItem) }}</span>
             </a>
           </ng-container>
         </div>

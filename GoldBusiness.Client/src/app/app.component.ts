@@ -31,10 +31,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(
     public authService: AuthService,
-    public translate: TranslationService,
+    public translationService: TranslationService,
     private languageService: LanguageService
   ) {
-    // Forzar la inicialización del idioma al cargar la app
     const currentLang = this.languageService.getCurrentLanguage();
     console.log('🌍 AppComponent: Aplicación iniciada con idioma:', currentLang);
   }
@@ -52,7 +51,7 @@ export class AppComponent implements OnInit, OnDestroy {
     // Cargar traducciones iniciales
     this.loadTranslations();
 
-    // ✅ CORREGIDO: Suscribirse directamente a languageService en lugar de translate
+    // Suscribirse a cambios de idioma
     this.languageSubscription = this.languageService.currentLanguage$.subscribe(langCode => {
       console.log('🔄 AppComponent: Idioma cambiado a', langCode);
       this.loadTranslations();
@@ -68,15 +67,15 @@ export class AppComponent implements OnInit, OnDestroy {
   private loadTranslations(): void {
     const envKey = this.isProduction ? 'production' : 'development';
     this.translations = {
-      environmentBadge: this.translate.t(`header.environment.${envKey}`),
-      logout: this.translate.t('header.logout'),
-      footer: this.translate.t('login.footer')
+      environmentBadge: this.translationService.translate(`header.environment.${envKey}`),
+      logout: this.translationService.translate('header.logout'),
+      footer: this.translationService.translate('login.footer')
     };
     console.log('📝 AppComponent: Traducciones cargadas para idioma:', this.languageService.getCurrentLanguage());
   }
 
   logout(): void {
-    const confirmMessage = this.translate.t('header.logoutConfirm');
+    const confirmMessage = this.translationService.translate('header.logoutConfirm');
     if (confirm(confirmMessage)) {
       this.authService.logout();
     }

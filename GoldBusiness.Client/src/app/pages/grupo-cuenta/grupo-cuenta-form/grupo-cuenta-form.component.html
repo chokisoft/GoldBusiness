@@ -1,7 +1,7 @@
 <div class="page-container">
   <div class="page-header">
     <h1 class="page-title">
-      {{ isEditMode ? '✏️ Editar' : '➕ Nuevo' }} Grupo de Cuenta
+      {{ isEditMode ? ('grupoCuenta.editTitle' | translate) : ('grupoCuenta.newTitle' | translate) }}
     </h1>
   </div>
 
@@ -14,7 +14,7 @@
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
       <div class="form-row">
         <div class="form-group">
-          <label for="codigo" class="form-label">Código *</label>
+          <label for="codigo" class="form-label">{{ 'grupoCuenta.codigo' | translate }} *</label>
           <input type="text"
                  id="codigo"
                  formControlName="codigo"
@@ -27,7 +27,7 @@
         </div>
 
         <div class="form-group">
-          <label for="nombre" class="form-label">Nombre *</label>
+          <label for="nombre" class="form-label">{{ 'grupoCuenta.nombre' | translate }} *</label>
           <input type="text"
                  id="nombre"
                  formControlName="nombre"
@@ -41,7 +41,7 @@
       </div>
 
       <div class="form-group">
-        <label for="descripcion" class="form-label">Descripción</label>
+        <label for="descripcion" class="form-label">{{ 'grupoCuenta.descripcion' | translate }}</label>
         <textarea id="descripcion"
                   formControlName="descripcion"
                   class="form-control"
@@ -52,17 +52,17 @@
       <div class="form-group">
         <label class="checkbox-label">
           <input type="checkbox" formControlName="activo" class="form-checkbox" />
-          <span>Activo</span>
+          <span>{{ 'grupoCuenta.activo' | translate }}</span>
         </label>
       </div>
 
       <div class="form-actions">
         <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="loading">
-          ❌ Cancelar
+          ❌ {{ 'common.cancel' | translate }}
         </button>
         <button type="submit" class="btn btn-primary" [disabled]="loading || form.invalid">
-          <span *ngIf="!loading">💾 {{ isEditMode ? 'Actualizar' : 'Guardar' }}</span>
-          <span *ngIf="loading">⏳ Guardando...</span>
+          <span *ngIf="!loading">💾 {{ 'common.save' | translate }}</span>
+          <span *ngIf="loading">⏳ {{ 'common.saving' | translate }}</span>
         </button>
       </div>
     </form>

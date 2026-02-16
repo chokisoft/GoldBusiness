@@ -6,11 +6,6 @@ import { TranslationService } from '../../services/translation.service';
 import { LanguageService } from '../../services/language.service';
 import { Subscription } from 'rxjs';
 
-/**
- * Componente de Login
- * Maneja la autenticación de usuarios con soporte multiidioma
- * La sesión se guarda en sessionStorage y expira al cerrar el navegador
- */
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -23,7 +18,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   returnUrl: string = '/';
   showPassword = false;
 
-  // Subscripción para el cambio de idioma
   private languageSubscription?: Subscription;
 
   // Traducciones dinámicas
@@ -40,7 +34,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     showPassword: '',
     hidePassword: '',
     footer: '',
-    // Validaciones
     usernameRequired: '',
     usernameMinLength: '',
     passwordRequired: '',
@@ -52,11 +45,18 @@ export class LoginComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private router: Router,
     private route: ActivatedRoute,
-    public translate: TranslationService,
+    private translationService: TranslationService,
     private languageService: LanguageService
   ) {
-    // Log del idioma inicial
     console.log('🌍 Login iniciado con idioma:', this.languageService.getCurrentLanguage());
+  }
+
+  // ← AGREGAR ESTE GETTER
+  /**
+   * Helper para acceder a los controles del formulario fácilmente en el template
+   */
+  get f() {
+    return this.loginForm.controls;
   }
 
   ngOnInit(): void {
@@ -81,14 +81,13 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.loadTranslations();
 
     // Suscribirse a cambios de idioma
-    this.languageSubscription = this.translate.translations$.subscribe(() => {
+    this.languageSubscription = this.translationService.translations$.subscribe(() => {
       console.log('🔄 Idioma cambiado, recargando traducciones...');
       this.loadTranslations();
     });
   }
 
   ngOnDestroy(): void {
-    // Cancelar suscripción al destruir el componente
     this.languageSubscription?.unsubscribe();
     console.log('🧹 LoginComponent destruido, suscripciones canceladas');
   }
@@ -98,132 +97,57 @@ export class LoginComponent implements OnInit, OnDestroy {
    */
   private loadTranslations(): void {
     this.translations = {
-      title: this.translate.t('login.title'),
-      subtitle: this.translate.t('login.subtitle'),
-      username: this.translate.t('login.username'),
-      password: this.translate.t('login.password'),
-      usernamePlaceholder: this.translate.t('login.usernamePlaceholder'),
-      passwordPlaceholder: this.translate.t('login.passwordPlaceholder'),
-      submit: this.translate.t('login.submit'),
-      loading: this.translate.t('login.loading'),
-      forgotPassword: this.translate.t('login.forgotPassword'),
-      showPassword: this.translate.t('login.showPassword'),
-      hidePassword: this.translate.t('login.hidePassword'),
-      footer: this.translate.t('login.footer'),
-      // Validaciones
-      usernameRequired: this.translate.t('validation.usernameRequired'),
-      usernameMinLength: this.translate.t('validation.usernameMinLength'),
-      passwordRequired: this.translate.t('validation.passwordRequired'),
-      passwordMinLength: this.translate.t('validation.passwordMinLength')
+      title: this.translationService.translate('login.title'),
+      subtitle: this.translationService.translate('login.subtitle'),
+      username: this.translationService.translate('login.username'),
+      password: this.translationService.translate('login.password'),
+      usernamePlaceholder: this.translationService.translate('login.usernamePlaceholder'),
+      passwordPlaceholder: this.translationService.translate('login.passwordPlaceholder'),
+      submit: this.translationService.translate('login.submit'),
+      loading: this.translationService.translate('login.loading'),
+      forgotPassword: this.translationService.translate('login.forgotPassword'),
+      showPassword: this.translationService.translate('login.showPassword'),
+      hidePassword: this.translationService.translate('login.hidePassword'),
+      footer: this.translationService.translate('login.footer'),
+      usernameRequired: this.translationService.translate('validation.usernameRequired'),
+      usernameMinLength: this.translationService.translate('validation.usernameMinLength'),
+      passwordRequired: this.translationService.translate('validation.passwordRequired'),
+      passwordMinLength: this.translationService.translate('validation.passwordMinLength')
     };
-  }
-
-  /**
-   * Obtener controles del formulario para validaciones en el template
-   */
-  get f() {
-    return this.loginForm.controls;
   }
 
   /**
    * Manejar el envío del formulario de login
    */
   onSubmit(): void {
-    // Limpiar mensaje de error previo
-    this.errorMessage = null;
-
-    // Validar que el formulario sea válido
     if (this.loginForm.invalid) {
-      console.warn('⚠️ Formulario inválido');
-      this.markFormGroupTouched(this.loginForm);
+      this.loginForm.markAllAsTouched();
       return;
     }
 
-    // Iniciar proceso de autenticación
     this.isLoading = true;
-    const credentials = {
-      username: this.loginForm.value.username.trim(), // Quitar espacios
-      password: this.loginForm.value.password
-    };
+    this.errorMessage = null;
 
-    console.log('🔐 Intentando login para usuario:', credentials.username);
-    console.log('🌍 Idioma actual:', this.languageService.getCurrentLanguage());
+    const { username, password } = this.loginForm.value;
 
-    this.authService.login(credentials).subscribe({
-      next: (response) => {
-        console.log('✅ Respuesta del servidor:', response);
-
-        if (response.succeeded && response.data) {
-          console.log('✅ Login exitoso para:', response.data.user.userName);
-          console.log('👤 Usuario autenticado:', response.data.user);
-          console.log('🎭 Roles:', response.data.user.roles);
-
-          // Verificar que el idioma se mantiene después del login
-          const currentLang = this.languageService.getCurrentLanguage();
-          console.log('🌍 Idioma después del login:', currentLang);
-
-          // Redirigir a la página solicitada
-          this.router.navigate([this.returnUrl]);
-        } else {
-          // Credenciales inválidas
-          const errorMsg = response.message || this.translate.t('login.errorGeneral');
-          console.error('❌ Login fallido:', errorMsg);
-          this.errorMessage = errorMsg;
-          this.isLoading = false;
-
-          // Limpiar el campo de contraseña por seguridad
-          this.loginForm.patchValue({ password: '' });
-        }
+    // ✅ CORREGIDO: Pasar objeto LoginRequest
+    this.authService.login({ username, password }).subscribe({
+      next: () => {
+        console.log('✅ Login exitoso, redirigiendo a:', this.returnUrl);
+        this.router.navigate([this.returnUrl]);
       },
-      error: (error) => {
-        console.error('❌ Error de conexión:', error);
-        this.errorMessage = this.translate.t('login.errorGeneral');
+      error: (err) => {
+        console.error('❌ Error en login:', err);
+        this.errorMessage = this.translationService.translate('login.errorGeneral');
         this.isLoading = false;
-
-        // Limpiar el campo de contraseña por seguridad
-        this.loginForm.patchValue({ password: '' });
       }
     });
   }
 
   /**
-   * Alternar la visibilidad de la contraseña
+   * Alternar visibilidad de la contraseña
    */
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
-    console.log('👁️ Visibilidad de contraseña:', this.showPassword ? 'visible' : 'oculta');
-  }
-
-  /**
-   * Marcar todos los campos del formulario como tocados
-   * para mostrar los mensajes de validación
-   */
-  private markFormGroupTouched(formGroup: FormGroup): void {
-    Object.keys(formGroup.controls).forEach(key => {
-      const control = formGroup.get(key);
-      control?.markAsTouched();
-
-      if (control instanceof FormGroup) {
-        this.markFormGroupTouched(control);
-      }
-    });
-  }
-
-  /**
-   * Resetear el formulario (opcional, para uso futuro)
-   */
-  resetForm(): void {
-    this.loginForm.reset();
-    this.errorMessage = null;
-    this.isLoading = false;
-    console.log('🔄 Formulario reseteado');
-  }
-
-  /**
-   * Verificar si un campo tiene errores y ha sido tocado
-   */
-  hasError(fieldName: string, errorType: string): boolean {
-    const field = this.loginForm.get(fieldName);
-    return !!(field?.hasError(errorType) && field?.touched);
   }
 }

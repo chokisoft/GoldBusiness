@@ -1,13 +1,13 @@
 <div class="page-container">
   <div class="page-header">
     <div class="header-content">
-      <h1 class="page-title">📄 Cuentas Contables</h1>
-      <p class="page-subtitle">Nivel más detallado del plan de cuentas donde se registran las transacciones</p>
+      <h1 class="page-title">📄 {{ 'cuenta.title' | translate }}</h1>
+      <p class="page-subtitle">{{ 'cuenta.subtitle' | translate }}</p>
     </div>
     <div class="header-actions">
       <button class="btn btn-primary" [routerLink]="['nuevo']">
         <span class="btn-icon">➕</span>
-        Nueva Cuenta
+        {{ 'common.new' | translate }}
       </button>
     </div>
   </div>
@@ -23,10 +23,10 @@
         <table class="data-table">
           <thead>
             <tr>
-              <th>Código</th>
-              <th>Descripción</th>
-              <th>SubGrupo</th>
-              <th class="actions-column">Acciones</th>
+              <th>{{ 'cuenta.codigo' | translate }}</th>
+              <th>{{ 'grupoCuenta.descripcion' | translate }}</th>
+              <th>{{ 'cuenta.subgrupoCuenta' | translate }}</th>
+              <th class="actions-column">{{ 'common.actions' | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -40,24 +40,27 @@
               </td>
               <td class="actions-column">
                 <div class="action-buttons">
-                  <button class="btn btn-sm btn-info" [routerLink]="[cuenta.id]" title="Ver detalles">
+                  <button class="btn btn-sm btn-info"
+                          [routerLink]="[cuenta.id]"
+                          [title]="'common.view' | translate">
                     <span>👁️</span>
                   </button>
-                  <button class="btn btn-sm btn-warning" [routerLink]="['editar', cuenta.id]" title="Editar">
+                  <button class="btn btn-sm btn-warning"
+                          [routerLink]="['editar', cuenta.id]"
+                          [title]="'common.edit' | translate">
                     <span>✏️</span>
                   </button>
-                  <button class="btn btn-sm btn-danger" (click)="delete(cuenta.id!, cuenta.descripcion)" title="Eliminar">
+                  <button class="btn btn-sm btn-danger"
+                          (click)="delete(cuenta.id!, cuenta.descripcion)"
+                          [title]="'common.delete' | translate">
                     <span>🗑️</span>
                   </button>
                 </div>
               </td>
             </tr>
             <tr *ngIf="cuentas.length === 0">
-              <td colspan="6" class="text-center">
-                <div class="empty-state">
-                  <span class="empty-icon">📭</span>
-                  <p>No hay cuentas registradas</p>
-                </div>
+              <td colspan="4" class="text-center">
+                {{ 'common.noData' | translate }}
               </td>
             </tr>
           </tbody>
@@ -66,8 +69,8 @@
     </div>
   </div>
 
-  <div class="loading-spinner" *ngIf="loading">
+  <div *ngIf="loading" class="loading-container">
     <div class="spinner"></div>
-    <p>Cargando datos...</p>
+    <p>{{ 'common.loading' | translate }}</p>
   </div>
 </div>

@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { TranslationService } from '../../services/translation.service';
 
 interface MenuItem {
   title: string;
+  titleKey?: string; // ← AGREGAR
   icon: string;
   route?: string;
   children?: MenuItem[];
@@ -17,78 +19,47 @@ export class SidebarComponent implements OnInit {
   menuItems: MenuItem[] = [];
   isCollapsed = false;
 
+  constructor(public translationService: TranslationService) { } // ← INYECTAR
+
   ngOnInit(): void {
     this.menuItems = [
       {
         title: 'Nomencladores',
+        titleKey: 'sidebar.nomencladores', // ← AGREGAR
         icon: '🗂️',
         expanded: false,
         children: [
           {
             title: 'Plan de Cuentas',
+            titleKey: 'sidebar.planCuentas',
             icon: '📊',
             expanded: false,
             children: [
-              { title: 'Grupos de Cuenta', icon: '📁', route: '/nomencladores/grupo-cuenta' },
-              { title: 'SubGrupos de Cuenta', icon: '📂', route: '/nomencladores/subgrupo-cuenta' },
-              { title: 'Cuentas', icon: '📄', route: '/nomencladores/cuenta' }
-            ]
-          },
-          {
-            title: 'Gestión Financiera',
-            icon: '💰',
-            expanded: false,
-            children: [
-              { title: 'Monedas', icon: '💵', route: '/nomencladores/moneda' },
-              { title: 'Conceptos de Ajuste', icon: '⚖️', route: '/nomencladores/concepto-ajuste' },
-              { title: 'Transacciones', icon: '💳', route: '/nomencladores/transaccion' }
-            ]
-          },
-          {
-            title: 'Ubicaciones',
-            icon: '📍',
-            expanded: false,
-            children: [
-              { title: 'Establecimientos', icon: '🏢', route: '/nomencladores/establecimiento' },
-              { title: 'Localidades', icon: '🌍', route: '/nomencladores/localidad' }
-            ]
-          },
-          {
-            title: 'Terceros',
-            icon: '👥',
-            expanded: false,
-            children: [
-              { title: 'Clientes', icon: '🛒', route: '/nomencladores/cliente' },
-              { title: 'Proveedores', icon: '🚚', route: '/nomencladores/proveedor' }
-            ]
-          },
-          {
-            title: 'Productos',
-            icon: '📦',
-            expanded: false,
-            children: [
-              { title: 'Líneas', icon: '📋', route: '/nomencladores/linea' },
-              { title: 'SubLíneas', icon: '📝', route: '/nomencladores/sublinea' },
-              { title: 'Unidades de Medida', icon: '📏', route: '/nomencladores/unidad-medida' },
-              { title: 'Productos', icon: '🏷️', route: '/nomencladores/producto' },
-              { title: 'Fichas de Producto (BOM)', icon: '🔧', route: '/nomencladores/ficha-producto' }
+              { title: 'Grupos de Cuenta', titleKey: 'grupoCuenta.title', icon: '📁', route: '/nomencladores/grupo-cuenta' },
+              { title: 'SubGrupos de Cuenta', titleKey: 'subgrupoCuenta.title', icon: '📂', route: '/nomencladores/subgrupo-cuenta' },
+              { title: 'Cuentas', titleKey: 'cuenta.title', icon: '📄', route: '/nomencladores/cuenta' }
             ]
           }
         ]
       },
-      // ═══════════════════════════════════════════════════════════
-      // ⚙️ CONFIGURACIÓN
-      // ═══════════════════════════════════════════════════════════
       {
         title: 'Configuración',
+        titleKey: 'sidebar.configuracion',
         icon: '⚙️',
         expanded: false,
         children: [
-          { title: 'Negocio', icon: '🏢', route: '/configuracion' },
-          { title: 'Usuarios', icon: '👤', route: '/usuarios' }
+          { title: 'Negocio', titleKey: 'sidebar.negocio', icon: '🏢', route: '/configuracion' },
+          { title: 'Usuarios', titleKey: 'sidebar.usuarios', icon: '👤', route: '/usuarios' }
         ]
       }
     ];
+  }
+
+  // ← AGREGAR MÉTODO
+  getTitle(item: MenuItem): string {
+    return item.titleKey
+      ? this.translationService.translate(item.titleKey)
+      : item.title;
   }
 
   toggleItem(item: MenuItem): void {

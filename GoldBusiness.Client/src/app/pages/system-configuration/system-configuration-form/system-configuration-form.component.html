@@ -1,7 +1,7 @@
 <div class="page-container">
   <div class="page-header">
     <h1 class="page-title">
-      {{ isEditMode ? '✏️ Editar' : '➕ Nueva' }} Configuración del Sistema
+      {{ isEditMode ? ('systemConfig.editTitle' | translate) : ('systemConfig.newTitle' | translate) }}
     </h1>
   </div>
 
@@ -14,11 +14,11 @@
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
       <!-- Información Básica -->
       <div class="form-section">
-        <h3 class="section-title">📋 Información Básica</h3>
+        <h3 class="section-title">📋 {{ 'systemConfig.infoBasica' | translate }}</h3>
 
         <div class="form-row">
           <div class="form-group">
-            <label for="codigoSistema" class="form-label">Código del Sistema *</label>
+            <label for="codigoSistema" class="form-label">{{ 'systemConfig.codigoSistema' | translate }} *</label>
             <input type="text"
                    id="codigoSistema"
                    formControlName="codigoSistema"
@@ -31,7 +31,7 @@
           </div>
 
           <div class="form-group">
-            <label for="licencia" class="form-label">Licencia *</label>
+            <label for="licencia" class="form-label">{{ 'systemConfig.licencia' | translate }} *</label>
             <input type="text"
                    id="licencia"
                    formControlName="licencia"
@@ -45,7 +45,7 @@
         </div>
 
         <div class="form-group">
-          <label for="nombreNegocio" class="form-label">Nombre del Negocio *</label>
+          <label for="nombreNegocio" class="form-label">{{ 'systemConfig.nombreNegocio' | translate }} *</label>
           <input type="text"
                  id="nombreNegocio"
                  formControlName="nombreNegocio"
@@ -58,7 +58,7 @@
         </div>
 
         <div class="form-group">
-          <label for="caducidad" class="form-label">Fecha de Caducidad *</label>
+          <label for="caducidad" class="form-label">{{ 'systemConfig.caducidad' | translate }} *</label>
           <input type="date"
                  id="caducidad"
                  formControlName="caducidad"
@@ -72,10 +72,10 @@
 
       <!-- Información de Contacto -->
       <div class="form-section">
-        <h3 class="section-title">📞 Información de Contacto</h3>
+        <h3 class="section-title">📞 {{ 'systemConfig.infoContacto' | translate }}</h3>
 
         <div class="form-group">
-          <label for="direccion" class="form-label">Dirección</label>
+          <label for="direccion" class="form-label">{{ 'systemConfig.direccion' | translate }}</label>
           <textarea id="direccion"
                     formControlName="direccion"
                     class="form-control"
@@ -85,7 +85,7 @@
 
         <div class="form-row">
           <div class="form-group">
-            <label for="municipio" class="form-label">Municipio</label>
+            <label for="municipio" class="form-label">{{ 'systemConfig.municipio' | translate }}</label>
             <input type="text"
                    id="municipio"
                    formControlName="municipio"
@@ -94,7 +94,7 @@
           </div>
 
           <div class="form-group">
-            <label for="provincia" class="form-label">Provincia</label>
+            <label for="provincia" class="form-label">{{ 'systemConfig.provincia' | translate }}</label>
             <input type="text"
                    id="provincia"
                    formControlName="provincia"
@@ -103,7 +103,7 @@
           </div>
 
           <div class="form-group">
-            <label for="codPostal" class="form-label">Código Postal</label>
+            <label for="codPostal" class="form-label">{{ 'systemConfig.codPostal' | translate }}</label>
             <input type="text"
                    id="codPostal"
                    formControlName="codPostal"
@@ -114,7 +114,7 @@
 
         <div class="form-row">
           <div class="form-group">
-            <label for="email" class="form-label">Email</label>
+            <label for="email" class="form-label">{{ 'systemConfig.email' | translate }}</label>
             <input type="email"
                    id="email"
                    formControlName="email"
@@ -127,7 +127,7 @@
           </div>
 
           <div class="form-group">
-            <label for="telefono" class="form-label">Teléfono</label>
+            <label for="telefono" class="form-label">{{ 'systemConfig.telefono' | translate }}</label>
             <input type="tel"
                    id="telefono"
                    formControlName="telefono"
@@ -138,7 +138,7 @@
 
         <div class="form-row">
           <div class="form-group">
-            <label for="web" class="form-label">Sitio Web</label>
+            <label for="web" class="form-label">{{ 'systemConfig.web' | translate }}</label>
             <input type="url"
                    id="web"
                    formControlName="web"
@@ -147,7 +147,7 @@
           </div>
 
           <div class="form-group">
-            <label for="imagen" class="form-label">URL Logo/Imagen</label>
+            <label for="imagen" class="form-label">{{ 'systemConfig.imagen' | translate }}</label>
             <input type="url"
                    id="imagen"
                    formControlName="imagen"
@@ -159,16 +159,16 @@
 
       <!-- Cuentas Contables -->
       <div class="form-section">
-        <h3 class="section-title">💰 Cuentas Contables Predeterminadas</h3>
+        <h3 class="section-title">💰 {{ 'systemConfig.cuentasContables' | translate }}</h3>
 
         <div class="form-row">
           <div class="form-group">
-            <label for="cuentaPagarId" class="form-label">Cuenta Por Pagar *</label>
+            <label for="cuentaPagarId" class="form-label">{{ 'systemConfig.cuentaPagar' | translate }} *</label>
             <select id="cuentaPagarId"
                     formControlName="cuentaPagarId"
                     class="form-control"
                     [class.is-invalid]="form.get('cuentaPagarId')?.invalid && form.get('cuentaPagarId')?.touched">
-              <option [value]="null">Seleccionar cuenta</option>
+              <option [value]="null">{{ 'common.select' | translate }}</option>
               <option *ngFor="let cuenta of cuentas" [value]="cuenta.id">
                 {{ cuenta.codigo }} - {{ cuenta.descripcion }}
               </option>
@@ -179,12 +179,12 @@
           </div>
 
           <div class="form-group">
-            <label for="cuentaCobrarId" class="form-label">Cuenta Por Cobrar *</label>
+            <label for="cuentaCobrarId" class="form-label">{{ 'systemConfig.cuentaCobrar' | translate }} *</label>
             <select id="cuentaCobrarId"
                     formControlName="cuentaCobrarId"
                     class="form-control"
                     [class.is-invalid]="form.get('cuentaCobrarId')?.invalid && form.get('cuentaCobrarId')?.touched">
-              <option [value]="null">Seleccionar cuenta</option>
+              <option [value]="null">{{ 'common.select' | translate }}</option>
               <option *ngFor="let cuenta of cuentas" [value]="cuenta.id">
                 {{ cuenta.codigo }} - {{ cuenta.descripcion }}
               </option>
@@ -198,11 +198,11 @@
 
       <div class="form-actions">
         <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="loading">
-          ❌ Cancelar
+          ❌ {{ 'common.cancel' | translate }}
         </button>
         <button type="submit" class="btn btn-primary" [disabled]="loading || form.invalid || loadingCuentas">
-          <span *ngIf="!loading">💾 {{ isEditMode ? 'Actualizar' : 'Guardar' }}</span>
-          <span *ngIf="loading">⏳ Guardando...</span>
+          <span *ngIf="!loading">💾 {{ 'common.save' | translate }}</span>
+          <span *ngIf="loading">⏳ {{ 'common.saving' | translate }}</span>
         </button>
       </div>
     </form>

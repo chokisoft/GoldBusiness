@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router'; // ← AGREGAR ESTA LÍNEA
+import { RouterModule } from '@angular/router';
 import { provideHttpClient, withInterceptorsFromDi, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -35,6 +35,9 @@ import { CuentaDetailComponent } from './pages/cuenta/cuenta-detail/cuenta-detai
 import { SystemConfigurationListComponent } from './pages/system-configuration/system-configuration-list/system-configuration-list.component';
 import { SystemConfigurationFormComponent } from './pages/system-configuration/system-configuration-form/system-configuration-form.component';
 import { SystemConfigurationDetailComponent } from './pages/system-configuration/system-configuration-detail/system-configuration-detail.component';
+
+// Pipes
+import { TranslatePipe } from './pipes/translate.pipe'; // ← AGREGAR
 
 // Servicios
 import { ApiService } from './services/api.service';
@@ -74,12 +77,14 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     // SystemConfiguration
     SystemConfigurationListComponent,
     SystemConfigurationFormComponent,
-    SystemConfigurationDetailComponent
+    SystemConfigurationDetailComponent,
+    // Pipes
+    TranslatePipe // ← AGREGAR
   ],
   imports: [
     BrowserModule,
     CommonModule,
-    RouterModule, // ← AGREGAR ESTA LÍNEA (opcional, AppRoutingModule ya lo exporta)
+    RouterModule,
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule

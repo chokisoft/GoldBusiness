@@ -1,21 +1,21 @@
 <div class="page-container">
   <div class="page-header">
     <div class="header-content">
-      <h1 class="page-title">👁️ Detalle de la Cuenta</h1>
-      <p class="page-subtitle">Información completa de la cuenta contable</p>
+      <h1 class="page-title">👁️ {{ 'cuenta.detailTitle' | translate }}</h1>
+      <p class="page-subtitle">{{ 'grupoCuenta.infoBasica' | translate }}</p>
     </div>
     <div class="header-actions">
       <button class="btn btn-secondary" (click)="goBack()">
         <span class="btn-icon">⬅️</span>
-        Volver
+        {{ 'common.back' | translate }}
       </button>
       <button class="btn btn-warning" (click)="goToEdit()" *ngIf="cuenta">
         <span class="btn-icon">✏️</span>
-        Editar
+        {{ 'common.edit' | translate }}
       </button>
       <button class="btn btn-danger" (click)="delete()" *ngIf="cuenta">
         <span class="btn-icon">🗑️</span>
-        Eliminar
+        {{ 'common.delete' | translate }}
       </button>
     </div>
   </div>
@@ -27,23 +27,23 @@
 
   <div *ngIf="loading" class="loading-container">
     <div class="spinner"></div>
-    <p>Cargando información...</p>
+    <p>{{ 'common.loading' | translate }}</p>
   </div>
 
   <div class="card" *ngIf="!loading && cuenta">
     <div class="card-body">
       <div class="detail-section">
-        <h3 class="section-title">📋 Información General</h3>
+        <h3 class="section-title">📋 {{ 'grupoCuenta.infoBasica' | translate }}</h3>
         <div class="detail-grid">
           <div class="detail-item">
-            <label class="detail-label">Código:</label>
+            <label class="detail-label">{{ 'cuenta.codigo' | translate }}:</label>
             <div class="detail-value">
               <span class="badge badge-code badge-lg">{{ cuenta!.codigo }}</span>
             </div>
           </div>
 
           <div class="detail-item">
-            <label class="detail-label">SubGrupo de Cuenta:</label>
+            <label class="detail-label">{{ 'cuenta.subgrupoCuenta' | translate }}:</label>
             <div class="detail-value">
               <span class="badge badge-info badge-lg">
                 {{ cuenta!.subGrupoCuentaCodigo }} - {{ cuenta!.subGrupoCuentaDescripcion }}
@@ -52,12 +52,12 @@
           </div>
 
           <div class="detail-item full-width">
-            <label class="detail-label">Descripción:</label>
+            <label class="detail-label">{{ 'grupoCuenta.descripcion' | translate }}:</label>
             <div class="detail-value font-weight-bold">{{ cuenta!.descripcion }}</div>
           </div>
 
           <div class="detail-item">
-            <label class="detail-label">Estado:</label>
+            <label class="detail-label">{{ 'subgrupoCuenta.estado' | translate }}:</label>
             <div class="detail-value">
               <span class="badge badge-lg" [class.badge-success]="!cuenta!.cancelado" [class.badge-secondary]="cuenta!.cancelado">
                 {{ !cuenta!.cancelado ? '✅ Activa' : '❌ Cancelada' }}
@@ -68,21 +68,21 @@
       </div>
 
       <div class="detail-section" *ngIf="cuenta!.fechaHoraCreado || cuenta!.fechaHoraModificado">
-        <h3 class="section-title">🕒 Auditoría</h3>
+        <h3 class="section-title">🕒 {{ 'audit.title' | translate }}</h3>
         <div class="detail-grid">
           <div class="detail-item" *ngIf="cuenta!.fechaHoraCreado">
-            <label class="detail-label">Creado:</label>
+            <label class="detail-label">{{ 'audit.createdAt' | translate }}:</label>
             <div class="detail-value">
               {{ cuenta!.fechaHoraCreado | date:'dd/MM/yyyy HH:mm' }}
-              <span *ngIf="cuenta!.creadoPor" class="text-muted"> por {{ cuenta!.creadoPor }}</span>
+              <span *ngIf="cuenta!.creadoPor" class="text-muted"> {{ 'audit.createdBy' | translate }} {{ cuenta!.creadoPor }}</span>
             </div>
           </div>
 
           <div class="detail-item" *ngIf="cuenta!.fechaHoraModificado">
-            <label class="detail-label">Última modificación:</label>
+            <label class="detail-label">{{ 'audit.modifiedAt' | translate }}:</label>
             <div class="detail-value">
               {{ cuenta!.fechaHoraModificado | date:'dd/MM/yyyy HH:mm' }}
-              <span *ngIf="cuenta!.modificadoPor" class="text-muted"> por {{ cuenta!.modificadoPor }}</span>
+              <span *ngIf="cuenta!.modificadoPor" class="text-muted"> {{ 'audit.modifiedBy' | translate }} {{ cuenta!.modificadoPor }}</span>
             </div>
           </div>
         </div>

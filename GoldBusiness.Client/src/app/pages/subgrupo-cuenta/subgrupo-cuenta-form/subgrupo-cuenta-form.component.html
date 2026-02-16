@@ -1,7 +1,7 @@
 <div class="page-container">
   <div class="page-header">
     <h1 class="page-title">
-      {{ isEditMode ? '✏️ Editar' : '➕ Nuevo' }} SubGrupo de Cuenta
+      {{ isEditMode ? ('subgrupoCuenta.editTitle' | translate) : ('subgrupoCuenta.newTitle' | translate) }}
     </h1>
   </div>
 
@@ -14,26 +14,25 @@
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
       <div class="form-row">
         <div class="form-group">
-          <label for="codigo" class="form-label">Código * (5 dígitos)</label>
+          <label for="codigo" class="form-label">{{ 'subgrupoCuenta.codigo' | translate }} *</label>
           <input type="text"
                  id="codigo"
                  formControlName="codigo"
                  class="form-control"
                  [class.is-invalid]="form.get('codigo')?.invalid && form.get('codigo')?.touched"
-                 placeholder="Ej: 01001"
-                 maxlength="5" />
+                 placeholder="Ej: 01001" />
           <div class="invalid-feedback" *ngIf="form.get('codigo')?.invalid && form.get('codigo')?.touched">
             {{ getErrorMessage('codigo') }}
           </div>
         </div>
 
         <div class="form-group">
-          <label for="grupoCuentaId" class="form-label">Grupo de Cuenta *</label>
+          <label for="grupoCuentaId" class="form-label">{{ 'subgrupoCuenta.grupoCuenta' | translate }} *</label>
           <select id="grupoCuentaId"
                   formControlName="grupoCuentaId"
                   class="form-control"
                   [class.is-invalid]="form.get('grupoCuentaId')?.invalid && form.get('grupoCuentaId')?.touched">
-            <option [value]="null">Seleccione un grupo...</option>
+            <option [value]="null">{{ 'common.select' | translate }}</option>
             <option *ngFor="let grupo of gruposCuenta" [value]="grupo.id">
               {{ grupo.codigo }} - {{ grupo.nombre }}
             </option>
@@ -45,13 +44,13 @@
       </div>
 
       <div class="form-group">
-        <label for="descripcion" class="form-label">Descripción *</label>
-        <textarea id="descripcion"
-                  formControlName="descripcion"
-                  class="form-control"
-                  [class.is-invalid]="form.get('descripcion')?.invalid && form.get('descripcion')?.touched"
-                  rows="3"
-                  placeholder="Descripción del subgrupo de cuenta"></textarea>
+        <label for="descripcion" class="form-label">{{ 'grupoCuenta.descripcion' | translate }} *</label>
+        <input type="text"
+               id="descripcion"
+               formControlName="descripcion"
+               class="form-control"
+               [class.is-invalid]="form.get('descripcion')?.invalid && form.get('descripcion')?.touched"
+               placeholder="Descripción del subgrupo" />
         <div class="invalid-feedback" *ngIf="form.get('descripcion')?.invalid && form.get('descripcion')?.touched">
           {{ getErrorMessage('descripcion') }}
         </div>
@@ -60,17 +59,18 @@
       <div class="form-group">
         <label class="checkbox-label">
           <input type="checkbox" formControlName="deudora" class="form-checkbox" />
-          <span>Deudora (marcar para cuentas de activo y gastos, desmarcar para pasivo e ingresos)</span>
+          <span>{{ 'subgrupoCuenta.deudora' | translate }}</span>
         </label>
+        <small class="form-text">{{ 'subgrupoCuenta.acreedora' | translate }} {{ 'common.ifNotChecked' | translate }}</small>
       </div>
 
       <div class="form-actions">
         <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="loading">
-          ❌ Cancelar
+          ❌ {{ 'common.cancel' | translate }}
         </button>
-        <button type="submit" class="btn btn-primary" [disabled]="loading || form.invalid">
-          <span *ngIf="!loading">💾 {{ isEditMode ? 'Actualizar' : 'Guardar' }}</span>
-          <span *ngIf="loading">⏳ Guardando...</span>
+        <button type="submit" class="btn btn-primary" [disabled]="loading || form.invalid || loadingGrupos">
+          <span *ngIf="!loading">💾 {{ 'common.save' | translate }}</span>
+          <span *ngIf="loading">⏳ {{ 'common.saving' | translate }}</span>
         </button>
       </div>
     </form>

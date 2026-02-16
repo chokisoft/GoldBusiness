@@ -1,34 +1,49 @@
 <nav class="navbar">
   <div class="navbar-container">
+    <!-- Logo/Marca -->
     <div class="navbar-brand">
-      <a routerLink="/inicio" class="brand-link">
+      <a routerLink="/" class="brand-link">
         <span class="brand-icon">💼</span>
-        <span class="brand-text">GoldBusiness ERP</span>
+        <span class="brand-name">GoldBusiness ERP</span>
       </a>
     </div>
 
+    <!-- Menú de navegación -->
     <div class="navbar-menu">
-      <a routerLink="/inicio" routerLinkActive="active" class="nav-link">
-        <span class="nav-icon">🏠</span>
-        <span>Inicio</span>
+      <a routerLink="/inicio"
+         routerLinkActive="active"
+         class="nav-link">
+        🏠 {{ translations.inicio }}
       </a>
-      <a routerLink="/acerca" routerLinkActive="active" class="nav-link">
-        <span class="nav-icon">ℹ️</span>
-        <span>Acerca</span>
+      <a routerLink="/acerca"
+         routerLinkActive="active"
+         class="nav-link">
+        ℹ️ {{ translations.acerca }}
       </a>
     </div>
 
-    <div class="navbar-user" *ngIf="currentUser$ | async as user">
-      <div class="user-info">
+    <!-- Usuario y acciones -->
+    <div class="navbar-user">
+      <!-- Selector de idioma -->
+      <app-language-selector></app-language-selector>
+
+      <!-- Usuario actual -->
+      <div class="user-info" *ngIf="currentUser$ | async as user">
         <span class="user-icon">👤</span>
         <div class="user-details">
-          <span class="user-name">{{ user.fullName }}</span>
-          <span class="user-role">{{ user.roles[0] }}</span>
+          <span class="user-name">{{ user.fullName || user.userName }}</span>
+          <span class="user-role" *ngIf="user.roles && user.roles.length > 0">
+            {{ user.roles[0] }}
+          </span>
         </div>
       </div>
-      <button class="btn-logout" (click)="logout()">
+
+      <!-- Botón de logout -->
+      <button class="btn-logout"
+              (click)="logout()"
+              [title]="translations.logout">
         <span class="logout-icon">🚪</span>
-        <span>Cerrar Sesión</span>
+        <span class="logout-text">{{ translations.logout }}</span>
       </button>
     </div>
   </div>

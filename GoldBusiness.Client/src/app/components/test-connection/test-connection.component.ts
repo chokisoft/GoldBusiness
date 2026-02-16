@@ -28,14 +28,14 @@ export class TestConnectionComponent implements OnInit, OnDestroy {
 
   constructor(
     private apiService: ApiService,
-    public translate: TranslationService
+    private translationService: TranslationService // ← CAMBIO 1: Renombrado
   ) { }
 
   ngOnInit(): void {
     this.loadTranslations();
 
     // Suscribirse a cambios de idioma
-    this.languageSubscription = this.translate.translations$.subscribe(() => {
+    this.languageSubscription = this.translationService.translations$.subscribe(() => {
       this.loadTranslations();
     });
   }
@@ -46,13 +46,13 @@ export class TestConnectionComponent implements OnInit, OnDestroy {
 
   private loadTranslations(): void {
     this.translations = {
-      title: this.translate.t('test.title'),
-      configTitle: this.translate.t('test.configTitle'),
-      connectionTitle: this.translate.t('test.connectionTitle'),
-      testButton: this.translate.t('test.testButton'),
-      testing: this.translate.t('test.testing'),
-      successTitle: this.translate.t('test.successTitle'),
-      errorLabel: this.translate.t('test.errorLabel')
+      title: this.translationService.translate('test.title'), // ← CAMBIO 2: .t() → .translate()
+      configTitle: this.translationService.translate('test.configTitle'),
+      connectionTitle: this.translationService.translate('test.connectionTitle'),
+      testButton: this.translationService.translate('test.testButton'),
+      testing: this.translationService.translate('test.testing'),
+      successTitle: this.translationService.translate('test.successTitle'),
+      errorLabel: this.translationService.translate('test.errorLabel')
     };
   }
 
