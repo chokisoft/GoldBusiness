@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
 
@@ -7,47 +8,46 @@ export interface CuentaDTO {
   codigo: string;
   descripcion: string;
   subGrupoCuentaId: number;
-  systemConfigurationId?: number;
-  cancelado?: boolean;
-  creadoPor?: string;
-  fechaHoraCreado?: string;
-  modificadoPor?: string;
-  fechaHoraModificado?: string;
-  // Propiedades adicionales para visualización
+  systemConfigurationId: number;
+  
+  // ✅ AGREGAR: Propiedades calculadas del backend
   subGrupoCuentaCodigo?: string;
   subGrupoCuentaDescripcion?: string;
+  grupoCuentaCodigo?: string;
+  grupoCuentaDescripcion?: string;
+  
+  cancelado?: boolean;
+  creadoPor?: string;
+  fechaHoraCreado?: Date;
+  modificadoPor?: string;
+  fechaHoraModificado?: Date;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class CuentaService {
-  private readonly endpoint = 'Cuenta';
+  private endpoint = 'cuenta';
 
   constructor(private apiService: ApiService) {}
 
   getAll(): Observable<CuentaDTO[]> {
-    console.log('📊 Obteniendo todas las cuentas...');
     return this.apiService.get<CuentaDTO[]>(this.endpoint);
   }
 
   getById(id: number): Observable<CuentaDTO> {
-    console.log('📊 Obteniendo cuenta:', id);
     return this.apiService.get<CuentaDTO>(`${this.endpoint}/${id}`);
   }
 
   create(dto: CuentaDTO): Observable<CuentaDTO> {
-    console.log('📊 Creando cuenta:', dto);
     return this.apiService.post<CuentaDTO>(this.endpoint, dto);
   }
 
-  update(id: number, dto: CuentaDTO): Observable<CuentaDTO> {
-    console.log('📊 Actualizando cuenta:', id, dto);
-    return this.apiService.put<CuentaDTO>(`${this.endpoint}/${id}`, dto);
+  update(id: number, dto: CuentaDTO): Observable<void> {
+    return this.apiService.put<void>(`${this.endpoint}/${id}`, dto);
   }
 
   delete(id: number): Observable<void> {
-    console.log('📊 Eliminando cuenta:', id);
     return this.apiService.delete<void>(`${this.endpoint}/${id}`);
   }
 }

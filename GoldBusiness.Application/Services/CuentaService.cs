@@ -7,17 +7,11 @@ using Microsoft.Extensions.Localization;
 
 namespace GoldBusiness.Application.Services
 {
-    public class CuentaService : ICuentaService
+    public class CuentaService(ICuentaRepository repo,
+        IStringLocalizer<GoldBusiness.Domain.Resources.ValidationMessages> localizer) : ICuentaService
     {
-        private readonly ICuentaRepository _repo;
-        private readonly IStringLocalizer<GoldBusiness.Domain.Resources.ValidationMessages> _localizer;
-
-        public CuentaService(ICuentaRepository repo,
-            IStringLocalizer<GoldBusiness.Domain.Resources.ValidationMessages> localizer)
-        {
-            _repo = repo;
-            _localizer = localizer;
-        }
+        private readonly ICuentaRepository _repo = repo;
+        private readonly IStringLocalizer<GoldBusiness.Domain.Resources.ValidationMessages> _localizer = localizer;
 
         public async Task<IEnumerable<CuentaDTO>> GetAllAsync(string lang = "es")
             => (await _repo.GetAllAsync())

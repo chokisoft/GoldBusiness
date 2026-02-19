@@ -44,6 +44,7 @@ export class SystemConfigurationFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.setupFormSubscriptions();
     this.loadCuentas();
 
     const id = this.route.snapshot.paramMap.get('id');
@@ -54,6 +55,32 @@ export class SystemConfigurationFormComponent implements OnInit {
     }
   }
 
+  private setupFormSubscriptions(): void {
+    this.form.get('nombreNegocio')?.valueChanges.subscribe(value => {
+      if (value && typeof value === 'string' && value !== value.toUpperCase()) {
+        this.form.get('nombreNegocio')?.setValue(value.toUpperCase(), { emitEvent: false });
+      }
+    });
+
+    this.form.get('direccion')?.valueChanges.subscribe(value => {
+      if (value && typeof value === 'string' && value !== value.toUpperCase()) {
+        this.form.get('direccion')?.setValue(value.toUpperCase(), { emitEvent: false });
+      }
+    });
+
+    this.form.get('municipio')?.valueChanges.subscribe(value => {
+      if (value && typeof value === 'string' && value !== value.toUpperCase()) {
+        this.form.get('municipio')?.setValue(value.toUpperCase(), { emitEvent: false });
+      }
+    });
+
+    this.form.get('provincia')?.valueChanges.subscribe(value => {
+      if (value && typeof value === 'string' && value !== value.toUpperCase()) {
+        this.form.get('provincia')?.setValue(value.toUpperCase(), { emitEvent: false });
+      }
+    });
+  }
+
   loadCuentas(): void {
     this.loadingCuentas = true;
     this.cuentaService.getAll().subscribe({
@@ -61,7 +88,7 @@ export class SystemConfigurationFormComponent implements OnInit {
         this.cuentas = data.filter(c => !c.cancelado);
         this.loadingCuentas = false;
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error al cargar cuentas:', err);
         this.loadingCuentas = false;
       }
@@ -74,18 +101,16 @@ export class SystemConfigurationFormComponent implements OnInit {
     this.loading = true;
     this.systemConfigurationService.getById(this.configId).subscribe({
       next: (data) => {
-        // Formatear la fecha para el input type="date" (YYYY-MM-DD)
-        const caducidadFormatted = data.caducidad ?
-          new Date(data.caducidad).toISOString().split('T')[0] : '';
+        this.form.patchValue(data);
 
-        this.form.patchValue({
-          ...data,
-          caducidad: caducidadFormatted
-        });
+        if (this.isEditMode) {
+          this.form.get('codigoSistema')?.disable();
+        }
+
         this.loading = false;
       },
-      error: (err) => {
-        this.error = 'Error al cargar la configuración';
+      error: (err: any) => {
+        this.error = 'Error al cargar configuración';
         this.loading = false;
         console.error('Error:', err);
       }
@@ -101,25 +126,31 @@ export class SystemConfigurationFormComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
-    const dto: SystemConfigurationDTO = {
-      ...this.form.value,
-      caducidad: new Date(this.form.value.caducidad).toISOString()
-    };
+    const dto: SystemConfigurationDTO = this.form.getRawValue();
 
-    const operation = this.isEditMode
-      ? this.systemConfigurationService.update(this.configId!, dto)
-      : this.systemConfigurationService.create(dto);
-
-    operation.subscribe({
-      next: () => {
-        this.router.navigate(['/configuracion']);
-      },
-      error: (err) => {
-        this.error = err.error?.message || 'Error al guardar la configuración';
-        this.loading = false;
-        console.error('Error:', err);
-      }
-    });
+    if (this.isEditMode) {
+      this.systemConfigurationService.update(this.configId!, dto).subscribe({
+        next: () => {
+          this.router.navigate(['/configuracion']);
+        },
+        error: (err: any) => {
+          this.error = 'Error al guardar configuración';
+          this.loading = false;
+          console.error('Error:', err);
+        }
+      });
+    } else {
+      this.systemConfigurationService.create(dto).subscribe({
+        next: () => {
+          this.router.navigate(['/configuracion']);
+        },
+        error: (err: any) => {
+          this.error = 'Error al guardar configuración';
+          this.loading = false;
+          console.error('Error:', err);
+        }
+      });
+    }
   }
 
   cancel(): void {

@@ -8,33 +8,40 @@ import { SystemConfigurationService, SystemConfigurationDTO } from '../../../ser
   styleUrls: ['./system-configuration-detail.component.css']
 })
 export class SystemConfigurationDetailComponent implements OnInit {
-  configuration: SystemConfigurationDTO | null = null;
+  config: SystemConfigurationDTO | null = null; // ✅ CORRECTO
+  id: number | null = null;
   loading = true;
   error: string | null = null;
-  configId: number;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private systemConfigurationService: SystemConfigurationService
-  ) {
-    this.configId = +this.route.snapshot.paramMap.get('id')!;
-  }
+  ) {}
 
   ngOnInit(): void {
-    this.loadConfiguration();
+    const idParam = this.route.snapshot.paramMap.get('id');
+    if (idParam) {
+      this.id = +idParam;
+      this.loadConfiguration();
+    } else {
+      this.error = 'ID no válido';
+      this.loading = false;
+    }
   }
 
   loadConfiguration(): void {
+    if (!this.id) return; // ✅ CAMBIO: configId → id
+
     this.loading = true;
     this.error = null;
 
-    this.systemConfigurationService.getById(this.configId).subscribe({
-      next: (data) => {
-        this.configuration = data;
+    this.systemConfigurationService.getById(this.id).subscribe({ // ✅ CAMBIO: configId → id
+      next: (data: SystemConfigurationDTO) => { // ✅ AGREGAR tipo
+        this.config = data; // ✅ CAMBIO: configuration → config
         this.loading = false;
       },
-      error: (err) => {
+      error: (err: any) => { // ✅ AGREGAR tipo 'any'
         this.error = 'Error al cargar la configuración';
         this.loading = false;
         console.error('Error:', err);
@@ -43,7 +50,9 @@ export class SystemConfigurationDetailComponent implements OnInit {
   }
 
   goToEdit(): void {
-    this.router.navigate(['/configuracion/editar', this.configId]);
+    if (this.id) { // ✅ CAMBIO: configId → id
+      this.router.navigate(['/configuracion/editar', this.id]);
+    }
   }
 
   goBack(): void {
@@ -51,18 +60,18 @@ export class SystemConfigurationDetailComponent implements OnInit {
   }
 
   getEstadoBadgeClass(): string {
-    if (!this.configuration) return 'badge-secondary';
+    if (!this.config) return 'badge-secondary'; // ✅ CAMBIO: configuration → config
 
-    if (this.configuration.estaVencida) return 'badge-danger';
-    if (this.configuration.proximoAVencer) return 'badge-warning';
+    if (this.config.estaVencida) return 'badge-danger'; // ✅ CAMBIO
+    if (this.config.proximoAVencer) return 'badge-warning'; // ✅ CAMBIO
     return 'badge-success';
   }
 
   getEstadoIcon(): string {
-    if (!this.configuration) return '❓';
+    if (!this.config) return '❓'; // ✅ CAMBIO: configuration → config
 
-    if (this.configuration.estaVencida) return '❌';
-    if (this.configuration.proximoAVencer) return '⚠️';
+    if (this.config.estaVencida) return '❌'; // ✅ CAMBIO
+    if (this.config.proximoAVencer) return '⚠️'; // ✅ CAMBIO
     return '✅';
   }
 

@@ -30,7 +30,7 @@
           </thead>
           <tbody>
             <tr *ngFor="let grupo of gruposCuenta">
-              <td><span class="badge badge-code">{{ grupo.codigo }}</span></td>
+              <td>{{ grupo.codigo }}</td>
               <td>{{ grupo.descripcion || '-' }}</td>
               <td class="actions-column">
                 <div class="action-buttons">
@@ -45,7 +45,7 @@
                     <span>✏️</span>
                   </button>
                   <button class="btn btn-sm btn-danger"
-                          (click)="delete(grupo.id!, grupo.nombre)"
+                          (click)="delete(grupo.id!, grupo.descripcion)"
                           [title]="'common.delete' | translate">
                     <span>🗑️</span>
                   </button>

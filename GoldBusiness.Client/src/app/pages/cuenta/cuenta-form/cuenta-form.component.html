@@ -27,18 +27,20 @@
         </div>
 
         <div class="form-group">
-          <label for="subGrupoCuentaId" class="form-label">{{ 'cuenta.subgrupoCuenta' | translate }} *</label>
+          <label for="subGrupoCuentaId" class="form-label">SubGrupo de Cuenta *</label>
           <select id="subGrupoCuentaId"
                   formControlName="subGrupoCuentaId"
                   class="form-control"
-                  [class.is-invalid]="form.get('subGrupoCuentaId')?.invalid && form.get('subGrupoCuentaId')?.touched">
-            <option [value]="null">{{ 'common.select' | translate }}</option>
-            <option *ngFor="let subgrupo of subgruposCuenta" [value]="subgrupo.id">
+                  [class.is-invalid]="form.get('subGrupoCuentaId')?.invalid && form.get('subGrupoCuentaId')?.touched"
+                  [disabled]="loadingSubGrupos">
+            <option [value]="null">Seleccione un subgrupo</option>
+            <option *ngFor="let subgrupo of subGruposCuenta" [value]="subgrupo.id">
               {{ subgrupo.codigo }} - {{ subgrupo.descripcion }}
             </option>
           </select>
+          <small class="form-text" *ngIf="loadingSubGrupos">⏳ Cargando subgrupos...</small>
           <div class="invalid-feedback" *ngIf="form.get('subGrupoCuentaId')?.invalid && form.get('subGrupoCuentaId')?.touched">
-            {{ getErrorMessage('subGrupoCuentaId') }}
+            Este campo es requerido
           </div>
         </div>
       </div>
@@ -60,7 +62,7 @@
         <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="loading">
           ❌ {{ 'common.cancel' | translate }}
         </button>
-        <button type="submit" class="btn btn-primary" [disabled]="loading || form.invalid || loadingSubgrupos">
+        <button type="submit" class="btn btn-primary" [disabled]="loading || form.invalid || loadingSubGrupos">
           <span *ngIf="!loading">💾 {{ 'common.save' | translate }}</span>
           <span *ngIf="loading">⏳ {{ 'common.saving' | translate }}</span>
         </button>

@@ -23,7 +23,7 @@ export class CuentaListComponent implements OnInit {
 
     this.cuentaService.getAll().subscribe({
       next: (data) => {
-        this.cuentas = data;
+        this.cuentas = data.sort((a, b) => a.codigo.localeCompare(b.codigo));
         this.loading = false;
       },
       error: (err) => {

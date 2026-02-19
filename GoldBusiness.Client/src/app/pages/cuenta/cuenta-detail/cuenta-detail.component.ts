@@ -9,27 +9,33 @@ import { CuentaService, CuentaDTO } from '../../../services/cuenta.service';
 })
 export class CuentaDetailComponent implements OnInit {
   cuenta: CuentaDTO | null = null;
+  id: number | null = null; // ✅ AGREGAR ESTA PROPIEDAD
   loading = true;
   error: string | null = null;
-  cuentaId: number;
 
   constructor(
+    private cuentaService: CuentaService,
     private route: ActivatedRoute,
-    private router: Router,
-    private cuentaService: CuentaService
-  ) {
-    this.cuentaId = +this.route.snapshot.paramMap.get('id')!;
-  }
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    this.loadCuenta();
+    // ✅ Obtener ID de la ruta
+    const idParam = this.route.snapshot.paramMap.get('id');
+    if (idParam) {
+      this.id = +idParam;
+      this.loadCuenta();
+    } else {
+      this.error = 'ID no válido';
+      this.loading = false;
+    }
   }
 
   loadCuenta(): void {
-    this.loading = true;
-    this.error = null;
+    if (!this.id) return;
 
-    this.cuentaService.getById(this.cuentaId).subscribe({
+    this.loading = true;
+    this.cuentaService.getById(this.id).subscribe({
       next: (data) => {
         this.cuenta = data;
         this.loading = false;
@@ -42,27 +48,8 @@ export class CuentaDetailComponent implements OnInit {
     });
   }
 
-  goToEdit(): void {
-    this.router.navigate(['/nomencladores/cuenta/editar', this.cuentaId]);
-  }
-
+  // ✅ Método para volver
   goBack(): void {
     this.router.navigate(['/nomencladores/cuenta']);
-  }
-
-  delete(): void {
-    if (!confirm(`¿Está seguro que desea eliminar la cuenta "${this.cuenta?.descripcion}"?`)) {
-      return;
-    }
-
-    this.cuentaService.delete(this.cuentaId).subscribe({
-      next: () => {
-        this.router.navigate(['/nomencladores/cuenta']);
-      },
-      error: (err) => {
-        this.error = err.error?.message || 'Error al eliminar la cuenta';
-        console.error('Error:', err);
-      }
-    });
   }
 }

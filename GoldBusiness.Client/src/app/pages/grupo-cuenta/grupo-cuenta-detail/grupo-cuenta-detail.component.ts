@@ -9,27 +9,29 @@ import { GrupoCuentaService, GrupoCuentaDTO } from '../../../services/grupo-cuen
 })
 export class GrupoCuentaDetailComponent implements OnInit {
   grupo: GrupoCuentaDTO | null = null;
+  id: number | null = null; // ✅ DEBE EXISTIR
   loading = true;
   error: string | null = null;
-  grupoId: number;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private grupoCuentaService: GrupoCuentaService
-  ) {
-    this.grupoId = +this.route.snapshot.paramMap.get('id')!;
-  }
+  ) {}
 
   ngOnInit(): void {
-    this.loadGrupoCuenta();
+    const idParam = this.route.snapshot.paramMap.get('id');
+    if (idParam) {
+      this.id = +idParam;
+      this.loadGrupoCuenta();
+    }
   }
 
   loadGrupoCuenta(): void {
     this.loading = true;
     this.error = null;
 
-    this.grupoCuentaService.getById(this.grupoId).subscribe({
+    this.grupoCuentaService.getById(this.id!).subscribe({
       next: (data) => {
         this.grupo = data;
         this.loading = false;
@@ -43,7 +45,7 @@ export class GrupoCuentaDetailComponent implements OnInit {
   }
 
   goToEdit(): void {
-    this.router.navigate(['/nomencladores/grupo-cuenta/editar', this.grupoId]);
+    this.router.navigate(['/nomencladores/grupo-cuenta/editar', this.id]);
   }
 
   goBack(): void {
@@ -51,11 +53,11 @@ export class GrupoCuentaDetailComponent implements OnInit {
   }
 
   delete(): void {
-    if (!confirm(`¿Está seguro que desea eliminar el grupo "${this.grupo?.nombre}"?`)) {
+    if (!confirm(`¿Está seguro que desea eliminar el grupo "${this.grupo?.descripcion}"?`)) {
       return;
     }
 
-    this.grupoCuentaService.delete(this.grupoId).subscribe({
+    this.grupoCuentaService.delete(this.id!).subscribe({
       next: () => {
         this.router.navigate(['/nomencladores/grupo-cuenta']);
       },

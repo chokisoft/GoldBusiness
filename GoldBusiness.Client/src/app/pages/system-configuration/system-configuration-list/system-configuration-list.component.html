@@ -34,8 +34,8 @@
           </thead>
           <tbody>
             <tr *ngFor="let config of configurations">
-              <td><span class="badge badge-code">{{ config.codigoSistema }}</span></td>
-              <td class="font-weight-bold">{{ config.nombreNegocio }}</td>
+              <td>{{ config.codigoSistema }}</td>
+              <td>{{ config.nombreNegocio }}</td>
               <td>{{ config.email || '-' }}</td>
               <td>{{ config.telefono || '-' }}</td>
               <td>

@@ -96,6 +96,8 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 // Auth
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 
 // Plan de Cuentas
 builder.Services.AddScoped<IGrupoCuentaRepository, GrupoCuentaRepository>();

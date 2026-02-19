@@ -10,6 +10,7 @@ import { AppComponent } from './app.component';
 import { TestConnectionComponent } from './components/test-connection/test-connection.component';
 import { LanguageSelectorComponent } from './components/language-selector/language-selector.component';
 import { LoginComponent } from './components/login/login.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
 
 // Layout
 import { NavbarComponent } from './components/navbar/navbar.component';
@@ -37,13 +38,14 @@ import { SystemConfigurationFormComponent } from './pages/system-configuration/s
 import { SystemConfigurationDetailComponent } from './pages/system-configuration/system-configuration-detail/system-configuration-detail.component';
 
 // Pipes
-import { TranslatePipe } from './pipes/translate.pipe'; // ← AGREGAR
+import { TranslatePipe } from './pipes/translate.pipe';
 
 // Servicios
 import { ApiService } from './services/api.service';
 import { AuthService } from './services/auth.service';
 import { LanguageService } from './services/language.service';
 import { TranslationService } from './services/translation.service';
+import { SidebarService } from './services/sidebar.service'; // ← NUEVO
 import { GrupoCuentaService } from './services/grupo-cuenta.service';
 import { SubGrupoCuentaService } from './services/subgrupo-cuenta.service';
 import { CuentaService } from './services/cuenta.service';
@@ -59,6 +61,7 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     TestConnectionComponent,
     LanguageSelectorComponent,
     LoginComponent,
+    DashboardComponent,
     NavbarComponent,
     SidebarComponent,
     MainLayoutComponent,
@@ -79,7 +82,7 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     SystemConfigurationFormComponent,
     SystemConfigurationDetailComponent,
     // Pipes
-    TranslatePipe // ← AGREGAR
+    TranslatePipe
   ],
   imports: [
     BrowserModule,
@@ -105,6 +108,7 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     AuthService,
     LanguageService,
     TranslationService,
+    SidebarService, // ← NUEVO
     GrupoCuentaService,
     SubGrupoCuentaService,
     CuentaService,

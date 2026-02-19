@@ -27,11 +27,14 @@ export class SystemConfigurationListComponent implements OnInit {
 
     this.systemConfigurationService.getAll().subscribe({
       next: (data) => {
-        this.configurations = data;
+        // ✅ CAMBIO: key → codigoSistema
+        this.configurations = data.sort((a, b) => 
+          a.codigoSistema.localeCompare(b.codigoSistema)
+        );
         this.loading = false;
       },
       error: (err) => {
-        this.error = err.error?.message || 'Error al cargar las configuraciones';
+        this.error = 'Error al cargar las configuraciones';
         this.loading = false;
         console.error('Error:', err);
       }

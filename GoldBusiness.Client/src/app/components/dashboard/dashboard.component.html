@@ -1,0 +1,136 @@
+<div class="dashboard-container">
+  <!-- 🔄 LOADING STATE -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>{{ getTranslation('common.loading') }}</p>
+  </div>
+
+  <!-- ❌ ERROR STATE -->
+  <div *ngIf="errorMessage && !isLoading" class="error-state">
+    <p class="error-message">{{ errorMessage }}</p>
+    <button class="btn-retry" (click)="loadDashboardData()">
+      🔄 {{ getTranslation('common.retry') }}
+    </button>
+  </div>
+
+  <!-- ✅ CONTENT -->
+  <div *ngIf="!isLoading && !errorMessage">
+    <!-- Header -->
+    <div class="dashboard-header">
+      <div>
+        <h1 class="dashboard-title">{{ getTranslation('dashboard.title') }}</h1>
+        <p class="dashboard-subtitle">{{ getTranslation('dashboard.subtitle') }}</p>
+      </div>
+      <div class="dashboard-actions">
+        <button class="btn-primary">
+          <span>📊</span>
+          {{ getTranslation('dashboard.viewReports') }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div *ngFor="let stat of stats" class="stat-card" [style.border-left-color]="stat.color">
+        <div class="stat-icon" [style.background]="stat.color + '20'">
+          <span>{{ stat.icon }}</span>
+        </div>
+        <div class="stat-content">
+          <h3 class="stat-title">{{ stat.title }}</h3>
+          <div class="stat-value-row">
+            <p class="stat-value">{{ stat.value }}</p>
+            <span class="stat-change" [class.positive]="stat.changeType === 'positive'"
+                  [class.negative]="stat.changeType === 'negative'"
+                  [class.neutral]="stat.changeType === 'neutral'">
+              {{ stat.change }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="content-grid">
+      <!-- Recent Activities -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">
+            <span>📋</span>
+            {{ getTranslation('dashboard.recentActivities') }}
+          </h2>
+        </div>
+        <div class="card-body">
+          <div *ngIf="recentActivities.length === 0" class="no-data">
+            <p>{{ getTranslation('common.noData') }}</p>
+          </div>
+          <div class="activity-list" *ngIf="recentActivities.length > 0">
+            <div *ngFor="let activity of recentActivities" class="activity-item">
+              <div class="activity-icon">{{ activity.icon }}</div>
+              <div class="activity-content">
+                <p class="activity-action">
+                  {{ getTranslation(activity.actionKey) }}
+                  <strong>{{ activity.target }}</strong>
+                </p>
+                <p class="activity-meta">
+                  <span>{{ activity.user }}</span>
+                  <span>•</span>
+                  <span>{{ getTimeAgo(activity.timeValue) }}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">
+            <span>⚡</span>
+            {{ getTranslation('dashboard.quickAccess') }}
+          </h2>
+        </div>
+        <div class="card-body">
+          <div class="quick-links-grid">
+            <a *ngFor="let link of quickLinks"
+               [routerLink]="link.route"
+               class="quick-link-card"
+               [style.background]="link.color + '15'">
+              <div class="quick-link-icon" [style.background]="link.color">
+                {{ link.icon }}
+              </div>
+              <span class="quick-link-title">{{ getTranslation(link.titleKey) }}</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="charts-grid">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">
+            <span>📈</span>
+            {{ getTranslation('dashboard.monthlyTrends') }}
+          </h2>
+        </div>
+        <div class="card-body chart-placeholder">
+          <p>{{ getTranslation('dashboard.chartComingSoon') }}</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">
+            <span>🎯</span>
+            {{ getTranslation('dashboard.accountsDistribution') }}
+          </h2>
+        </div>
+        <div class="card-body chart-placeholder">
+          <p>{{ getTranslation('dashboard.chartComingSoon') }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

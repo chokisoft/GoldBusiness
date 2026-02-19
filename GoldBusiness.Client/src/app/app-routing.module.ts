@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { TestConnectionComponent } from './components/test-connection/test-connection.component';
 import { LoginComponent } from './components/login/login.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component'; // ← NUEVO
 import { MainLayoutComponent } from './components/layout/main-layout.component';
 import { authGuard } from './guards/auth.guard';
 
@@ -40,16 +41,15 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'inicio',
+        redirectTo: 'dashboard', // ← CAMBIADO de 'inicio' a 'dashboard'
         pathMatch: 'full'
       },
+      // ═══════════════════════════════════════════════════════════
+      // 📊 DASHBOARD
+      // ═══════════════════════════════════════════════════════════
       {
-        path: 'inicio',
-        component: TestConnectionComponent
-      },
-      {
-        path: 'acerca',
-        component: TestConnectionComponent
+        path: 'dashboard', // ← NUEVO
+        component: DashboardComponent
       },
       // ═══════════════════════════════════════════════════════════
       // 📁 NOMENCLADORES
@@ -102,8 +102,9 @@ const routes: Routes = [
         path: 'usuarios',
         component: TestConnectionComponent
       },
+      // Prueba de Conexión - movida a Configuración en el sidebar
       {
-        path: 'test',
+        path: 'test-conexion', // ← RENOMBRADO de 'test' a 'test-conexion'
         component: TestConnectionComponent
       }
     ]

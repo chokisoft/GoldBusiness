@@ -1,8 +1,4 @@
 <aside class="sidebar" [class.collapsed]="isCollapsed">
-  <button class="toggle-btn" (click)="toggleSidebar()">
-    <span>{{ isCollapsed ? '▶' : '◀' }}</span>
-  </button>
-
   <nav class="sidebar-nav">
     <ng-container *ngFor="let item of menuItems">
       <div class="menu-item" [class.has-children]="item.children">
@@ -56,3 +52,12 @@
     </ng-container>
   </nav>
 </aside>
+
+<!-- Botón flotante FUERA del sidebar para evitar que sea cortado -->
+<button class="sidebar-toggle-floating" 
+        (click)="toggleSidebar()" 
+        [class.collapsed]="isCollapsed" 
+        [title]="getToggleTitle()">
+  <span>{{ isCollapsed ? '›' : '‹' }}</span>
+</button>
+

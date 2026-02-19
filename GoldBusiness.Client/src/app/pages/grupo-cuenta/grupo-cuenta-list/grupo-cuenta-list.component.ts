@@ -23,7 +23,7 @@ export class GrupoCuentaListComponent implements OnInit {
 
     this.grupoCuentaService.getAll().subscribe({
       next: (data) => {
-        this.gruposCuenta = data;
+        this.gruposCuenta = data.sort((a, b) => a.codigo.localeCompare(b.codigo));
         this.loading = false;
       },
       error: (err) => {
@@ -34,8 +34,8 @@ export class GrupoCuentaListComponent implements OnInit {
     });
   }
 
-  delete(id: number, nombre: string): void {
-    if (confirm(`¿Está seguro de eliminar el grupo "${nombre}"?`)) {
+  delete(id: number, descripcion: string): void {
+    if (confirm(`¿Está seguro de eliminar el grupo "${descripcion}"?`)) {
       this.grupoCuentaService.delete(id).subscribe({
         next: () => {
           this.loadData();

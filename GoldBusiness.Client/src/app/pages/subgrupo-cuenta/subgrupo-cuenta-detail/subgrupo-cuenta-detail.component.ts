@@ -9,27 +9,29 @@ import { SubGrupoCuentaService, SubGrupoCuentaDTO } from '../../../services/subg
 })
 export class SubGrupoCuentaDetailComponent implements OnInit {
   subgrupo: SubGrupoCuentaDTO | null = null;
+  id: number | null = null; // ✅ DEBE EXISTIR
   loading = true;
   error: string | null = null;
-  subgrupoId: number;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private subGrupoCuentaService: SubGrupoCuentaService
-  ) {
-    this.subgrupoId = +this.route.snapshot.paramMap.get('id')!;
-  }
+  ) {}
 
   ngOnInit(): void {
-    this.loadSubGrupoCuenta();
+    const idParam = this.route.snapshot.paramMap.get('id');
+    if (idParam) {
+      this.id = +idParam;
+      this.loadSubGrupoCuenta();
+    }
   }
 
   loadSubGrupoCuenta(): void {
     this.loading = true;
     this.error = null;
 
-    this.subGrupoCuentaService.getById(this.subgrupoId).subscribe({
+    this.subGrupoCuentaService.getById(this.id!).subscribe({
       next: (data) => {
         this.subgrupo = data;
         this.loading = false;
@@ -43,7 +45,7 @@ export class SubGrupoCuentaDetailComponent implements OnInit {
   }
 
   goToEdit(): void {
-    this.router.navigate(['/nomencladores/subgrupo-cuenta/editar', this.subgrupoId]);
+    this.router.navigate(['/nomencladores/subgrupo-cuenta/editar', this.id]);
   }
 
   goBack(): void {
@@ -55,7 +57,7 @@ export class SubGrupoCuentaDetailComponent implements OnInit {
       return;
     }
 
-    this.subGrupoCuentaService.delete(this.subgrupoId).subscribe({
+    this.subGrupoCuentaService.delete(this.id!).subscribe({
       next: () => {
         this.router.navigate(['/nomencladores/subgrupo-cuenta']);
       },

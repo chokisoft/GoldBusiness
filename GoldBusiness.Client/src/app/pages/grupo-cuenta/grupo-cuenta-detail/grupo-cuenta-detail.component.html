@@ -1,88 +1,89 @@
 <div class="page-container">
+  <!-- ✅ Encabezado -->
   <div class="page-header">
     <div class="header-content">
-      <h1 class="page-title">👁️ {{ 'grupoCuenta.detailTitle' | translate }}</h1>
-      <p class="page-subtitle">{{ 'grupoCuenta.infoBasica' | translate }}</p>
+      <h1 class="page-title">
+        📁 {{ 'grupoCuenta.detailTitle' | translate }}
+      </h1>
+      <p class="page-subtitle">{{ 'grupoCuenta.detailSubtitle' | translate }}</p>
     </div>
     <div class="header-actions">
-      <button class="btn btn-secondary" (click)="goBack()">
-        <span class="btn-icon">⬅️</span>
-        {{ 'common.back' | translate }}
-      </button>
-      <button class="btn btn-warning" (click)="goToEdit()" *ngIf="grupo">
+      <button class="btn btn-warning" [routerLink]="['/nomencladores/grupo-cuenta/editar', id]">
         <span class="btn-icon">✏️</span>
         {{ 'common.edit' | translate }}
       </button>
-      <button class="btn btn-danger" (click)="delete()" *ngIf="grupo">
-        <span class="btn-icon">🗑️</span>
-        {{ 'common.delete' | translate }}
+      <button class="btn btn-secondary" (click)="goBack()">
+        <span class="btn-icon">↩️</span>
+        {{ 'common.back' | translate }}
       </button>
     </div>
   </div>
 
+  <!-- ✅ Alert de error -->
   <div class="alert alert-error" *ngIf="error">
     <span class="alert-icon">⚠️</span>
     {{ error }}
   </div>
 
-  <div *ngIf="loading" class="loading-container">
-    <div class="spinner"></div>
-    <p>{{ 'common.loading' | translate }}</p>
-  </div>
-
+  <!-- ✅ Contenido principal -->
   <div class="card" *ngIf="!loading && grupo">
+    <div class="card-header">
+      📊 {{ 'common.information' | translate }}
+    </div>
     <div class="card-body">
-      <div class="detail-section">
-        <h3 class="section-title">📋 {{ 'grupoCuenta.infoBasica' | translate }}</h3>
-        <div class="detail-grid">
-          <div class="detail-item">
-            <label class="detail-label">{{ 'grupoCuenta.codigo' | translate }}:</label>
-            <div class="detail-value">
-              <span class="badge badge-code badge-lg">{{ grupo!.codigo }}</span>
-            </div>
+      <!-- Información principal -->
+      <div class="info-section">
+        <h3 class="section-title">
+          🔑 {{ 'grupoCuenta.mainInfo' | translate }}
+        </h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">{{ 'grupoCuenta.codigo' | translate }}</span>
+            <span class="info-value-large">{{ grupo.codigo }}</span>
           </div>
-
-          <div class="detail-item">
-            <label class="detail-label">{{ 'grupoCuenta.nombre' | translate }}:</label>
-            <div class="detail-value font-weight-bold">{{ grupo!.nombre }}</div>
+          <div class="info-item">
+            <span class="info-label">{{ 'common.status' | translate }}</span>
+            <span class="badge badge-success" *ngIf="grupo.activo">
+              <span class="badge-icon">✅</span>
+              {{ 'common.active' | translate }}
+            </span>
+            <span class="badge badge-danger" *ngIf="!grupo.activo">
+              <span class="badge-icon">❌</span>
+              {{ 'common.inactive' | translate }}
+            </span>
           </div>
-
-          <div class="detail-item full-width">
-            <label class="detail-label">{{ 'grupoCuenta.descripcion' | translate }}:</label>
-            <div class="detail-value">{{ grupo!.descripcion || 'Sin descripción' }}</div>
-          </div>
-
-          <div class="detail-item">
-            <label class="detail-label">{{ 'grupoCuenta.activo' | translate }}:</label>
-            <div class="detail-value">
-              <span class="badge" [class.badge-success]="grupo!.activo" [class.badge-secondary]="!grupo!.activo">
-                {{ grupo!.activo ? '✅ Activo' : '❌ Inactivo' }}
-              </span>
-            </div>
+          <div class="info-item info-item-full">
+            <span class="info-label">{{ 'grupoCuenta.descripcion' | translate }}</span>
+            <span class="info-value">{{ grupo.descripcion }}</span>
           </div>
         </div>
       </div>
 
-      <div class="detail-section" *ngIf="grupo!.fechaHoraCreado || grupo!.fechaHoraModificado">
-        <h3 class="section-title">🕒 {{ 'audit.title' | translate }}</h3>
-        <div class="detail-grid">
-          <div class="detail-item" *ngIf="grupo!.fechaHoraCreado">
-            <label class="detail-label">{{ 'audit.createdAt' | translate }}:</label>
-            <div class="detail-value">
-              {{ grupo!.fechaHoraCreado | date:'dd/MM/yyyy HH:mm' }}
-              <span *ngIf="grupo!.creadoPor" class="text-muted"> {{ 'audit.createdBy' | translate }} {{ grupo!.creadoPor }}</span>
-            </div>
-          </div>
+      <div class="divider"></div>
 
-          <div class="detail-item" *ngIf="grupo!.fechaHoraModificado">
-            <label class="detail-label">{{ 'audit.modifiedAt' | translate }}:</label>
-            <div class="detail-value">
-              {{ grupo!.fechaHoraModificado | date:'dd/MM/yyyy HH:mm' }}
-              <span *ngIf="grupo!.modificadoPor" class="text-muted"> {{ 'audit.modifiedBy' | translate }} {{ grupo!.modificadoPor }}</span>
-            </div>
+      <!-- Metadata -->
+      <div class="metadata-section">
+        <div class="metadata-grid">
+          <div class="metadata-item" *ngIf="grupo.fechaHoraCreado">
+            <span class="metadata-label">{{ 'common.createdAt' | translate }}</span>
+            <span class="metadata-value">{{ grupo.fechaHoraCreado | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+          <div class="metadata-item" *ngIf="grupo.fechaHoraModificado">
+            <span class="metadata-label">{{ 'common.updatedAt' | translate }}</span>
+            <span class="metadata-value">{{ grupo.fechaHoraModificado | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+          <div class="metadata-item">
+            <span class="metadata-label">{{ 'common.id' | translate }}</span>
+            <span class="metadata-value">#{{ grupo.id }}</span>
           </div>
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- ✅ Loading -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner"></div>
+    <p>{{ 'common.loading' | translate }}</p>
   </div>
 </div>

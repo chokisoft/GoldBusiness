@@ -31,8 +31,8 @@
           </thead>
           <tbody>
             <tr *ngFor="let cuenta of cuentas">
-              <td><span class="badge badge-code">{{ cuenta.codigo }}</span></td>
-              <td class="font-weight-bold">{{ cuenta.descripcion }}</td>
+              <td>{{ cuenta.codigo }}</td>
+              <td>{{ cuenta.descripcion }}</td>
               <td>
                 <span class="badge badge-info">
                   {{ cuenta.subGrupoCuentaCodigo }} - {{ cuenta.subGrupoCuentaDescripcion }}

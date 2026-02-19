@@ -1,17 +1,12 @@
-using GoldBusiness.Domain.Entities;
+﻿using GoldBusiness.Domain.Entities;
 using GoldBusiness.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 
 namespace GoldBusiness.Infrastructure.Repositories
 {
-    public class SubGrupoCuentaRepository : ISubGrupoCuentaRepository
+    public class SubGrupoCuentaRepository(ApplicationDbContext context) : ISubGrupoCuentaRepository
     {
-        private readonly ApplicationDbContext _context;
-
-        public SubGrupoCuentaRepository(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        private readonly ApplicationDbContext _context = context;
 
         public async Task<IEnumerable<SubGrupoCuenta>> GetAllAsync()
             => await _context.SubGrupoCuenta
@@ -19,25 +14,26 @@ namespace GoldBusiness.Infrastructure.Repositories
                 .Include(s => s.Translations)
                 .Include(s => s.GrupoCuenta)
                     .ThenInclude(g => g.Translations)
+                .OrderBy(s => s.Codigo)
                 .ToListAsync();
 
         public async Task<SubGrupoCuenta?> GetByIdAsync(int id)
             => await _context.SubGrupoCuenta
                 .Include(s => s.Translations)
-                .Include(s => s.GrupoCuenta)
+                .Include(s => s.GrupoCuenta) // ✅ DEBE EXISTIR
                     .ThenInclude(g => g.Translations)
                 .FirstOrDefaultAsync(s => s.Id == id);
 
         public async Task<SubGrupoCuenta?> GetByCodigoAsync(string codigo, bool includeCanceled = false)
         {
             var query = _context.SubGrupoCuenta
-                .Include(g => g.Translations)
-                .Include(g => g.Cuenta)
-                    .ThenInclude(s => s.Translations)
-                .Where(g => g.Codigo == codigo);
+                .Include(s => s.Translations)
+                .Include(s => s.GrupoCuenta)  // ✅ CAMBIO: Cuenta → GrupoCuenta
+                    .ThenInclude(g => g.Translations)
+                .Where(s => s.Codigo == codigo);
 
             if (!includeCanceled)
-                query = query.Where(g => !g.Cancelado);
+                query = query.Where(s => !s.Cancelado);
 
             return await query.FirstOrDefaultAsync();
         }
@@ -60,7 +56,7 @@ namespace GoldBusiness.Infrastructure.Repositories
             _context.SubGrupoCuenta.Add(entity);
             await _context.SaveChangesAsync();
 
-            // Cargar navegaci�n a GrupoCuenta y traducciones
+            // Cargar navegación a GrupoCuenta y traducciones
             await _context.Entry(entity)
                 .Reference(e => e.GrupoCuenta)
                 .Query()

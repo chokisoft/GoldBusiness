@@ -157,38 +157,48 @@
         </div>
       </div>
 
-      <!-- Cuentas Contables -->
+      <!-- Sección de Cuentas Contables -->
       <div class="form-section">
         <h3 class="section-title">💰 {{ 'systemConfig.cuentasContables' | translate }}</h3>
 
-        <div class="form-row">
+        <div class="form-group-cuentas">
+          <!-- ✅ Cuenta por Pagar -->
           <div class="form-group">
-            <label for="cuentaPagarId" class="form-label">{{ 'systemConfig.cuentaPagar' | translate }} *</label>
+            <label for="cuentaPagarId" class="form-label">
+              {{ 'systemConfig.cuentaPagar' | translate }} *
+            </label>
             <select id="cuentaPagarId"
                     formControlName="cuentaPagarId"
                     class="form-control"
-                    [class.is-invalid]="form.get('cuentaPagarId')?.invalid && form.get('cuentaPagarId')?.touched">
+                    [class.is-invalid]="form.get('cuentaPagarId')?.invalid && form.get('cuentaPagarId')?.touched"
+                    [disabled]="loadingCuentas">
               <option [value]="null">{{ 'common.select' | translate }}</option>
               <option *ngFor="let cuenta of cuentas" [value]="cuenta.id">
                 {{ cuenta.codigo }} - {{ cuenta.descripcion }}
               </option>
             </select>
+            <small class="form-text" *ngIf="loadingCuentas">⏳ {{ 'common.loading' | translate }}...</small>
             <div class="invalid-feedback" *ngIf="form.get('cuentaPagarId')?.invalid && form.get('cuentaPagarId')?.touched">
               {{ getErrorMessage('cuentaPagarId') }}
             </div>
           </div>
 
+          <!-- ✅ Cuenta por Cobrar -->
           <div class="form-group">
-            <label for="cuentaCobrarId" class="form-label">{{ 'systemConfig.cuentaCobrar' | translate }} *</label>
+            <label for="cuentaCobrarId" class="form-label">
+              {{ 'systemConfig.cuentaCobrar' | translate }} *
+            </label>
             <select id="cuentaCobrarId"
                     formControlName="cuentaCobrarId"
                     class="form-control"
-                    [class.is-invalid]="form.get('cuentaCobrarId')?.invalid && form.get('cuentaCobrarId')?.touched">
+                    [class.is-invalid]="form.get('cuentaCobrarId')?.invalid && form.get('cuentaCobrarId')?.touched"
+                    [disabled]="loadingCuentas">
               <option [value]="null">{{ 'common.select' | translate }}</option>
               <option *ngFor="let cuenta of cuentas" [value]="cuenta.id">
                 {{ cuenta.codigo }} - {{ cuenta.descripcion }}
               </option>
             </select>
+            <small class="form-text" *ngIf="loadingCuentas">⏳ {{ 'common.loading' | translate }}...</small>
             <div class="invalid-feedback" *ngIf="form.get('cuentaCobrarId')?.invalid && form.get('cuentaCobrarId')?.touched">
               {{ getErrorMessage('cuentaCobrarId') }}
             </div>

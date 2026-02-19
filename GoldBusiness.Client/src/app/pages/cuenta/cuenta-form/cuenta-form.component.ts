@@ -15,9 +15,9 @@ export class CuentaFormComponent implements OnInit {
   isEditMode = false;
   cuentaId: number | null = null;
   loading = false;
-  loadingSubgrupos = true;
   error: string | null = null;
-  subgruposCuenta: SubGrupoCuentaDTO[] = [];
+  subGruposCuenta: SubGrupoCuentaDTO[] = [];
+  loadingSubGrupos = true;
 
   constructor(
     private fb: FormBuilder,
@@ -30,31 +30,45 @@ export class CuentaFormComponent implements OnInit {
     this.form = this.fb.group({
       codigo: ['', [Validators.required, Validators.maxLength(10)]],
       subGrupoCuentaId: [null, Validators.required],
-      descripcion: ['', [Validators.required, Validators.maxLength(256)]]
+      descripcion: ['', [Validators.required, Validators.maxLength(256)]],
+      systemConfigurationId: [1]
     });
   }
 
   ngOnInit(): void {
-    this.loadSubgruposCuenta();
+    this.setupFormSubscriptions();
+    this.loadSubGruposCuenta();
 
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.isEditMode = true;
       this.cuentaId = +id;
-      this.loadCuenta();
     }
   }
 
-  loadSubgruposCuenta(): void {
-    this.loadingSubgrupos = true;
+  private setupFormSubscriptions(): void {
+    this.form.get('descripcion')?.valueChanges.subscribe(value => {
+      if (value && typeof value === 'string' && value !== value.toUpperCase()) {
+        this.form.get('descripcion')?.setValue(value.toUpperCase(), { emitEvent: false });
+      }
+    });
+  }
+
+  loadSubGruposCuenta(): void {
+    this.loadingSubGrupos = true;
     this.subGrupoCuentaService.getAll().subscribe({
       next: (data) => {
-        this.subgruposCuenta = data.filter(s => !s.cancelado);
-        this.loadingSubgrupos = false;
+        this.subGruposCuenta = data.filter(s => !s.cancelado);
+        this.loadingSubGrupos = false;
+
+        if (this.isEditMode && this.cuentaId) {
+          this.loadCuenta();
+        }
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error al cargar subgrupos:', err);
-        this.loadingSubgrupos = false;
+        this.error = 'Error al cargar subgrupos de cuenta';
+        this.loadingSubGrupos = false;
       }
     });
   }
@@ -66,10 +80,16 @@ export class CuentaFormComponent implements OnInit {
     this.cuentaService.getById(this.cuentaId).subscribe({
       next: (data) => {
         this.form.patchValue(data);
+        
+        if (this.isEditMode) {
+          this.form.get('codigo')?.disable();
+          this.form.get('subGrupoCuentaId')?.disable();
+        }
+        
         this.loading = false;
       },
-      error: (err) => {
-        this.error = this.translate.translate('error.loading');
+      error: (err: any) => {
+        this.error = 'Error al cargar la cuenta';
         this.loading = false;
         console.error('Error:', err);
       }
@@ -85,22 +105,31 @@ export class CuentaFormComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
-    const dto: CuentaDTO = this.form.value;
+    const dto: CuentaDTO = this.form.getRawValue();
 
-    const operation = this.isEditMode
-      ? this.cuentaService.update(this.cuentaId!, dto)
-      : this.cuentaService.create(dto);
-
-    operation.subscribe({
-      next: () => {
-        this.router.navigate(['/nomencladores/cuenta']);
-      },
-      error: (err) => {
-        this.error = this.translate.translate('error.saving');
-        this.loading = false;
-        console.error('Error:', err);
-      }
-    });
+    if (this.isEditMode) {
+      this.cuentaService.update(this.cuentaId!, dto).subscribe({
+        next: () => {
+          this.router.navigate(['/nomencladores/cuenta']);
+        },
+        error: (err: any) => {
+          this.error = 'Error al guardar la cuenta';
+          this.loading = false;
+          console.error('Error:', err);
+        }
+      });
+    } else {
+      this.cuentaService.create(dto).subscribe({
+        next: () => {
+          this.router.navigate(['/nomencladores/cuenta']);
+        },
+        error: (err: any) => {
+          this.error = 'Error al guardar la cuenta';
+          this.loading = false;
+          console.error('Error:', err);
+        }
+      });
+    }
   }
 
   cancel(): void {

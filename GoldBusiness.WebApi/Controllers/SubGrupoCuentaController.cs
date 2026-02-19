@@ -14,16 +14,11 @@ namespace GoldBusiness.WebApi.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize(Policy = "ERPFullAccess")]
-    public class SubGrupoCuentaController : BaseEntityController
+    public class SubGrupoCuentaController(
+        ISubGrupoCuentaService service,
+        IStringLocalizer<GoldBusiness.Domain.Resources.ValidationMessages> localizer) : BaseEntityController(localizer)
     {
-        private readonly ISubGrupoCuentaService _service;
-
-        public SubGrupoCuentaController(
-            ISubGrupoCuentaService service,
-            IStringLocalizer<GoldBusiness.Domain.Resources.ValidationMessages> localizer) :base(localizer)
-        {
-            _service = service;
-        }
+        private readonly ISubGrupoCuentaService _service = service;
 
         /// <summary>
         /// Obtiene todos los sub grupos de cuenta.

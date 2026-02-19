@@ -4,14 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GoldBusiness.Infrastructure.Repositories
 {
-    public class GrupoCuentaRepository : IGrupoCuentaRepository
+    public class GrupoCuentaRepository(ApplicationDbContext context) : IGrupoCuentaRepository
     {
-        private readonly ApplicationDbContext _context;
-
-        public GrupoCuentaRepository(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        private readonly ApplicationDbContext _context = context;
 
         public async Task<IEnumerable<GrupoCuenta>> GetAllAsync()
             => await _context.GrupoCuenta
@@ -19,6 +14,7 @@ namespace GoldBusiness.Infrastructure.Repositories
                 .Include(g => g.Translations)
                 .Include(g => g.SubGrupoCuenta)
                     .ThenInclude(s => s.Translations)
+                .OrderBy(g => g.Codigo)
                 .ToListAsync();
 
         public async Task<GrupoCuenta?> GetByIdAsync(int id)

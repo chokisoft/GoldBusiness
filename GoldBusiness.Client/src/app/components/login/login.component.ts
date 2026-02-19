@@ -15,7 +15,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   loginForm!: FormGroup;
   isLoading = false;
   errorMessage: string | null = null;
-  returnUrl: string = '/';
+  returnUrl: string = '/dashboard'; // ← CAMBIADO de '/' a '/dashboard'
   showPassword = false;
 
   private languageSubscription?: Subscription;
@@ -51,7 +51,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     console.log('🌍 Login iniciado con idioma:', this.languageService.getCurrentLanguage());
   }
 
-  // ← AGREGAR ESTE GETTER
   /**
    * Helper para acceder a los controles del formulario fácilmente en el template
    */
@@ -60,10 +59,10 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Si ya está autenticado, redirigir
+    // Si ya está autenticado, redirigir al dashboard
     if (this.authService.isAuthenticated()) {
-      console.log('✅ Usuario ya autenticado, redirigiendo...');
-      this.router.navigate(['/']);
+      console.log('✅ Usuario ya autenticado, redirigiendo al dashboard...');
+      this.router.navigate(['/dashboard']); // ← CAMBIADO de '/' a '/dashboard'
       return;
     }
 
@@ -73,8 +72,8 @@ export class LoginComponent implements OnInit, OnDestroy {
       password: ['', [Validators.required, Validators.minLength(8)]]
     });
 
-    // Obtener la URL de retorno
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    // Obtener la URL de retorno (o dashboard por defecto)
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard'; // ← CAMBIADO de '/' a '/dashboard'
     console.log('📍 URL de retorno configurada:', this.returnUrl);
 
     // Cargar traducciones iniciales
@@ -130,11 +129,11 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     const { username, password } = this.loginForm.value;
 
-    // ✅ CORREGIDO: Pasar objeto LoginRequest
+    // Login con redirección al dashboard
     this.authService.login({ username, password }).subscribe({
       next: () => {
         console.log('✅ Login exitoso, redirigiendo a:', this.returnUrl);
-        this.router.navigate([this.returnUrl]);
+        this.router.navigate([this.returnUrl]); // Esto ahora redirige a /dashboard por defecto
       },
       error: (err) => {
         console.error('❌ Error en login:', err);

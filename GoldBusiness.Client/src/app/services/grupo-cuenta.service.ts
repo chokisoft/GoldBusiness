@@ -5,8 +5,7 @@ import { ApiService } from './api.service';
 export interface GrupoCuentaDTO {
   id?: number;
   codigo: string;
-  nombre: string;
-  descripcion?: string;
+  descripcion: string;  // ✅ CAMBIO: Solo 'descripcion', eliminado 'nombre'
   activo?: boolean;
   fechaHoraCreado?: string;
   fechaHoraModificado?: string;
@@ -18,32 +17,25 @@ export interface GrupoCuentaDTO {
   providedIn: 'root'
 })
 export class GrupoCuentaService {
-  private readonly endpoint = 'GrupoCuenta';
-
-  constructor(private apiService: ApiService) {}
+  constructor(private api: ApiService) {}
 
   getAll(): Observable<GrupoCuentaDTO[]> {
-    console.log('📊 Obteniendo todos los grupos de cuenta...');
-    return this.apiService.get<GrupoCuentaDTO[]>(this.endpoint);
+    return this.api.get<GrupoCuentaDTO[]>('grupocuenta');
   }
 
   getById(id: number): Observable<GrupoCuentaDTO> {
-    console.log('📊 Obteniendo grupo de cuenta:', id);
-    return this.apiService.get<GrupoCuentaDTO>(`${this.endpoint}/${id}`);
+    return this.api.get<GrupoCuentaDTO>(`grupocuenta/${id}`);
   }
 
-  create(dto: GrupoCuentaDTO): Observable<GrupoCuentaDTO> {
-    console.log('📊 Creando grupo de cuenta:', dto);
-    return this.apiService.post<GrupoCuentaDTO>(this.endpoint, dto);
+  create(data: GrupoCuentaDTO): Observable<GrupoCuentaDTO> {
+    return this.api.post<GrupoCuentaDTO>('grupocuenta', data);
   }
 
-  update(id: number, dto: GrupoCuentaDTO): Observable<GrupoCuentaDTO> {
-    console.log('📊 Actualizando grupo de cuenta:', id, dto);
-    return this.apiService.put<GrupoCuentaDTO>(`${this.endpoint}/${id}`, dto);
+  update(id: number, data: GrupoCuentaDTO): Observable<GrupoCuentaDTO> {
+    return this.api.put<GrupoCuentaDTO>(`grupocuenta/${id}`, data);
   }
 
   delete(id: number): Observable<void> {
-    console.log('📊 Eliminando grupo de cuenta:', id);
-    return this.apiService.delete<void>(`${this.endpoint}/${id}`);
+    return this.api.delete<void>(`grupocuenta/${id}`);
   }
 }

@@ -166,6 +166,7 @@ export class TranslationService {
       'en': 'Are you sure you want to logout?',
       'fr': 'Êtes-vous sûr de vouloir vous déconnecter?'
     },
+
     // ═══════════════════════════════════════════════════════════
     // 🗂️ SIDEBAR
     // ═══════════════════════════════════════════════════════════
@@ -213,6 +214,155 @@ export class TranslationService {
       'es': 'Usuarios',
       'en': 'Users',
       'fr': 'Utilisateurs'
+    },
+    'sidebar.expandMenu': {
+      'es': 'Expandir menú',
+      'en': 'Expand menu',
+      'fr': 'Développer le menu'
+    },
+    'sidebar.collapseMenu': {
+      'es': 'Colapsar menú',
+      'en': 'Collapse menu',
+      'fr': 'Réduire le menu'
+    },
+    'sidebar.testConnection': {
+      'es': 'Prueba de Conexión',
+      'en': 'Connection Test',
+      'fr': 'Test de Connexion'
+    },
+
+    // ═══════════════════════════════════════════════════════════
+    // 📊 DASHBOARD
+    // ═══════════════════════════════════════════════════════════
+    'dashboard.title': {
+      'es': 'Panel de Control',
+      'en': 'Dashboard',
+      'fr': 'Tableau de Bord'
+    },
+    'dashboard.subtitle': {
+      'es': 'Bienvenido a GoldBusiness ERP',
+      'en': 'Welcome to GoldBusiness ERP',
+      'fr': 'Bienvenue à GoldBusiness ERP'
+    },
+    'dashboard.viewReports': {
+      'es': 'Ver Reportes',
+      'en': 'View Reports',
+      'fr': 'Voir Rapports'
+    },
+    'dashboard.totalAccounts': {
+      'es': 'Total de Cuentas',
+      'en': 'Total Accounts',
+      'fr': 'Total des Comptes'
+    },
+    'dashboard.activeUsers': {
+      'es': 'Usuarios Activos',
+      'en': 'Active Users',
+      'fr': 'Utilisateurs Actifs'
+    },
+    'dashboard.accountGroups': {
+      'es': 'Grupos de Cuenta',
+      'en': 'Account Groups',
+      'fr': 'Groupes de Comptes'
+    },
+    'dashboard.pendingTasks': {
+      'es': 'Tareas Pendientes',
+      'en': 'Pending Tasks',
+      'fr': 'Tâches en Attente'
+    },
+    'dashboard.recentActivities': {
+      'es': 'Actividades Recientes',
+      'en': 'Recent Activities',
+      'fr': 'Activités Récentes'
+    },
+    'dashboard.quickAccess': {
+      'es': 'Acceso Rápido',
+      'en': 'Quick Access',
+      'fr': 'Accès Rapide'
+    },
+    'dashboard.monthlyTrends': {
+      'es': 'Tendencias Mensuales',
+      'en': 'Monthly Trends',
+      'fr': 'Tendances Mensuelles'
+    },
+    'dashboard.accountsDistribution': {
+      'es': 'Distribución de Cuentas',
+      'en': 'Accounts Distribution',
+      'fr': 'Distribution des Comptes'
+    },
+    'dashboard.chartComingSoon': {
+      'es': 'Gráfico próximamente...',
+      'en': 'Chart coming soon...',
+      'fr': 'Graphique à venir...'
+    },
+    'dashboard.timeAgo': {
+      'es': 'hace {0}',
+      'en': '{0} ago',
+      'fr': 'il y a {0}'
+    },
+    'dashboard.activity.accountCreated': {
+      'es': 'Cuenta creada:',
+      'en': 'Account created:',
+      'fr': 'Compte créé:'
+    },
+    'dashboard.activity.accountModified': {
+      'es': 'Cuenta modificada:',
+      'en': 'Account modified:',
+      'fr': 'Compte modifié:'
+    },
+    'dashboard.activity.configUpdated': {
+      'es': 'Configuración actualizada:',
+      'en': 'Configuration updated:',
+      'fr': 'Configuration mise à jour:'
+    },
+    'dashboard.quickLinks.newAccount': {
+      'es': 'Nueva Cuenta',
+      'en': 'New Account',
+      'fr': 'Nouveau Compte'
+    },
+    'dashboard.quickLinks.viewAccounts': {
+      'es': 'Ver Cuentas',
+      'en': 'View Accounts',
+      'fr': 'Voir Comptes'
+    },
+    'dashboard.quickLinks.configuration': {
+      'es': 'Configuración',
+      'en': 'Configuration',
+      'fr': 'Configuration'
+    },
+    'dashboard.quickLinks.reports': {
+      'es': 'Reportes',
+      'en': 'Reports',
+      'fr': 'Rapports'
+    },
+    'dashboard.time.minutes': {
+      'es': 'hace {0} minutos',
+      'en': '{0} minutes ago',
+      'fr': 'il y a {0} minutes'
+    },
+    'dashboard.time.oneHour': {
+      'es': 'hace 1 hora',
+      'en': '1 hour ago',
+      'fr': 'il y a 1 heure'
+    },
+    'dashboard.time.hours': {
+      'es': 'hace {0} horas',
+      'en': '{0} hours ago',
+      'fr': 'il y a {0} heures'
+    },
+    'dashboard.time.oneDay': {
+      'es': 'hace 1 día',
+      'en': '1 day ago',
+      'fr': 'il y a 1 jour'
+    },
+    'dashboard.time.days': {
+      'es': 'hace {0} días',
+      'en': '{0} days ago',
+      'fr': 'il y a {0} jours'
+    },
+    'common.retry': {
+      'es': 'Reintentar',
+      'en': 'Retry',
+      'fr': 'Réessayer'
     },
 
     // ═══════════════════════════════════════════════════════════
@@ -288,6 +438,42 @@ export class TranslationService {
       'en': '(if not checked)',
       'fr': '(si non coché)'
     },
+    // ✅ NUEVAS TRADUCCIONES COMUNES PARA VISTAS DE DETALLE
+    'common.information': {
+      'es': 'Información',
+      'en': 'Information',
+      'fr': 'Information'
+    },
+    'common.createdAt': {
+      'es': 'Fecha de Creación',
+      'en': 'Created At',
+      'fr': 'Date de Création'
+    },
+    'common.updatedAt': {
+      'es': 'Última Actualización',
+      'en': 'Updated At',
+      'fr': 'Dernière Mise à Jour'
+    },
+    'common.id': {
+      'es': 'ID',
+      'en': 'ID',
+      'fr': 'ID'
+    },
+    'common.status': {
+      'es': 'Estado',
+      'en': 'Status',
+      'fr': 'Statut'
+    },
+    'common.active': {
+      'es': 'Activo',
+      'en': 'Active',
+      'fr': 'Actif'
+    },
+    'common.inactive': {
+      'es': 'Inactivo',
+      'en': 'Inactive',
+      'fr': 'Inactif'
+    },
 
     // ═══════════════════════════════════════════════════════════
     // 📁 GRUPO CUENTA
@@ -332,15 +518,31 @@ export class TranslationService {
       'en': 'Description',
       'fr': 'Description'
     },
-    'grupoCuenta.activo': {
-      'es': 'Activo',
-      'en': 'Active',
-      'fr': 'Actif'
+    'grupoCuenta.codigoPlaceholder': {
+      'es': 'Ej: 01',
+      'en': 'Ex: 01',
+      'fr': 'Ex: 01'
+    },
+    'grupoCuenta.descripcionPlaceholder': {
+      'es': 'Ej: Descripción del Grupo Cuenta',
+      'en': 'Ex: Account Group Description',
+      'fr': 'Ex: Description du Groupe de Compte'
     },
     'grupoCuenta.infoBasica': {
       'es': 'Información General',
       'en': 'General Information',
       'fr': 'Informations Générales'
+    },
+    // ✅ NUEVAS TRADUCCIONES PARA VISTA DETALLE DE GRUPO CUENTA
+    'grupoCuenta.detailSubtitle': {
+      'es': 'Visualización completa de la información del grupo de cuenta',
+      'en': 'Complete view of account group information',
+      'fr': 'Vue complète des informations du groupe de comptes'
+    },
+    'grupoCuenta.mainInfo': {
+      'es': 'Información Principal',
+      'en': 'Main Information',
+      'fr': 'Informations Principales'
     },
 
     // ═══════════════════════════════════════════════════════════
@@ -401,6 +603,77 @@ export class TranslationService {
       'en': 'Status',
       'fr': 'Statut'
     },
+    'subgrupoCuenta.codigoPlaceholder': {
+      'es': 'Ej: 01001',
+      'en': 'Ex: 01001',
+      'fr': 'Ex: 01001'
+    },
+    'subgrupoCuenta.descripcion': {
+      'es': 'Descripción',
+      'en': 'Description',
+      'fr': 'Description'
+    },
+    'subgrupoCuenta.descripcionPlaceholder': {
+      'es': 'Ej: Activo Circulante',
+      'en': 'Ex: Current Assets',
+      'fr': 'Ex: Actif Circulant'
+    },
+    'validation.codigo5Digitos': {
+      'es': 'El código debe ser un número de 5 dígitos',
+      'en': 'Code must be a 5-digit number',
+      'fr': 'Le code doit être un nombre à 5 chiffres'
+    },
+    'subgrupoCuenta.codigoUsuario': {
+      'es': 'Código (3 dígitos)',
+      'en': 'Code (3 digits)',
+      'fr': 'Code (3 chiffres)'
+    },
+    'subgrupoCuenta.codigoUsuarioPlaceholder': {
+      'es': 'Ej: 001',
+      'en': 'Ex: 001',
+      'fr': 'Ex: 001'
+    },
+    'subgrupoCuenta.codigoUsuarioHelp': {
+      'es': 'Ingrese los últimos 3 dígitos del código',
+      'en': 'Enter the last 3 digits of the code',
+      'fr': 'Entrez les 3 derniers chiffres du code'
+    },
+    'subgrupoCuenta.codigoCompleto': {
+      'es': 'Código Completo',
+      'en': 'Full Code',
+      'fr': 'Code Complet'
+    },
+    'subgrupoCuenta.codigoCompletoPlaceholder': {
+      'es': 'Se generará automáticamente',
+      'en': 'Will be generated automatically',
+      'fr': 'Sera généré automatiquement'
+    },
+    'subgrupoCuenta.codigoCompletoHelp': {
+      'es': 'Código del grupo + sus 3 dígitos = Código completo',
+      'en': 'Group code + your 3 digits = Full code',
+      'fr': 'Code du groupe + vos 3 chiffres = Code complet'
+    },
+    'validation.codigo3Digitos': {
+      'es': 'El código debe ser un número de 3 dígitos',
+      'en': 'Code must be a 3-digit number',
+      'fr': 'Le code doit être un nombre à 3 chiffres'
+    },
+    'validation.codigo2Digitos': {
+      'es': 'El código debe ser un número de 2 dígitos',
+      'en': 'Code must be a 2-digit number',
+      'fr': 'Le code doit être un nombre à 2 chiffres'
+    },
+    // ✅ NUEVAS TRADUCCIONES PARA VISTA DETALLE DE SUBGRUPO CUENTA
+    'subgrupoCuenta.detailSubtitle': {
+      'es': 'Visualización completa de la información del subgrupo de cuenta',
+      'en': 'Complete view of account subgroup information',
+      'fr': 'Vue complète des informations du sous-groupe de comptes'
+    },
+    'subgrupoCuenta.mainInfo': {
+      'es': 'Información Principal',
+      'en': 'Main Information',
+      'fr': 'Informations Principales'
+    },
 
     // ═══════════════════════════════════════════════════════════
     // 📄 CUENTA
@@ -435,10 +708,31 @@ export class TranslationService {
       'en': 'Code',
       'fr': 'Code'
     },
-    'cuenta.subgrupoCuenta': {
+    'cuenta.subGrupoCuenta': {
       'es': 'SubGrupo de Cuenta',
       'en': 'Account Subgroup',
       'fr': 'Sous-groupe de Comptes'
+    },
+    // ✅ NUEVAS TRADUCCIONES PARA VISTA DETALLE DE CUENTA
+    'cuenta.detailSubtitle': {
+      'es': 'Visualización completa de la información de la cuenta',
+      'en': 'Complete view of account information',
+      'fr': 'Vue complète des informations du compte'
+    },
+    'cuenta.mainInfo': {
+      'es': 'Información Principal',
+      'en': 'Main Information',
+      'fr': 'Informations Principales'
+    },
+    'cuenta.descripcion': {
+      'es': 'Descripción',
+      'en': 'Description',
+      'fr': 'Description'
+    },
+    'cuenta.grupoCuenta': {
+      'es': 'Grupo de Cuenta',
+      'en': 'Account Group',
+      'fr': 'Groupe de Comptes'
     },
 
     // ═══════════════════════════════════════════════════════════
@@ -578,6 +872,27 @@ export class TranslationService {
       'es': 'días restantes',
       'en': 'days remaining',
       'fr': 'jours restants'
+    },
+    // ✅ NUEVAS TRADUCCIONES PARA VISTA DETALLE DE SYSTEM CONFIG
+    'systemConfig.detailSubtitle': {
+      'es': 'Visualización completa de la configuración del sistema',
+      'en': 'Complete view of system configuration',
+      'fr': 'Vue complète de la configuration du système'
+    },
+    'systemConfig.infoSistema': {
+      'es': 'Información del Sistema',
+      'en': 'System Information',
+      'fr': 'Informations du Système'
+    },
+    'systemConfig.estado': {
+      'es': 'Estado',
+      'en': 'Status',
+      'fr': 'Statut'
+    },
+    'systemConfig.infoNegocio': {
+      'es': 'Información del Negocio',
+      'en': 'Business Information',
+      'fr': 'Informations de l\'Entreprise'
     },
 
     // ═══════════════════════════════════════════════════════════

@@ -20,40 +20,26 @@
                  formControlName="codigo"
                  class="form-control"
                  [class.is-invalid]="form.get('codigo')?.invalid && form.get('codigo')?.touched"
-                 placeholder="Ej: 01" />
+                 [placeholder]="'grupoCuenta.codigoPlaceholder' | translate"
+                 maxlength="2" />
           <div class="invalid-feedback" *ngIf="form.get('codigo')?.invalid && form.get('codigo')?.touched">
             {{ getErrorMessage('codigo') }}
           </div>
         </div>
 
         <div class="form-group">
-          <label for="nombre" class="form-label">{{ 'grupoCuenta.nombre' | translate }} *</label>
+          <label for="descripcion" class="form-label">{{ 'grupoCuenta.descripcion' | translate }} *</label>
           <input type="text"
-                 id="nombre"
-                 formControlName="nombre"
+                 id="descripcion"
+                 formControlName="descripcion"
                  class="form-control"
-                 [class.is-invalid]="form.get('nombre')?.invalid && form.get('nombre')?.touched"
-                 placeholder="Ej: Activo" />
-          <div class="invalid-feedback" *ngIf="form.get('nombre')?.invalid && form.get('nombre')?.touched">
-            {{ getErrorMessage('nombre') }}
+                 [class.is-invalid]="form.get('descripcion')?.invalid && form.get('descripcion')?.touched"
+                 [placeholder]="'grupoCuenta.descripcionPlaceholder' | translate"
+                 maxlength="256" />
+          <div class="invalid-feedback" *ngIf="form.get('descripcion')?.invalid && form.get('descripcion')?.touched">
+            {{ getErrorMessage('descripcion') }}
           </div>
         </div>
-      </div>
-
-      <div class="form-group">
-        <label for="descripcion" class="form-label">{{ 'grupoCuenta.descripcion' | translate }}</label>
-        <textarea id="descripcion"
-                  formControlName="descripcion"
-                  class="form-control"
-                  rows="4"
-                  placeholder="Descripción opcional del grupo de cuenta"></textarea>
-      </div>
-
-      <div class="form-group">
-        <label class="checkbox-label">
-          <input type="checkbox" formControlName="activo" class="form-checkbox" />
-          <span>{{ 'grupoCuenta.activo' | translate }}</span>
-        </label>
       </div>
 
       <div class="form-actions">

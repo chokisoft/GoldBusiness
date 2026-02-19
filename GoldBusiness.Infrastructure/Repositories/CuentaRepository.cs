@@ -4,14 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GoldBusiness.Infrastructure.Repositories
 {
-    public class CuentaRepository : ICuentaRepository
+    public class CuentaRepository(ApplicationDbContext context) : ICuentaRepository
     {
-        private readonly ApplicationDbContext _context;
-
-        public CuentaRepository(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        private readonly ApplicationDbContext _context = context;
 
         public async Task<IEnumerable<Cuenta>> GetAllAsync()
             => await _context.Cuenta
@@ -22,39 +17,42 @@ namespace GoldBusiness.Infrastructure.Repositories
                 .Include(c => c.SubGrupoCuenta)
                     .ThenInclude(s => s.GrupoCuenta)
                         .ThenInclude(g => g.Translations)
+                .OrderBy(c => c.Codigo)
                 .ToListAsync();
 
         public async Task<Cuenta?> GetByIdAsync(int id)
             => await _context.Cuenta
                 .Include(c => c.Translations)
-                .Include(c => c.SubGrupoCuenta)
-                    .ThenInclude(s => s.Translations)
-                .Include(c => c.SubGrupoCuenta)
-                    .ThenInclude(s => s.GrupoCuenta)
-                        .ThenInclude(g => g.Translations)
-                .FirstOrDefaultAsync(c => c.Id == id);
+                .Include(c => c.SubGrupoCuenta!) // ✅ AGREGAR !
+                    .ThenInclude(s => s!.Translations) // ✅ AGREGAR !
+                .Include(c => c.SubGrupoCuenta!)
+                    .ThenInclude(s => s!.GrupoCuenta!) // ✅ AGREGAR !
+                        .ThenInclude(g => g!.Translations) // ✅ AGREGAR !
+                .FirstOrDefaultAsync(c => c.Id == id && !c.Cancelado);
 
         public async Task<Cuenta?> GetByCodigoAsync(string codigo, bool includeCanceled = false)
         {
             var query = _context.Cuenta
-                .Include(g => g.Translations)
-                .Where(g => g.Codigo == codigo);
+                .Include(c => c.Translations)
+                .Include(c => c.SubGrupoCuenta)
+                    .ThenInclude(s => s.Translations)
+                .Where(c => c.Codigo == codigo);
 
             if (!includeCanceled)
-                query = query.Where(g => !g.Cancelado);
+                query = query.Where(c => !c.Cancelado);
 
             return await query.FirstOrDefaultAsync();
         }
 
         public async Task<bool> ExistsByCodigoAsync(string codigo, int? excludeId = null, bool onlyActive = true)
         {
-            var query = _context.Cuenta.Where(g => g.Codigo == codigo);
+            var query = _context.Cuenta.Where(c => c.Codigo == codigo);
 
             if (onlyActive)
-                query = query.Where(g => !g.Cancelado);
+                query = query.Where(c => !c.Cancelado);
 
             if (excludeId.HasValue)
-                query = query.Where(g => g.Id != excludeId.Value);
+                query = query.Where(c => c.Id != excludeId.Value);
 
             return await query.AnyAsync();
         }
@@ -71,6 +69,10 @@ namespace GoldBusiness.Infrastructure.Repositories
                 .Include(s => s.GrupoCuenta)
                     .ThenInclude(g => g.Translations)
                 .LoadAsync();
+
+            await _context.Entry(entity)
+                .Collection(e => e.Translations)
+                .LoadAsync();
         }
 
         public async Task UpdateAsync(Cuenta entity)
@@ -84,6 +86,10 @@ namespace GoldBusiness.Infrastructure.Repositories
                 .Include(s => s.Translations)
                 .Include(s => s.GrupoCuenta)
                     .ThenInclude(g => g.Translations)
+                .LoadAsync();
+
+            await _context.Entry(entity)
+                .Collection(e => e.Translations)
                 .LoadAsync();
         }
     }

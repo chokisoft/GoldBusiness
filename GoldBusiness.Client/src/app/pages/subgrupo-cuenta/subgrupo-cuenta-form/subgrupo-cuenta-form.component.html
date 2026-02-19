@@ -12,63 +12,81 @@
 
   <div class="card">
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
-      <div class="form-row">
+      
+      <!-- ✅ GrupoCuenta -->
+      <div class="form-group">
+        <label for="grupoCuentaId" class="form-label">{{ 'subgrupoCuenta.grupoCuenta' | translate }} *</label>
+        <select id="grupoCuentaId"
+                formControlName="grupoCuentaId"
+                class="form-control"
+                [class.is-invalid]="form.get('grupoCuentaId')?.invalid && form.get('grupoCuentaId')?.touched">
+          <option [value]="null">{{ 'common.select' | translate }}</option>
+          <option *ngFor="let grupo of gruposCuenta" [value]="grupo.id">
+            {{ grupo.codigo }} - {{ grupo.descripcion }}
+          </option>
+        </select>
+        <div class="invalid-feedback" *ngIf="form.get('grupoCuentaId')?.invalid && form.get('grupoCuentaId')?.touched">
+          {{ getErrorMessage('grupoCuentaId') }}
+        </div>
+      </div>
+
+      <!-- ✅ CAMBIO: Fila con 3 columnas -->
+      <div class="form-row-three">
         <div class="form-group">
-          <label for="codigo" class="form-label">{{ 'subgrupoCuenta.codigo' | translate }} *</label>
+          <label for="codigoUsuario" class="form-label">{{ 'subgrupoCuenta.codigoUsuario' | translate }} *</label>
           <input type="text"
-                 id="codigo"
-                 formControlName="codigo"
+                 id="codigoUsuario"
+                 formControlName="codigoUsuario"
                  class="form-control"
-                 [class.is-invalid]="form.get('codigo')?.invalid && form.get('codigo')?.touched"
-                 placeholder="Ej: 01001" />
-          <div class="invalid-feedback" *ngIf="form.get('codigo')?.invalid && form.get('codigo')?.touched">
-            {{ getErrorMessage('codigo') }}
+                 [class.is-invalid]="form.get('codigoUsuario')?.invalid && form.get('codigoUsuario')?.touched"
+                 [placeholder]="'subgrupoCuenta.codigoUsuarioPlaceholder' | translate"
+                 maxlength="3"
+                 [disabled]="!selectedGrupoCodigo" />
+          <small class="form-text text-muted">{{ 'subgrupoCuenta.codigoUsuarioHelp' | translate }}</small>
+          <div class="invalid-feedback" *ngIf="form.get('codigoUsuario')?.invalid && form.get('codigoUsuario')?.touched">
+            {{ getErrorMessage('codigoUsuario') }}
           </div>
         </div>
 
         <div class="form-group">
-          <label for="grupoCuentaId" class="form-label">{{ 'subgrupoCuenta.grupoCuenta' | translate }} *</label>
-          <select id="grupoCuentaId"
-                  formControlName="grupoCuentaId"
-                  class="form-control"
-                  [class.is-invalid]="form.get('grupoCuentaId')?.invalid && form.get('grupoCuentaId')?.touched">
-            <option [value]="null">{{ 'common.select' | translate }}</option>
-            <option *ngFor="let grupo of gruposCuenta" [value]="grupo.id">
-              {{ grupo.codigo }} - {{ grupo.nombre }}
-            </option>
-          </select>
-          <div class="invalid-feedback" *ngIf="form.get('grupoCuentaId')?.invalid && form.get('grupoCuentaId')?.touched">
-            {{ getErrorMessage('grupoCuentaId') }}
-          </div>
+          <label for="codigoCompleto" class="form-label">{{ 'subgrupoCuenta.codigoCompleto' | translate }}</label>
+          <input type="text"
+                 id="codigoCompleto"
+                 [value]="codigoCompleto"
+                 class="form-control"
+                 readonly
+                 [placeholder]="'subgrupoCuenta.codigoCompletoPlaceholder' | translate" />
+          <small class="form-text text-muted">{{ 'subgrupoCuenta.codigoCompletoHelp' | translate }}</small>
+        </div>
+
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" formControlName="deudora" class="form-checkbox" />
+            <span>{{ 'subgrupoCuenta.deudora' | translate }}</span>
+          </label>
+          <small class="form-text">{{ 'subgrupoCuenta.acreedora' | translate }} {{ 'common.ifNotChecked' | translate }}</small>
         </div>
       </div>
 
       <div class="form-group">
-        <label for="descripcion" class="form-label">{{ 'grupoCuenta.descripcion' | translate }} *</label>
+        <label for="descripcion" class="form-label">{{ 'subgrupoCuenta.descripcion' | translate }} *</label>
         <input type="text"
                id="descripcion"
                formControlName="descripcion"
                class="form-control"
                [class.is-invalid]="form.get('descripcion')?.invalid && form.get('descripcion')?.touched"
-               placeholder="Descripción del subgrupo" />
+               [placeholder]="'subgrupoCuenta.descripcionPlaceholder' | translate"
+               maxlength="256" />
         <div class="invalid-feedback" *ngIf="form.get('descripcion')?.invalid && form.get('descripcion')?.touched">
           {{ getErrorMessage('descripcion') }}
         </div>
-      </div>
-
-      <div class="form-group">
-        <label class="checkbox-label">
-          <input type="checkbox" formControlName="deudora" class="form-checkbox" />
-          <span>{{ 'subgrupoCuenta.deudora' | translate }}</span>
-        </label>
-        <small class="form-text">{{ 'subgrupoCuenta.acreedora' | translate }} {{ 'common.ifNotChecked' | translate }}</small>
       </div>
 
       <div class="form-actions">
         <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="loading">
           ❌ {{ 'common.cancel' | translate }}
         </button>
-        <button type="submit" class="btn btn-primary" [disabled]="loading || form.invalid || loadingGrupos">
+        <button type="submit" class="btn btn-primary" [disabled]="loading || form.invalid || loadingGrupos || !codigoCompleto">
           <span *ngIf="!loading">💾 {{ 'common.save' | translate }}</span>
           <span *ngIf="loading">⏳ {{ 'common.saving' | translate }}</span>
         </button>

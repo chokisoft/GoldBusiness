@@ -14,18 +14,12 @@ namespace GoldBusiness.WebApi.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize(Policy = "ERPFullAccess")]
-    public class CuentaController : ControllerBase
+    public class CuentaController(
+        ICuentaService cuentaService,
+        IStringLocalizer<GoldBusiness.Domain.Resources.ValidationMessages> localizer) : ControllerBase
     {
-        private readonly ICuentaService _cuentaService;
-        private readonly IStringLocalizer<GoldBusiness.Domain.Resources.ValidationMessages> _localizer;
-
-        public CuentaController(
-            ICuentaService cuentaService,
-            IStringLocalizer<GoldBusiness.Domain.Resources.ValidationMessages> localizer)
-        {
-            _cuentaService = cuentaService;
-            _localizer = localizer;
-        }
+        private readonly ICuentaService _cuentaService = cuentaService;
+        private readonly IStringLocalizer<GoldBusiness.Domain.Resources.ValidationMessages> _localizer = localizer;
 
         /// <summary>
         /// Obtiene todas las cuentas contables.
@@ -46,11 +40,15 @@ namespace GoldBusiness.WebApi.Controllers
         /// <param name="id">ID de la cuenta</param>
         /// <returns>Cuenta localizada</returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<CuentaDTO>> GetCuenta(int id)
+        public async Task<ActionResult<CuentaDTO>> GetById(int id)
         {
             var lang = GetCurrentLanguage();
             var cuenta = await _cuentaService.GetByIdAsync(id, lang);
-            return cuenta == null ? NotFound() : Ok(cuenta);
+
+            if (cuenta == null)
+                return NotFound();
+
+            return Ok(cuenta); // ✅ Ya es un DTO
         }
 
         /// <summary>

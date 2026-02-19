@@ -4,14 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GoldBusiness.Infrastructure.Repositories
 {
-    public class SystemConfigurationRepository : ISystemConfigurationRepository
+    public class SystemConfigurationRepository(ApplicationDbContext context) : ISystemConfigurationRepository
     {
-        private readonly ApplicationDbContext _context;
-
-        public SystemConfigurationRepository(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        private readonly ApplicationDbContext _context = context;
 
         public async Task<IEnumerable<SystemConfiguration>> GetAllAsync()
             => await _context.SystemConfiguration
@@ -20,6 +15,7 @@ namespace GoldBusiness.Infrastructure.Repositories
                 .Include(s => s.CuentaCobrar)
                     .ThenInclude(c => c.Translations)
                 .Include(s => s.Translations)
+                .OrderBy(c => c.CodigoSistema)
                 .ToListAsync();
 
         public async Task<SystemConfiguration?> GetByIdAsync(int id)
