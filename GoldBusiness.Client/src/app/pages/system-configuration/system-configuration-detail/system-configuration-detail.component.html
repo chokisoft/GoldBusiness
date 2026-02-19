@@ -55,15 +55,15 @@
             <span class="info-label">{{ 'systemConfig.estado' | translate }}</span>
             <span class="badge badge-success" *ngIf="config.estadoLicencia === 'Vigente'">
               <span class="badge-icon">✅</span>
-              {{ config.estadoLicencia }}
+              {{ 'systemConfig.vigente' | translate }}
             </span>
             <span class="badge badge-warning" *ngIf="config.estadoLicencia === 'Por vencer'">
               <span class="badge-icon">⚠️</span>
-              {{ config.estadoLicencia }}
+              {{ 'systemConfig.porVencer' | translate }}
             </span>
             <span class="badge badge-danger" *ngIf="config.estadoLicencia === 'Vencida'">
               <span class="badge-icon">❌</span>
-              {{ config.estadoLicencia }}
+              {{ 'systemConfig.vencida' | translate }}
             </span>
           </div>
         </div>
@@ -118,7 +118,6 @@
             <span class="info-label">{{ 'systemConfig.telefono' | translate }}</span>
             <span class="info-value">{{ config.telefono }}</span>
           </div>
-          <!-- ✅ CAMBIO: Solo mostrar si existe -->
           <div class="info-item" *ngIf="config.web">
             <span class="info-label">{{ 'systemConfig.web' | translate }}</span>
             <span class="info-value">
