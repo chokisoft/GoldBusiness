@@ -41,17 +41,6 @@
             <span class="info-label">{{ 'grupoCuenta.codigo' | translate }}</span>
             <span class="info-value-large">{{ grupo.codigo }}</span>
           </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'common.status' | translate }}</span>
-            <span class="badge badge-success" *ngIf="grupo.activo">
-              <span class="badge-icon">✅</span>
-              {{ 'common.active' | translate }}
-            </span>
-            <span class="badge badge-danger" *ngIf="!grupo.activo">
-              <span class="badge-icon">❌</span>
-              {{ 'common.inactive' | translate }}
-            </span>
-          </div>
           <div class="info-item info-item-full">
             <span class="info-label">{{ 'grupoCuenta.descripcion' | translate }}</span>
             <span class="info-value">{{ grupo.descripcion }}</span>
@@ -59,25 +48,6 @@
         </div>
       </div>
 
-      <div class="divider"></div>
-
-      <!-- Metadata -->
-      <div class="metadata-section">
-        <div class="metadata-grid">
-          <div class="metadata-item" *ngIf="grupo.fechaHoraCreado">
-            <span class="metadata-label">{{ 'common.createdAt' | translate }}</span>
-            <span class="metadata-value">{{ grupo.fechaHoraCreado | date:'dd/MM/yyyy HH:mm' }}</span>
-          </div>
-          <div class="metadata-item" *ngIf="grupo.fechaHoraModificado">
-            <span class="metadata-label">{{ 'common.updatedAt' | translate }}</span>
-            <span class="metadata-value">{{ grupo.fechaHoraModificado | date:'dd/MM/yyyy HH:mm' }}</span>
-          </div>
-          <div class="metadata-item">
-            <span class="metadata-label">{{ 'common.id' | translate }}</span>
-            <span class="metadata-value">#{{ grupo.id }}</span>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 

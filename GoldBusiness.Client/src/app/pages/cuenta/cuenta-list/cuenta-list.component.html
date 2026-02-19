@@ -18,6 +18,30 @@
   </div>
 
   <div class="card" *ngIf="!loading && !error">
+    <!-- Barra de búsqueda y filtros -->
+    <div class="card-header">
+      <div class="search-container">
+        <input 
+          type="text" 
+          class="form-control search-input" 
+          [(ngModel)]="searchTerm"
+          (input)="onSearch()"
+          [placeholder]="'common.search' | translate"
+        />
+        <span class="search-icon">🔍</span>
+      </div>
+      <div class="page-size-selector">
+        <label>{{ 'common.show' | translate }}:</label>
+        <select [(ngModel)]="pageSize" (change)="onPageSizeChange()" class="form-control">
+          <option [value]="5">5</option>
+          <option [value]="10">10</option>
+          <option [value]="25">25</option>
+          <option [value]="50">50</option>
+          <option [value]="100">100</option>
+        </select>
+      </div>
+    </div>
+
     <div class="card-body">
       <div class="table-responsive">
         <table class="data-table">
@@ -30,7 +54,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let cuenta of cuentas">
+            <tr *ngFor="let cuenta of paginatedCuentas">
               <td>{{ cuenta.codigo }}</td>
               <td>{{ cuenta.descripcion }}</td>
               <td>
@@ -58,13 +82,48 @@
                 </div>
               </td>
             </tr>
-            <tr *ngIf="cuentas.length === 0">
+            <tr *ngIf="paginatedCuentas.length === 0">
               <td colspan="4" class="text-center">
-                {{ 'common.noData' | translate }}
+                {{ searchTerm ? ('common.noResults' | translate) : ('common.noData' | translate) }}
               </td>
             </tr>
           </tbody>
         </table>
+      </div>
+    </div>
+
+    <!-- Paginación -->
+    <div class="card-footer" *ngIf="totalPages > 0">
+      <div class="pagination-info">
+        {{ 'common.showing' | translate }} 
+        {{ (currentPage - 1) * pageSize + 1 }} - 
+        {{ Math.min(currentPage * pageSize, filteredCuentas.length) }} 
+        {{ 'common.of' | translate }} 
+        {{ filteredCuentas.length }}
+      </div>
+      <div class="pagination">
+        <button 
+          class="btn btn-sm btn-secondary" 
+          (click)="previousPage()"
+          [disabled]="currentPage === 1">
+          ‹ {{ 'common.previous' | translate }}
+        </button>
+        
+        <button 
+          *ngFor="let page of getPageNumbers()"
+          class="btn btn-sm"
+          [class.btn-primary]="page === currentPage"
+          [class.btn-secondary]="page !== currentPage"
+          (click)="goToPage(page)">
+          {{ page }}
+        </button>
+
+        <button 
+          class="btn btn-sm btn-secondary" 
+          (click)="nextPage()"
+          [disabled]="currentPage === totalPages">
+          {{ 'common.next' | translate }} ›
+        </button>
       </div>
     </div>
   </div>

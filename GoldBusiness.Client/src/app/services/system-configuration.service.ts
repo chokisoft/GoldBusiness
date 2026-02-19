@@ -62,4 +62,9 @@ export class SystemConfigurationService {
     console.log('📊 Actualizando configuración del sistema:', id, dto);
     return this.apiService.put<SystemConfigurationDTO>(`${this.endpoint}/${id}`, dto);
   }
+
+  delete(id: number): Observable<void> {
+    console.log('📊 Eliminando configuración del sistema:', id);
+    return this.apiService.delete<void>(`${this.endpoint}/${id}`);
+  }
 }

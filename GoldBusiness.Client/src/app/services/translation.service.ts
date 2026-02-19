@@ -474,7 +474,37 @@ export class TranslationService {
       'en': 'Inactive',
       'fr': 'Inactif'
     },
-
+    // ✅ TRADUCCIONES PARA PAGINACIÓN Y BÚSQUEDA
+    'common.show': {
+      'es': 'Mostrar',
+      'en': 'Show',
+      'fr': 'Afficher'
+    },
+    'common.showing': {
+      'es': 'Mostrando',
+      'en': 'Showing',
+      'fr': 'Affichage'
+    },
+    'common.of': {
+      'es': 'de',
+      'en': 'of',
+      'fr': 'sur'
+    },
+    'common.previous': {
+      'es': 'Anterior',
+      'en': 'Previous',
+      'fr': 'Précédent'
+    },
+    'common.next': {
+      'es': 'Siguiente',
+      'en': 'Next',
+      'fr': 'Suivant'
+    },
+    'common.noResults': {
+      'es': 'No se encontraron resultados',
+      'en': 'No results found',
+      'fr': 'Aucun résultat trouvé'
+    },
     // ═══════════════════════════════════════════════════════════
     // 📁 GRUPO CUENTA
     // ═══════════════════════════════════════════════════════════
