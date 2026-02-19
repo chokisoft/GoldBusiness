@@ -217,8 +217,7 @@ namespace GoldBusiness.Domain.Entities
                 if (telefono1.Length > 50)
                     throw new DomainException("El teléfono 1 no puede exceder 50 caracteres.");
 
-                if (!System.Text.RegularExpressions.Regex.IsMatch(telefono1, @"^\d{4}-\d{4}$"))
-                    throw new DomainException("El teléfono 1 debe tener el formato ####-####.");
+                ValidarFormatoTelefono(telefono1, "teléfono 1");
             }
 
             if (!string.IsNullOrWhiteSpace(telefono2))
@@ -226,12 +225,38 @@ namespace GoldBusiness.Domain.Entities
                 if (telefono2.Length > 50)
                     throw new DomainException("El teléfono 2 no puede exceder 50 caracteres.");
 
-                if (!System.Text.RegularExpressions.Regex.IsMatch(telefono2, @"^\d{4}-\d{4}$"))
-                    throw new DomainException("El teléfono 2 debe tener el formato ####-####.");
+                ValidarFormatoTelefono(telefono2, "teléfono 2");
             }
 
             Telefono1 = telefono1?.Trim() ?? string.Empty;
             Telefono2 = telefono2?.Trim() ?? string.Empty;
+        }
+
+        private void ValidarFormatoTelefono(string telefono, string campo)
+        {
+            // Limpiar el teléfono
+            var telefonoLimpio = telefono.TrimStart().StartsWith("+")
+                ? "+" + System.Text.RegularExpressions.Regex.Replace(telefono, @"[^\d]", "")
+                : System.Text.RegularExpressions.Regex.Replace(telefono, @"[^\d]", "");
+
+            // Validar formatos por país
+            var cubaRegex = new System.Text.RegularExpressions.Regex(@"^(?:\+?53)?[2-9]\d{7}$");
+            var espanaRegex = new System.Text.RegularExpressions.Regex(@"^(?:\+?34)?[6-9]\d{8}$");
+            var usaRegex = new System.Text.RegularExpressions.Regex(@"^(?:\+?1)?[2-9]\d{9}$");
+            var franciaRegex = new System.Text.RegularExpressions.Regex(@"^(?:\+?33)?[1-9]\d{8}$");
+
+            var esValido = cubaRegex.IsMatch(telefonoLimpio) ||
+                          espanaRegex.IsMatch(telefonoLimpio) ||
+                          usaRegex.IsMatch(telefonoLimpio) ||
+                          franciaRegex.IsMatch(telefonoLimpio);
+
+            if (!esValido)
+            {
+                throw new DomainException(
+                    $"El {campo} no tiene un formato válido. " +
+                    "Formatos aceptados: Cuba (+53 8 dígitos), España (+34 9 dígitos), " +
+                    "EE.UU. (+1 10 dígitos), Francia (+33 10 dígitos).");
+            }
         }
 
         public void SetFaxes(string fax1, string fax2 = "")

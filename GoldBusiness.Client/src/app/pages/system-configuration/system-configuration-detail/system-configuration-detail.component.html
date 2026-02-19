@@ -48,7 +48,7 @@
           <div class="info-item">
             <span class="info-label">{{ 'systemConfig.caducidad' | translate }}</span>
             <span class="badge badge-info">
-              {{ config.caducidad | date:'dd/MM/yyyy' }}
+              {{ config.caducidad | localizedDate:'short' }}
             </span>
           </div>
           <div class="info-item">
@@ -116,7 +116,9 @@
           </div>
           <div class="info-item" *ngIf="config.telefono">
             <span class="info-label">{{ 'systemConfig.telefono' | translate }}</span>
-            <span class="info-value">{{ config.telefono }}</span>
+            <span class="info-value">
+              <a [href]="'tel:' + config.telefono">{{ config.telefono | localizedPhone }}</a>
+            </span>
           </div>
           <div class="info-item" *ngIf="config.web">
             <span class="info-label">{{ 'systemConfig.web' | translate }}</span>

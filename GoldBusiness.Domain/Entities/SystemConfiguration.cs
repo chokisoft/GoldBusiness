@@ -196,10 +196,35 @@ namespace GoldBusiness.Domain.Entities
                 if (telefono.Length > 20)
                     throw new DomainException("El teléfono no puede exceder 20 caracteres.");
 
-                var telefonoLimpio = System.Text.RegularExpressions.Regex.Replace(telefono, @"[^\d]", "");
-                if (telefonoLimpio.Length < 8)
+                // Limpiar el teléfono (solo dígitos, manteniendo el + inicial si existe)
+                var telefonoLimpio = telefono.TrimStart().StartsWith("+")
+                    ? "+" + System.Text.RegularExpressions.Regex.Replace(telefono, @"[^\d]", "")
+                    : System.Text.RegularExpressions.Regex.Replace(telefono, @"[^\d]", "");
+
+                // Validar formatos por país
+                // Cuba: 8 dígitos (5XXX XXXX móvil o XX XXXXXX fijo), con o sin +53
+                var cubaRegex = new System.Text.RegularExpressions.Regex(@"^(?:\+?53)?[2-9]\d{7}$");
+
+                // España: 9 dígitos, con o sin +34
+                var espanaRegex = new System.Text.RegularExpressions.Regex(@"^(?:\+?34)?[6-9]\d{8}$");
+
+                // EE.UU.: 10 dígitos, con o sin +1
+                var usaRegex = new System.Text.RegularExpressions.Regex(@"^(?:\+?1)?[2-9]\d{9}$");
+
+                // Francia: 10 dígitos, con o sin +33
+                var franciaRegex = new System.Text.RegularExpressions.Regex(@"^(?:\+?33)?[1-9]\d{8}$");
+
+                var esValido = cubaRegex.IsMatch(telefonoLimpio) ||
+                              espanaRegex.IsMatch(telefonoLimpio) ||
+                              usaRegex.IsMatch(telefonoLimpio) ||
+                              franciaRegex.IsMatch(telefonoLimpio);
+
+                if (!esValido)
                 {
-                    throw new DomainException("El teléfono debe tener al menos 8 dígitos.");
+                    throw new DomainException(
+                        "El teléfono no tiene un formato válido. " +
+                        "Formatos aceptados: Cuba (+53 8 dígitos), España (+34 9 dígitos), " +
+                        "EE.UU. (+1 10 dígitos), Francia (+33 10 dígitos).");
                 }
             }
 

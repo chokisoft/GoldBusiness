@@ -39,13 +39,15 @@ import { SystemConfigurationDetailComponent } from './pages/system-configuration
 
 // Pipes
 import { TranslatePipe } from './pipes/translate.pipe';
+import { LocalizedDatePipe } from './pipes/localized-date.pipe';
+import { LocalizedPhonePipe } from './pipes/localized-phone.pipe';
 
 // Servicios
 import { ApiService } from './services/api.service';
 import { AuthService } from './services/auth.service';
 import { LanguageService } from './services/language.service';
 import { TranslationService } from './services/translation.service';
-import { SidebarService } from './services/sidebar.service'; // ← NUEVO
+import { SidebarService } from './services/sidebar.service';
 import { GrupoCuentaService } from './services/grupo-cuenta.service';
 import { SubGrupoCuentaService } from './services/subgrupo-cuenta.service';
 import { CuentaService } from './services/cuenta.service';
@@ -82,7 +84,9 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     SystemConfigurationFormComponent,
     SystemConfigurationDetailComponent,
     // Pipes
-    TranslatePipe
+    TranslatePipe,
+    LocalizedDatePipe,
+    LocalizedPhonePipe
   ],
   imports: [
     BrowserModule,
@@ -108,7 +112,7 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     AuthService,
     LanguageService,
     TranslationService,
-    SidebarService, // ← NUEVO
+    SidebarService,
     GrupoCuentaService,
     SubGrupoCuentaService,
     CuentaService,

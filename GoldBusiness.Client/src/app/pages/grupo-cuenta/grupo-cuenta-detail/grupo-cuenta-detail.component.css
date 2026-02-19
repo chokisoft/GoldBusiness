@@ -3,9 +3,10 @@
    ═══════════════════════════════════════════════════════════ */
 
 .page-container {
-  max-width: 900px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
+  width: 100%;
 }
 
 /* ✅ Encabezado con acciones */
@@ -91,7 +92,7 @@
 /* ✅ Grid de información */
 .info-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
 }
 
@@ -345,6 +346,24 @@
 }
 
 /* ✅ Responsive */
+
+/* Tablets en landscape y pantallas medianas (768px - 1024px) */
+@media (max-width: 1024px) {
+  .page-container {
+    max-width: 100%;
+    padding: 1.5rem;
+  }
+
+  .info-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .metadata-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Tablets en portrait (576px - 768px) */
 @media (max-width: 768px) {
   .page-container {
     padding: 1rem;
@@ -356,16 +375,23 @@
     gap: 1rem;
   }
 
+  .page-title {
+    font-size: 1.5rem;
+  }
+
   .header-actions {
     width: 100%;
+    flex-wrap: wrap;
   }
 
     .header-actions .btn {
       flex: 1;
+      min-width: 120px;
     }
 
   .info-grid {
     grid-template-columns: 1fr;
+    gap: 1rem;
   }
 
   .metadata-grid {
@@ -374,5 +400,38 @@
 
   .card-body {
     padding: 1rem;
+  }
+}
+
+/* Móviles pequeños (< 576px) */
+@media (max-width: 576px) {
+  .page-container {
+    padding: 0.75rem;
+  }
+
+  .page-title {
+    font-size: 1.25rem;
+  }
+
+  .page-subtitle {
+    font-size: 0.85rem;
+  }
+
+  .card-header {
+    padding: 1rem;
+    font-size: 1rem;
+  }
+
+  .card-body {
+    padding: 0.75rem;
+  }
+
+  .btn {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .header-actions .btn {
+    width: 100%;
   }
 }
