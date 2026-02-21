@@ -510,4 +510,22 @@
 	<data name="Field_UnidadMedida" xml:space="preserve">
   <value>Unit of Measure</value>
 </data>
+	<data name="LogoFormatoInvalido" xml:space="preserve">
+  <value>Invalid logo format. Use PNG, JPG, GIF or WEBP.</value>
+</data>
+	<data name="LogoTamañoExcedido" xml:space="preserve">
+  <value>Logo file cannot exceed 2MB.</value>
+</data>
+	<data name="LogoNombreArchivoInvalido" xml:space="preserve">
+  <value>Logo file name contains invalid characters.</value>
+</data>
+	<data name="LogoExtensionInvalida" xml:space="preserve">
+  <value>Invalid file extension. Use PNG, JPG, GIF or WEBP.</value>
+</data>
+	<data name="LogoUrlInvalida" xml:space="preserve">
+  <value>Invalid logo URL.</value>
+</data>
+	<data name="Field_Logo" xml:space="preserve">
+  <value>Logo</value>
+</data>
 </root>

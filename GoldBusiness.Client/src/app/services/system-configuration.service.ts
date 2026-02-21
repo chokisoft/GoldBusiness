@@ -22,7 +22,6 @@ export interface SystemConfigurationDTO {
   fechaHoraCreado?: string;
   modificadoPor?: string;
   fechaHoraModificado?: string;
-  // Propiedades adicionales para visualización
   cuentaPagarCodigo?: string;
   cuentaPagarDescripcion?: string;
   cuentaCobrarCodigo?: string;
@@ -44,27 +43,43 @@ export class SystemConfigurationService {
   constructor(private apiService: ApiService) { }
 
   getAll(): Observable<SystemConfigurationDTO[]> {
-    console.log('📊 Obteniendo todas las configuraciones del sistema...');
     return this.apiService.get<SystemConfigurationDTO[]>(this.endpoint);
   }
 
   getById(id: number): Observable<SystemConfigurationDTO> {
-    console.log('📊 Obteniendo configuración del sistema:', id);
     return this.apiService.get<SystemConfigurationDTO>(`${this.endpoint}/${id}`);
   }
 
   create(dto: SystemConfigurationDTO): Observable<SystemConfigurationDTO> {
-    console.log('📊 Creando configuración del sistema:', dto);
     return this.apiService.post<SystemConfigurationDTO>(this.endpoint, dto);
   }
 
   update(id: number, dto: SystemConfigurationDTO): Observable<SystemConfigurationDTO> {
-    console.log('📊 Actualizando configuración del sistema:', id, dto);
     return this.apiService.put<SystemConfigurationDTO>(`${this.endpoint}/${id}`, dto);
   }
 
   delete(id: number): Observable<void> {
-    console.log('📊 Eliminando configuración del sistema:', id);
     return this.apiService.delete<void>(`${this.endpoint}/${id}`);
+  }
+
+  /**
+   * Sube el archivo de logo al servidor.
+   * Devuelve el nombre del archivo guardado en disco.
+   */
+  uploadLogo(codigoSistema: string, file: File): Observable<{ fileName: string }> {
+    const formData = new FormData();
+    // ✅ Las claves deben coincidir exactamente con las propiedades de UploadLogoRequest
+    formData.append('file', file);
+    formData.append('codigoSistema', codigoSistema);
+    return this.apiService.postFormData<{ fileName: string }>(
+      `${this.endpoint}/upload-logo`, formData
+    );
+  }
+
+  /**
+   * Devuelve la URL completa del logo para usar en [src] de <img>.
+   */
+  getLogoUrl(fileName: string): string {
+    return this.apiService.buildUrl(`${this.endpoint}/logo/${fileName}`);
   }
 }

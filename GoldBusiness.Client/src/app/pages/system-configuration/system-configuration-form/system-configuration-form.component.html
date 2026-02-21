@@ -19,10 +19,7 @@
         <div class="form-row">
           <div class="form-group">
             <label for="codigoSistema" class="form-label">{{ 'systemConfig.codigoSistema' | translate }} *</label>
-            <input type="text"
-                   id="codigoSistema"
-                   formControlName="codigoSistema"
-                   class="form-control"
+            <input type="text" id="codigoSistema" formControlName="codigoSistema" class="form-control"
                    [class.is-invalid]="form.get('codigoSistema')?.invalid && form.get('codigoSistema')?.touched"
                    placeholder="Ej: GOLD-ERP-001" />
             <div class="invalid-feedback" *ngIf="form.get('codigoSistema')?.invalid && form.get('codigoSistema')?.touched">
@@ -32,10 +29,7 @@
 
           <div class="form-group">
             <label for="licencia" class="form-label">{{ 'systemConfig.licencia' | translate }} *</label>
-            <input type="text"
-                   id="licencia"
-                   formControlName="licencia"
-                   class="form-control"
+            <input type="text" id="licencia" formControlName="licencia" class="form-control"
                    [class.is-invalid]="form.get('licencia')?.invalid && form.get('licencia')?.touched"
                    placeholder="Código de licencia" />
             <div class="invalid-feedback" *ngIf="form.get('licencia')?.invalid && form.get('licencia')?.touched">
@@ -46,10 +40,7 @@
 
         <div class="form-group">
           <label for="nombreNegocio" class="form-label">{{ 'systemConfig.nombreNegocio' | translate }} *</label>
-          <input type="text"
-                 id="nombreNegocio"
-                 formControlName="nombreNegocio"
-                 class="form-control"
+          <input type="text" id="nombreNegocio" formControlName="nombreNegocio" class="form-control"
                  [class.is-invalid]="form.get('nombreNegocio')?.invalid && form.get('nombreNegocio')?.touched"
                  placeholder="Nombre completo del negocio" />
           <div class="invalid-feedback" *ngIf="form.get('nombreNegocio')?.invalid && form.get('nombreNegocio')?.touched">
@@ -59,10 +50,7 @@
 
         <div class="form-group">
           <label for="caducidad" class="form-label">{{ 'systemConfig.caducidad' | translate }} *</label>
-          <input type="date"
-                 id="caducidad"
-                 formControlName="caducidad"
-                 class="form-control"
+          <input type="date" id="caducidad" formControlName="caducidad" class="form-control"
                  [class.is-invalid]="form.get('caducidad')?.invalid && form.get('caducidad')?.touched" />
           <div class="invalid-feedback" *ngIf="form.get('caducidad')?.invalid && form.get('caducidad')?.touched">
             {{ getErrorMessage('caducidad') }}
@@ -76,85 +64,97 @@
 
         <div class="form-group">
           <label for="direccion" class="form-label">{{ 'systemConfig.direccion' | translate }}</label>
-          <textarea id="direccion"
-                    formControlName="direccion"
-                    class="form-control"
-                    rows="2"
+          <textarea id="direccion" formControlName="direccion" class="form-control" rows="2"
                     placeholder="Dirección completa del negocio"></textarea>
         </div>
 
         <div class="form-row">
           <div class="form-group">
             <label for="municipio" class="form-label">{{ 'systemConfig.municipio' | translate }}</label>
-            <input type="text"
-                   id="municipio"
-                   formControlName="municipio"
-                   class="form-control"
-                   placeholder="Municipio" />
+            <input type="text" id="municipio" formControlName="municipio" class="form-control" placeholder="Municipio" />
           </div>
-
           <div class="form-group">
             <label for="provincia" class="form-label">{{ 'systemConfig.provincia' | translate }}</label>
-            <input type="text"
-                   id="provincia"
-                   formControlName="provincia"
-                   class="form-control"
-                   placeholder="Provincia" />
+            <input type="text" id="provincia" formControlName="provincia" class="form-control" placeholder="Provincia" />
           </div>
-
           <div class="form-group">
             <label for="codPostal" class="form-label">{{ 'systemConfig.codPostal' | translate }}</label>
-            <input type="text"
-                   id="codPostal"
-                   formControlName="codPostal"
-                   class="form-control"
-                   placeholder="CP" />
+            <input type="text" id="codPostal" formControlName="codPostal" class="form-control" placeholder="CP" />
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
             <label for="email" class="form-label">{{ 'systemConfig.email' | translate }}</label>
-            <input type="email"
-                   id="email"
-                   formControlName="email"
-                   class="form-control"
+            <input type="email" id="email" formControlName="email" class="form-control"
                    [class.is-invalid]="form.get('email')?.invalid && form.get('email')?.touched"
                    placeholder="correo@empresa.com" />
             <div class="invalid-feedback" *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
               {{ getErrorMessage('email') }}
             </div>
           </div>
-
           <div class="form-group">
             <label for="telefono" class="form-label">{{ 'systemConfig.telefono' | translate }}</label>
-            <input type="tel"
-                   id="telefono"
-                   formControlName="telefono"
-                   class="form-control"
-                   placeholder="+1 (555) 123-4567" />
+            <input type="tel" id="telefono" formControlName="telefono" class="form-control" placeholder="+1 (555) 123-4567" />
           </div>
         </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label for="web" class="form-label">{{ 'systemConfig.web' | translate }}</label>
-            <input type="url"
-                   id="web"
-                   formControlName="web"
-                   class="form-control"
-                   placeholder="https://www.empresa.com" />
-          </div>
+        <div class="form-group">
+          <label for="web" class="form-label">{{ 'systemConfig.web' | translate }}</label>
+          <input type="url" id="web" formControlName="web" class="form-control" placeholder="https://www.empresa.com" />
+        </div>
+      </div>
 
-          <div class="form-group">
-            <label for="imagen" class="form-label">{{ 'systemConfig.imagen' | translate }}</label>
-            <input type="url"
-                   id="imagen"
-                   formControlName="imagen"
-                   class="form-control"
-                   placeholder="https://ejemplo.com/logo.png" />
+      <!-- 🖼️ Logo del Negocio -->
+      <div class="form-section">
+        <h3 class="section-title">🖼️ {{ 'systemConfig.imagen' | translate }}</h3>
+
+        <!-- Preview -->
+        <div class="logo-preview-container">
+          <img *ngIf="logoPreviewUrl"
+               [src]="logoPreviewUrl"
+               [alt]="'systemConfig.logoPreview' | translate"
+               class="logo-preview"
+               (error)="onLogoError($event)" />
+          <div *ngIf="!logoPreviewUrl" class="logo-placeholder">
+            🏢
           </div>
         </div>
+
+        <!-- ✅ BOTÓN PERSONALIZADO TRADUCIBLE -->
+        <div class="form-group" style="margin-top: 0.75rem;">
+          <label for="logoFile" class="form-label">{{ 'systemConfig.logoSelectFile' | translate }}</label>
+
+          <!-- Input oculto -->
+          <input type="file"
+                 #fileInput
+                 id="logoFile"
+                 accept=".png,.jpg,.jpeg,.gif,.webp"
+                 (change)="onLogoSelected($event)"
+                 style="display: none;" />
+
+          <!-- Botón visible y traducible -->
+          <button type="button"
+                  class="btn btn-file-upload"
+                  (click)="fileInput.click()">
+            📁 {{ 'systemConfig.logoChooseFile' | translate }}
+          </button>
+
+          <small class="form-text">{{ 'systemConfig.logoFormatHint' | translate }}</small>
+        </div>
+
+        <!-- Nombre del logo actual (guardado en BD) -->
+        <div *ngIf="form.get('imagen')?.value && !selectedLogoFile" class="current-logo-name">
+          <span class="file-icon">📎</span>
+          <span class="file-name">{{ form.get('imagen')?.value }}</span>
+          <button type="button" class="btn btn-sm btn-danger"
+                  (click)="removeLogo()">
+            ✕ {{ 'systemConfig.logoRemove' | translate }}
+          </button>
+        </div>
+
+        <!-- Campo oculto que almacena el nombre del archivo -->
+        <input type="hidden" formControlName="imagen" />
       </div>
 
       <!-- Sección de Cuentas Contables -->
@@ -162,14 +162,9 @@
         <h3 class="section-title">💰 {{ 'systemConfig.cuentasContables' | translate }}</h3>
 
         <div class="form-group-cuentas">
-          <!-- ✅ Cuenta por Pagar -->
           <div class="form-group">
-            <label for="cuentaPagarId" class="form-label">
-              {{ 'systemConfig.cuentaPagar' | translate }} *
-            </label>
-            <select id="cuentaPagarId"
-                    formControlName="cuentaPagarId"
-                    class="form-control"
+            <label for="cuentaPagarId" class="form-label">{{ 'systemConfig.cuentaPagar' | translate }} *</label>
+            <select id="cuentaPagarId" formControlName="cuentaPagarId" class="form-control"
                     [class.is-invalid]="form.get('cuentaPagarId')?.invalid && form.get('cuentaPagarId')?.touched"
                     [disabled]="loadingCuentas">
               <option [value]="null">{{ 'common.select' | translate }}</option>
@@ -183,14 +178,9 @@
             </div>
           </div>
 
-          <!-- ✅ Cuenta por Cobrar -->
           <div class="form-group">
-            <label for="cuentaCobrarId" class="form-label">
-              {{ 'systemConfig.cuentaCobrar' | translate }} *
-            </label>
-            <select id="cuentaCobrarId"
-                    formControlName="cuentaCobrarId"
-                    class="form-control"
+            <label for="cuentaCobrarId" class="form-label">{{ 'systemConfig.cuentaCobrar' | translate }} *</label>
+            <select id="cuentaCobrarId" formControlName="cuentaCobrarId" class="form-control"
                     [class.is-invalid]="form.get('cuentaCobrarId')?.invalid && form.get('cuentaCobrarId')?.touched"
                     [disabled]="loadingCuentas">
               <option [value]="null">{{ 'common.select' | translate }}</option>

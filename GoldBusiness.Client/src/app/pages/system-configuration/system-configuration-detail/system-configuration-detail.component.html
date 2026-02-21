@@ -129,6 +129,27 @@
         </div>
       </div>
 
+      <!-- ✅ Logo del negocio -->
+      <div class="info-section">
+        <h3 class="section-title">🖼️ {{ 'systemConfig.imagen' | translate }}</h3>
+        
+        <!-- ✅ Mostrar imagen si existe y no falló -->
+        <div *ngIf="config?.imagen && !logoError" class="logo-container">
+          <img [src]="getLogoUrl()"
+               [alt]="config.nombreNegocio"
+               class="company-logo-detail"
+               (error)="onImageError($event)" />
+        </div>
+        
+        <!-- ✅ Mostrar placeholder si no hay imagen o falló al cargar -->
+        <div *ngIf="!config?.imagen || logoError" class="logo-placeholder">
+          <div class="placeholder-content">
+            <span class="placeholder-icon">🖼️</span>
+            <p class="placeholder-text">{{ 'systemConfig.noLogo' | translate }}</p>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 

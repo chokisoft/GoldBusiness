@@ -926,6 +926,65 @@ export class TranslationService {
     },
 
     // ═══════════════════════════════════════════════════════════
+    // 🖼️ LOGO - NUEVAS TRADUCCIONES
+    // ═══════════════════════════════════════════════════════════
+    'systemConfig.logoUpload': {
+      'es': 'Subir Logo',
+      'en': 'Upload Logo',
+      'fr': 'Télécharger Logo'
+    },
+    'systemConfig.logoCurrentFile': {
+      'es': 'Archivo actual',
+      'en': 'Current file',
+      'fr': 'Fichier actuel'
+    },
+    'systemConfig.logoSelectFile': {
+      'es': 'Seleccionar archivo de logo',
+      'en': 'Select logo file',
+      'fr': 'Sélectionner fichier logo'
+    },
+    'systemConfig.logoChooseFile': {
+      'es': 'Elegir Archivo',
+      'en': 'Choose File',
+      'fr': 'Choisir Fichier'
+    },
+    'systemConfig.logoRemove': {
+      'es': 'Quitar',
+      'en': 'Remove',
+      'fr': 'Retirer'
+    },
+    'systemConfig.logoFormatHint': {
+      'es': 'PNG, JPG, GIF o WEBP (máx. 2MB)',
+      'en': 'PNG, JPG, GIF or WEBP (max 2MB)',
+      'fr': 'PNG, JPG, GIF ou WEBP (max 2Mo)'
+    },
+    'systemConfig.logoInvalidFormat': {
+      'es': 'Formato no válido. Use PNG, JPG, GIF o WEBP.',
+      'en': 'Invalid format. Use PNG, JPG, GIF or WEBP.',
+      'fr': 'Format invalide. Utilisez PNG, JPG, GIF ou WEBP.'
+    },
+    'systemConfig.logoSizeExceeded': {
+      'es': 'El archivo no puede superar 2MB.',
+      'en': 'File cannot exceed 2MB.',
+      'fr': 'Le fichier ne peut pas dépasser 2Mo.'
+    },
+    'systemConfig.logoUploadError': {
+      'es': 'Error al subir el logo',
+      'en': 'Error uploading logo',
+      'fr': 'Erreur lors du téléchargement du logo'
+    },
+    'systemConfig.noLogo': {
+      'es': 'Sin logo configurado',
+      'en': 'No logo configured',
+      'fr': 'Aucun logo configuré'
+    },
+    'systemConfig.logoPreview': {
+      'es': 'Vista previa del logo',
+      'en': 'Logo preview',
+      'fr': 'Aperçu du logo'
+    },
+
+    // ═══════════════════════════════════════════════════════════
     // 🕒 AUDITORÍA
     // ═══════════════════════════════════════════════════════════
     'audit.title': {

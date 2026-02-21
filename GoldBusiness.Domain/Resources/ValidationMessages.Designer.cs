@@ -664,6 +664,15 @@ namespace GoldBusiness.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Logo.
+        /// </summary>
+        public static string Field_Logo {
+            get {
+                return ResourceManager.GetString("Field_Logo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Modificado por.
         /// </summary>
         public static string Field_ModificadoPor {
@@ -984,6 +993,51 @@ namespace GoldBusiness.Domain.Resources {
         public static string LoginFailed {
             get {
                 return ResourceManager.GetString("LoginFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to La extensión del archivo no es válida. Use PNG, JPG, GIF o WEBP..
+        /// </summary>
+        public static string LogoExtensionInvalida {
+            get {
+                return ResourceManager.GetString("LogoExtensionInvalida", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Formato de logo no válido. Use PNG, JPG, GIF o WEBP..
+        /// </summary>
+        public static string LogoFormatoInvalido {
+            get {
+                return ResourceManager.GetString("LogoFormatoInvalido", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El nombre de archivo del logo contiene caracteres no válidos..
+        /// </summary>
+        public static string LogoNombreArchivoInvalido {
+            get {
+                return ResourceManager.GetString("LogoNombreArchivoInvalido", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El archivo de logo no puede superar 2MB..
+        /// </summary>
+        public static string LogoTamañoExcedido {
+            get {
+                return ResourceManager.GetString("LogoTamañoExcedido", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to La URL del logo no es válida..
+        /// </summary>
+        public static string LogoUrlInvalida {
+            get {
+                return ResourceManager.GetString("LogoUrlInvalida", resourceCulture);
             }
         }
         

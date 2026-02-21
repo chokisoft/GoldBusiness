@@ -500,6 +500,10 @@ builder.Services.AddSwaggerGen(c =>
             Array.Empty<string>()
         }
     });
+
+    // ✅ Necesario para que Swagger genere correctamente los endpoints con IFormFile
+    c.MapType<IFormFile>(() => new OpenApiSchema { Type = "string", Format = "binary" });
+
 });
 
 // ============================================

@@ -142,13 +142,35 @@ namespace GoldBusiness.Domain.Entities
             if (!string.IsNullOrWhiteSpace(imagen))
             {
                 if (imagen.Length > 500)
-                    throw new DomainException("La URL de la imagen no puede exceder 500 caracteres.");
+                    throw new DomainException("El nombre de archivo del logo no puede exceder 500 caracteres.");
 
-                // Validación básica de URL
-                if (!Uri.TryCreate(imagen, UriKind.Absolute, out var uri) ||
-                    (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
+                // ✅ VALIDACIÓN DUAL: Acepta nombres de archivo locales o URLs externas
+                if (imagen.Contains("://"))
                 {
-                    throw new DomainException("La URL de la imagen no es válida.");
+                    // Es una URL - validar formato
+                    if (!Uri.TryCreate(imagen, UriKind.Absolute, out var uri) ||
+                        (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
+                    {
+                        throw new DomainException("La URL de la imagen no es válida.");
+                    }
+                }
+                else
+                {
+                    // Es un nombre de archivo local - validar caracteres y extensión
+                    var invalidChars = Path.GetInvalidFileNameChars();
+                    if (imagen.Any(c => invalidChars.Contains(c)))
+                    {
+                        throw new DomainException("El nombre de archivo contiene caracteres no válidos.");
+                    }
+
+                    // Validar extensión permitida
+                    var allowedExtensions = new[] { ".png", ".jpg", ".jpeg", ".gif", ".webp" };
+                    var extension = Path.GetExtension(imagen).ToLowerInvariant();
+
+                    if (!string.IsNullOrEmpty(extension) && !allowedExtensions.Contains(extension))
+                    {
+                        throw new DomainException("La extensión del archivo no es válida. Use PNG, JPG, GIF o WEBP.");
+                    }
                 }
             }
 

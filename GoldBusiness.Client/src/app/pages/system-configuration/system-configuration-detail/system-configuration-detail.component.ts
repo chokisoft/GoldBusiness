@@ -15,6 +15,9 @@ export class SystemConfigurationDetailComponent implements OnInit, OnDestroy {
   id: number | null = null;
   loading = true;
   error: string | null = null;
+  
+  // ✅ Control de error de imagen para evitar bucles
+  logoError = false;
 
   private languageSubscription?: Subscription;
 
@@ -49,10 +52,10 @@ export class SystemConfigurationDetailComponent implements OnInit, OnDestroy {
 
   loadConfiguration(): void {
     if (!this.id) return;
-
     this.loading = true;
     this.error = null;
-
+    this.logoError = false; // ✅ Reset del flag al recargar
+    
     this.systemConfigurationService.getById(this.id).subscribe({
       next: (data: SystemConfigurationDTO) => {
         this.config = data;
@@ -66,10 +69,18 @@ export class SystemConfigurationDetailComponent implements OnInit, OnDestroy {
     });
   }
 
+  /** Devuelve la URL del logo para usar en [src] */
+  getLogoUrl(): string | null {
+    // ✅ Si ya hubo error, no devolver nada (mostrar placeholder en HTML)
+    if (this.logoError) return null;
+    
+    if (!this.config?.imagen) return null;
+    
+    return this.systemConfigurationService.getLogoUrl(this.config.imagen);
+  }
+
   goToEdit(): void {
-    if (this.id) {
-      this.router.navigate(['/configuracion/editar', this.id]);
-    }
+    if (this.id) this.router.navigate(['/configuracion/editar', this.id]);
   }
 
   goBack(): void {
@@ -90,8 +101,9 @@ export class SystemConfigurationDetailComponent implements OnInit, OnDestroy {
     return '✅';
   }
 
+  /** ✅ Se ejecuta una sola vez cuando falla la carga del logo */
   onImageError(event: Event): void {
-    const imgElement = event.target as HTMLImageElement;
-    imgElement.src = 'assets/placeholder-logo.png';
+    console.warn('❌ Error al cargar logo, usando placeholder');
+    this.logoError = true; // ✅ Marcar que hubo error para evitar bucle
   }
 }

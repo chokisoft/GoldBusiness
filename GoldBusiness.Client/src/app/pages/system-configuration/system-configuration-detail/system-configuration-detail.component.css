@@ -435,3 +435,51 @@
     width: 100%;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   🖼️ LOGO
+   ══════════════════════════════════════════════════════════════ */
+
+.logo-container {
+  display: flex;
+  justify-content: flex-start;
+  padding: 1rem;
+}
+
+.company-logo-detail {
+  max-height: 120px;
+  max-width: 300px;
+  object-fit: contain;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 8px;
+  background: #fff;
+}
+
+.logo-placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 150px;
+  background: #f8f9fa;
+  border: 2px dashed #dee2e6;
+  border-radius: 8px;
+  padding: 2rem;
+}
+
+.placeholder-content {
+  text-align: center;
+}
+
+.placeholder-icon {
+  font-size: 4rem;
+  opacity: 0.3;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.placeholder-text {
+  color: #6c757d;
+  font-size: 0.9rem;
+  margin: 0;
+}

@@ -87,6 +87,24 @@ export class ApiService {
   }
 
   /**
+   * POST multipart/form-data — NO establecer Content-Type manualmente,
+   * el navegador lo agrega automáticamente con el boundary correcto.
+   */
+  postFormData<T>(endpoint: string, formData: FormData): Observable<T> {
+    const url = `${this.apiUrl}/${endpoint}`;
+    const currentLanguage = this.languageService.getCurrentLanguage();
+    console.log('📡 POST (FormData):', url);
+    return this.http.post<T>(url, formData, {
+      headers: new HttpHeaders({ 'Accept-Language': currentLanguage })
+    }).pipe(catchError(this.handleError));
+  }
+
+  /** Construye la URL completa para un endpoint (útil para src de imágenes) */
+  buildUrl(endpoint: string): string {
+    return `${this.apiUrl}/${endpoint}`;
+  }
+
+  /**
    * Manejo centralizado de errores HTTP
    */
   private handleError(error: HttpErrorResponse) {
