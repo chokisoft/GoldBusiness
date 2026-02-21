@@ -24,11 +24,15 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.1" />
   </ItemGroup>
 
-    <ItemGroup>
+	<ItemGroup>
 		<None Remove="Data\SeedData\SubLineas.csv" />
 		<None Remove="Data\SeedData\Paises.csv" />
 		<None Remove="Data\SeedData\Provincias.csv" />
 		<None Remove="Data\SeedData\Municipios.csv" />
+		<None Remove="Data\SeedData\Lineas.csv" />
+		<None Remove="Data\SeedData\GrupoCuentas.csv" />
+		<None Remove="Data\SeedData\SubGruposCuentas.csv" />
+		<None Remove="Data\SeedData\Cuentas.csv" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -44,8 +48,20 @@
 		<EmbeddedResource Include="Data\SeedData\Municipios.csv">
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</EmbeddedResource>
+		<EmbeddedResource Include="Data\SeedData\Lineas.csv">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</EmbeddedResource>
+		<EmbeddedResource Include="Data\SeedData\GrupoCuentas.csv">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</EmbeddedResource>
+		<EmbeddedResource Include="Data\SeedData\SubGruposCuentas.csv">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</EmbeddedResource>
+		<EmbeddedResource Include="Data\SeedData\Cuentas.csv">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</EmbeddedResource>
 	</ItemGroup>
-
+	
 	<ItemGroup>
 	  <Folder Include="Migrations\" />
 	</ItemGroup>

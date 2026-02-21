@@ -1,12 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { skip } from 'rxjs/operators';
 import { CuentaService, CuentaDTO } from '../../../services/cuenta.service';
+import { LanguageService } from '../../../services/language.service';
 
 @Component({
   selector: 'app-cuenta-list',
   templateUrl: './cuenta-list.component.html',
   styleUrls: ['./cuenta-list.component.css']
 })
-export class CuentaListComponent implements OnInit {
+export class CuentaListComponent implements OnInit, OnDestroy {
   cuentas: CuentaDTO[] = [];
   filteredCuentas: CuentaDTO[] = [];
   paginatedCuentas: CuentaDTO[] = [];
@@ -24,10 +27,26 @@ export class CuentaListComponent implements OnInit {
   // ✅ Exponer Math para usarlo en el template
   Math = Math;
 
-  constructor(private cuentaService: CuentaService) {}
+  private languageSubscription?: Subscription;
+
+  constructor(
+    private cuentaService: CuentaService,
+    private languageService: LanguageService
+  ) {}
 
   ngOnInit(): void {
     this.loadData();
+
+    this.languageSubscription = this.languageService.currentLanguage$
+      .pipe(skip(1))
+      .subscribe(() => {
+        console.log('🔄 CuentaList: Idioma cambiado, recargando datos...');
+        this.loadData();
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.languageSubscription?.unsubscribe();
   }
 
   loadData(): void {

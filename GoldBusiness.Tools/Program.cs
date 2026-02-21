@@ -2,8 +2,8 @@
 using System.Text;
 
 Console.OutputEncoding = Encoding.UTF8;
-Console.WriteLine("🌍 GeoNames → CSV Converter para GoldBusiness");
-Console.WriteLine("═══════════════════════════════════════════════");
+Console.WriteLine("🌍 GeoNames + CPV → CSV Converter para GoldBusiness");
+Console.WriteLine("═══════════════════════════════════════════════════════");
 
 // ═══════════════════════════════════════════════════════════════
 // CONFIGURACIÓN
@@ -14,7 +14,6 @@ Directory.CreateDirectory(outputDir);
 var tempDir = Path.Combine(AppContext.BaseDirectory, "temp");
 Directory.CreateDirectory(tempDir);
 
-// Códigos ISO de los países que tienes en SeedPais
 var paisesDeseados = new HashSet<string>
 {
     "MX","GT","HN","SV","NI","CR","PA","CU","DO",
@@ -30,12 +29,8 @@ var paisesDeseados = new HashSet<string>
     "TH","VN","ID","TR","IL","AE","SA","EG","MA","GR","RO","CZ","HU","UA"
 };
 
-// ═══════════════════════════════════════════════════════════════
-// DICCIONARIO DE DATOS TELEFÓNICOS (no disponible en GeoNames)
-// ═══════════════════════════════════════════════════════════════
 var phoneData = new Dictionary<string, (string Tel, string Regex, string Fmt, string Ej)>
 {
-    // Hispanoamérica
     ["MX"] = ("+52", @"^(?:\+?52)?[1-9]\d{9}$", "+52 XX XXXX XXXX", "+52 55 1234 5678"),
     ["GT"] = ("+502", @"^(?:\+?502)?[2-7]\d{7}$", "+502 XXXX-XXXX", "+502 5123-4567"),
     ["HN"] = ("+504", @"^(?:\+?504)?[2-9]\d{7}$", "+504 XXXX-XXXX", "+504 9123-4567"),
@@ -56,7 +51,6 @@ var phoneData = new Dictionary<string, (string Tel, string Regex, string Fmt, st
     ["PY"] = ("+595", @"^(?:\+?595)?[9]\d{8}$", "+595 XXX XXX XXX", "+595 981 234 567"),
     ["ES"] = ("+34", @"^(?:\+?34)?[6-9]\d{8}$", "+34 XXX XX XX XX", "+34 612 34 56 78"),
     ["GQ"] = ("+240", @"^(?:\+?240)?[235]\d{8}$", "+240 XXX XXX XXX", "+240 222 123 456"),
-    // Francofonía
     ["FR"] = ("+33", @"^(?:\+?33)?[1-9]\d{8}$", "+33 X XX XX XX XX", "+33 6 12 34 56 78"),
     ["BE"] = ("+32", @"^(?:\+?32)?[4]\d{8}$", "+32 XXX XX XX XX", "+32 470 12 34 56"),
     ["CH"] = ("+41", @"^(?:\+?41)?[7]\d{8}$", "+41 XX XXX XX XX", "+41 79 123 45 67"),
@@ -85,7 +79,6 @@ var phoneData = new Dictionary<string, (string Tel, string Regex, string Fmt, st
     ["KM"] = ("+269", @"^(?:\+?269)?[3]\d{6}$", "+269 XXX XX XX", "+269 321 23 45"),
     ["DJ"] = ("+253", @"^(?:\+?253)?[77]\d{7}$", "+253 XX XX XX XX", "+253 77 12 34 56"),
     ["MU"] = ("+230", @"^(?:\+?230)?[5]\d{7}$", "+230 XXXX XXXX", "+230 5123 4567"),
-    // Anglofonía
     ["US"] = ("+1", @"^(?:\+?1)?[2-9]\d{9}$", "+1 (XXX) XXX-XXXX", "+1 (202) 555-1234"),
     ["JM"] = ("+1", @"^(?:\+?1)?[8]\d{9}$", "+1 (XXX) XXX-XXXX", "+1 (876) 123-4567"),
     ["BS"] = ("+1", @"^(?:\+?1)?[2]\d{9}$", "+1 (XXX) XXX-XXXX", "+1 (242) 123-4567"),
@@ -133,7 +126,6 @@ var phoneData = new Dictionary<string, (string Tel, string Regex, string Fmt, st
     ["KI"] = ("+686", @"^(?:\+?686)?[7-9]\d{7}$", "+686 XXXX XXXX", "+686 7212 3456"),
     ["SB"] = ("+677", @"^(?:\+?677)?[7-9]\d{6}$", "+677 XXX XXXX", "+677 712 3456"),
     ["VU"] = ("+678", @"^(?:\+?678)?[5-7]\d{6}$", "+678 XXX XXXX", "+678 512 3456"),
-    // Otros
     ["BR"] = ("+55", @"^(?:\+?55)?[1-9]\d{10}$", "+55 (XX) XXXXX-XXXX", "+55 (11) 91234-5678"),
     ["DE"] = ("+49", @"^(?:\+?49)?[1-9]\d{9,11}$", "+49 XXX XXXXXXXX", "+49 151 23456789"),
     ["IT"] = ("+39", @"^(?:\+?39)?[3]\d{8,9}$", "+39 XXX XXX XXXX", "+39 312 345 6789"),
@@ -166,9 +158,9 @@ var phoneData = new Dictionary<string, (string Tel, string Regex, string Fmt, st
 };
 
 // ═══════════════════════════════════════════════════════════════
-// PASO 1: Descargar archivos de GeoNames
+// PASO 1: Descargar archivos de GeoNames + CPV
 // ═══════════════════════════════════════════════════════════════
-Console.WriteLine("\n📥 Descargando datos de GeoNames...");
+Console.WriteLine("\n📥 Descargando datos...");
 
 using var httpClient = new HttpClient
 {
@@ -176,66 +168,59 @@ using var httpClient = new HttpClient
 };
 
 var countryInfoFile = Path.Combine(tempDir, "countryInfo.txt");
-var admin1File = Path.Combine(tempDir, "admin1CodesASCII.txt");
-var admin2File = Path.Combine(tempDir, "admin2Codes.txt");
-var altNamesZip = Path.Combine(tempDir, "alternateNamesV2.zip");
-var altNamesFile = Path.Combine(tempDir, "alternateNamesV2.txt");
+var admin1File      = Path.Combine(tempDir, "admin1CodesASCII.txt");
+var admin2File      = Path.Combine(tempDir, "admin2Codes.txt");
+var altNamesZip     = Path.Combine(tempDir, "alternateNamesV2.zip");
+var altNamesFile    = Path.Combine(tempDir, "alternateNamesV2.txt");
 
+// ── GeoNames ──────────────────────────────────────────────────
 if (!File.Exists(countryInfoFile))
 {
     Console.Write("  → countryInfo.txt ... ");
-    var data = await httpClient.GetByteArrayAsync(
-        "https://download.geonames.org/export/dump/countryInfo.txt");
-    await File.WriteAllBytesAsync(countryInfoFile, data);
+    await File.WriteAllBytesAsync(countryInfoFile,
+        await httpClient.GetByteArrayAsync("https://download.geonames.org/export/dump/countryInfo.txt"));
     Console.WriteLine("✅");
 }
 
 if (!File.Exists(admin1File))
 {
     Console.Write("  → admin1CodesASCII.txt ... ");
-    var data = await httpClient.GetByteArrayAsync(
-        "https://download.geonames.org/export/dump/admin1CodesASCII.txt");
-    await File.WriteAllBytesAsync(admin1File, data);
+    await File.WriteAllBytesAsync(admin1File,
+        await httpClient.GetByteArrayAsync("https://download.geonames.org/export/dump/admin1CodesASCII.txt"));
     Console.WriteLine("✅");
 }
 
 if (!File.Exists(admin2File))
 {
     Console.Write("  → admin2Codes.txt ... ");
-    var data = await httpClient.GetByteArrayAsync(
-        "https://download.geonames.org/export/dump/admin2Codes.txt");
-    await File.WriteAllBytesAsync(admin2File, data);
+    await File.WriteAllBytesAsync(admin2File,
+        await httpClient.GetByteArrayAsync("https://download.geonames.org/export/dump/admin2Codes.txt"));
     Console.WriteLine("✅");
 }
 
 if (!File.Exists(altNamesFile))
 {
-    Console.WriteLine("  → alternateNamesV2.zip (~300MB, puede tardar varios minutos)...");
-    await DownloadWithProgressAsync(
-        httpClient,
-        "https://download.geonames.org/export/dump/alternateNamesV2.zip",
-        altNamesZip);
-
+    Console.WriteLine("  → alternateNamesV2.zip (~300MB)...");
+    await DownloadWithProgressAsync(httpClient,
+        "https://download.geonames.org/export/dump/alternateNamesV2.zip", altNamesZip);
     Console.Write("  → Descomprimiendo... ");
     ZipFile.ExtractToDirectory(altNamesZip, tempDir, overwriteFiles: true);
-    Console.WriteLine("✅");
     File.Delete(altNamesZip);
-    Console.WriteLine("  → ZIP eliminado para liberar espacio ✅");
+    Console.WriteLine("✅");
 }
 
 // ═══════════════════════════════════════════════════════════════
-// PASO 2: Cargar traducciones (alternateNames)
+// PASO 2: Cargar traducciones GeoNames (alternateNames)
 // ═══════════════════════════════════════════════════════════════
 Console.WriteLine("\n📖 Cargando traducciones...");
 
-var traducciones = new Dictionary<string, Dictionary<string, string>>();
+var traducciones  = new Dictionary<string, Dictionary<string, string>>();
 var idiomasDeseados = new HashSet<string> { "es", "en", "fr" };
 
 using (var reader = new StreamReader(altNamesFile, Encoding.UTF8))
 {
     string? line;
     long count = 0;
-
     while ((line = await reader.ReadLineAsync()) != null)
     {
         count++;
@@ -246,29 +231,23 @@ using (var reader = new StreamReader(altNamesFile, Encoding.UTF8))
         if (parts.Length < 4) continue;
 
         var geoNameId = parts[1];
-        var isoLang = parts[2];
-        var altName = parts[3];
+        var isoLang   = parts[2];
+        var altName   = parts[3];
 
         if (!idiomasDeseados.Contains(isoLang)) continue;
 
         if (!traducciones.ContainsKey(geoNameId))
-            traducciones[geoNameId] = new Dictionary<string, string>();
+            traducciones[geoNameId] = [];
 
         traducciones[geoNameId].TryAdd(isoLang, altName.ToUpperInvariant());
     }
-
-    Console.WriteLine($"\r  ✅ {count:N0} líneas procesadas, {traducciones.Count:N0} entidades con traducciones");
+    Console.WriteLine($"\r  ✅ {count:N0} líneas, {traducciones.Count:N0} entidades");
 }
 
 // ═══════════════════════════════════════════════════════════════
-// PASO 3: Procesar países (countryInfo.txt)
+// PASO 3: Procesar países
 // ═══════════════════════════════════════════════════════════════
 Console.WriteLine("\n🌍 Procesando países...");
-
-// Formato countryInfo.txt (tab-separated, # = comentarios):
-// 0:ISO  1:ISO3  2:ISONumeric  3:fips  4:Country  5:Capital  6:Area
-// 7:Population  8:Continent  9:tld  10:CurrencyCode  11:CurrencyName
-// 12:Phone  13:PostalFormat  14:PostalRegex  15:Languages  16:geonameid
 
 var paisesData = new List<(string Alpha3, string Alpha2, string Tel, string DescES, string DescEN, string DescFR, string Regex, string Fmt, string Ej)>();
 
@@ -277,26 +256,19 @@ using (var reader = new StreamReader(countryInfoFile, Encoding.UTF8))
     string? line;
     while ((line = await reader.ReadLineAsync()) != null)
     {
-        if (line.StartsWith('#')) continue;
-        if (string.IsNullOrWhiteSpace(line)) continue;
-
+        if (line.StartsWith('#') || string.IsNullOrWhiteSpace(line)) continue;
         var parts = line.Split('\t');
         if (parts.Length < 17) continue;
 
-        var alpha2 = parts[0].Trim();
-        var alpha3 = parts[1].Trim();
+        var alpha2      = parts[0].Trim();
+        var alpha3      = parts[1].Trim();
         var countryName = parts[4].Trim().ToUpperInvariant();
-        var geoNameId = parts[16].Trim();
+        var geoNameId   = parts[16].Trim();
 
-        if (!paisesDeseados.Contains(alpha2)) continue;
-        if (!phoneData.ContainsKey(alpha2)) continue;
+        if (!paisesDeseados.Contains(alpha2) || !phoneData.ContainsKey(alpha2)) continue;
 
-        var pd = phoneData[alpha2];
-
-        // Traducciones desde alternateNames
-        var descES = countryName;
-        var descEN = countryName;
-        var descFR = countryName;
+        var pd    = phoneData[alpha2];
+        var descES = countryName; var descEN = countryName; var descFR = countryName;
 
         if (traducciones.TryGetValue(geoNameId, out var trans))
         {
@@ -308,13 +280,12 @@ using (var reader = new StreamReader(countryInfoFile, Encoding.UTF8))
         paisesData.Add((alpha3, alpha2, pd.Tel, descES, descEN, descFR, pd.Regex, pd.Fmt, pd.Ej));
     }
 }
-
-Console.WriteLine($"  ✅ {paisesData.Count} países procesados");
+Console.WriteLine($"  ✅ {paisesData.Count} países");
 
 // ═══════════════════════════════════════════════════════════════
 // PASO 4: Procesar provincias (admin1)
 // ═══════════════════════════════════════════════════════════════
-Console.WriteLine("\n🗺️ Procesando provincias/estados (admin1)...");
+Console.WriteLine("\n🗺️ Procesando provincias...");
 
 var provinciasPorPais = new Dictionary<string, List<(string Codigo, string Desc, string DescEN, string DescFR)>>();
 
@@ -326,19 +297,15 @@ using (var reader = new StreamReader(admin1File, Encoding.UTF8))
         var parts = line.Split('\t');
         if (parts.Length < 4) continue;
 
-        var codeFull = parts[0];
+        var codeFull    = parts[0];
         var countryCode = codeFull.Split('.')[0];
-
         if (!paisesDeseados.Contains(countryCode)) continue;
 
         var adminCode = codeFull.Split('.')[1];
-        var nombre = parts[1].ToUpperInvariant();
+        var nombre    = parts[1].ToUpperInvariant();
         var geoNameId = parts[3];
 
-        var descES = nombre;
-        var descEN = nombre;
-        var descFR = nombre;
-
+        var descES = nombre; var descEN = nombre; var descFR = nombre;
         if (traducciones.TryGetValue(geoNameId, out var trans))
         {
             if (trans.TryGetValue("es", out var es)) descES = es;
@@ -347,20 +314,16 @@ using (var reader = new StreamReader(admin1File, Encoding.UTF8))
         }
 
         var codigo = $"{countryCode}-{adminCode}";
-
-        if (!provinciasPorPais.ContainsKey(countryCode))
-            provinciasPorPais[countryCode] = [];
-
+        if (!provinciasPorPais.ContainsKey(countryCode)) provinciasPorPais[countryCode] = [];
         provinciasPorPais[countryCode].Add((codigo, descES, descEN, descFR));
     }
 }
-
 Console.WriteLine($"  ✅ {provinciasPorPais.Sum(p => p.Value.Count)} provincias de {provinciasPorPais.Count} países");
 
 // ═══════════════════════════════════════════════════════════════
 // PASO 5: Procesar municipios (admin2)
 // ═══════════════════════════════════════════════════════════════
-Console.WriteLine("\n🏘️ Procesando municipios (admin2)...");
+Console.WriteLine("\n🏘️ Procesando municipios...");
 
 var municipiosPorPais = new Dictionary<string, List<(string Codigo, string Desc, string ProvCodigo, string DescEN, string DescFR)>>();
 
@@ -369,7 +332,7 @@ using (var reader = new StreamReader(admin2File, Encoding.UTF8))
     string? line;
     while ((line = await reader.ReadLineAsync()) != null)
     {
-        var parts = line.Split('\t');
+        var parts    = line.Split('\t');
         if (parts.Length < 4) continue;
 
         var codeFull = parts[0];
@@ -381,13 +344,10 @@ using (var reader = new StreamReader(admin2File, Encoding.UTF8))
 
         var adminCode1 = segments[1];
         var adminCode2 = segments[2];
-        var nombre = parts[1].ToUpperInvariant();
-        var geoNameId = parts[3];
+        var nombre     = parts[1].ToUpperInvariant();
+        var geoNameId  = parts[3];
 
-        var descES = nombre;
-        var descEN = nombre;
-        var descFR = nombre;
-
+        var descES = nombre; var descEN = nombre; var descFR = nombre;
         if (traducciones.TryGetValue(geoNameId, out var trans))
         {
             if (trans.TryGetValue("es", out var es)) descES = es;
@@ -395,99 +355,95 @@ using (var reader = new StreamReader(admin2File, Encoding.UTF8))
             if (trans.TryGetValue("fr", out var fr)) descFR = fr;
         }
 
-        var codigo = $"{countryCode}-{adminCode1}-{adminCode2}";
+        var codigo     = $"{countryCode}-{adminCode1}-{adminCode2}";
         var provCodigo = $"{countryCode}-{adminCode1}";
-
-        if (!municipiosPorPais.ContainsKey(countryCode))
-            municipiosPorPais[countryCode] = [];
-
+        if (!municipiosPorPais.ContainsKey(countryCode)) municipiosPorPais[countryCode] = [];
         municipiosPorPais[countryCode].Add((codigo, descES, provCodigo, descEN, descFR));
     }
 }
-
 Console.WriteLine($"  ✅ {municipiosPorPais.Sum(p => p.Value.Count)} municipios de {municipiosPorPais.Count} países");
 
 // ═══════════════════════════════════════════════════════════════
-// PASO 6: Generar CSVs
+// PASO 6: Líneas y SubLineas → datos embebidos en GenerarCPV2008()
+// ═══════════════════════════════════════════════════════════════
+Console.WriteLine("\n📦 Cargando clasificación de Líneas/SubLíneas...");
+var (lineasCpv, sublineasCpv) = GenerarCPV2008();
+Console.WriteLine($"  ✅ {lineasCpv.Count} líneas y {sublineasCpv.Count} sublíneas");
+
+// ═══════════════════════════════════════════════════════════════
+// PASO 7: Generar todos los CSVs
 // ═══════════════════════════════════════════════════════════════
 Console.WriteLine("\n📝 Generando archivos CSV...");
 
-// ── CSV DE PAÍSES ──
+// ── PAÍSES ──
 var paisFile = Path.Combine(outputDir, "Paises.csv");
 using (var writer = new StreamWriter(paisFile, false, new UTF8Encoding(true)))
 {
     await writer.WriteLineAsync("CodigoAlpha3,CodigoAlpha2,CodigoTelefono,DescripcionES,DescripcionEN,DescripcionFR,RegexTelefono,FormatoTelefono,FormatoEjemplo");
-
     foreach (var p in paisesData.OrderBy(p => p.Alpha2))
-    {
-        var descES = EscapeCsv(p.DescES);
-        var descEN = EscapeCsv(p.DescEN);
-        var descFR = EscapeCsv(p.DescFR);
-        var regex = EscapeCsv(p.Regex);
-        var fmt = EscapeCsv(p.Fmt);
-        var ej = EscapeCsv(p.Ej);
-        await writer.WriteLineAsync($"{p.Alpha3},{p.Alpha2},{p.Tel},{descES},{descEN},{descFR},{regex},{fmt},{ej}");
-    }
+        await writer.WriteLineAsync($"{p.Alpha3},{p.Alpha2},{p.Tel},{EscapeCsv(p.DescES)},{EscapeCsv(p.DescEN)},{EscapeCsv(p.DescFR)},{EscapeCsv(p.Regex)},{EscapeCsv(p.Fmt)},{EscapeCsv(p.Ej)}");
 }
+Console.WriteLine($"  ✅ Paises.csv ({paisesData.Count} registros)");
 
-Console.WriteLine($"  ✅ {paisFile}");
-
-// ── CSV DE PROVINCIAS ──
+// ── PROVINCIAS ──
 var provFile = Path.Combine(outputDir, "Provincias.csv");
 using (var writer = new StreamWriter(provFile, false, new UTF8Encoding(true)))
 {
     await writer.WriteLineAsync("Codigo,PaisCodigo,DescripcionES,DescripcionEN,DescripcionFR");
-
     foreach (var (pais, provs) in provinciasPorPais.OrderBy(p => p.Key))
-    {
         foreach (var prov in provs.OrderBy(p => p.Codigo))
-        {
-            var es = EscapeCsv(prov.Desc);
-            var en = EscapeCsv(prov.DescEN);
-            var fr = EscapeCsv(prov.DescFR);
-            await writer.WriteLineAsync($"{prov.Codigo},{pais},{es},{en},{fr}");
-        }
-    }
+            await writer.WriteLineAsync($"{prov.Codigo},{pais},{EscapeCsv(prov.Desc)},{EscapeCsv(prov.DescEN)},{EscapeCsv(prov.DescFR)}");
 }
+Console.WriteLine($"  ✅ Provincias.csv ({provinciasPorPais.Sum(p => p.Value.Count)} registros)");
 
-Console.WriteLine($"  ✅ {provFile}");
-
-// ── CSV DE MUNICIPIOS ──
+// ── MUNICIPIOS ──
 var munFile = Path.Combine(outputDir, "Municipios.csv");
 using (var writer = new StreamWriter(munFile, false, new UTF8Encoding(true)))
 {
     await writer.WriteLineAsync("Codigo,ProvinciaCodigo,PaisCodigo,DescripcionES,DescripcionEN,DescripcionFR");
-
     foreach (var (pais, muns) in municipiosPorPais.OrderBy(p => p.Key))
-    {
         foreach (var mun in muns.OrderBy(m => m.Codigo))
-        {
-            var es = EscapeCsv(mun.Desc);
-            var en = EscapeCsv(mun.DescEN);
-            var fr = EscapeCsv(mun.DescFR);
-            await writer.WriteLineAsync($"{mun.Codigo},{mun.ProvCodigo},{pais},{es},{en},{fr}");
-        }
-    }
+            await writer.WriteLineAsync($"{mun.Codigo},{mun.ProvCodigo},{pais},{EscapeCsv(mun.Desc)},{EscapeCsv(mun.DescEN)},{EscapeCsv(mun.DescFR)}");
+}
+Console.WriteLine($"  ✅ Municipios.csv ({municipiosPorPais.Sum(p => p.Value.Count)} registros)");
+
+// ── LINEAS (CPV Divisiones) ──
+if (lineasCpv.Count > 0)
+{
+    var lineasFile = Path.Combine(outputDir, "Lineas.csv");
+    using var writer = new StreamWriter(lineasFile, false, new UTF8Encoding(true));
+    await writer.WriteLineAsync("Codigo,DescripcionES,DescripcionEN,DescripcionFR");
+    foreach (var (codigo, es, en, fr) in lineasCpv.OrderBy(l => l.Codigo))
+        await writer.WriteLineAsync($"{EscapeCsv(codigo)},{EscapeCsv(es)},{EscapeCsv(en)},{EscapeCsv(fr)}");
+    Console.WriteLine($"  ✅ Lineas.csv ({lineasCpv.Count} registros)");
 }
 
-Console.WriteLine($"  ✅ {munFile}");
+// ── SUBLINEAS (CPV Grupos) ──
+if (sublineasCpv.Count > 0)
+{
+    var sublineasFile = Path.Combine(outputDir, "SubLineas_CPV.csv");
+    using var writer = new StreamWriter(sublineasFile, false, new UTF8Encoding(true));
+    await writer.WriteLineAsync("Codigo,DescripcionES,LineaCodigo,DescripcionEN,DescripcionFR");
+    foreach (var (codigo, padre, es, en, fr) in sublineasCpv.OrderBy(s => s.Codigo))
+        await writer.WriteLineAsync($"{EscapeCsv(codigo)},{EscapeCsv(es)},{EscapeCsv(padre)},{EscapeCsv(en)},{EscapeCsv(fr)}");
+    Console.WriteLine($"  ✅ SubLineas_CPV.csv ({sublineasCpv.Count} registros)");
+}
 
-// ── ESTADÍSTICAS ──
-Console.WriteLine("\n📊 ESTADÍSTICAS:");
+// ── ESTADÍSTICAS FINALES ──
+Console.WriteLine("\n📊 ESTADÍSTICAS GEOGRÁFICAS:");
 Console.WriteLine($"  {"País",-6} {"Provincias",12} {"Municipios",12}");
 Console.WriteLine($"  {"────",-6} {"──────────",12} {"──────────",12}");
-
 foreach (var pais in provinciasPorPais.Keys.OrderBy(k => k))
 {
     var provCount = provinciasPorPais[pais].Count;
-    var munCount = municipiosPorPais.GetValueOrDefault(pais)?.Count ?? 0;
+    var munCount  = municipiosPorPais.GetValueOrDefault(pais)?.Count ?? 0;
     Console.WriteLine($"  {pais,-6} {provCount,12:N0} {munCount,12:N0}");
 }
-
 Console.WriteLine($"  {"────",-6} {"──────────",12} {"──────────",12}");
 Console.WriteLine($"  {"TOTAL",-6} {provinciasPorPais.Sum(p => p.Value.Count),12:N0} {municipiosPorPais.Sum(p => p.Value.Count),12:N0}");
-Console.WriteLine($"  Países: {paisesData.Count}");
-
+Console.WriteLine($"\n  Países:    {paisesData.Count}");
+Console.WriteLine($"  Líneas:    {lineasCpv.Count}");
+Console.WriteLine($"  SubLíneas: {sublineasCpv.Count}");
 Console.WriteLine($"\n📂 Archivos generados en: {outputDir}");
 Console.WriteLine("\n✅ ¡Proceso completado!");
 
@@ -501,15 +457,15 @@ static async Task DownloadWithProgressAsync(HttpClient client, string url, strin
     response.EnsureSuccessStatusCode();
 
     var totalBytes = response.Content.Headers.ContentLength ?? -1;
-    var totalMB = totalBytes > 0 ? totalBytes / (1024.0 * 1024.0) : -1;
+    var totalMB    = totalBytes > 0 ? totalBytes / (1024.0 * 1024.0) : -1;
 
     await using var contentStream = await response.Content.ReadAsStreamAsync();
-    await using var fileStream = new FileStream(outputPath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true);
+    await using var fileStream    = new FileStream(outputPath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true);
 
-    var buffer = new byte[81920];
-    long totalRead = 0;
-    int bytesRead;
-    var lastProgress = DateTime.MinValue;
+    var buffer       = new byte[81920];
+    long totalRead   = 0;
+    int  bytesRead;
+    var  lastProgress = DateTime.MinValue;
 
     while ((bytesRead = await contentStream.ReadAsync(buffer)) > 0)
     {
@@ -519,23 +475,13 @@ static async Task DownloadWithProgressAsync(HttpClient client, string url, strin
         if ((DateTime.Now - lastProgress).TotalMilliseconds > 500)
         {
             var readMB = totalRead / (1024.0 * 1024.0);
-
-            if (totalBytes > 0)
-            {
-                var percent = (double)totalRead / totalBytes * 100;
-                Console.Write($"\r    ⬇️  {readMB:F1} / {totalMB:F1} MB ({percent:F1}%)   ");
-            }
-            else
-            {
-                Console.Write($"\r    ⬇️  {readMB:F1} MB descargados...   ");
-            }
-
+            Console.Write(totalBytes > 0
+                ? $"\r    ⬇️  {readMB:F1} / {totalMB:F1} MB ({(double)totalRead / totalBytes * 100:F1}%)   "
+                : $"\r    ⬇️  {readMB:F1} MB descargados...   ");
             lastProgress = DateTime.Now;
         }
     }
-
-    var finalMB = totalRead / (1024.0 * 1024.0);
-    Console.WriteLine($"\r    ⬇️  {finalMB:F1} MB descargados ✅                    ");
+    Console.WriteLine($"\r    ⬇️  {totalRead / (1024.0 * 1024.0):F1} MB ✅                    ");
 }
 
 static string EscapeCsv(string value)
@@ -543,4 +489,334 @@ static string EscapeCsv(string value)
     if (value.Contains(',') || value.Contains('"') || value.Contains('\n'))
         return $"\"{value.Replace("\"", "\"\"")}\"";
     return value;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CPV 2008 EMBEBIDO — Publications Office of the European Union
+// División (XX) → Linea  |  Grupo (XXX) → SubLinea
+// ═══════════════════════════════════════════════════════════════
+static (
+    List<(string Codigo, string ES, string EN, string FR)> lineas,
+    List<(string Codigo, string PadreCodigo, string ES, string EN, string FR)> sublineas)
+    GenerarCPV2008()
+{
+    var lineas = new List<(string Codigo, string ES, string EN, string FR)>
+    {
+        ("03", "PRODUCTOS AGROPECUARIOS, PESCA Y SILVICULTURA",         "AGRICULTURAL, FARMING, FISHING AND FORESTRY PRODUCTS",        "PRODUITS AGRICOLES, DE L'ÉLEVAGE, DE LA PÊCHE ET DE LA FORÊT"),
+        ("09", "COMBUSTIBLES, ELECTRICIDAD Y FUENTES DE ENERGÍA",       "PETROLEUM PRODUCTS, FUELS, ELECTRICITY AND ENERGY",           "PRODUITS PÉTROLIERS, COMBUSTIBLES, ÉLECTRICITÉ ET ÉNERGIE"),
+        ("14", "MINERÍA Y METALES BÁSICOS",                             "MINING AND BASIC METALS",                                     "PRODUITS MINIERS ET MÉTAUX DE BASE"),
+        ("15", "ALIMENTOS, BEBIDAS Y TABACO",                           "FOOD, BEVERAGES AND TOBACCO",                                 "PRODUITS ALIMENTAIRES, BOISSONS ET TABAC"),
+        ("16", "MAQUINARIA AGRÍCOLA",                                   "AGRICULTURAL MACHINERY",                                      "MACHINES AGRICOLES"),
+        ("18", "ROPA, CALZADO Y ACCESORIOS",                            "CLOTHING, FOOTWEAR AND ACCESSORIES",                          "VÊTEMENTS, CHAUSSURES ET ACCESSOIRES"),
+        ("19", "CUERO, TEXTILES, PLÁSTICO Y CAUCHO",                    "LEATHER, TEXTILES, PLASTIC AND RUBBER",                       "CUIR, TEXTILES, PLASTIQUE ET CAOUTCHOUC"),
+        ("22", "IMPRESOS Y PRODUCTOS EDITORIALES",                      "PRINTED MATTER AND PUBLISHING PRODUCTS",                      "IMPRIMÉS ET PRODUITS CONNEXES"),
+        ("24", "PRODUCTOS QUÍMICOS",                                    "CHEMICAL PRODUCTS",                                           "PRODUITS CHIMIQUES"),
+        ("25", "PRODUCTOS DE CAUCHO, PLÁSTICO Y CERA",                  "RUBBER, PLASTIC AND WAX PRODUCTS",                            "PRODUITS EN CAOUTCHOUC, PLASTIQUE ET CIRE"),
+        ("26", "VIDRIO, CERÁMICA Y PRODUCTOS INORGÁNICOS",              "GLASS, CERAMIC AND INORGANIC PRODUCTS",                       "VERRE, CÉRAMIQUE ET PRODUITS INORGANIQUES"),
+        ("27", "METALES BÁSICOS Y ALEACIONES",                          "BASE METALS AND ALLOYS",                                      "MÉTAUX DE BASE ET ALLIAGES"),
+        ("28", "PRODUCTOS METÁLICOS ELABORADOS",                        "FABRICATED METAL PRODUCTS",                                   "PRODUITS MÉTALLIQUES TRANSFORMÉS"),
+        ("30", "EQUIPOS INFORMÁTICOS Y DE OFICINA",                     "COMPUTING AND OFFICE EQUIPMENT",                              "ÉQUIPEMENTS INFORMATIQUES ET DE BUREAU"),
+        ("31", "MAQUINARIA Y EQUIPOS ELÉCTRICOS",                       "ELECTRICAL MACHINERY AND EQUIPMENT",                          "MACHINES ET ÉQUIPEMENTS ÉLECTRIQUES"),
+        ("32", "EQUIPOS DE RADIO, TV Y TELECOMUNICACIONES",             "RADIO, TV AND TELECOMMUNICATIONS EQUIPMENT",                  "ÉQUIPEMENTS RADIO, TV ET TÉLÉCOMMUNICATIONS"),
+        ("33", "EQUIPOS MÉDICOS Y PRODUCTOS FARMACÉUTICOS",             "MEDICAL EQUIPMENT AND PHARMACEUTICALS",                       "ÉQUIPEMENTS MÉDICAUX ET PRODUITS PHARMACEUTIQUES"),
+        ("34", "EQUIPOS Y MATERIAL DE TRANSPORTE",                      "TRANSPORT EQUIPMENT AND MATERIALS",                           "MATÉRIEL ET ÉQUIPEMENTS DE TRANSPORT"),
+        ("35", "EQUIPOS DE SEGURIDAD, DEFENSA Y POLICÍA",               "SECURITY, DEFENCE AND POLICE EQUIPMENT",                      "ÉQUIPEMENTS DE SÉCURITÉ, DÉFENSE ET POLICE"),
+        ("37", "INSTRUMENTOS MUSICALES, DEPORTE, JUGUETES Y ARTESANÍA", "MUSICAL INSTRUMENTS, SPORT, TOYS AND CRAFTS",                 "INSTRUMENTS DE MUSIQUE, SPORT, JOUETS ET ARTISANAT"),
+        ("38", "EQUIPOS DE LABORATORIO, ÓPTICA Y PRECISIÓN",            "LABORATORY, OPTICAL AND PRECISION EQUIPMENT",                 "ÉQUIPEMENTS DE LABORATOIRE, OPTIQUE ET PRÉCISION"),
+        ("39", "MOBILIARIO, ELECTRODOMÉSTICOS Y LIMPIEZA",              "FURNITURE, APPLIANCES AND CLEANING PRODUCTS",                 "MEUBLES, ÉLECTROMÉNAGER ET PRODUITS D'ENTRETIEN"),
+        ("41", "AGUA",                                                  "WATER",                                                       "EAU"),
+        ("42", "MAQUINARIA INDUSTRIAL",                                 "INDUSTRIAL MACHINERY",                                        "MACHINES INDUSTRIELLES"),
+        ("43", "MAQUINARIA PARA MINERÍA Y CONSTRUCCIÓN",                "MINING AND CONSTRUCTION MACHINERY",                           "MACHINES POUR MINES ET CONSTRUCTION"),
+        ("44", "MATERIALES Y ESTRUCTURAS DE CONSTRUCCIÓN",              "CONSTRUCTION MATERIALS AND STRUCTURES",                       "MATÉRIAUX ET STRUCTURES DE CONSTRUCTION"),
+        ("45", "TRABAJOS DE CONSTRUCCIÓN",                              "CONSTRUCTION WORKS",                                          "TRAVAUX DE CONSTRUCTION"),
+        ("48", "SOFTWARE Y SISTEMAS DE INFORMACIÓN",                    "SOFTWARE AND INFORMATION SYSTEMS",                            "LOGICIELS ET SYSTÈMES D'INFORMATION"),
+        ("50", "SERVICIOS DE REPARACIÓN Y MANTENIMIENTO",               "REPAIR AND MAINTENANCE SERVICES",                             "SERVICES DE RÉPARATION ET D'ENTRETIEN"),
+        ("51", "SERVICIOS DE INSTALACIÓN",                              "INSTALLATION SERVICES",                                       "SERVICES D'INSTALLATION"),
+        ("55", "HOSTELERÍA, RESTAURACIÓN Y COMERCIO MINORISTA",         "HOTEL, CATERING AND RETAIL SERVICES",                         "SERVICES HÔTELIERS, RESTAURATION ET VENTE AU DÉTAIL"),
+        ("60", "SERVICIOS DE TRANSPORTE",                               "TRANSPORT SERVICES",                                          "SERVICES DE TRANSPORT"),
+        ("63", "SERVICIOS AUXILIARES DE TRANSPORTE Y TURISMO",          "AUXILIARY TRANSPORT AND TRAVEL SERVICES",                     "SERVICES AUXILIAIRES DE TRANSPORT ET TOURISME"),
+        ("64", "SERVICIOS POSTALES Y DE TELECOMUNICACIONES",            "POSTAL AND TELECOMMUNICATIONS SERVICES",                      "SERVICES POSTAUX ET DE TÉLÉCOMMUNICATIONS"),
+        ("65", "SERVICIOS PÚBLICOS (AGUA, GAS, ELECTRICIDAD)",          "PUBLIC UTILITIES (WATER, GAS, ELECTRICITY)",                  "SERVICES PUBLICS (EAU, GAZ, ÉLECTRICITÉ)"),
+        ("66", "SERVICIOS FINANCIEROS Y DE SEGUROS",                    "FINANCIAL AND INSURANCE SERVICES",                            "SERVICES FINANCIERS ET D'ASSURANCE"),
+        ("70", "SERVICIOS INMOBILIARIOS",                               "REAL ESTATE SERVICES",                                        "SERVICES IMMOBILIERS"),
+        ("71", "SERVICIOS DE ARQUITECTURA E INGENIERÍA",                "ARCHITECTURAL AND ENGINEERING SERVICES",                      "SERVICES D'ARCHITECTURE ET D'INGÉNIERIE"),
+        ("72", "SERVICIOS DE TECNOLOGÍA DE LA INFORMACIÓN",             "INFORMATION TECHNOLOGY SERVICES",                             "SERVICES DE TECHNOLOGIES DE L'INFORMATION"),
+        ("73", "SERVICIOS DE I+D Y CONSULTORÍA TÉCNICA",                "R&D AND TECHNICAL CONSULTANCY SERVICES",                      "SERVICES DE R&D ET CONSEIL TECHNIQUE"),
+        ("75", "SERVICIOS DE ADMINISTRACIÓN Y DEFENSA",                 "ADMINISTRATION AND DEFENCE SERVICES",                         "SERVICES D'ADMINISTRATION ET DE DÉFENSE"),
+        ("76", "SERVICIOS PARA LA INDUSTRIA PETROLERA Y DEL GAS",       "OIL AND GAS INDUSTRY SERVICES",                               "SERVICES POUR L'INDUSTRIE PÉTROLIÈRE ET GAZIÈRE"),
+        ("77", "SERVICIOS AGRÍCOLAS, FORESTALES Y ACUÍCOLAS",           "AGRICULTURAL, FORESTRY AND AQUACULTURE SERVICES",             "SERVICES AGRICOLES, FORESTIERS ET AQUACOLES"),
+        ("79", "SERVICIOS EMPRESARIALES Y PROFESIONALES",               "BUSINESS AND PROFESSIONAL SERVICES",                          "SERVICES AUX ENTREPRISES ET SERVICES PROFESSIONNELS"),
+        ("80", "SERVICIOS DE EDUCACIÓN Y FORMACIÓN",                    "EDUCATION AND TRAINING SERVICES",                             "SERVICES D'ENSEIGNEMENT ET DE FORMATION"),
+        ("85", "SERVICIOS SANITARIOS Y ASISTENCIA SOCIAL",              "HEALTH AND SOCIAL SERVICES",                                  "SERVICES DE SANTÉ ET SERVICES SOCIAUX"),
+        ("90", "SERVICIOS MEDIOAMBIENTALES Y DE SANEAMIENTO",           "ENVIRONMENTAL AND SANITATION SERVICES",                       "SERVICES ENVIRONNEMENTAUX ET D'ASSAINISSEMENT"),
+        ("92", "SERVICIOS RECREATIVOS, CULTURALES Y DEPORTIVOS",        "RECREATIONAL, CULTURAL AND SPORTING SERVICES",                "SERVICES RÉCRÉATIFS, CULTURELS ET SPORTIFS"),
+        ("98", "OTROS SERVICIOS COMUNITARIOS Y PERSONALES",             "OTHER COMMUNITY AND PERSONAL SERVICES",                       "AUTRES SERVICES COMMUNAUTAIRES ET PERSONNELS"),
+        ("99", "ORGANISMOS EXTRATERRITORIALES",                         "EXTRATERRITORIAL ORGANISATIONS",                              "ORGANISATIONS EXTRATERRITORIALES"),
+    };
+
+    var sublineas = new List<(string Codigo, string PadreCodigo, string ES, string EN, string FR)>
+    {
+        // ── 03 Agropecuario ──────────────────────────────────────────────
+        ("031","03","PRODUCTOS AGRÍCOLAS Y ANIMALES VIVOS",          "AGRICULTURAL PRODUCTS AND LIVE ANIMALS",         "PRODUITS AGRICOLES ET ANIMAUX VIVANTS"),
+        ("032","03","HORTICULTURA",                                  "HORTICULTURE",                                   "HORTICULTURE"),
+        ("033","03","GANADERÍA",                                     "LIVESTOCK",                                      "ÉLEVAGE"),
+        ("034","03","MADERA Y PRODUCTOS FORESTALES",                 "TIMBER AND FORESTRY PRODUCTS",                   "BOIS ET PRODUITS FORESTIERS"),
+        ("035","03","PESCA Y PRODUCTOS ACUÍCOLAS",                   "FISHING AND AQUACULTURE PRODUCTS",               "PRODUITS DE LA PÊCHE ET DE L'AQUACULTURE"),
+        ("036","03","PIENSOS Y ALIMENTOS PARA ANIMALES",             "ANIMAL FEED AND PRODUCTS",                       "ALIMENTS ET PRODUITS POUR ANIMAUX"),
+        // ── 09 Energía ──────────────────────────────────────────────────
+        ("091","09","COMBUSTIBLES LÍQUIDOS Y GASES",                 "LIQUID FUELS AND GASES",                         "COMBUSTIBLES LIQUIDES ET GAZ"),
+        ("092","09","ELECTRICIDAD",                                  "ELECTRICITY",                                    "ÉLECTRICITÉ"),
+        ("093","09","CARBÓN Y COMBUSTIBLES SÓLIDOS",                 "COAL AND SOLID FUELS",                           "CHARBON ET COMBUSTIBLES SOLIDES"),
+        ("094","09","ENERGÍAS RENOVABLES",                           "RENEWABLE ENERGY",                               "ÉNERGIES RENOUVELABLES"),
+        // ── 14 Minería ──────────────────────────────────────────────────
+        ("141","14","MINERALES METÁLICOS",                           "METALLIC MINERALS",                              "MINÉRAUX MÉTALLIQUES"),
+        ("142","14","MINERALES NO METÁLICOS",                        "NON-METALLIC MINERALS",                          "MINÉRAUX NON MÉTALLIQUES"),
+        ("143","14","METALES PRECIOSOS Y SEMIPRECIOSOS",             "PRECIOUS AND SEMI-PRECIOUS METALS",              "MÉTAUX PRÉCIEUX ET SEMI-PRÉCIEUX"),
+        // ── 15 Alimentos ────────────────────────────────────────────────
+        ("151","15","CARNE Y PRODUCTOS CÁRNICOS",                    "MEAT AND MEAT PRODUCTS",                         "VIANDE ET PRODUITS À BASE DE VIANDE"),
+        ("152","15","PESCADO Y MARISCOS PROCESADOS",                 "FISH AND PROCESSED SEAFOOD",                     "POISSON ET FRUITS DE MER TRANSFORMÉS"),
+        ("153","15","PRODUCTOS LÁCTEOS",                             "DAIRY PRODUCTS",                                 "PRODUITS LAITIERS"),
+        ("154","15","ACEITES Y GRASAS VEGETALES Y ANIMALES",         "VEGETABLE AND ANIMAL OILS AND FATS",             "HUILES ET GRAISSES VÉGÉTALES ET ANIMALES"),
+        ("155","15","PRODUCTOS DE MOLINERÍA Y ALMIDONES",            "GRAIN MILL PRODUCTS AND STARCHES",               "PRODUITS DE MINOTERIE ET AMIDONS"),
+        ("156","15","AZÚCAR Y EDULCORANTES",                         "SUGAR AND SWEETENERS",                           "SUCRE ET ÉDULCORANTS"),
+        ("157","15","CACAO, CHOCOLATE Y CONFITERÍA",                 "COCOA, CHOCOLATE AND CONFECTIONERY",             "CACAO, CHOCOLAT ET CONFISERIE"),
+        ("158","15","PANADERÍA, PASTELERÍA Y REPOSTERÍA",            "BAKERY, PASTRY AND CONFECTIONERY",               "BOULANGERIE, PÂTISSERIE ET CONFISERIE"),
+        ("159","15","BEBIDAS",                                       "BEVERAGES",                                      "BOISSONS"),
+        // ── 16 Maquinaria agrícola ──────────────────────────────────────
+        ("161","16","TRACTORES",                                     "TRACTORS",                                       "TRACTEURS"),
+        ("162","16","APEROS E IMPLEMENTOS AGRÍCOLAS",                "AGRICULTURAL IMPLEMENTS",                        "INSTRUMENTS AGRICOLES"),
+        ("163","16","COSECHADORAS Y EQUIPOS DE RECOLECCIÓN",         "HARVESTING EQUIPMENT",                           "MATÉRIEL DE RÉCOLTE"),
+        // ── 18 Ropa ─────────────────────────────────────────────────────
+        ("181","18","ROPA DE TRABAJO Y UNIFORMES",                   "WORKWEAR AND UNIFORMS",                          "VÊTEMENTS DE TRAVAIL ET UNIFORMES"),
+        ("182","18","PRENDAS DE VESTIR EXTERIORES",                  "OUTERWEAR",                                      "VÊTEMENTS D'EXTÉRIEUR"),
+        ("183","18","ROPA ESPECIALIZADA Y DE PROTECCIÓN",            "SPECIALIST AND PROTECTIVE CLOTHING",             "VÊTEMENTS SPÉCIALISÉS ET DE PROTECTION"),
+        ("184","18","ROPA INTERIOR Y DE DORMIR",                     "UNDERWEAR AND NIGHTWEAR",                        "SOUS-VÊTEMENTS ET VÊTEMENTS DE NUIT"),
+        ("185","18","SOMBREROS, GORROS Y ACCESORIOS",                "HATS, CAPS AND HEAD ACCESSORIES",                "CHAPEAUX, CASQUETTES ET ACCESSOIRES"),
+        ("186","18","CALZADO",                                       "FOOTWEAR",                                       "CHAUSSURES"),
+        ("187","18","MARROQUINERÍA Y EQUIPAJE",                      "LEATHER GOODS AND LUGGAGE",                      "MAROQUINERIE ET BAGAGES"),
+        // ── 19 Textiles ─────────────────────────────────────────────────
+        ("191","19","CUERO Y ARTÍCULOS DE CUERO",                    "LEATHER AND LEATHER ARTICLES",                   "CUIR ET ARTICLES EN CUIR"),
+        ("192","19","TELAS Y TEJIDOS",                               "FABRICS AND TEXTILES",                           "TISSUS ET TEXTILES"),
+        ("193","19","PRODUCTOS DE CAUCHO",                           "RUBBER PRODUCTS",                                "PRODUITS EN CAOUTCHOUC"),
+        ("194","19","MATERIALES PLÁSTICOS",                          "PLASTIC MATERIALS",                              "MATIÈRES PLASTIQUES"),
+        ("195","19","FIBRAS Y ARTÍCULOS SIMILARES",                  "FIBRES AND SIMILAR ARTICLES",                    "FIBRES ET ARTICLES SIMILAIRES"),
+        // ── 22 Impresos ─────────────────────────────────────────────────
+        ("221","22","LIBROS Y PUBLICACIONES",                        "BOOKS AND PUBLICATIONS",                         "LIVRES ET PUBLICATIONS"),
+        ("222","22","PERIÓDICOS, REVISTAS Y PUBLICACIONES",          "NEWSPAPERS, JOURNALS AND PERIODICALS",           "JOURNAUX, REVUES ET PÉRIODIQUES"),
+        ("223","22","MATERIAL PUBLICITARIO Y DE MARKETING",          "ADVERTISING AND MARKETING MATERIALS",            "MATÉRIEL PUBLICITAIRE ET MARKETING"),
+        ("224","22","FORMULARIOS, PAPELERÍA Y ARTÍCULOS DE OFICINA", "FORMS, STATIONERY AND OFFICE ARTICLES",          "FORMULAIRES, PAPETERIE ET ARTICLES DE BUREAU"),
+        // ── 24 Químicos ─────────────────────────────────────────────────
+        ("241","24","PRODUCTOS QUÍMICOS BÁSICOS",                    "BASIC CHEMICAL PRODUCTS",                        "PRODUITS CHIMIQUES DE BASE"),
+        ("242","24","FERTILIZANTES Y AGROQUÍMICOS",                  "FERTILISERS AND AGRICULTURAL CHEMICALS",         "ENGRAIS ET PRODUITS CHIMIQUES AGRICOLES"),
+        ("243","24","PINTURAS, BARNICES Y RECUBRIMIENTOS",           "PAINTS, VARNISHES AND COATINGS",                 "PEINTURES, VERNIS ET REVÊTEMENTS"),
+        ("244","24","PRODUCTOS FARMACÉUTICOS BÁSICOS",               "BASIC PHARMACEUTICAL PRODUCTS",                  "PRODUITS PHARMACEUTIQUES DE BASE"),
+        ("245","24","DETERGENTES Y PRODUCTOS DE LIMPIEZA",           "DETERGENTS AND CLEANING PRODUCTS",               "DÉTERGENTS ET PRODUITS DE NETTOYAGE"),
+        ("246","24","EXPLOSIVOS Y PIROTECNIA",                       "EXPLOSIVES AND PYROTECHNICS",                    "EXPLOSIFS ET PYROTECHNIE"),
+        ("247","24","ADHESIVOS Y SELLANTES",                         "ADHESIVES AND SEALANTS",                         "ADHÉSIFS ET PRODUITS D'ÉTANCHÉITÉ"),
+        ("248","24","PERFUMERÍA Y COSMÉTICOS",                       "PERFUMERY AND COSMETICS",                        "PARFUMERIE ET COSMÉTIQUES"),
+        // ── 25 Caucho y plástico ────────────────────────────────────────
+        ("251","25","PRODUCTOS DE CAUCHO",                           "RUBBER PRODUCTS",                                "PRODUITS EN CAOUTCHOUC"),
+        ("252","25","PRODUCTOS DE PLÁSTICO",                         "PLASTIC PRODUCTS",                               "PRODUITS EN PLASTIQUE"),
+        ("253","25","ARTÍCULOS DE CERA",                             "WAX ARTICLES",                                   "ARTICLES EN CIRE"),
+        // ── 26 Vidrio y cerámica ────────────────────────────────────────
+        ("261","26","PRODUCTOS DE VIDRIO",                           "GLASS PRODUCTS",                                 "PRODUITS EN VERRE"),
+        ("262","26","PRODUCTOS CERÁMICOS Y DE LOZA",                 "CERAMIC AND EARTHENWARE PRODUCTS",               "PRODUITS CÉRAMIQUES ET EN FAÏENCE"),
+        ("263","26","MATERIALES REFRACTARIOS",                       "REFRACTORY MATERIALS",                           "MATÉRIAUX RÉFRACTAIRES"),
+        ("264","26","CEMENTO, CAL Y YESO",                           "CEMENT, LIME AND PLASTER",                       "CIMENT, CHAUX ET PLÂTRE"),
+        // ── 27 Metales básicos ──────────────────────────────────────────
+        ("271","27","HIERRO Y ACERO",                                "IRON AND STEEL",                                 "FER ET ACIER"),
+        ("272","27","METALES NO FERROSOS",                           "NON-FERROUS METALS",                             "MÉTAUX NON FERREUX"),
+        ("273","27","METALES PRECIOSOS",                             "PRECIOUS METALS",                                "MÉTAUX PRÉCIEUX"),
+        ("274","27","PRODUCTOS SEMIACABADOS DE METAL",               "SEMI-FINISHED METAL PRODUCTS",                   "PRODUITS MÉTALLIQUES SEMI-FINIS"),
+        // ── 28 Productos metálicos ──────────────────────────────────────
+        ("281","28","ESTRUCTURAS METÁLICAS",                         "METAL STRUCTURES",                               "STRUCTURES MÉTALLIQUES"),
+        ("282","28","TANQUES Y DEPÓSITOS METÁLICOS",                 "METAL TANKS AND RESERVOIRS",                     "RÉSERVOIRS ET CITERNES EN MÉTAL"),
+        ("283","28","HERRAMIENTAS MANUALES",                         "HAND TOOLS",                                     "OUTILS À MAIN"),
+        ("284","28","CERRAJERÍA, FERRETERÍA Y FIJACIONES",           "LOCKS, HARDWARE AND FASTENERS",                  "SERRURERIE, QUINCAILLERIE ET ATTACHES"),
+        // ── 30 Informática ──────────────────────────────────────────────
+        ("301","30","ORDENADORES Y PERIFÉRICOS",                     "COMPUTERS AND PERIPHERALS",                      "ORDINATEURS ET PÉRIPHÉRIQUES"),
+        ("302","30","EQUIPOS DE RED",                                "NETWORK EQUIPMENT",                              "ÉQUIPEMENTS RÉSEAU"),
+        ("303","30","MÁQUINAS DE OFICINA Y SUMINISTROS",             "OFFICE MACHINES AND SUPPLIES",                   "MACHINES DE BUREAU ET FOURNITURES"),
+        ("304","30","SOPORTES DE ALMACENAMIENTO DE DATOS",           "DATA STORAGE MEDIA",                             "SUPPORTS DE STOCKAGE DE DONNÉES"),
+        // ── 31 Electricidad ─────────────────────────────────────────────
+        ("311","31","GENERADORES, MOTORES Y TRANSFORMADORES",        "GENERATORS, MOTORS AND TRANSFORMERS",            "GÉNÉRATEURS, MOTEURS ET TRANSFORMATEURS"),
+        ("312","31","DISTRIBUCIÓN Y CONTROL ELÉCTRICO",              "ELECTRICAL DISTRIBUTION AND CONTROL",            "DISTRIBUTION ET COMMANDE ÉLECTRIQUES"),
+        ("313","31","CABLES Y CONDUCTORES ELÉCTRICOS",               "ELECTRICAL CABLES AND CONDUCTORS",               "CÂBLES ET CONDUCTEURS ÉLECTRIQUES"),
+        ("314","31","ACUMULADORES, PILAS Y BATERÍAS",                "ACCUMULATORS, BATTERIES AND CELLS",              "ACCUMULATEURS, PILES ET BATTERIES"),
+        ("315","31","ILUMINACIÓN Y LÁMPARAS",                        "LIGHTING AND LAMPS",                             "ÉCLAIRAGE ET LAMPES"),
+        // ── 32 Telecomunicaciones ───────────────────────────────────────
+        ("321","32","EQUIPOS ELECTRÓNICOS",                          "ELECTRONIC EQUIPMENT",                           "ÉQUIPEMENTS ÉLECTRONIQUES"),
+        ("322","32","EQUIPOS DE RADIO Y TELEVISIÓN",                 "RADIO AND TELEVISION EQUIPMENT",                 "ÉQUIPEMENTS RADIO ET TÉLÉVISION"),
+        ("323","32","EQUIPOS DE TELECOMUNICACIONES",                 "TELECOMMUNICATIONS EQUIPMENT",                   "ÉQUIPEMENTS DE TÉLÉCOMMUNICATIONS"),
+        ("324","32","REDES INFORMÁTICAS E INTERNET",                 "COMPUTER AND INTERNET NETWORKS",                 "RÉSEAUX INFORMATIQUES ET INTERNET"),
+        // ── 33 Médico y farmacéutico ────────────────────────────────────
+        ("331","33","INSTRUMENTOS MÉDICOS Y DE DIAGNÓSTICO",         "MEDICAL AND DIAGNOSTIC INSTRUMENTS",             "INSTRUMENTS MÉDICAUX ET DE DIAGNOSTIC"),
+        ("332","33","SUMINISTROS MÉDICOS Y DE ENFERMERÍA",           "MEDICAL AND NURSING SUPPLIES",                   "FOURNITURES MÉDICALES ET DE SOINS"),
+        ("333","33","MEDICAMENTOS",                                  "MEDICINES AND DRUGS",                            "MÉDICAMENTS"),
+        ("334","33","PRODUCTOS SANITARIOS E HIGIENE PERSONAL",       "SANITARY AND PERSONAL CARE PRODUCTS",            "PRODUITS SANITAIRES ET DE SOINS PERSONNELS"),
+        // ── 34 Transporte ───────────────────────────────────────────────
+        ("341","34","AUTOMÓVILES Y VEHÍCULOS A MOTOR",               "MOTOR VEHICLES",                                 "VÉHICULES À MOTEUR"),
+        ("342","34","MOTOCICLETAS Y BICICLETAS",                     "MOTORCYCLES AND BICYCLES",                       "MOTOCYCLES ET BICYCLETTES"),
+        ("343","34","PIEZAS Y ACCESORIOS DE VEHÍCULOS",              "VEHICLE PARTS AND ACCESSORIES",                  "PIÈCES ET ACCESSOIRES DE VÉHICULES"),
+        ("344","34","AERONAVES Y NAVES ESPACIALES",                  "AIRCRAFT AND SPACECRAFT",                        "AÉRONEFS ET ENGINS SPATIAUX"),
+        ("345","34","EMBARCACIONES Y BARCOS",                        "BOATS AND SHIPS",                                "BATEAUX ET NAVIRES"),
+        ("346","34","MATERIAL FERROVIARIO",                          "RAILWAY EQUIPMENT",                              "MATÉRIEL FERROVIAIRE"),
+        // ── 35 Seguridad ────────────────────────────────────────────────
+        ("351","35","EQUIPOS DE EXTINCIÓN DE INCENDIOS",             "FIRE-FIGHTING EQUIPMENT",                        "ÉQUIPEMENTS D'EXTINCTION D'INCENDIE"),
+        ("352","35","EQUIPOS DE SEGURIDAD Y VIGILANCIA",             "SECURITY AND SURVEILLANCE EQUIPMENT",            "ÉQUIPEMENTS DE SÉCURITÉ ET SURVEILLANCE"),
+        ("353","35","EQUIPOS MILITARES Y DE DEFENSA",                "MILITARY AND DEFENCE EQUIPMENT",                 "ÉQUIPEMENTS MILITAIRES ET DE DÉFENSE"),
+        // ── 37 Deporte y ocio ───────────────────────────────────────────
+        ("371","37","INSTRUMENTOS MUSICALES",                        "MUSICAL INSTRUMENTS",                            "INSTRUMENTS DE MUSIQUE"),
+        ("372","37","ARTÍCULOS DEPORTIVOS",                          "SPORT ARTICLES",                                 "ARTICLES DE SPORT"),
+        ("373","37","JUEGOS Y JUGUETES",                             "GAMES AND TOYS",                                 "JEUX ET JOUETS"),
+        ("374","37","FOTOGRAFÍA E IMAGEN",                           "PHOTOGRAPHY AND IMAGING",                        "PHOTOGRAPHIE ET IMAGERIE"),
+        ("375","37","ARTESANÍA Y BELLAS ARTES",                      "CRAFTS AND FINE ARTS",                           "ARTISANAT ET BEAUX-ARTS"),
+        // ── 38 Laboratorio ──────────────────────────────────────────────
+        ("381","38","INSTRUMENTOS DE LABORATORIO",                   "LABORATORY INSTRUMENTS",                         "INSTRUMENTS DE LABORATOIRE"),
+        ("382","38","INSTRUMENTOS DE MEDICIÓN Y CONTROL",            "MEASURING AND MONITORING INSTRUMENTS",           "INSTRUMENTS DE MESURE ET DE CONTRÔLE"),
+        ("383","38","EQUIPOS ÓPTICOS",                               "OPTICAL EQUIPMENT",                              "ÉQUIPEMENTS OPTIQUES"),
+        ("384","38","INSTRUMENTOS DE NAVEGACIÓN Y METEOROLOGÍA",     "NAVIGATION AND METEOROLOGICAL INSTRUMENTS",      "INSTRUMENTS DE NAVIGATION ET MÉTÉOROLOGIQUES"),
+        // ── 39 Mobiliario ───────────────────────────────────────────────
+        ("391","39","MUEBLES",                                       "FURNITURE",                                      "MEUBLES"),
+        ("392","39","ROPA DE CAMA, TEXTILES Y ARTÍCULOS DEL HOGAR",  "BED LINEN, TEXTILES AND HOME ARTICLES",          "LITERIE, TEXTILES ET ARTICLES MÉNAGERS"),
+        ("393","39","ELECTRODOMÉSTICOS",                             "HOUSEHOLD APPLIANCES",                           "ÉLECTROMÉNAGER"),
+        ("394","39","ARTÍCULOS DE COCINA Y COMEDOR",                 "KITCHEN AND DINING ARTICLES",                    "ARTICLES DE CUISINE ET DE SALLE À MANGER"),
+        ("395","39","ARTÍCULOS DECORATIVOS Y DE ARTE",               "DECORATIVE AND ART ARTICLES",                    "ARTICLES DÉCORATIFS ET D'ART"),
+        // ── 41 Agua ─────────────────────────────────────────────────────
+        ("411","41","AGUA POTABLE",                                  "DRINKING WATER",                                 "EAU POTABLE"),
+        ("412","41","AGUA TRATADA PARA PROCESOS",                    "TREATED AND PROCESS WATER",                      "EAU TRAITÉE ET EAU DE PROCESSUS"),
+        // ── 42 Maquinaria industrial ────────────────────────────────────
+        ("421","42","MAQUINARIA DE USO GENERAL",                     "GENERAL PURPOSE MACHINERY",                      "MACHINES D'USAGE GÉNÉRAL"),
+        ("422","42","MAQUINARIA DE USO ESPECIAL",                    "SPECIAL PURPOSE MACHINERY",                      "MACHINES À USAGE SPÉCIAL"),
+        ("423","42","EQUIPOS DE ELEVACIÓN Y MANIPULACIÓN",           "LIFTING AND HANDLING EQUIPMENT",                 "ÉQUIPEMENTS DE LEVAGE ET DE MANUTENTION"),
+        ("424","42","MAQUINARIA PARA EMBALAJE Y ENVASADO",           "PACKAGING MACHINERY",                            "MACHINES D'EMBALLAGE ET DE CONDITIONNEMENT"),
+        // ── 43 Minería y construcción ───────────────────────────────────
+        ("431","43","MAQUINARIA PARA MINERÍA Y EXTRACCIÓN",          "MINING AND EXTRACTION MACHINERY",                "MACHINES POUR MINES ET EXTRACTION"),
+        ("432","43","MAQUINARIA PARA CONSTRUCCIÓN Y DEMOLICIÓN",     "CONSTRUCTION AND DEMOLITION MACHINERY",          "MACHINES DE CONSTRUCTION ET DÉMOLITION"),
+        ("433","43","EQUIPOS PARA PERFORACIÓN Y SONDEO",             "DRILLING AND BORING EQUIPMENT",                  "ÉQUIPEMENTS DE FORAGE ET SONDAGE"),
+        // ── 44 Materiales de construcción ──────────────────────────────
+        ("441","44","MATERIALES DE CONSTRUCCIÓN",                    "CONSTRUCTION MATERIALS",                         "MATÉRIAUX DE CONSTRUCTION"),
+        ("442","44","ESTRUCTURAS PREFABRICADAS",                     "PREFABRICATED STRUCTURES",                       "STRUCTURES PRÉFABRIQUÉES"),
+        ("443","44","TUBERÍAS Y ACCESORIOS",                         "PIPES AND FITTINGS",                             "TUYAUX ET RACCORDS"),
+        ("444","44","HERRAMIENTAS PARA CONSTRUCCIÓN",                "CONSTRUCTION TOOLS",                             "OUTILS DE CONSTRUCTION"),
+        ("445","44","PINTURAS Y RECUBRIMIENTOS PARA CONSTRUCCIÓN",   "CONSTRUCTION PAINTS AND COATINGS",               "PEINTURES ET REVÊTEMENTS POUR CONSTRUCTION"),
+        // ── 45 Construcción ─────────────────────────────────────────────
+        ("451","45","PREPARACIÓN DEL TERRENO",                       "SITE PREPARATION WORK",                          "TRAVAUX DE PRÉPARATION DU TERRAIN"),
+        ("452","45","OBRAS DE EDIFICACIÓN",                          "BUILDING CONSTRUCTION WORKS",                    "TRAVAUX DE CONSTRUCTION DE BÂTIMENTS"),
+        ("453","45","INSTALACIONES PARA EDIFICIOS",                  "BUILDING INSTALLATION WORKS",                    "TRAVAUX D'INSTALLATION DANS LES BÂTIMENTS"),
+        ("454","45","OBRAS DE ACABADO DE EDIFICIOS",                 "BUILDING COMPLETION WORKS",                      "TRAVAUX DE FINITION DE BÂTIMENTS"),
+        ("455","45","OBRAS DE INGENIERÍA CIVIL",                     "CIVIL ENGINEERING WORKS",                        "TRAVAUX DE GÉNIE CIVIL"),
+        // ── 48 Software ─────────────────────────────────────────────────
+        ("481","48","PAQUETES DE SOFTWARE ESTÁNDAR",                 "STANDARD SOFTWARE PACKAGES",                     "LOGICIELS STANDARD"),
+        ("482","48","SOFTWARE DE USO ESPECIAL",                      "SPECIAL-PURPOSE SOFTWARE",                       "LOGICIELS À USAGE SPÉCIFIQUE"),
+        ("483","48","SISTEMAS DE GESTIÓN EMPRESARIAL (ERP/CRM)",     "BUSINESS MANAGEMENT SYSTEMS (ERP/CRM)",          "SYSTÈMES DE GESTION D'ENTREPRISE (ERP/CRM)"),
+        ("484","48","SISTEMAS DE INFORMACIÓN GEOGRÁFICA Y GPS",      "GIS AND GPS SYSTEMS",                            "SYSTÈMES SIG ET GPS"),
+        // ── 50 Reparación ───────────────────────────────────────────────
+        ("501","50","MANTENIMIENTO Y REPARACIÓN DE VEHÍCULOS",       "VEHICLE MAINTENANCE AND REPAIR",                 "MAINTENANCE ET RÉPARATION DE VÉHICULES"),
+        ("502","50","MANTENIMIENTO DE EQUIPOS INFORMÁTICOS",         "COMPUTER EQUIPMENT MAINTENANCE",                 "MAINTENANCE D'ÉQUIPEMENTS INFORMATIQUES"),
+        ("503","50","MANTENIMIENTO DE MAQUINARIA INDUSTRIAL",        "INDUSTRIAL MACHINERY MAINTENANCE",               "MAINTENANCE DE MACHINES INDUSTRIELLES"),
+        ("504","50","MANTENIMIENTO DE EDIFICIOS E INSTALACIONES",    "BUILDING AND FACILITY MAINTENANCE",              "MAINTENANCE DE BÂTIMENTS ET D'INSTALLATIONS"),
+        // ── 51 Instalación ──────────────────────────────────────────────
+        ("511","51","INSTALACIONES MECÁNICAS",                       "MECHANICAL INSTALLATIONS",                       "INSTALLATIONS MÉCANIQUES"),
+        ("512","51","INSTALACIONES ELÉCTRICAS",                      "ELECTRICAL INSTALLATIONS",                       "INSTALLATIONS ÉLECTRIQUES"),
+        ("513","51","INSTALACIONES DE TELECOMUNICACIONES",           "TELECOMMUNICATIONS INSTALLATIONS",               "INSTALLATIONS DE TÉLÉCOMMUNICATIONS"),
+        ("514","51","INSTALACIONES SANITARIAS Y DE FONTANERÍA",      "SANITARY AND PLUMBING INSTALLATIONS",            "INSTALLATIONS SANITAIRES ET PLOMBERIE"),
+        // ── 55 Hostelería ───────────────────────────────────────────────
+        ("551","55","SERVICIOS DE ALOJAMIENTO",                      "ACCOMMODATION SERVICES",                         "SERVICES D'HÉBERGEMENT"),
+        ("552","55","SERVICIOS DE RESTAURANTE Y CATERING",           "RESTAURANT AND CATERING SERVICES",               "SERVICES DE RESTAURATION ET TRAITEUR"),
+        ("553","55","COMERCIO MINORISTA Y DISTRIBUCIÓN",             "RETAIL AND DISTRIBUTION",                        "COMMERCE DE DÉTAIL ET DISTRIBUTION"),
+        // ── 60 Transporte ───────────────────────────────────────────────
+        ("601","60","TRANSPORTE POR CARRETERA",                      "ROAD TRANSPORT",                                 "TRANSPORT ROUTIER"),
+        ("602","60","TRANSPORTE FERROVIARIO",                        "RAIL TRANSPORT",                                 "TRANSPORT FERROVIAIRE"),
+        ("603","60","TRANSPORTE AÉREO",                              "AIR TRANSPORT",                                  "TRANSPORT AÉRIEN"),
+        ("604","60","TRANSPORTE MARÍTIMO Y FLUVIAL",                 "MARITIME AND RIVER TRANSPORT",                   "TRANSPORT MARITIME ET FLUVIAL"),
+        ("605","60","TRANSPORTE URBANO",                             "URBAN TRANSPORT",                                "TRANSPORT URBAIN"),
+        // ── 63 Auxiliares de transporte ─────────────────────────────────
+        ("631","63","AGENCIAS DE VIAJES Y TURISMO",                  "TRAVEL AGENCIES AND TOURISM",                    "AGENCES DE VOYAGES ET TOURISME"),
+        ("632","63","LOGÍSTICA Y ALMACENAMIENTO",                    "LOGISTICS AND STORAGE",                          "LOGISTIQUE ET STOCKAGE"),
+        ("633","63","SERVICIOS PORTUARIOS Y AEROPORTUARIOS",         "PORT AND AIRPORT SERVICES",                      "SERVICES PORTUAIRES ET AÉROPORTUAIRES"),
+        // ── 64 Postal y telecomunicaciones ─────────────────────────────
+        ("641","64","SERVICIOS POSTALES Y DE MENSAJERÍA",            "POSTAL AND COURIER SERVICES",                    "SERVICES POSTAUX ET DE MESSAGERIE"),
+        ("642","64","SERVICIOS DE TELEFONÍA",                        "TELEPHONE SERVICES",                             "SERVICES TÉLÉPHONIQUES"),
+        ("643","64","SERVICIOS DE INTERNET Y DATOS",                 "INTERNET AND DATA SERVICES",                     "SERVICES INTERNET ET DONNÉES"),
+        ("644","64","SERVICIOS DE RADIODIFUSIÓN",                    "BROADCASTING SERVICES",                          "SERVICES DE RADIODIFFUSION"),
+        // ── 65 Servicios públicos ───────────────────────────────────────
+        ("651","65","DISTRIBUCIÓN DE GAS",                           "GAS DISTRIBUTION",                               "DISTRIBUTION DE GAZ"),
+        ("652","65","DISTRIBUCIÓN DE AGUA",                          "WATER DISTRIBUTION",                             "DISTRIBUTION D'EAU"),
+        ("653","65","DISTRIBUCIÓN DE ELECTRICIDAD",                  "ELECTRICITY DISTRIBUTION",                       "DISTRIBUTION D'ÉLECTRICITÉ"),
+        ("654","65","CALEFACCIÓN URBANA",                            "DISTRICT HEATING",                               "CHAUFFAGE URBAIN"),
+        // ── 66 Financiero ───────────────────────────────────────────────
+        ("661","66","SERVICIOS BANCARIOS Y DE INVERSIÓN",            "BANKING AND INVESTMENT SERVICES",                "SERVICES BANCAIRES ET D'INVESTISSEMENT"),
+        ("662","66","SEGUROS",                                       "INSURANCE",                                      "ASSURANCE"),
+        ("663","66","SERVICIOS DE GESTIÓN DE FONDOS",                "FUND MANAGEMENT SERVICES",                       "SERVICES DE GESTION DE FONDS"),
+        // ── 70 Inmobiliario ─────────────────────────────────────────────
+        ("701","70","COMPRAVENTA DE BIENES INMUEBLES",               "REAL ESTATE BUYING AND SELLING",                 "ACHAT ET VENTE IMMOBILIERS"),
+        ("702","70","ARRENDAMIENTO DE BIENES INMUEBLES",             "REAL ESTATE LEASING",                            "LOCATION DE BIENS IMMOBILIERS"),
+        ("703","70","ADMINISTRACIÓN DE PROPIEDADES",                 "PROPERTY MANAGEMENT",                            "GESTION IMMOBILIÈRE"),
+        // ── 71 Arquitectura e ingeniería ────────────────────────────────
+        ("711","71","SERVICIOS DE ARQUITECTURA",                     "ARCHITECTURAL SERVICES",                         "SERVICES D'ARCHITECTURE"),
+        ("712","71","SERVICIOS DE INGENIERÍA",                       "ENGINEERING SERVICES",                           "SERVICES D'INGÉNIERIE"),
+        ("713","71","CONSULTORÍA TÉCNICA Y SUPERVISIÓN",             "TECHNICAL CONSULTANCY AND SUPERVISION",          "CONSEIL TECHNIQUE ET SUPERVISION"),
+        ("714","71","TOPOGRAFÍA Y CARTOGRAFÍA",                      "SURVEYING AND CARTOGRAPHY",                      "TOPOGRAPHIE ET CARTOGRAPHIE"),
+        // ── 72 TI ───────────────────────────────────────────────────────
+        ("721","72","CONSULTORÍA EN TI",                             "IT CONSULTANCY",                                 "CONSEIL EN TECHNOLOGIES DE L'INFORMATION"),
+        ("722","72","DESARROLLO Y PROGRAMACIÓN DE SOFTWARE",         "SOFTWARE DEVELOPMENT AND PROGRAMMING",           "DÉVELOPPEMENT ET PROGRAMMATION DE LOGICIELS"),
+        ("723","72","GESTIÓN DE INFRAESTRUCTURA Y REDES",            "INFRASTRUCTURE AND NETWORK MANAGEMENT",          "GESTION D'INFRASTRUCTURE ET RÉSEAUX"),
+        ("724","72","SOPORTE TÉCNICO Y HELPDESK",                    "TECHNICAL SUPPORT AND HELPDESK",                 "SUPPORT TECHNIQUE ET HELPDESK"),
+        ("725","72","SERVICIOS DE SEGURIDAD INFORMÁTICA",            "IT SECURITY SERVICES",                           "SERVICES DE SÉCURITÉ INFORMATIQUE"),
+        // ── 73 I+D ──────────────────────────────────────────────────────
+        ("731","73","INVESTIGACIÓN EN CIENCIAS EXACTAS",             "R&D IN EXACT SCIENCES",                          "R&D EN SCIENCES EXACTES"),
+        ("732","73","INVESTIGACIÓN EN CIENCIAS APLICADAS",           "R&D IN APPLIED SCIENCES",                        "R&D EN SCIENCES APPLIQUÉES"),
+        ("733","73","ENSAYOS Y PRUEBAS TÉCNICAS",                    "TECHNICAL TESTING AND TRIALS",                   "ESSAIS ET TESTS TECHNIQUES"),
+        // ── 75 Administración ───────────────────────────────────────────
+        ("751","75","SERVICIOS DE ADMINISTRACIÓN PÚBLICA",           "PUBLIC ADMINISTRATION SERVICES",                 "SERVICES D'ADMINISTRATION PUBLIQUE"),
+        ("752","75","SERVICIOS DE DEFENSA Y SEGURIDAD NACIONAL",     "DEFENCE AND NATIONAL SECURITY SERVICES",         "SERVICES DE DÉFENSE ET SÉCURITÉ NATIONALE"),
+        ("753","75","SERVICIOS DE SEGURIDAD SOCIAL",                 "SOCIAL SECURITY SERVICES",                       "SERVICES DE SÉCURITÉ SOCIALE"),
+        // ── 76 Petróleo y gas ───────────────────────────────────────────
+        ("761","76","PERFORACIÓN Y EXPLORACIÓN PETROLERA",           "OIL DRILLING AND EXPLORATION",                   "FORAGE ET EXPLORATION PÉTROLIÈRE"),
+        ("762","76","SERVICIOS DE REFINERÍA Y PROCESAMIENTO",        "REFINERY AND PROCESSING SERVICES",               "SERVICES DE RAFFINERIE ET TRAITEMENT"),
+        // ── 77 Servicios agrícolas ──────────────────────────────────────
+        ("771","77","SERVICIOS AGRÍCOLAS Y HORTÍCOLAS",              "AGRICULTURAL AND HORTICULTURAL SERVICES",        "SERVICES AGRICOLES ET HORTICOLES"),
+        ("772","77","SERVICIOS FORESTALES",                          "FORESTRY SERVICES",                              "SERVICES FORESTIERS"),
+        ("773","77","SERVICIOS DE PESCA Y ACUICULTURA",              "FISHING AND AQUACULTURE SERVICES",               "SERVICES DE PÊCHE ET AQUACULTURE"),
+        ("774","77","SERVICIOS MEDIOAMBIENTALES AGRÍCOLAS",          "AGRICULTURAL ENVIRONMENTAL SERVICES",            "SERVICES ENVIRONNEMENTAUX AGRICOLES"),
+        // ── 79 Servicios empresariales ──────────────────────────────────
+        ("791","79","SERVICIOS JURÍDICOS",                           "LEGAL SERVICES",                                 "SERVICES JURIDIQUES"),
+        ("792","79","AUDITORÍA Y CONTABILIDAD",                      "AUDIT AND ACCOUNTING SERVICES",                  "SERVICES D'AUDIT ET COMPTABILITÉ"),
+        ("793","79","PUBLICIDAD Y MARKETING",                        "ADVERTISING AND MARKETING",                      "PUBLICITÉ ET MARKETING"),
+        ("794","79","RECURSOS HUMANOS Y EMPLEO",                     "HUMAN RESOURCES AND EMPLOYMENT",                 "RESSOURCES HUMAINES ET EMPLOI"),
+        ("795","79","SERVICIOS DE SEGURIDAD Y VIGILANCIA",           "SECURITY AND GUARD SERVICES",                    "SERVICES DE SÉCURITÉ ET DE GARDIENNAGE"),
+        ("796","79","INVESTIGACIÓN Y ANÁLISIS DE MERCADO",           "MARKET RESEARCH AND ANALYSIS",                   "ÉTUDE ET ANALYSE DE MARCHÉ"),
+        ("797","79","TRADUCCIÓN E INTERPRETACIÓN",                   "TRANSLATION AND INTERPRETATION",                 "TRADUCTION ET INTERPRÉTATION"),
+        ("798","79","SERVICIOS DE IMPRENTA Y EDICIÓN",               "PRINTING AND PUBLISHING SERVICES",               "SERVICES D'IMPRESSION ET ÉDITION"),
+        // ── 80 Educación ────────────────────────────────────────────────
+        ("801","80","EDUCACIÓN PRIMARIA Y SECUNDARIA",               "PRIMARY AND SECONDARY EDUCATION",                "ENSEIGNEMENT PRIMAIRE ET SECONDAIRE"),
+        ("802","80","EDUCACIÓN UNIVERSITARIA Y SUPERIOR",            "UNIVERSITY AND HIGHER EDUCATION",                "ENSEIGNEMENT UNIVERSITAIRE ET SUPÉRIEUR"),
+        ("803","80","FORMACIÓN PROFESIONAL Y TÉCNICA",               "VOCATIONAL AND TECHNICAL TRAINING",              "FORMATION PROFESSIONNELLE ET TECHNIQUE"),
+        ("804","80","FORMACIÓN EMPRESARIAL Y CORPORATIVA",           "BUSINESS AND CORPORATE TRAINING",                "FORMATION AUX ENTREPRISES ET CORPORATE"),
+        // ── 85 Salud ────────────────────────────────────────────────────
+        ("851","85","SERVICIOS HOSPITALARIOS Y CLÍNICOS",            "HOSPITAL AND CLINICAL SERVICES",                 "SERVICES HOSPITALIERS ET CLINIQUES"),
+        ("852","85","ATENCIÓN MÉDICA PRIMARIA Y ESPECIALIZADA",      "PRIMARY AND SPECIALIST MEDICAL CARE",            "SOINS MÉDICAUX PRIMAIRES ET SPÉCIALISÉS"),
+        ("853","85","SERVICIOS ODONTOLÓGICOS",                       "DENTAL SERVICES",                                "SERVICES DENTAIRES"),
+        ("854","85","SERVICIOS SOCIALES Y ASISTENCIA",               "SOCIAL SERVICES AND CARE",                       "SERVICES SOCIAUX ET SOINS"),
+        ("855","85","SERVICIOS DE SALUD MENTAL",                     "MENTAL HEALTH SERVICES",                         "SERVICES DE SANTÉ MENTALE"),
+        // ── 90 Medioambiente ────────────────────────────────────────────
+        ("901","90","GESTIÓN DE RESIDUOS Y RECICLAJE",               "WASTE MANAGEMENT AND RECYCLING",                 "GESTION DES DÉCHETS ET RECYCLAGE"),
+        ("902","90","LIMPIEZA Y SANEAMIENTO URBANO",                 "URBAN CLEANING AND SANITATION",                  "NETTOYAGE ET ASSAINISSEMENT URBAIN"),
+        ("903","90","GESTIÓN DE AGUAS RESIDUALES",                   "WASTEWATER MANAGEMENT",                          "GESTION DES EAUX USÉES"),
+        ("904","90","DESCONTAMINACIÓN Y REMEDIACIÓN AMBIENTAL",      "DECONTAMINATION AND ENVIRONMENTAL REMEDIATION",  "DÉCONTAMINATION ET ASSAINISSEMENT ENVIRONNEMENTAL"),
+        // ── 92 Recreación ───────────────────────────────────────────────
+        ("921","92","SERVICIOS CULTURALES Y DE ENTRETENIMIENTO",     "CULTURAL AND ENTERTAINMENT SERVICES",            "SERVICES CULTURELS ET DE DIVERTISSEMENT"),
+        ("922","92","SERVICIOS DEPORTIVOS Y DE RECREACIÓN",          "SPORTS AND RECREATION SERVICES",                 "SERVICES SPORTIFS ET DE LOISIRS"),
+        ("923","92","SERVICIOS DE MEDIOS DE COMUNICACIÓN",           "MEDIA SERVICES",                                 "SERVICES MÉDIAS"),
+        ("924","92","MUSEOS Y PATRIMONIO CULTURAL",                  "MUSEUMS AND CULTURAL HERITAGE",                  "MUSÉES ET PATRIMOINE CULTUREL"),
+        // ── 98 Otros servicios ──────────────────────────────────────────
+        ("981","98","SERVICIOS DE MEMBRESÍA Y ASOCIACIONES",         "MEMBERSHIP AND ASSOCIATION SERVICES",            "SERVICES D'ADHÉSION ET D'ASSOCIATIONS"),
+        ("982","98","SERVICIOS PERSONALES Y DOMÉSTICOS",             "PERSONAL AND DOMESTIC SERVICES",                 "SERVICES PERSONNELS ET DOMESTIQUES"),
+        ("983","98","SERVICIOS FUNERARIOS",                          "FUNERAL SERVICES",                               "SERVICES FUNÉRAIRES"),
+        // ── 99 Extraterritorial ─────────────────────────────────────────
+        ("991","99","ORGANIZACIONES INTERNACIONALES",                "INTERNATIONAL ORGANISATIONS",                    "ORGANISATIONS INTERNATIONALES"),
+    };
+
+    return (lineas, sublineas);
 }

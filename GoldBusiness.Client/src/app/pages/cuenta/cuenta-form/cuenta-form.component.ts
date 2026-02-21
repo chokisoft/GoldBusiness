@@ -1,16 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { skip } from 'rxjs/operators';
 import { CuentaService, CuentaDTO } from '../../../services/cuenta.service';
 import { SubGrupoCuentaService, SubGrupoCuentaDTO } from '../../../services/subgrupo-cuenta.service';
 import { TranslationService } from '../../../services/translation.service';
+import { LanguageService } from '../../../services/language.service';
 
 @Component({
   selector: 'app-cuenta-form',
   templateUrl: './cuenta-form.component.html',
   styleUrls: ['./cuenta-form.component.css']
 })
-export class CuentaFormComponent implements OnInit {
+export class CuentaFormComponent implements OnInit, OnDestroy {
   form: FormGroup;
   isEditMode = false;
   cuentaId: number | null = null;
@@ -19,13 +22,16 @@ export class CuentaFormComponent implements OnInit {
   subGruposCuenta: SubGrupoCuentaDTO[] = [];
   loadingSubGrupos = true;
 
+  private languageSubscription?: Subscription;
+
   constructor(
     private fb: FormBuilder,
     private cuentaService: CuentaService,
     private subGrupoCuentaService: SubGrupoCuentaService,
     private router: Router,
     private route: ActivatedRoute,
-    private translate: TranslationService
+    private translate: TranslationService,
+    private languageService: LanguageService
   ) {
     this.form = this.fb.group({
       codigo: ['', [Validators.required, Validators.maxLength(10)]],
@@ -44,6 +50,17 @@ export class CuentaFormComponent implements OnInit {
       this.isEditMode = true;
       this.cuentaId = +id;
     }
+
+    this.languageSubscription = this.languageService.currentLanguage$
+      .pipe(skip(1))
+      .subscribe(() => {
+        console.log('🔄 CuentaForm: Idioma cambiado, recargando datos...');
+        this.loadSubGruposCuenta(); // chains to loadCuenta() in edit mode
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.languageSubscription?.unsubscribe();
   }
 
   private setupFormSubscriptions(): void {
@@ -80,12 +97,12 @@ export class CuentaFormComponent implements OnInit {
     this.cuentaService.getById(this.cuentaId).subscribe({
       next: (data) => {
         this.form.patchValue(data);
-        
+
         if (this.isEditMode) {
           this.form.get('codigo')?.disable();
           this.form.get('subGrupoCuentaId')?.disable();
         }
-        
+
         this.loading = false;
       },
       error: (err: any) => {

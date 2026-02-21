@@ -1,16 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { skip } from 'rxjs/operators';
 import { SubGrupoCuentaService, SubGrupoCuentaDTO } from '../../../services/subgrupo-cuenta.service';
 import { GrupoCuentaService, GrupoCuentaDTO } from '../../../services/grupo-cuenta.service';
 import { TranslationService } from '../../../services/translation.service';
+import { LanguageService } from '../../../services/language.service';
 
 @Component({
   selector: 'app-subgrupo-cuenta-form',
   templateUrl: './subgrupo-cuenta-form.component.html',
   styleUrls: ['./subgrupo-cuenta-form.component.css']
 })
-export class SubGrupoCuentaFormComponent implements OnInit {
+export class SubGrupoCuentaFormComponent implements OnInit, OnDestroy {
   form: FormGroup;
   isEditMode = false;
   subgrupoId: number | null = null;
@@ -18,9 +21,11 @@ export class SubGrupoCuentaFormComponent implements OnInit {
   loadingGrupos = true;
   error: string | null = null;
   gruposCuenta: GrupoCuentaDTO[] = [];
-  
+
   selectedGrupoCodigo: string = '';
   codigoCompleto: string = '';
+
+  private languageSubscription?: Subscription;
 
   constructor(
     private fb: FormBuilder,
@@ -28,12 +33,13 @@ export class SubGrupoCuentaFormComponent implements OnInit {
     private grupoCuentaService: GrupoCuentaService,
     private router: Router,
     private route: ActivatedRoute,
-    private translate: TranslationService
+    private translate: TranslationService,
+    private languageService: LanguageService
   ) {
     this.form = this.fb.group({
       codigoUsuario: [
         { value: '', disabled: true },
-        [Validators.required, Validators.pattern(/^\d{3}$/), Validators.minLength(3), Validators.maxLength(3)]
+        [Validators.required, Validators.pattern(/^\d{3$/), Validators.minLength(3), Validators.maxLength(3)]
       ],
       grupoCuentaId: [null, Validators.required],
       descripcion: ['', [Validators.required, Validators.maxLength(256)]],
@@ -49,6 +55,31 @@ export class SubGrupoCuentaFormComponent implements OnInit {
       this.isEditMode = true;
       this.subgrupoId = +id;
     }
+
+    this.languageSubscription = this.languageService.currentLanguage$
+      .pipe(skip(1))
+      .subscribe(() => {
+        console.log('🔄 SubGrupoForm: Idioma cambiado, recargando datos...');
+        this.reloadOnLanguageChange();
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.languageSubscription?.unsubscribe();
+  }
+
+  private reloadOnLanguageChange(): void {
+    this.grupoCuentaService.getAll().subscribe({
+      next: (data) => {
+        this.gruposCuenta = data.filter(g => g.activo !== false);
+        if (this.isEditMode && this.subgrupoId) {
+          this.loadSubGrupoCuenta();
+        }
+      },
+      error: (err: any) => {
+        console.error('Error al recargar grupos:', err);
+      }
+    });
   }
 
   loadGruposCuenta(): void {
@@ -123,7 +154,7 @@ export class SubGrupoCuentaFormComponent implements OnInit {
 
   updateCodigoCompleto(): void {
     const codigoUsuario = this.form.get('codigoUsuario')?.value || '';
-    
+
     if (this.selectedGrupoCodigo && codigoUsuario && codigoUsuario.length === 3) {
       this.codigoCompleto = this.selectedGrupoCodigo + codigoUsuario;
     } else {
@@ -139,9 +170,9 @@ export class SubGrupoCuentaFormComponent implements OnInit {
       next: (data) => {
         const codigoGrupo = data.codigo.substring(0, 2);
         const codigoUsuario = data.codigo.substring(2, 5);
-        
+
         const grupo = this.gruposCuenta.find(g => g.codigo === codigoGrupo);
-        
+
         this.form.patchValue({
           grupoCuentaId: grupo?.id,
         });
@@ -152,13 +183,13 @@ export class SubGrupoCuentaFormComponent implements OnInit {
             descripcion: data.descripcion,
             deudora: data.deudora
           });
-          
+
           if (this.isEditMode) {
             this.form.get('grupoCuentaId')?.disable();
             this.form.get('codigoUsuario')?.disable();
           }
         }, 100);
-        
+
         this.loading = false;
       },
       error: (err: any) => {
@@ -178,25 +209,17 @@ export class SubGrupoCuentaFormComponent implements OnInit {
       if (!codigoUsuario || codigoUsuario.length !== 3) {
         this.form.get('codigoUsuario')?.markAsTouched();
       }
-
       return;
     }
 
     this.loading = true;
     this.error = null;
 
-    const formValue = this.form.getRawValue();
-
+    const rawValue = this.form.getRawValue();
     const dto: SubGrupoCuentaDTO = {
-      codigo: this.codigoCompleto,
-      grupoCuentaId: Number(formValue.grupoCuentaId),
-      descripcion: formValue.descripcion,
-      deudora: formValue.deudora
+      ...rawValue,
+      codigo: this.codigoCompleto
     };
-
-    if (this.isEditMode && this.subgrupoId) {
-      (dto as any).id = this.subgrupoId;
-    }
 
     if (this.isEditMode) {
       this.subGrupoCuentaService.update(this.subgrupoId!, dto).subscribe({
@@ -236,10 +259,7 @@ export class SubGrupoCuentaFormComponent implements OnInit {
       const maxLength = control.errors?.['maxlength'].requiredLength;
       return this.translate.translate('validation.maxLength', [maxLength]);
     }
-    if (control?.hasError('pattern')) {
-      return this.translate.translate('validation.codigo3Digitos');
-    }
-    if (control?.hasError('minlength')) {
+    if (control?.hasError('pattern') || control?.hasError('minlength')) {
       return this.translate.translate('validation.codigo3Digitos');
     }
     return '';

@@ -1,12 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { skip } from 'rxjs/operators';
 import { SubGrupoCuentaService, SubGrupoCuentaDTO } from '../../../services/subgrupo-cuenta.service';
+import { LanguageService } from '../../../services/language.service';
 
 @Component({
   selector: 'app-subgrupo-cuenta-list',
   templateUrl: './subgrupo-cuenta-list.component.html',
   styleUrls: ['./subgrupo-cuenta-list.component.css']
 })
-export class SubGrupoCuentaListComponent implements OnInit {
+export class SubGrupoCuentaListComponent implements OnInit, OnDestroy {
   subGrupoCuentas: SubGrupoCuentaDTO[] = [];
   filteredSubGrupoCuentas: SubGrupoCuentaDTO[] = [];
   paginatedSubGrupoCuentas: SubGrupoCuentaDTO[] = [];
@@ -24,10 +27,26 @@ export class SubGrupoCuentaListComponent implements OnInit {
   // Exponer Math para usarlo en el template
   Math = Math;
 
-  constructor(private subGrupoCuentaService: SubGrupoCuentaService) {}
+  private languageSubscription?: Subscription;
+
+  constructor(
+    private subGrupoCuentaService: SubGrupoCuentaService,
+    private languageService: LanguageService
+  ) {}
 
   ngOnInit(): void {
     this.loadData();
+
+    this.languageSubscription = this.languageService.currentLanguage$
+      .pipe(skip(1))
+      .subscribe(() => {
+        console.log('🔄 SubGrupoCuentaList: Idioma cambiado, recargando datos...');
+        this.loadData();
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.languageSubscription?.unsubscribe();
   }
 
   loadData(): void {

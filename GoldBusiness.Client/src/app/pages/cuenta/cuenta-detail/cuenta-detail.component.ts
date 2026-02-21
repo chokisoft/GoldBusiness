@@ -1,26 +1,31 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { skip } from 'rxjs/operators';
 import { CuentaService, CuentaDTO } from '../../../services/cuenta.service';
+import { LanguageService } from '../../../services/language.service';
 
 @Component({
   selector: 'app-cuenta-detail',
   templateUrl: './cuenta-detail.component.html',
   styleUrls: ['./cuenta-detail.component.css']
 })
-export class CuentaDetailComponent implements OnInit {
+export class CuentaDetailComponent implements OnInit, OnDestroy {
   cuenta: CuentaDTO | null = null;
-  id: number | null = null; // ✅ AGREGAR ESTA PROPIEDAD
+  id: number | null = null;
   loading = true;
   error: string | null = null;
+
+  private languageSubscription?: Subscription;
 
   constructor(
     private cuentaService: CuentaService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private languageService: LanguageService
   ) {}
 
   ngOnInit(): void {
-    // ✅ Obtener ID de la ruta
     const idParam = this.route.snapshot.paramMap.get('id');
     if (idParam) {
       this.id = +idParam;
@@ -29,6 +34,17 @@ export class CuentaDetailComponent implements OnInit {
       this.error = 'ID no válido';
       this.loading = false;
     }
+
+    this.languageSubscription = this.languageService.currentLanguage$
+      .pipe(skip(1))
+      .subscribe(() => {
+        console.log('🔄 CuentaDetail: Idioma cambiado, recargando...');
+        this.loadCuenta();
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.languageSubscription?.unsubscribe();
   }
 
   loadCuenta(): void {
@@ -48,7 +64,6 @@ export class CuentaDetailComponent implements OnInit {
     });
   }
 
-  // ✅ Método para volver
   goBack(): void {
     this.router.navigate(['/nomencladores/cuenta']);
   }

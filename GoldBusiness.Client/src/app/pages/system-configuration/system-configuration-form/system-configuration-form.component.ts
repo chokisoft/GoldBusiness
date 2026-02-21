@@ -1,15 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { skip } from 'rxjs/operators';
 import { SystemConfigurationService, SystemConfigurationDTO } from '../../../services/system-configuration.service';
 import { CuentaService, CuentaDTO } from '../../../services/cuenta.service';
+import { LanguageService } from '../../../services/language.service';
 
 @Component({
   selector: 'app-system-configuration-form',
   templateUrl: './system-configuration-form.component.html',
   styleUrls: ['./system-configuration-form.component.css']
 })
-export class SystemConfigurationFormComponent implements OnInit {
+export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
   form: FormGroup;
   isEditMode = false;
   configId: number | null = null;
@@ -18,12 +21,15 @@ export class SystemConfigurationFormComponent implements OnInit {
   cuentas: CuentaDTO[] = [];
   loadingCuentas = true;
 
+  private languageSubscription?: Subscription;
+
   constructor(
     private fb: FormBuilder,
     private systemConfigurationService: SystemConfigurationService,
     private cuentaService: CuentaService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private languageService: LanguageService
   ) {
     this.form = this.fb.group({
       codigoSistema: ['', [Validators.required, Validators.maxLength(50)]],
@@ -53,6 +59,20 @@ export class SystemConfigurationFormComponent implements OnInit {
       this.configId = +id;
       this.loadConfiguration();
     }
+
+    this.languageSubscription = this.languageService.currentLanguage$
+      .pipe(skip(1))
+      .subscribe(() => {
+        console.log('🔄 SysConfigForm: Idioma cambiado, recargando datos...');
+        this.loadCuentas();
+        if (this.isEditMode) {
+          this.loadConfiguration();
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.languageSubscription?.unsubscribe();
   }
 
   private setupFormSubscriptions(): void {

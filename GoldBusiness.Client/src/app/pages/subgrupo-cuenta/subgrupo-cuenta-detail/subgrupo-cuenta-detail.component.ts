@@ -1,22 +1,28 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { skip } from 'rxjs/operators';
 import { SubGrupoCuentaService, SubGrupoCuentaDTO } from '../../../services/subgrupo-cuenta.service';
+import { LanguageService } from '../../../services/language.service';
 
 @Component({
   selector: 'app-subgrupo-cuenta-detail',
   templateUrl: './subgrupo-cuenta-detail.component.html',
   styleUrls: ['./subgrupo-cuenta-detail.component.css']
 })
-export class SubGrupoCuentaDetailComponent implements OnInit {
+export class SubGrupoCuentaDetailComponent implements OnInit, OnDestroy {
   subgrupo: SubGrupoCuentaDTO | null = null;
-  id: number | null = null; // ✅ DEBE EXISTIR
+  id: number | null = null;
   loading = true;
   error: string | null = null;
+
+  private languageSubscription?: Subscription;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private subGrupoCuentaService: SubGrupoCuentaService
+    private subGrupoCuentaService: SubGrupoCuentaService,
+    private languageService: LanguageService
   ) {}
 
   ngOnInit(): void {
@@ -25,6 +31,17 @@ export class SubGrupoCuentaDetailComponent implements OnInit {
       this.id = +idParam;
       this.loadSubGrupoCuenta();
     }
+
+    this.languageSubscription = this.languageService.currentLanguage$
+      .pipe(skip(1))
+      .subscribe(() => {
+        console.log('🔄 SubGrupoDetail: Idioma cambiado, recargando...');
+        this.loadSubGrupoCuenta();
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.languageSubscription?.unsubscribe();
   }
 
   loadSubGrupoCuenta(): void {

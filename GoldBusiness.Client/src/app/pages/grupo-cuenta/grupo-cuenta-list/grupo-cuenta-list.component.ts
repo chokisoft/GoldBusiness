@@ -1,12 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { skip } from 'rxjs/operators';
 import { GrupoCuentaService, GrupoCuentaDTO } from '../../../services/grupo-cuenta.service';
+import { LanguageService } from '../../../services/language.service';
 
 @Component({
   selector: 'app-grupo-cuenta-list',
   templateUrl: './grupo-cuenta-list.component.html',
   styleUrls: ['./grupo-cuenta-list.component.css']
 })
-export class GrupoCuentaListComponent implements OnInit {
+export class GrupoCuentaListComponent implements OnInit, OnDestroy {
   grupoCuentas: GrupoCuentaDTO[] = [];
   filteredGrupoCuentas: GrupoCuentaDTO[] = [];
   paginatedGrupoCuentas: GrupoCuentaDTO[] = [];
@@ -24,10 +27,26 @@ export class GrupoCuentaListComponent implements OnInit {
   // Exponer Math para usarlo en el template
   Math = Math;
 
-  constructor(private grupoCuentaService: GrupoCuentaService) {}
+  private languageSubscription?: Subscription;
+
+  constructor(
+    private grupoCuentaService: GrupoCuentaService,
+    private languageService: LanguageService
+  ) {}
 
   ngOnInit(): void {
     this.loadData();
+
+    this.languageSubscription = this.languageService.currentLanguage$
+      .pipe(skip(1))
+      .subscribe(() => {
+        console.log('🔄 GrupoCuentaList: Idioma cambiado, recargando datos...');
+        this.loadData();
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.languageSubscription?.unsubscribe();
   }
 
   loadData(): void {

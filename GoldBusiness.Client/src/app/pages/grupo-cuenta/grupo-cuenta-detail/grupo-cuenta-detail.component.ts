@@ -1,22 +1,28 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { skip } from 'rxjs/operators';
 import { GrupoCuentaService, GrupoCuentaDTO } from '../../../services/grupo-cuenta.service';
+import { LanguageService } from '../../../services/language.service';
 
 @Component({
   selector: 'app-grupo-cuenta-detail',
   templateUrl: './grupo-cuenta-detail.component.html',
   styleUrls: ['./grupo-cuenta-detail.component.css']
 })
-export class GrupoCuentaDetailComponent implements OnInit {
+export class GrupoCuentaDetailComponent implements OnInit, OnDestroy {
   grupo: GrupoCuentaDTO | null = null;
-  id: number | null = null; // ✅ DEBE EXISTIR
+  id: number | null = null;
   loading = true;
   error: string | null = null;
+
+  private languageSubscription?: Subscription;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private grupoCuentaService: GrupoCuentaService
+    private grupoCuentaService: GrupoCuentaService,
+    private languageService: LanguageService
   ) {}
 
   ngOnInit(): void {
@@ -25,6 +31,17 @@ export class GrupoCuentaDetailComponent implements OnInit {
       this.id = +idParam;
       this.loadGrupoCuenta();
     }
+
+    this.languageSubscription = this.languageService.currentLanguage$
+      .pipe(skip(1))
+      .subscribe(() => {
+        console.log('🔄 GrupoDetail: Idioma cambiado, recargando...');
+        this.loadGrupoCuenta();
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.languageSubscription?.unsubscribe();
   }
 
   loadGrupoCuenta(): void {

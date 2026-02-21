@@ -1,27 +1,33 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { skip } from 'rxjs/operators';
 import { GrupoCuentaService, GrupoCuentaDTO } from '../../../services/grupo-cuenta.service';
 import { TranslationService } from '../../../services/translation.service';
+import { LanguageService } from '../../../services/language.service';
 
 @Component({
   selector: 'app-grupo-cuenta-form',
   templateUrl: './grupo-cuenta-form.component.html',
   styleUrls: ['./grupo-cuenta-form.component.css']
 })
-export class GrupoCuentaFormComponent implements OnInit {
+export class GrupoCuentaFormComponent implements OnInit, OnDestroy {
   form: FormGroup;
   isEditMode = false;
   grupoId: number | null = null;
   loading = false;
   error: string | null = null;
 
+  private languageSubscription?: Subscription;
+
   constructor(
     private fb: FormBuilder,
     private grupoCuentaService: GrupoCuentaService,
     private router: Router,
     private route: ActivatedRoute,
-    private translate: TranslationService
+    private translate: TranslationService,
+    private languageService: LanguageService
   ) {
     this.form = this.fb.group({
       codigo: ['', [Validators.required, Validators.pattern(/^\d{2}$/), Validators.minLength(2), Validators.maxLength(2)]],
@@ -32,13 +38,26 @@ export class GrupoCuentaFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.setupFormSubscriptions();
-    
+
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.isEditMode = true;
       this.grupoId = +id;
       this.loadGrupoCuenta();
     }
+
+    this.languageSubscription = this.languageService.currentLanguage$
+      .pipe(skip(1))
+      .subscribe(() => {
+        if (this.isEditMode) {
+          console.log('🔄 GrupoForm: Idioma cambiado, recargando datos...');
+          this.loadGrupoCuenta();
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.languageSubscription?.unsubscribe();
   }
 
   private setupFormSubscriptions(): void {
@@ -56,11 +75,11 @@ export class GrupoCuentaFormComponent implements OnInit {
     this.grupoCuentaService.getById(this.grupoId).subscribe({
       next: (data) => {
         this.form.patchValue(data);
-        
+
         if (this.isEditMode) {
           this.form.get('codigo')?.disable();
         }
-        
+
         this.loading = false;
       },
       error: (err: any) => {

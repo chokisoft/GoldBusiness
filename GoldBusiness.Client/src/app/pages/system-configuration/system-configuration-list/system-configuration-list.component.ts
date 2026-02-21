@@ -1,12 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { skip } from 'rxjs/operators';
 import { SystemConfigurationService, SystemConfigurationDTO } from '../../../services/system-configuration.service';
+import { LanguageService } from '../../../services/language.service';
 
 @Component({
   selector: 'app-system-configuration-list',
   templateUrl: './system-configuration-list.component.html',
   styleUrls: ['./system-configuration-list.component.css']
 })
-export class SystemConfigurationListComponent implements OnInit {
+export class SystemConfigurationListComponent implements OnInit, OnDestroy {
   configurations: SystemConfigurationDTO[] = [];
   filteredConfigurations: SystemConfigurationDTO[] = [];
   paginatedConfigurations: SystemConfigurationDTO[] = [];
@@ -24,10 +27,26 @@ export class SystemConfigurationListComponent implements OnInit {
   // Exponer Math para usarlo en el template
   Math = Math;
 
-  constructor(private systemConfigService: SystemConfigurationService) {}
+  private languageSubscription?: Subscription;
+
+  constructor(
+    private systemConfigService: SystemConfigurationService,
+    private languageService: LanguageService
+  ) {}
 
   ngOnInit(): void {
     this.loadData();
+
+    this.languageSubscription = this.languageService.currentLanguage$
+      .pipe(skip(1))
+      .subscribe(() => {
+        console.log('🔄 SystemConfigList: Idioma cambiado, recargando datos...');
+        this.loadData();
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.languageSubscription?.unsubscribe();
   }
 
   loadData(): void {

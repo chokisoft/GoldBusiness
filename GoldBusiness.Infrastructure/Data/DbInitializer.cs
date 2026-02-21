@@ -2,6 +2,7 @@
 using GoldBusiness.Domain.Translation;
 using GoldBusiness.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace GoldBusiness.Infrastructure.Data
 {
@@ -375,7 +376,6 @@ namespace GoldBusiness.Infrastructure.Data
             return result.ToArray();
         }
 
-
         #region GrupoCuenta
 
         private static async Task SeedGrupoCuentaAsync(ApplicationDbContext context, ILogger logger)
@@ -386,51 +386,54 @@ namespace GoldBusiness.Infrastructure.Data
                 return;
             }
 
-            var grupos = new[]
-            {
-                new GrupoCuenta("10", "GRUPO DE ACTIVO", "system"),
-                new GrupoCuenta("20", "GRUPO DE PASIVO", "system"),
-                new GrupoCuenta("30", "GRUPO DE PATRIMONIO", "system"),
-                new GrupoCuenta("40", "GRUPO DE CUENTAS NOMINALES", "system"),
-                new GrupoCuenta("50", "CUENTA DE CIERRE", "system")
-            };
+            var assembly = typeof(DbInitializer).Assembly;
+            var resourceName = "GoldBusiness.Infrastructure.Data.SeedData.GrupoCuentas.csv";
 
+            using var stream = assembly.GetManifestResourceStream(resourceName);
+            if (stream == null)
+            {
+                logger.LogWarning("No se encontró GrupoCuentas.csv. Recurso: {Resource}", resourceName);
+                return;
+            }
+
+            using var reader = new StreamReader(stream, System.Text.Encoding.UTF8);
+            await reader.ReadLineAsync(); // Saltar encabezado: Codigo,DescripcionES,DescripcionEN,DescripcionFR
+
+            var datos = new List<(string Codigo, string ES, string EN, string FR)>();
+            string? line;
+
+            while ((line = await reader.ReadLineAsync()) != null)
+            {
+                if (string.IsNullOrWhiteSpace(line)) continue;
+                var v = ParseCsvLine(line);
+                if (v.Length < 4 || string.IsNullOrWhiteSpace(v[0])) continue;
+                datos.Add((v[0].Trim(), v[1].Trim(), v[2].Trim(), v[3].Trim()));
+            }
+
+            if (datos.Count == 0)
+            {
+                logger.LogWarning("GrupoCuentas.csv no contiene datos válidos.");
+                return;
+            }
+
+            var grupos = datos.Select(d => new GrupoCuenta(d.Codigo, d.ES, "system")).ToList();
             context.GrupoCuenta.AddRange(grupos);
             await context.SaveChangesAsync();
 
-            // Agregar traducciones
-            var traducciones = new List<GrupoCuentaTranslation>
+            var traducciones = new List<GrupoCuentaTranslation>();
+            for (int i = 0; i < grupos.Count; i++)
             {
-                // ACTIVO
-                new(grupos[0].Id, "es", "GRUPO DE ACTIVO", "system"),
-                new(grupos[0].Id, "en", "ASSET GROUP", "system"),
-                new(grupos[0].Id, "fr", "GROUPE D’ACTIFS", "system"),
-
-                // PASIVO
-                new(grupos[1].Id, "es", "GRUPO DE PASIVO", "system"),
-                new(grupos[1].Id, "en", "LIABILITY GROUP", "system"),
-                new(grupos[1].Id, "fr", "GROUPE DE PASSIF", "system"),
-
-                // PATRIMONIO
-                new(grupos[2].Id, "es", "GRUPO DE PATRIMONIO", "system"),
-                new(grupos[2].Id, "en", "EQUITY GROUP", "system"),
-                new(grupos[2].Id, "fr", "GROUPE DE PATRIMOINE", "system"),
-
-                // INGRESOS
-                new(grupos[3].Id, "es", "GRUPO DE CUENTAS NOMINALES", "system"),
-                new(grupos[3].Id, "en", "NOMINAL ACCOUNTS GROUP", "system"),
-                new(grupos[3].Id, "fr", "GROUPE DE COMPTES NOMINAUX", "system"),
-
-                // GASTOS
-                new(grupos[4].Id, "es", "CUENTA DE CIERRE", "system"),
-                new(grupos[4].Id, "en", "CLOSING ACCOUNT", "system"),
-                new(grupos[4].Id, "fr", "COMPTE DE CLÔTURE", "system")
-            };
+                var id = grupos[i].Id;
+                var d = datos[i];
+                traducciones.Add(new GrupoCuentaTranslation(id, "es", d.ES, "system"));
+                traducciones.Add(new GrupoCuentaTranslation(id, "en", d.EN, "system"));
+                traducciones.Add(new GrupoCuentaTranslation(id, "fr", d.FR, "system"));
+            }
 
             context.GrupoCuentaTranslation.AddRange(traducciones);
             await context.SaveChangesAsync();
 
-            logger.LogInformation("Seed de GrupoCuenta completado: {Count} grupos agregados", grupos.Length);
+            logger.LogInformation("✅ Seed GrupoCuenta: {Count} grupos, {Trans} traducciones", grupos.Count, traducciones.Count);
         }
 
         #endregion
@@ -445,76 +448,154 @@ namespace GoldBusiness.Infrastructure.Data
                 return;
             }
 
-            // Obtener los GrupoCuenta para referenciarlos
-            var grupoActivo = context.GrupoCuenta.First(g => g.Codigo == "10");
-            var grupoPasivo = context.GrupoCuenta.First(g => g.Codigo == "20");
-            var grupoPatrimonio = context.GrupoCuenta.First(g => g.Codigo == "30");
-            var grupoNominales = context.GrupoCuenta.First(g => g.Codigo == "40");
-            var grupoCierre = context.GrupoCuenta.First(g => g.Codigo == "50");
+            // ✅ int (no Guid) — GrupoCuenta.Id es int
+            var gruposDict = context.GrupoCuenta.ToDictionary(g => g.Codigo, g => g.Id);
 
-            var subgrupos = new[]
+            var assembly = typeof(DbInitializer).Assembly;
+            var resourceName = "GoldBusiness.Infrastructure.Data.SeedData.SubGruposCuentas.csv";
+
+            using var stream = assembly.GetManifestResourceStream(resourceName);
+            if (stream == null)
             {
-                new SubGrupoCuenta("10101", "ACTIVO CIRCULANTE", grupoActivo.Id, deudora: true, "system"),
-                new SubGrupoCuenta("10102", "ACTIVOS FIJOS", grupoActivo.Id, deudora: true, "system"),
-                new SubGrupoCuenta("10103", "CUENTAS REGULADORAS DE ACTIVOS", grupoActivo.Id, deudora: false, "system"),
-                new SubGrupoCuenta("20201", "PASIVOS CIRCULANTES", grupoPasivo.Id, deudora: false, "system"),
-                new SubGrupoCuenta("30300", "GRUPO PATRIMONIO", grupoPatrimonio.Id, deudora: false, "system"),
-                new SubGrupoCuenta("40401", "CUENTAS NOMINALES DEUDORAS", grupoNominales.Id, deudora: true, "system"),
-                new SubGrupoCuenta("40402", "CUENTAS NOMINALES ACREEDORAS", grupoNominales.Id, deudora: false, "system"),
-                new SubGrupoCuenta("50500", "CUENTA DE CIERRE", grupoCierre.Id, deudora: false, "system")
-            };
+                logger.LogWarning("No se encontró SubGruposCuentas.csv. Recurso: {Resource}", resourceName);
+                return;
+            }
 
+            using var reader = new StreamReader(stream, System.Text.Encoding.UTF8);
+            await reader.ReadLineAsync(); // Saltar encabezado: Codigo,DescripcionES,GrupoCodigo,Deudora,DescripcionEN,DescripcionFR
+
+            // ✅ GrupoId es int
+            var datos = new List<(string Codigo, string ES, int GrupoId, bool Deudora, string EN, string FR)>();
+            string? line;
+
+            while ((line = await reader.ReadLineAsync()) != null)
+            {
+                if (string.IsNullOrWhiteSpace(line)) continue;
+                var v = ParseCsvLine(line);
+                if (v.Length < 6 || string.IsNullOrWhiteSpace(v[0])) continue;
+
+                var codigo = v[0].Trim();
+                var descES = v[1].Trim();
+                var grupoCodigo = v[2].Trim();
+                var deudora = bool.TryParse(v[3].Trim(), out var b) && b;
+                var descEN = v[4].Trim();
+                var descFR = v[5].Trim();
+
+                if (!gruposDict.TryGetValue(grupoCodigo, out var grupoId))
+                {
+                    logger.LogWarning("Grupo '{GrupoCodigo}' no encontrado para subgrupo '{Codigo}'", grupoCodigo, codigo);
+                    continue;
+                }
+
+                datos.Add((codigo, descES, grupoId, deudora, descEN, descFR));
+            }
+
+            if (datos.Count == 0)
+            {
+                logger.LogWarning("SubGruposCuentas.csv no contiene datos válidos.");
+                return;
+            }
+
+            var subgrupos = datos.Select(d => new SubGrupoCuenta(d.Codigo, d.ES, d.GrupoId, d.Deudora, "system")).ToList();
             context.SubGrupoCuenta.AddRange(subgrupos);
             await context.SaveChangesAsync();
 
-            // Agregar traducciones
-            var traducciones = new List<SubGrupoCuentaTranslation>
+            var traducciones = new List<SubGrupoCuentaTranslation>();
+            for (int i = 0; i < subgrupos.Count; i++)
             {
-                // 10101 - ACTIVO CIRCULANTE
-                new(subgrupos[0].Id, "es", "ACTIVO CIRCULANTE", "system"),
-                new(subgrupos[0].Id, "en", "CURRENT ASSETS", "system"),
-                new(subgrupos[0].Id, "fr", "ACTIF CIRCULANT", "system"),
-
-                // 10102 - ACTIVOS FIJOS
-                new(subgrupos[1].Id, "es", "ACTIVOS FIJOS", "system"),
-                new(subgrupos[1].Id, "en", "FIXED ASSETS", "system"),
-                new(subgrupos[1].Id, "fr", "ACTIFS FIXES", "system"),
-
-                // 10103 - CUENTAS REGULADORAS DE ACTIVOS
-                new(subgrupos[2].Id, "es", "CUENTAS REGULADORAS DE ACTIVOS", "system"),
-                new(subgrupos[2].Id, "en", "ASSET CONTRA ACCOUNTS", "system"),
-                new(subgrupos[2].Id, "fr", "COMPTES CORRECTEURS D'ACTIFS", "system"),
-
-                // 20201 - PASIVOS CIRCULANTES
-                new(subgrupos[3].Id, "es", "PASIVOS CIRCULANTES", "system"),
-                new(subgrupos[3].Id, "en", "CURRENT LIABILITIES", "system"),
-                new(subgrupos[3].Id, "fr", "PASSIFS CIRCULANTS", "system"),
-
-                // 30300 - GRUPO PATRIMONIO
-                new(subgrupos[4].Id, "es", "GRUPO PATRIMONIO", "system"),
-                new(subgrupos[4].Id, "en", "EQUITY GROUP", "system"),
-                new(subgrupos[4].Id, "fr", "GROUPE PATRIMOINE", "system"),
-
-                // 40401 - CUENTAS NOMINALES DEUDORAS
-                new(subgrupos[5].Id, "es", "CUENTAS NOMINALES DEUDORAS", "system"),
-                new(subgrupos[5].Id, "en", "DEBIT NOMINAL ACCOUNTS", "system"),
-                new(subgrupos[5].Id, "fr", "COMPTES NOMINAUX DÉBITEURS", "system"),
-
-                // 40402 - CUENTAS NOMINALES ACREEDORAS
-                new(subgrupos[6].Id, "es", "CUENTAS NOMINALES ACREEDORAS", "system"),
-                new(subgrupos[6].Id, "en", "CREDIT NOMINAL ACCOUNTS", "system"),
-                new(subgrupos[6].Id, "fr", "COMPTES NOMINAUX CRÉDITEURS", "system"),
-
-                // 50500 - CUENTA DE CIERRE
-                new(subgrupos[7].Id, "es", "CUENTA DE CIERRE", "system"),
-                new(subgrupos[7].Id, "en", "CLOSING ACCOUNT", "system"),
-                new(subgrupos[7].Id, "fr", "COMPTE DE CLÔTURE", "system")
-            };
+                var id = subgrupos[i].Id;
+                var d = datos[i];
+                traducciones.Add(new SubGrupoCuentaTranslation(id, "es", d.ES, "system"));
+                traducciones.Add(new SubGrupoCuentaTranslation(id, "en", d.EN, "system"));
+                traducciones.Add(new SubGrupoCuentaTranslation(id, "fr", d.FR, "system"));
+            }
 
             context.SubGrupoCuentaTranslation.AddRange(traducciones);
             await context.SaveChangesAsync();
 
-            logger.LogInformation("Seed de SubGrupoCuenta completado: {Count} subgrupos agregados", subgrupos.Length);
+            logger.LogInformation("✅ Seed SubGrupoCuenta: {Count} subgrupos, {Trans} traducciones", subgrupos.Count, traducciones.Count);
+        }
+
+        #endregion
+
+        #region Cuenta
+
+        private static async Task SeedCuentaAsync(ApplicationDbContext context, ILogger logger)
+        {
+            if (context.Cuenta.Any())
+            {
+                logger.LogInformation("Cuenta ya tiene datos, omitiendo seed.");
+                return;
+            }
+
+            // ✅ int (no Guid) — SubGrupoCuenta.Id es int
+            var subgruposDict = context.SubGrupoCuenta.ToDictionary(s => s.Codigo, s => s.Id);
+
+            var assembly = typeof(DbInitializer).Assembly;
+            var resourceName = "GoldBusiness.Infrastructure.Data.SeedData.Cuentas.csv";
+
+            using var stream = assembly.GetManifestResourceStream(resourceName);
+            if (stream == null)
+            {
+                logger.LogWarning("No se encontró Cuentas.csv. Recurso: {Resource}", resourceName);
+                return;
+            }
+
+            using var reader = new StreamReader(stream, System.Text.Encoding.UTF8);
+            await reader.ReadLineAsync(); // Saltar encabezado: Codigo,DescripcionES,Nivel,SubGrupoCodigo,DescripcionEN,DescripcionFR
+
+            // ✅ SubGrupoId es int
+            var datos = new List<(string Codigo, string ES, int Nivel, int SubGrupoId, string EN, string FR)>();
+            string? line;
+
+            while ((line = await reader.ReadLineAsync()) != null)
+            {
+                if (string.IsNullOrWhiteSpace(line)) continue;
+                var v = ParseCsvLine(line);
+                if (v.Length < 6 || string.IsNullOrWhiteSpace(v[0])) continue;
+
+                var codigo = v[0].Trim();
+                var descES = v[1].Trim();
+                var nivel = int.TryParse(v[2].Trim(), out var n) ? n : 1;
+                var subGrupoCodigo = v[3].Trim();
+                var descEN = v[4].Trim();
+                var descFR = v[5].Trim();
+
+                if (!subgruposDict.TryGetValue(subGrupoCodigo, out var subGrupoId))
+                {
+                    logger.LogWarning("SubGrupo '{SubGrupoCodigo}' no encontrado para cuenta '{Codigo}'", subGrupoCodigo, codigo);
+                    continue;
+                }
+
+                datos.Add((codigo, descES, nivel, subGrupoId, descEN, descFR));
+            }
+
+            if (datos.Count == 0)
+            {
+                logger.LogWarning("Cuentas.csv no contiene datos válidos.");
+                return;
+            }
+
+            var cuentas = datos.Select(d => new Cuenta(d.Codigo, d.ES, d.Nivel, d.SubGrupoId, "system")).ToList();
+            context.Cuenta.AddRange(cuentas);
+            await context.SaveChangesAsync();
+
+            logger.LogInformation("✅ {Count} cuentas insertadas", cuentas.Count);
+
+            var traducciones = new List<CuentaTranslation>();
+            for (int i = 0; i < cuentas.Count; i++)
+            {
+                var id = cuentas[i].Id;
+                var d = datos[i];
+                traducciones.Add(new CuentaTranslation(id, "es", d.ES, "system"));
+                traducciones.Add(new CuentaTranslation(id, "en", d.EN, "system"));
+                traducciones.Add(new CuentaTranslation(id, "fr", d.FR, "system"));
+            }
+
+            context.CuentaTranslation.AddRange(traducciones);
+            await context.SaveChangesAsync();
+
+            logger.LogInformation("✅ Seed Cuenta: {Count} cuentas, {Trans} traducciones", cuentas.Count, traducciones.Count);
         }
 
         #endregion
@@ -564,239 +645,6 @@ namespace GoldBusiness.Infrastructure.Data
 
         #endregion
 
-        #region Cuenta
-
-        private static async Task SeedCuentaAsync(ApplicationDbContext context, ILogger logger)
-        {
-            if (context.Cuenta.Any())
-            {
-                logger.LogInformation("Cuenta ya tiene datos, omitiendo seed.");
-                return;
-            }
-
-            var sysConfig = context.SystemConfiguration.First();
-            var subgrupos = context.SubGrupoCuenta.ToList();
-
-            var sgActivoCirculante = subgrupos.First(s => s.Codigo == "10101");
-            var sgActivosFijos = subgrupos.First(s => s.Codigo == "10102");
-            var sgReguladoras = subgrupos.First(s => s.Codigo == "10103");
-            var sgPasivoCirculante = subgrupos.First(s => s.Codigo == "20201");
-            var sgPatrimonio = subgrupos.First(s => s.Codigo == "30300");
-            var sgNominalesDeudoras = subgrupos.First(s => s.Codigo == "40401");
-            var sgNominalesAcreedoras = subgrupos.First(s => s.Codigo == "40402");
-            var sgCierre = subgrupos.First(s => s.Codigo == "50500");
-
-            var cuentas = new[]
-            {
-                new Cuenta("10000010", "EFECTIVO EN CAJA", 1, sgActivoCirculante.Id, "system"),
-                new Cuenta("10101135", "CUENTAS POR COBRAR A CORTO PLAZO", 1, sgActivoCirculante.Id, "system"),
-                new Cuenta("11000010", "EFECTIVO EN BANCO", 1, sgActivoCirculante.Id, "system"),
-                new Cuenta("18800010", "PRODUCCIÓN TERMINADA", 1, sgActivoCirculante.Id, "system"),
-                new Cuenta("18900010", "MERCANCÍAS PARA LA VENTA", 1, sgActivoCirculante.Id, "system"),
-                new Cuenta("19200010", "VESTUARIO Y LENCERÍA", 1, sgActivoCirculante.Id, "system"),
-                new Cuenta("19300010", "INSUMOS", 1, sgActivoCirculante.Id, "system"),
-                new Cuenta("20000010", "ACTIVOS FIJOS TANGIBLES", 1, sgActivosFijos.Id, "system"),
-                new Cuenta("30000010", "DEPRECIACIÓN DE ACTIVOS FIJOS TANGIBLES", 1, sgReguladoras.Id, "system"),
-                new Cuenta("40500000", "CUENTAS POR PAGAR A CORTO PLAZO", 1, sgPasivoCirculante.Id, "system"),
-                new Cuenta("42100000", "CUENTAS POR PAGAR - ACTIVOS FIJOS TANGIBLES", 1, sgPasivoCirculante.Id, "system"),
-                new Cuenta("47000010", "PRÉSTAMOS BANCARIOS A CORTO PLAZO", 1, sgPasivoCirculante.Id, "system"),
-                new Cuenta("52000010", "PRÉSTAMOS BANCARIOS A LARGO PLAZO", 1, sgPasivoCirculante.Id, "system"),
-                new Cuenta("60000010", "PATRIMONIO DEL TCP", 1, sgPatrimonio.Id, "system"),
-                new Cuenta("60010010", "SALDO AL INICIO DEL EJERCICIO", 1, sgPatrimonio.Id, "system"),
-                new Cuenta("60020010", "INCREMENTOS DE APORTES DEL TCP EN EL EJERCICIO CONTABLE", 1, sgPatrimonio.Id, "system"),
-                new Cuenta("60030010", "EROGACIONES EFECTUADAS POR EL TCP EN EL EJERCICIO CONTABLE", 1, sgPatrimonio.Id, "system"),
-                new Cuenta("60040010", "PAGOS DE CUOTAS DEL IMPUESTO SOBRE INGRESOS PERSONALES", 1, sgPatrimonio.Id, "system"),
-                new Cuenta("60050010", "CONTRIBUCION A LA SEGURIDAD SOCIAL", 1, sgPatrimonio.Id, "system"),
-                new Cuenta("61000010", "UTILIDADES RETENIDAS", 1, sgPatrimonio.Id, "system"),
-                new Cuenta("62000010", "PÉRDIDA", 1, sgPatrimonio.Id, "system"),
-                new Cuenta("80000010", "GASTOS DE OPERACIÓN", 1, sgNominalesDeudoras.Id, "system"),
-                new Cuenta("80400010", "DEVOLUCIONES Y REBAJAS EN VENTAS", 1, sgNominalesDeudoras.Id, "system"),
-                new Cuenta("80600010", "COSTO DE VENTA DE LA PRODUCCIÓN", 1, sgNominalesDeudoras.Id, "system"),
-                new Cuenta("80800010", "COSTO DE VENTA DE MERCANCÍAS", 1, sgNominalesDeudoras.Id, "system"),
-                new Cuenta("81000010", "IMPUESTOS Y TASAS", 1, sgNominalesDeudoras.Id, "system"),
-                new Cuenta("81010010", "IMPUESTOS SOBRE LAS VENTAS", 1, sgNominalesDeudoras.Id, "system"),
-                new Cuenta("81020010", "IMPUESTO SOBRE LOS SERVICIOS PÚBLICOS", 1, sgNominalesDeudoras.Id, "system"),
-                new Cuenta("81030010", "IMPUESTO POR LA UTILIZACIÓN DE LA FUERZA DE TRABAJO", 1, sgNominalesDeudoras.Id, "system"),
-                new Cuenta("81040010", "OTROS IMPUESTOS Y TASAS", 1, sgNominalesDeudoras.Id, "system"),
-                new Cuenta("90000001", "VENTAS", 1, sgNominalesAcreedoras.Id, "system"),
-                new Cuenta("99900001", "RESULTADOS", 1, sgCierre.Id, "system")
-            };
-
-            context.Cuenta.AddRange(cuentas);
-            await context.SaveChangesAsync();
-
-            // Agregar traducciones
-            var traducciones = new List<CuentaTranslation>
-            {
-                // 10000010 - EFECTIVO EN CAJA
-                new(cuentas[0].Id, "es", "EFECTIVO EN CAJA", "system"),
-                new(cuentas[0].Id, "en", "CASH ON HAND", "system"),
-                new(cuentas[0].Id, "fr", "CAISSE", "system"),
-
-                // 10101135 - CUENTAS POR COBRAR A CORTO PLAZO
-                new(cuentas[1].Id, "es", "CUENTAS POR COBRAR A CORTO PLAZO", "system"),
-                new(cuentas[1].Id, "en", "SHORT-TERM ACCOUNTS RECEIVABLE", "system"),
-                new(cuentas[1].Id, "fr", "COMPTES À RECEVOIR À COURT TERME", "system"),
-
-                // 11000010 - EFECTIVO EN BANCO
-                new(cuentas[2].Id, "es", "EFECTIVO EN BANCO", "system"),
-                new(cuentas[2].Id, "en", "CASH IN BANK", "system"),
-                new(cuentas[2].Id, "fr", "BANQUE", "system"),
-
-                // 18800010 - PRODUCCIÓN TERMINADA
-                new(cuentas[3].Id, "es", "PRODUCCIÓN TERMINADA", "system"),
-                new(cuentas[3].Id, "en", "FINISHED PRODUCTION", "system"),
-                new(cuentas[3].Id, "fr", "PRODUCTION TERMINÉE", "system"),
-
-                // 18900010 - MERCANCÍAS PARA LA VENTA
-                new(cuentas[4].Id, "es", "MERCANCÍAS PARA LA VENTA", "system"),
-                new(cuentas[4].Id, "en", "MERCHANDISE FOR SALE", "system"),
-                new(cuentas[4].Id, "fr", "MARCHANDISES À VENDRE", "system"),
-
-                // 19200010 - VESTUARIO Y LENCERÍA
-                new(cuentas[5].Id, "es", "VESTUARIO Y LENCERÍA", "system"),
-                new(cuentas[5].Id, "en", "CLOTHING AND LINGERIE", "system"),
-                new(cuentas[5].Id, "fr", "VÊTEMENTS ET LINGERIE", "system"),
-
-                // 19300010 - INSUMOS
-                new(cuentas[6].Id, "es", "INSUMOS", "system"),
-                new(cuentas[6].Id, "en", "SUPPLIES", "system"),
-                new(cuentas[6].Id, "fr", "FOURNITURES", "system"),
-
-                // 20000010 - ACTIVOS FIJOS TANGIBLES
-                new(cuentas[7].Id, "es", "ACTIVOS FIJOS TANGIBLES", "system"),
-                new(cuentas[7].Id, "en", "TANGIBLE FIXED ASSETS", "system"),
-                new(cuentas[7].Id, "fr", "IMMOBILISATIONS CORPORELLES", "system"),
-
-                // 30000010 - DEPRECIACIÓN DE ACTIVOS FIJOS TANGIBLES
-                new(cuentas[8].Id, "es", "DEPRECIACIÓN DE ACTIVOS FIJOS TANGIBLES", "system"),
-                new(cuentas[8].Id, "en", "DEPRECIATION OF TANGIBLE FIXED ASSETS", "system"),
-                new(cuentas[8].Id, "fr", "AMORTISSEMENT DES IMMOBILISATIONS CORPORELLES", "system"),
-
-                // 40500000 - CUENTAS POR PAGAR A CORTO PLAZO
-                new(cuentas[9].Id, "es", "CUENTAS POR PAGAR A CORTO PLAZO", "system"),
-                new(cuentas[9].Id, "en", "SHORT-TERM ACCOUNTS PAYABLE", "system"),
-                new(cuentas[9].Id, "fr", "COMPTES À PAYER À COURT TERME", "system"),
-
-                // 42100000 - CUENTAS POR PAGAR - ACTIVOS FIJOS TANGIBLES
-                new(cuentas[10].Id, "es", "CUENTAS POR PAGAR - ACTIVOS FIJOS TANGIBLES", "system"),
-                new(cuentas[10].Id, "en", "ACCOUNTS PAYABLE - TANGIBLE FIXED ASSETS", "system"),
-                new(cuentas[10].Id, "fr", "COMPTES À PAYER - IMMOBILISATIONS CORPORELLES", "system"),
-
-                // 47000010 - PRÉSTAMOS BANCARIOS A CORTO PLAZO
-                new(cuentas[11].Id, "es", "PRÉSTAMOS BANCARIOS A CORTO PLAZO", "system"),
-                new(cuentas[11].Id, "en", "SHORT-TERM BANK LOANS", "system"),
-                new(cuentas[11].Id, "fr", "PRÊTS BANCAIRES À COURT TERME", "system"),
-
-                // 52000010 - PRÉSTAMOS BANCARIOS A LARGO PLAZO
-                new(cuentas[12].Id, "es", "PRÉSTAMOS BANCARIOS A LARGO PLAZO", "system"),
-                new(cuentas[12].Id, "en", "LONG-TERM BANK LOANS", "system"),
-                new(cuentas[12].Id, "fr", "PRÊTS BANCAIRES À LONG TERME", "system"),
-
-                // 60000010 - PATRIMONIO DEL TCP
-                new(cuentas[13].Id, "es", "PATRIMONIO DEL TCP", "system"),
-                new(cuentas[13].Id, "en", "TCP EQUITY", "system"),
-                new(cuentas[13].Id, "fr", "CAPITAUX PROPRES DU TCP", "system"),
-
-                // 60010010 - SALDO AL INICIO DEL EJERCICIO
-                new(cuentas[14].Id, "es", "SALDO AL INICIO DEL EJERCICIO", "system"),
-                new(cuentas[14].Id, "en", "BALANCE AT THE BEGINNING OF THE PERIOD", "system"),
-                new(cuentas[14].Id, "fr", "SOLDE AU DÉBUT DE L'EXERCICE", "system"),
-
-                // 60020010 - INCREMENTOS DE APORTES DEL TCP EN EL EJERCICIO CONTABLE
-                new(cuentas[15].Id, "es", "INCREMENTOS DE APORTES DEL TCP EN EL EJERCICIO CONTABLE", "system"),
-                new(cuentas[15].Id, "en", "INCREASES IN TCP CONTRIBUTIONS DURING THE ACCOUNTING PERIOD", "system"),
-                new(cuentas[15].Id, "fr", "AUGMENTATIONS DES APPORTS DU TCP PENDANT L'EXERCICE COMPTABLE", "system"),
-
-                // 60030010 - EROGACIONES EFECTUADAS POR EL TCP EN EL EJERCICIO CONTABLE
-                new(cuentas[16].Id, "es", "EROGACIONES EFECTUADAS POR EL TCP EN EL EJERCICIO CONTABLE", "system"),
-                new(cuentas[16].Id, "en", "DISBURSEMENTS MADE BY TCP DURING THE ACCOUNTING PERIOD", "system"),
-                new(cuentas[16].Id, "fr", "DÉBOURSEMENTS EFFECTUÉS PAR LE TCP PENDANT L'EXERCICE COMPTABLE", "system"),
-
-                // 60040010 - PAGOS DE CUOTAS DEL IMPUESTO SOBRE INGRESOS PERSONALES
-                new(cuentas[17].Id, "es", "PAGOS DE CUOTAS DEL IMPUESTO SOBRE INGRESOS PERSONALES", "system"),
-                new(cuentas[17].Id, "en", "PERSONAL INCOME TAX INSTALLMENT PAYMENTS", "system"),
-                new(cuentas[17].Id, "fr", "PAIEMENTS D'ACOMPTES DE L'IMPÔT SUR LE REVENU DES PERSONNES", "system"),
-
-                // 60050010 - CONTRIBUCION A LA SEGURIDAD SOCIAL
-                new(cuentas[18].Id, "es", "CONTRIBUCION A LA SEGURIDAD SOCIAL", "system"),
-                new(cuentas[18].Id, "en", "SOCIAL SECURITY CONTRIBUTIONS", "system"),
-                new(cuentas[18].Id, "fr", "COTISATIONS À LA SÉCURITÉ SOCIALE", "system"),
-
-                // 61000010 - UTILIDADES RETENIDAS
-                new(cuentas[19].Id, "es", "UTILIDADES RETENIDAS", "system"),
-                new(cuentas[19].Id, "en", "RETAINED EARNINGS", "system"),
-                new(cuentas[19].Id, "fr", "BÉNÉFICES NON RÉPARTIS", "system"),
-
-                // 62000010 - PÉRDIDA
-                new(cuentas[20].Id, "es", "PÉRDIDA", "system"),
-                new(cuentas[20].Id, "en", "LOSS", "system"),
-                new(cuentas[20].Id, "fr", "PERTE", "system"),
-
-                // 80000010 - GASTOS DE OPERACIÓN
-                new(cuentas[21].Id, "es", "GASTOS DE OPERACIÓN", "system"),
-                new(cuentas[21].Id, "en", "OPERATING EXPENSES", "system"),
-                new(cuentas[21].Id, "fr", "FRAIS D'EXPLOITATION", "system"),
-
-                // 80400010 - DEVOLUCIONES Y REBAJAS EN VENTAS
-                new(cuentas[22].Id, "es", "DEVOLUCIONES Y REBAJAS EN VENTAS", "system"),
-                new(cuentas[22].Id, "en", "SALES RETURNS AND ALLOWANCES", "system"),
-                new(cuentas[22].Id, "fr", "RETOURS ET RABAIS SUR VENTES", "system"),
-
-                // 80600010 - COSTO DE VENTA DE LA PRODUCCIÓN
-                new(cuentas[23].Id, "es", "COSTO DE VENTA DE LA PRODUCCIÓN", "system"),
-                new(cuentas[23].Id, "en", "COST OF PRODUCTION SALES", "system"),
-                new(cuentas[23].Id, "fr", "COÛT DES VENTES DE PRODUCTION", "system"),
-
-                // 80800010 - COSTO DE VENTA DE MERCANCÍAS
-                new(cuentas[24].Id, "es", "COSTO DE VENTA DE MERCANCÍAS", "system"),
-                new(cuentas[24].Id, "en", "COST OF MERCHANDISE SOLD", "system"),
-                new(cuentas[24].Id, "fr", "COÛT DES MARCHANDISES VENDUES", "system"),
-
-                // 81000010 - IMPUESTOS Y TASAS
-                new(cuentas[25].Id, "es", "IMPUESTOS Y TASAS", "system"),
-                new(cuentas[25].Id, "en", "TAXES AND FEES", "system"),
-                new(cuentas[25].Id, "fr", "IMPÔTS ET TAXES", "system"),
-
-                // 81010010 - IMPUESTOS SOBRE LAS VENTAS
-                new(cuentas[26].Id, "es", "IMPUESTOS SOBRE LAS VENTAS", "system"),
-                new(cuentas[26].Id, "en", "SALES TAXES", "system"),
-                new(cuentas[26].Id, "fr", "TAXES SUR LES VENTES", "system"),
-
-                // 81020010 - IMPUESTO SOBRE LOS SERVICIOS PÚBLICOS
-                new(cuentas[27].Id, "es", "IMPUESTO SOBRE LOS SERVICIOS PÚBLICOS", "system"),
-                new(cuentas[27].Id, "en", "PUBLIC SERVICES TAX", "system"),
-                new(cuentas[27].Id, "fr", "TAXE SUR LES SERVICES PUBLICS", "system"),
-
-                // 81030010 - IMPUESTO POR LA UTILIZACIÓN DE LA FUERZA DE TRABAJO
-                new(cuentas[28].Id, "es", "IMPUESTO POR LA UTILIZACIÓN DE LA FUERZA DE TRABAJO", "system"),
-                new(cuentas[28].Id, "en", "LABOR UTILIZATION TAX", "system"),
-                new(cuentas[28].Id, "fr", "TAXE SUR L'UTILISATION DE LA MAIN-D'ŒUVRE", "system"),
-
-                // 81040010 - OTROS IMPUESTOS Y TASAS
-                new(cuentas[29].Id, "es", "OTROS IMPUESTOS Y TASAS", "system"),
-                new(cuentas[29].Id, "en", "OTHER TAXES AND FEES", "system"),
-                new(cuentas[29].Id, "fr", "AUTRES IMPÔTS ET TAXES", "system"),
-
-                // 90000001 - VENTAS
-                new(cuentas[30].Id, "es", "VENTAS", "system"),
-                new(cuentas[30].Id, "en", "SALES", "system"),
-                new(cuentas[30].Id, "fr", "VENTES", "system"),
-
-                // 99900001 - RESULTADOS
-                new(cuentas[31].Id, "es", "RESULTADOS", "system"),
-                new(cuentas[31].Id, "en", "RESULTS", "system"),
-                new(cuentas[31].Id, "fr", "RÉSULTATS", "system")
-            };
-
-            context.CuentaTranslation.AddRange(traducciones);
-            await context.SaveChangesAsync();
-
-            logger.LogInformation("Seed de Cuenta completado: {Count} cuentas agregadas", cuentas.Length);
-        }
-
-        #endregion
-
         #region Update SystemConfiguration
 
         private static async Task UpdateSystemConfigurationWithAccountsAsync(ApplicationDbContext context, ILogger logger)
@@ -809,8 +657,8 @@ namespace GoldBusiness.Infrastructure.Data
             }
 
             // Buscar cuentas por pagar y cobrar
-            var cuentaCobrar = context.Cuenta.FirstOrDefault(c => c.Codigo == "10101135");
-            var cuentaPagar = context.Cuenta.FirstOrDefault(c => c.Codigo == "40500000");
+            var cuentaCobrar = context.Cuenta.FirstOrDefault(c => c.Codigo == "10300001"); // CLIENTES NACIONALES
+            var cuentaPagar = context.Cuenta.FirstOrDefault(c => c.Codigo == "20100001"); // PROVEEDORES NACIONALES
 
             if (cuentaCobrar != null && cuentaPagar != null)
             {
@@ -920,195 +768,56 @@ namespace GoldBusiness.Infrastructure.Data
                 return;
             }
 
-            var lineas = new[]
-            {
-                new Linea("01", "CONFECCIONES PARA HOMBRE", "system"),
-                new Linea("02", "CONFECCIONES NIÑOS Y JOVENCITOS", "system"),
-                new Linea("03", "CONFECCIONES PARA DAMAS", "system"),
-                new Linea("04", "CONFECCIONES NIÑAS Y JOVENCITAS", "system"),
-                new Linea("05", "CANASTILLA", "system"),
-                new Linea("06", "SEDERIA", "system"),
-                new Linea("07", "TEJIDO P/VESTIR Y TAPIZAR", "system"),
-                new Linea("08", "CALZADO", "system"),
-                new Linea("09", "TALABARTERIA Y ACCESORIOS", "system"),
-                new Linea("10", "PERFUMERÍA, ASEO Y FARMACIA", "system"),
-                new Linea("11", "JOYERÍA, BISUTERÍA Y RELOJERÍA", "system"),
-                new Linea("12", "ELECTRONICA", "system"),
-                new Linea("13", "ELECTRODOMESTICOS", "system"),
-                new Linea("14", "UTILES P/HOGAR FERRETERÍA DOMESTICA", "system"),
-                new Linea("15", "ELEMENTOS Y UTÍLES DE FERRTERÍA GRUESA", "system"),
-                new Linea("16", "AJUARES DE CASA", "system"),
-                new Linea("17", "MUEBLES Y COLCHONES", "system"),
-                new Linea("18", "EFECTOS DE OFICINA, LIBRERÍA", "system"),
-                new Linea("19", "JUGUETES Y ATÍCULOS PARA FIESTAS", "system"),
-                new Linea("20", "FOTOGRAFÍA", "system"),
-                new Linea("21", "NUMISMATICA, FILATELIA", "system"),
-                new Linea("22", "ARTÍCULOS DEPORTIVOS Y RECREATIVOS", "system"),
-                new Linea("23", "ALIMENTOS, GOLOSINAS Y POSTRES", "system"),
-                new Linea("24", "BEBIDAS, LICORES Y CREVEZAS", "system"),
-                new Linea("25", "CIGARROS Y TABACOS", "system"),
-                new Linea("26", "ARTÍCULOS DESECHABLES E INSUMOS", "system"),
-                new Linea("27", "AUTOMOTRIZ Y COMBUSTIBLE", "system"),
-                new Linea("28", "GASTRONOMÍA", "system"),
-                new Linea("29", "SERVICIOS GENERALES MINORISTAS", "system")
-            };
+            var assembly = typeof(DbInitializer).Assembly;
+            var resourceName = "GoldBusiness.Infrastructure.Data.SeedData.Lineas.csv";
 
+            using var stream = assembly.GetManifestResourceStream(resourceName);
+            if (stream == null)
+            {
+                logger.LogWarning("No se encontró Lineas.csv. Recurso: {Resource}", resourceName);
+                return;
+            }
+
+            using var reader = new StreamReader(stream, System.Text.Encoding.UTF8);
+            await reader.ReadLineAsync(); // Saltar encabezado: Codigo,DescripcionES,DescripcionEN,DescripcionFR
+
+            var datos = new List<(string Codigo, string ES, string EN, string FR)>();
+            string? line;
+
+            while ((line = await reader.ReadLineAsync()) != null)
+            {
+                if (string.IsNullOrWhiteSpace(line)) continue;
+                var v = ParseCsvLine(line);
+                if (v.Length < 4 || string.IsNullOrWhiteSpace(v[0])) continue;
+                datos.Add((v[0].Trim(), v[1].Trim(), v[2].Trim(), v[3].Trim()));
+            }
+
+            if (datos.Count == 0)
+            {
+                logger.LogWarning("Lineas.csv no contiene datos válidos.");
+                return;
+            }
+
+            var lineas = datos.Select(d => new Linea(d.Codigo, d.ES, "system")).ToList();
             context.Linea.AddRange(lineas);
             await context.SaveChangesAsync();
 
-            // Agregar traducciones
-            var traducciones = new List<LineaTranslation>
+            logger.LogInformation("✅ {Count} líneas insertadas desde CSV", lineas.Count);
+
+            var traducciones = new List<LineaTranslation>();
+            for (int i = 0; i < lineas.Count; i++)
             {
-                // 01 - CONFECCIONES PARA HOMBRE
-                new(lineas[0].Id, "es", "CONFECCIONES PARA HOMBRE", "system"),
-                new(lineas[0].Id, "en", "MEN'S CLOTHING", "system"),
-                new(lineas[0].Id, "fr", "CONFECTIONS POUR HOMMES", "system"),
-
-                // 02 - CONFECCIONES NIÑOS Y JOVENCITOS
-                new(lineas[1].Id, "es", "CONFECCIONES NIÑOS Y JOVENCITOS", "system"),
-                new(lineas[1].Id, "en", "BOYS' AND YOUTH CLOTHING", "system"),
-                new(lineas[1].Id, "fr", "CONFECTIONS GARÇONS ET JEUNES", "system"),
-
-                // 03 - CONFECCIONES PARA DAMAS
-                new(lineas[2].Id, "es", "CONFECCIONES PARA DAMAS", "system"),
-                new(lineas[2].Id, "en", "WOMEN'S CLOTHING", "system"),
-                new(lineas[2].Id, "fr", "CONFECTIONS POUR DAMES", "system"),
-
-                // 04 - CONFECCIONES NIÑAS Y JOVENCITAS
-                new(lineas[3].Id, "es", "CONFECCIONES NIÑAS Y JOVENCITAS", "system"),
-                new(lineas[3].Id, "en", "GIRLS' AND YOUNG WOMEN'S CLOTHING", "system"),
-                new(lineas[3].Id, "fr", "CONFECTIONS FILLES ET JEUNES FEMMES", "system"),
-
-                // 05 - CANASTILLA
-                new(lineas[4].Id, "es", "CANASTILLA", "system"),
-                new(lineas[4].Id, "en", "LAYETTE", "system"),
-                new(lineas[4].Id, "fr", "TROUSSEAU DE BÉBÉ", "system"),
-
-                // 06 - SEDERIA
-                new(lineas[5].Id, "es", "SEDERIA", "system"),
-                new(lineas[5].Id, "en", "SILK GOODS", "system"),
-                new(lineas[5].Id, "fr", "SOIERIE", "system"),
-
-                // 07 - TEJIDO P/VESTIR Y TAPIZAR
-                new(lineas[6].Id, "es", "TEJIDO P/VESTIR Y TAPIZAR", "system"),
-                new(lineas[6].Id, "en", "CLOTHING AND UPHOLSTERY FABRICS", "system"),
-                new(lineas[6].Id, "fr", "TISSUS POUR VÊTEMENTS ET TAPISSERIE", "system"),
-
-                // 08 - CALZADO
-                new(lineas[7].Id, "es", "CALZADO", "system"),
-                new(lineas[7].Id, "en", "FOOTWEAR", "system"),
-                new(lineas[7].Id, "fr", "CHAUSSURES", "system"),
-
-                // 09 - TALABARTERIA Y ACCESORIOS
-                new(lineas[8].Id, "es", "TALABARTERIA Y ACCESORIOS", "system"),
-                new(lineas[8].Id, "en", "LEATHER GOODS AND ACCESSORIES", "system"),
-                new(lineas[8].Id, "fr", "MAROQUINERIE ET ACCESSOIRES", "system"),
-
-                // 10 - PERFUMERÍA, ASEO Y FARMACIA
-                new(lineas[9].Id, "es", "PERFUMERÍA, ASEO Y FARMACIA", "system"),
-                new(lineas[9].Id, "en", "PERFUMERY, TOILETRIES AND PHARMACY", "system"),
-                new(lineas[9].Id, "fr", "PARFUMERIE, HYGIÈNE ET PHARMACIE", "system"),
-
-                // 11 - JOYERÍA, BISUTERÍA Y RELOJERÍA
-                new(lineas[10].Id, "es", "JOYERÍA, BISUTERÍA Y RELOJERÍA", "system"),
-                new(lineas[10].Id, "en", "JEWELRY, COSTUME JEWELRY AND WATCHES", "system"),
-                new(lineas[10].Id, "fr", "BIJOUTERIE, FANTAISIE ET HORLOGERIE", "system"),
-
-                // 12 - ELECTRONICA
-                new(lineas[11].Id, "es", "ELECTRONICA", "system"),
-                new(lineas[11].Id, "en", "ELECTRONICS", "system"),
-                new(lineas[11].Id, "fr", "ÉLECTRONIQUE", "system"),
-
-                // 13 - ELECTRODOMESTICOS
-                new(lineas[12].Id, "es", "ELECTRODOMESTICOS", "system"),
-                new(lineas[12].Id, "en", "HOME APPLIANCES", "system"),
-                new(lineas[12].Id, "fr", "ÉLECTROMÉNAGER", "system"),
-
-                // 14 - UTILES P/HOGAR FERRETERÍA DOMESTICA
-                new(lineas[13].Id, "es", "UTILES P/HOGAR FERRETERÍA DOMESTICA", "system"),
-                new(lineas[13].Id, "en", "HOUSEHOLD ITEMS AND HARDWARE", "system"),
-                new(lineas[13].Id, "fr", "ARTICLES MÉNAGERS ET QUINCAILLERIE", "system"),
-
-                // 15 - ELEMENTOS Y UTÍLES DE FERRTERÍA GRUESA
-                new(lineas[14].Id, "es", "ELEMENTOS Y UTÍLES DE FERRTERÍA GRUESA", "system"),
-                new(lineas[14].Id, "en", "HEAVY HARDWARE TOOLS AND SUPPLIES", "system"),
-                new(lineas[14].Id, "fr", "ÉLÉMENTS ET OUTILS DE QUINCAILLERIE LOURDE", "system"),
-
-                // 16 - AJUARES DE CASA
-                new(lineas[15].Id, "es", "AJUARES DE CASA", "system"),
-                new(lineas[15].Id, "en", "HOUSEHOLD LINENS", "system"),
-                new(lineas[15].Id, "fr", "TROUSSEAUX DE MAISON", "system"),
-
-                // 17 - MUEBLES Y COLCHONES
-                new(lineas[16].Id, "es", "MUEBLES Y COLCHONES", "system"),
-                new(lineas[16].Id, "en", "FURNITURE AND MATTRESSES", "system"),
-                new(lineas[16].Id, "fr", "MEUBLES ET MATELAS", "system"),
-
-                // 18 - EFECTOS DE OFICINA, LIBRERÍA
-                new(lineas[17].Id, "es", "EFECTOS DE OFICINA, LIBRERÍA", "system"),
-                new(lineas[17].Id, "en", "OFFICE AND STATIONERY SUPPLIES", "system"),
-                new(lineas[17].Id, "fr", "FOURNITURES DE BUREAU ET PAPETERIE", "system"),
-
-                // 19 - JUGUETES Y ATÍCULOS PARA FIESTAS
-                new(lineas[18].Id, "es", "JUGUETES Y ATÍCULOS PARA FIESTAS", "system"),
-                new(lineas[18].Id, "en", "TOYS AND PARTY SUPPLIES", "system"),
-                new(lineas[18].Id, "fr", "JOUETS ET ARTICLES DE FÊTE", "system"),
-
-                // 20 - FOTOGRAFÍA
-                new(lineas[19].Id, "es", "FOTOGRAFÍA", "system"),
-                new(lineas[19].Id, "en", "PHOTOGRAPHY", "system"),
-                new(lineas[19].Id, "fr", "PHOTOGRAPHIE", "system"),
-
-                // 21 - NUMISMATICA, FILATELIA
-                new(lineas[20].Id, "es", "NUMISMATICA, FILATELIA", "system"),
-                new(lineas[20].Id, "en", "NUMISMATICS, PHILATELY", "system"),
-                new(lineas[20].Id, "fr", "NUMISMATIQUE, PHILATÉLIE", "system"),
-
-                // 22 - ARTÍCULOS DEPORTIVOS Y RECREATIVOS
-                new(lineas[21].Id, "es", "ARTÍCULOS DEPORTIVOS Y RECREATIVOS", "system"),
-                new(lineas[21].Id, "en", "SPORTS AND RECREATIONAL ITEMS", "system"),
-                new(lineas[21].Id, "fr", "ARTICLES SPORTIFS ET RÉCRÉATIFS", "system"),
-
-                // 23 - ALIMENTOS, GOLOSINAS Y POSTRES
-                new(lineas[22].Id, "es", "ALIMENTOS, GOLOSINAS Y POSTRES", "system"),
-                new(lineas[22].Id, "en", "FOOD, SWEETS AND DESSERTS", "system"),
-                new(lineas[22].Id, "fr", "ALIMENTS, BONBONS ET DESSERTS", "system"),
-
-                // 24 - BEBIDAS, LICORES Y CREVEZAS
-                new(lineas[23].Id, "es", "BEBIDAS, LICORES Y CREVEZAS", "system"),
-                new(lineas[23].Id, "en", "BEVERAGES, LIQUORS AND BEERS", "system"),
-                new(lineas[23].Id, "fr", "BOISSONS, LIQUEURS ET BIÈRES", "system"),
-
-                // 25 - CIGARROS Y TABACOS
-                new(lineas[24].Id, "es", "CIGARROS Y TABACOS", "system"),
-                new(lineas[24].Id, "en", "CIGARS AND TOBACCO", "system"),
-                new(lineas[24].Id, "fr", "CIGARES ET TABAC", "system"),
-
-                // 26 - ARTÍCULOS DESECHABLES E INSUMOS
-                new(lineas[25].Id, "es", "ARTÍCULOS DESECHABLES E INSUMOS", "system"),
-                new(lineas[25].Id, "en", "DISPOSABLE ITEMS AND SUPPLIES", "system"),
-                new(lineas[25].Id, "fr", "ARTICLES JETABLES ET FOURNITURES", "system"),
-
-                // 27 - AUTOMOTRIZ Y COMBUSTIBLE
-                new(lineas[26].Id, "es", "AUTOMOTRIZ Y COMBUSTIBLE", "system"),
-                new(lineas[26].Id, "en", "AUTOMOTIVE AND FUEL", "system"),
-                new(lineas[26].Id, "fr", "AUTOMOBILE ET CARBURANT", "system"),
-
-                // 28 - GASTRONOMÍA
-                new(lineas[27].Id, "es", "GASTRONOMÍA", "system"),
-                new(lineas[27].Id, "en", "GASTRONOMY", "system"),
-                new(lineas[27].Id, "fr", "GASTRONOMIE", "system"),
-
-                // 29 - SERVICIOS GENERALES MINORISTAS
-                new(lineas[28].Id, "es", "SERVICIOS GENERALES MINORISTAS", "system"),
-                new(lineas[28].Id, "en", "GENERAL RETAIL SERVICES", "system"),
-                new(lineas[28].Id, "fr", "SERVICES GÉNÉRAUX DE DÉTAIL", "system")
-            };
+                var id = lineas[i].Id;
+                var d = datos[i];
+                traducciones.Add(new LineaTranslation(id, "es", d.ES, "system"));
+                traducciones.Add(new LineaTranslation(id, "en", d.EN, "system"));
+                traducciones.Add(new LineaTranslation(id, "fr", d.FR, "system"));
+            }
 
             context.LineaTranslation.AddRange(traducciones);
             await context.SaveChangesAsync();
 
-            logger.LogInformation("Seed de Linea completado: {Count} líneas agregadas", lineas.Length);
+            logger.LogInformation("✅ Seed Linea: {Count} líneas, {Trans} traducciones", lineas.Count, traducciones.Count);
         }
 
         #endregion
@@ -1123,164 +832,99 @@ namespace GoldBusiness.Infrastructure.Data
                 return;
             }
 
-            try
+            // ✅ Lookup por Codigo string en lugar de asumir Id == número del código
+            var lineasDict = context.Linea.ToDictionary(l => l.Codigo, l => l.Id);
+
+            var assembly = typeof(DbInitializer).Assembly;
+            var resourceName = "GoldBusiness.Infrastructure.Data.SeedData.SubLineas.csv";
+
+            using var stream = assembly.GetManifestResourceStream(resourceName);
+            if (stream == null)
             {
-                // Obtener las Líneas
-                var lineas = context.Linea.ToList();
-                var lineasDict = lineas.ToDictionary(l => l.Codigo, l => l);
-
-                // Leer datos del CSV embebido
-                var assembly = typeof(DbInitializer).Assembly;
-                var resourceName = "GoldBusiness.Infrastructure.Data.SeedData.SubLineas.csv";
-
-                using var stream = assembly.GetManifestResourceStream(resourceName);
-                if (stream == null)
-                {
-                    logger.LogWarning("No se encontró el archivo de datos SubLineas.csv. Recurso: {ResourceName}", resourceName);
-                    logger.LogWarning("Recursos disponibles: {Resources}",
-                        string.Join(", ", assembly.GetManifestResourceNames()));
-                    return;
-                }
-
-                // ✅ UTF-8 explícito para manejar acentos correctamente
-                using var reader = new StreamReader(stream, System.Text.Encoding.UTF8);
-
-                // Leer y validar encabezado
-                var header = await reader.ReadLineAsync();
-                if (string.IsNullOrWhiteSpace(header))
-                {
-                    logger.LogWarning("Archivo CSV vacío o sin encabezado");
-                    return;
-                }
-
-                logger.LogInformation("Encabezado CSV: {Header}", header);
-
-                // Listas temporales para almacenar datos y traducciones
-                var sublineasData = new List<(string Codigo, string Descripcion, int LineaId, string DescEN, string DescFR)>();
-
-                string? line;
-                int lineNumber = 1; // Ya leímos header
-
-                while ((line = await reader.ReadLineAsync()) != null)
-                {
-                    lineNumber++;
-                    if (string.IsNullOrWhiteSpace(line)) continue;
-
-                    var values = line.Split(',');
-
-                    // ✅ Validar longitud mínima
-                    if (values.Length < 3)
-                    {
-                        logger.LogWarning("Línea {LineNumber} inválida (tiene {Count} columnas, esperadas 5): {Line}",
-                            lineNumber, values.Length, line);
-                        continue;
-                    }
-
-                    // ✅ IMPORTANTE: NO hacer Trim() en codigo para preservar "01100"
-                    var codigo = values[0];
-
-                    // ✅ Validar que el código no esté vacío
-                    if (string.IsNullOrWhiteSpace(codigo))
-                    {
-                        logger.LogWarning("Línea {LineNumber}: código vacío", lineNumber);
-                        continue;
-                    }
-
-                    // ✅ Acceso seguro a índices con validación
-                    var descripcion = values.Length > 1 ? values[1].Trim() : string.Empty;
-                    var lineaCodigo = Convert.ToInt32(values[2].Trim());
-                    var descripcionEN = values.Length > 3 ? values[3].Trim() : string.Empty;
-                    var descripcionFR = values.Length > 4 ? values[4].Trim() : string.Empty;
-
-                    // ✅ Validar que la descripción no esté vacía
-                    if (string.IsNullOrWhiteSpace(descripcion))
-                    {
-                        logger.LogWarning("Línea {LineNumber}: descripción vacía para código {Codigo}", lineNumber, codigo);
-                        continue;
-                    }
-
-                    // ✅ Log de debugging (solo primeras 10 líneas)
-                    if (lineNumber <= 11)
-                    {
-                        logger.LogInformation("Línea {LineNumber}: Codigo='{Codigo}' (Length={Length}), Descripcion='{Descripcion}', LineaCodigo='{LineaCodigo}'",
-                            lineNumber, codigo, codigo.Length, descripcion, lineaCodigo);
-                    }
-
-                    sublineasData.Add((codigo, descripcion, lineaCodigo, descripcionEN, descripcionFR));
-                }
-
-                logger.LogInformation("Datos del CSV leídos: {Count} sublíneas válidas de {TotalLines} líneas procesadas",
-                    sublineasData.Count, lineNumber - 1);
-
-                if (sublineasData.Count == 0)
-                {
-                    logger.LogWarning("No se cargaron datos del CSV. Verifica el formato del archivo.");
-                    return;
-                }
-
-                // Segunda pasada: crear entidades SubLinea
-                var sublineas = new List<SubLinea>();
-                foreach (var data in sublineasData)
-                {
-                    try
-                    {
-                        var sublinea = new SubLinea(data.Codigo, data.Descripcion, data.LineaId, "system");
-                        sublineas.Add(sublinea);
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.LogError(ex, "Error al crear SubLinea: Codigo='{Codigo}' (Length={Length}), Descripcion='{Descripcion}'",
-                            data.Codigo, data.Codigo.Length, data.Descripcion);
-                    }
-                }
-
-                if (sublineas.Count == 0)
-                {
-                    logger.LogWarning("No se crearon entidades SubLinea válidas.");
-                    return;
-                }
-
-                // Insertar SubLineas
-                context.SubLinea.AddRange(sublineas);
-                await context.SaveChangesAsync();
-
-                logger.LogInformation("SubLineas insertadas: {Count}", sublineas.Count);
-
-                // Tercera pasada: crear traducciones con los IDs generados
-                var traducciones = new List<SubLineaTranslation>();
-                for (int i = 0; i < sublineas.Count; i++)
-                {
-                    var sublinea = sublineas[i];
-                    var data = sublineasData[i];
-
-                    // Traducción en Español (ES)
-                    traducciones.Add(new SubLineaTranslation(sublinea.Id, "es", data.Descripcion, "system"));
-
-                    // Traducción en Inglés (EN)
-                    if (!string.IsNullOrWhiteSpace(data.DescEN))
-                    {
-                        traducciones.Add(new SubLineaTranslation(sublinea.Id, "en", data.DescEN, "system"));
-                    }
-
-                    // Traducción en Francés (FR)
-                    if (!string.IsNullOrWhiteSpace(data.DescFR))
-                    {
-                        traducciones.Add(new SubLineaTranslation(sublinea.Id, "fr", data.DescFR, "system"));
-                    }
-                }
-
-                // Insertar traducciones
-                context.SubLineaTranslation.AddRange(traducciones);
-                await context.SaveChangesAsync();
-
-                logger.LogInformation("Seed de SubLinea completado: {Count} sublíneas con {TransCount} traducciones",
-                    sublineas.Count, traducciones.Count);
+                logger.LogWarning("No se encontró SubLineas.csv. Recurso: {Resource}", resourceName);
+                logger.LogWarning("Recursos disponibles: {Resources}",
+                    string.Join(", ", assembly.GetManifestResourceNames()));
+                return;
             }
-            catch (Exception ex)
+
+            using var reader = new StreamReader(stream, System.Text.Encoding.UTF8);
+            var header = await reader.ReadLineAsync(); // Saltar encabezado: Codigo,DescripcionES,LineaCodigo,DescripcionEN,DescripcionFR
+            logger.LogInformation("SubLineas.csv encabezado: {Header}", header);
+
+            var datos = new List<(string Codigo, string ES, int LineaId, string EN, string FR)>();
+            string? line;
+            int lineNumber = 1;
+
+            while ((line = await reader.ReadLineAsync()) != null)
             {
-                logger.LogError(ex, "Error al cargar datos de SubLinea desde CSV");
-                throw;
+                lineNumber++;
+                if (string.IsNullOrWhiteSpace(line)) continue;
+
+                // ✅ ParseCsvLine en lugar de Split(',') para manejar campos con comas
+                var v = ParseCsvLine(line);
+                if (v.Length < 3 || string.IsNullOrWhiteSpace(v[0])) continue;
+
+                var codigo = v[0].Trim();
+                var descES = v.Length > 1 ? v[1].Trim() : string.Empty;
+                var lineaCodigo = v.Length > 2 ? v[2].Trim() : string.Empty;
+                var descEN = v.Length > 3 ? v[3].Trim() : string.Empty;
+                var descFR = v.Length > 4 ? v[4].Trim() : string.Empty;
+
+                if (string.IsNullOrWhiteSpace(descES)) continue;
+
+                // ✅ Lookup real por código de línea
+                if (!lineasDict.TryGetValue(lineaCodigo, out var lineaId))
+                {
+                    logger.LogWarning("Línea {Num}: código de línea '{LineaCodigo}' no encontrado para sublínea '{Codigo}'",
+                        lineNumber, lineaCodigo, codigo);
+                    continue;
+                }
+
+                datos.Add((codigo, descES, lineaId, descEN, descFR));
             }
+
+            logger.LogInformation("SubLineas.csv: {Count} sublíneas válidas de {Total} líneas procesadas",
+                datos.Count, lineNumber - 1);
+
+            if (datos.Count == 0)
+            {
+                logger.LogWarning("No se cargaron datos de SubLineas.csv.");
+                return;
+            }
+
+            var sublineas = new List<SubLinea>();
+            foreach (var d in datos)
+            {
+                try
+                {
+                    sublineas.Add(new SubLinea(d.Codigo, d.ES, d.LineaId, "system"));
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "Error al crear SubLinea '{Codigo}'", d.Codigo);
+                }
+            }
+
+            context.SubLinea.AddRange(sublineas);
+            await context.SaveChangesAsync();
+
+            logger.LogInformation("SubLineas insertadas: {Count}", sublineas.Count);
+
+            var traducciones = new List<SubLineaTranslation>();
+            for (int i = 0; i < sublineas.Count; i++)
+            {
+                var id = sublineas[i].Id;
+                var d = datos[i];
+                traducciones.Add(new SubLineaTranslation(id, "es", d.ES, "system"));
+                if (!string.IsNullOrWhiteSpace(d.EN)) traducciones.Add(new SubLineaTranslation(id, "en", d.EN, "system"));
+                if (!string.IsNullOrWhiteSpace(d.FR)) traducciones.Add(new SubLineaTranslation(id, "fr", d.FR, "system"));
+            }
+
+            context.SubLineaTranslation.AddRange(traducciones);
+            await context.SaveChangesAsync();
+
+            logger.LogInformation("✅ Seed SubLinea: {Count} sublíneas, {Trans} traducciones",
+                sublineas.Count, traducciones.Count);
         }
 
         #endregion
