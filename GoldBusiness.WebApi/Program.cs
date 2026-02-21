@@ -99,6 +99,14 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 
+// Commons
+builder.Services.AddScoped<IPaisRepository, PaisRepository>();
+builder.Services.AddScoped<IPaisService, PaisService>();
+builder.Services.AddScoped<IProvinciaRepository, ProvinciaRepository>();
+builder.Services.AddScoped<IProvinciaService, ProvinciaService>();
+builder.Services.AddScoped<IMunicipioRepository, MunicipioRepository>();
+builder.Services.AddScoped<IMunicipioService, MunicipioService>();
+
 // Plan de Cuentas
 builder.Services.AddScoped<IGrupoCuentaRepository, GrupoCuentaRepository>();
 builder.Services.AddScoped<IGrupoCuentaService, GrupoCuentaService>();
@@ -616,6 +624,69 @@ using (var scope = app.Services.CreateScope())
         logger.LogInformation("🌍 Verificando traducciones...");
 
         var traduccionesAgregadas = 0;
+
+        // Pais
+        var paisIds = await db.Pais.Select(x => x.Id).ToListAsync();
+        var paisConTradIds = await db.PaisTranslation
+            .Select(t => t.PaisId)
+            .Distinct()
+            .ToListAsync();
+        var paisSinTradIds = paisIds.Except(paisConTradIds).ToList();
+
+        if (paisSinTradIds.Any())
+        {
+            var paisSinTrad = await db.Pais
+                .Where(x => paisSinTradIds.Contains(x.Id))
+                .ToListAsync();
+
+            foreach (var item in paisSinTrad)
+            {
+                db.PaisTranslation.Add(new PaisTranslation(item.Id, "es", item.Descripcion, "system"));
+                traduccionesAgregadas++;
+            }
+        }
+
+        // Provincia
+        var provinciaIds = await db.Pais.Select(x => x.Id).ToListAsync();
+        var provinciaConTradIds = await db.ProvinciaTranslation
+            .Select(t => t.ProvinciaId)
+            .Distinct()
+            .ToListAsync();
+        var provinciaSinTradIds = provinciaIds.Except(provinciaConTradIds).ToList();
+
+        if (provinciaSinTradIds.Any())
+        {
+            var provinciaSinTrad = await db.Provincia
+                .Where(x => provinciaSinTradIds.Contains(x.Id))
+                .ToListAsync();
+
+            foreach (var item in provinciaSinTrad)
+            {
+                db.ProvinciaTranslation.Add(new ProvinciaTranslation(item.Id, "es", item.Descripcion, "system"));
+                traduccionesAgregadas++;
+            }
+        }
+
+        // Municipio
+        var municipioIds = await db.Municipio.Select(x => x.Id).ToListAsync();
+        var municipioConTradIds = await db.MunicipioTranslation
+            .Select(t => t.MunicipioId)
+            .Distinct()
+            .ToListAsync();
+        var municipioSinTradIds = municipioIds.Except(municipioConTradIds).ToList();
+
+        if (municipioSinTradIds.Any())
+        {
+            var municipioSinTrad = await db.Municipio
+                .Where(x => municipioSinTradIds.Contains(x.Id))
+                .ToListAsync();
+
+            foreach (var item in municipioSinTrad)
+            {
+                db.MunicipioTranslation.Add(new MunicipioTranslation(item.Id, "es", item.Descripcion, "system"));
+                traduccionesAgregadas++;
+            }
+        }
 
         // SystemConfiguration
         var systemConfigIds = await db.SystemConfiguration.Select(x => x.Id).ToListAsync();

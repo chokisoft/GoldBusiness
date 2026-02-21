@@ -165,6 +165,30 @@ namespace GoldBusiness.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Pais",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Codigo = table.Column<string>(type: "nchar(3)", fixedLength: true, maxLength: 3, nullable: false),
+                    CodigoAlpha2 = table.Column<string>(type: "nchar(2)", fixedLength: true, maxLength: 2, nullable: false),
+                    CodigoTelefono = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    RegexTelefono = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    FormatoTelefono = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    FormatoEjemplo = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Cancelado = table.Column<bool>(type: "bit", nullable: false),
+                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
+                    ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Pais", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Proveedor",
                 columns: table => new
                 {
@@ -517,6 +541,57 @@ namespace GoldBusiness.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PaisTranslation",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PaisId = table.Column<int>(type: "int", nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
+                    ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Language = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PaisTranslation", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PaisTranslation_Pais_PaisId",
+                        column: x => x.PaisId,
+                        principalTable: "Pais",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Provincia",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Codigo = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    PaisId = table.Column<int>(type: "int", nullable: false),
+                    Cancelado = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
+                    ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Provincia", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Provincia_Pais_PaisId",
+                        column: x => x.PaisId,
+                        principalTable: "Pais",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ProveedorTranslation",
                 columns: table => new
                 {
@@ -637,6 +712,82 @@ namespace GoldBusiness.Infrastructure.Migrations
                         name: "FK_SubLineaTranslation_SubLinea_SubLineaId",
                         column: x => x.SubLineaId,
                         principalTable: "SubLinea",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Municipio",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Codigo = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    ProvinciaId = table.Column<int>(type: "int", nullable: false),
+                    Cancelado = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
+                    ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Municipio", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Municipio_Provincia_ProvinciaId",
+                        column: x => x.ProvinciaId,
+                        principalTable: "Provincia",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProvinciaTranslation",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProvinciaId = table.Column<int>(type: "int", nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
+                    ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Language = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProvinciaTranslation", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProvinciaTranslation_Provincia_ProvinciaId",
+                        column: x => x.ProvinciaId,
+                        principalTable: "Provincia",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MunicipioTranslation",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MunicipioId = table.Column<int>(type: "int", nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
+                    ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Language = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MunicipioTranslation", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MunicipioTranslation_Municipio_MunicipioId",
+                        column: x => x.MunicipioId,
+                        principalTable: "Municipio",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -1934,6 +2085,23 @@ namespace GoldBusiness.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Municipio",
+                table: "Municipio",
+                columns: new[] { "ProvinciaId", "Codigo", "Cancelado" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Municipio_ProvinciaId",
+                table: "Municipio",
+                column: "ProvinciaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MunicipioTranslation",
+                table: "MunicipioTranslation",
+                columns: new[] { "MunicipioId", "Language" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OperacionesDetalle_LocalidadId",
                 table: "OperacionesDetalle",
                 column: "LocalidadId");
@@ -1990,6 +2158,28 @@ namespace GoldBusiness.Infrastructure.Migrations
                 column: "ProductoId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Alpha2",
+                table: "Pais",
+                column: "CodigoAlpha2");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Pais",
+                table: "Pais",
+                columns: new[] { "Codigo", "Cancelado" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Telefono",
+                table: "Pais",
+                column: "CodigoTelefono");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PaisTranslation_PaisId_Idioma",
+                table: "PaisTranslation",
+                columns: new[] { "PaisId", "Language" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Producto",
                 table: "Producto",
                 columns: new[] { "EstablecimientoId", "Codigo", "Cancelado" },
@@ -2026,6 +2216,23 @@ namespace GoldBusiness.Infrastructure.Migrations
                 name: "IX_ProveedorTranslation_ProveedorId_Language",
                 table: "ProveedorTranslation",
                 columns: new[] { "ProveedorId", "Language" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Provincia",
+                table: "Provincia",
+                columns: new[] { "PaisId", "Codigo", "Cancelado" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Provincia_PaisId",
+                table: "Provincia",
+                column: "PaisId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProvinciaTranslation",
+                table: "ProvinciaTranslation",
+                columns: new[] { "ProvinciaId", "Language" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -2254,16 +2461,25 @@ namespace GoldBusiness.Infrastructure.Migrations
                 name: "MonedaTranslation");
 
             migrationBuilder.DropTable(
+                name: "MunicipioTranslation");
+
+            migrationBuilder.DropTable(
                 name: "OperacionesEncabezadoTranslation");
 
             migrationBuilder.DropTable(
                 name: "OperacionesServicio");
 
             migrationBuilder.DropTable(
+                name: "PaisTranslation");
+
+            migrationBuilder.DropTable(
                 name: "ProductoTranslation");
 
             migrationBuilder.DropTable(
                 name: "ProveedorTranslation");
+
+            migrationBuilder.DropTable(
+                name: "ProvinciaTranslation");
 
             migrationBuilder.DropTable(
                 name: "Saldo");
@@ -2305,6 +2521,9 @@ namespace GoldBusiness.Infrastructure.Migrations
                 name: "Moneda");
 
             migrationBuilder.DropTable(
+                name: "Municipio");
+
+            migrationBuilder.DropTable(
                 name: "OperacionesDetalle");
 
             migrationBuilder.DropTable(
@@ -2314,6 +2533,9 @@ namespace GoldBusiness.Infrastructure.Migrations
                 name: "Comprobante");
 
             migrationBuilder.DropTable(
+                name: "Provincia");
+
+            migrationBuilder.DropTable(
                 name: "Localidad");
 
             migrationBuilder.DropTable(
@@ -2321,6 +2543,9 @@ namespace GoldBusiness.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Producto");
+
+            migrationBuilder.DropTable(
+                name: "Pais");
 
             migrationBuilder.DropTable(
                 name: "Cliente");

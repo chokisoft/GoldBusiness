@@ -11,6 +11,17 @@ namespace GoldBusiness.Infrastructure.Context
             : base(options) { }
 
         // ═══════════════════════════════════════════════════════════════
+        // 📚 DbSets - COMMONS
+        // ═══════════════════════════════════════════════════════════════
+
+        public DbSet<Pais> Pais { get; set; }
+        public DbSet<PaisTranslation> PaisTranslation { get; set; }
+        public DbSet<Provincia> Provincia { get; set; } = null!;
+        public DbSet<ProvinciaTranslation> ProvinciaTranslation { get; set; } = null!;
+        public DbSet<Municipio> Municipio { get; set; } = null!;
+        public DbSet<MunicipioTranslation> MunicipioTranslation { get; set; } = null!;
+
+        // ═══════════════════════════════════════════════════════════════
         // 📚 DbSets - TODAS LAS ENTIDADES
         // ═══════════════════════════════════════════════════════════════
 

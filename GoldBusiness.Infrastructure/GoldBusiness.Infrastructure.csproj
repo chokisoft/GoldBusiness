@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Data\SeedData\Geography\**" />
+    <Content Remove="Data\SeedData\Geography\**" />
+    <EmbeddedResource Remove="Data\SeedData\Geography\**" />
+    <None Remove="Data\SeedData\Geography\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\GoldBusiness.Domain\GoldBusiness.Domain.csproj" />
   </ItemGroup>
 
@@ -19,10 +26,22 @@
 
     <ItemGroup>
 		<None Remove="Data\SeedData\SubLineas.csv" />
+		<None Remove="Data\SeedData\Paises.csv" />
+		<None Remove="Data\SeedData\Provincias.csv" />
+		<None Remove="Data\SeedData\Municipios.csv" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<EmbeddedResource Include="Data\SeedData\SubLineas.csv">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</EmbeddedResource>
+		<EmbeddedResource Include="Data\SeedData\Paises.csv">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</EmbeddedResource>
+		<EmbeddedResource Include="Data\SeedData\Provincias.csv">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</EmbeddedResource>
+		<EmbeddedResource Include="Data\SeedData\Municipios.csv">
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</EmbeddedResource>
 	</ItemGroup>

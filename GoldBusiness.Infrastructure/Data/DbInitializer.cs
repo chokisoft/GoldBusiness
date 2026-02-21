@@ -13,6 +13,11 @@ namespace GoldBusiness.Infrastructure.Data
             {
                 logger.LogInformation("Iniciando seed de datos maestros...");
 
+                // Commons
+                await SeedPaisAsync(context, logger);
+                await SeedProvinciaAsync(context, logger);
+                await SeedMunicipioAsync(context, logger);
+
                 // Plan de cuentas
                 await SeedGrupoCuentaAsync(context, logger);
                 await SeedSubGrupoCuentaAsync(context, logger);
@@ -40,12 +45,336 @@ namespace GoldBusiness.Infrastructure.Data
 
                 logger.LogInformation("✅ Seed de datos maestros completado exitosamente!");
             }
+            catch (DbUpdateException dbEx)
+            {
+                // ✅ Mostrar la inner exception real (SQL Server error)
+                logger.LogError(dbEx, "❌ DbUpdateException durante seed");
+                logger.LogError("Inner Exception: {Inner}", dbEx.InnerException?.Message);
+                logger.LogError("Stack: {Stack}", dbEx.InnerException?.StackTrace);
+
+                // Si hay entries, mostrar qué entidad falló
+                foreach (var entry in dbEx.Entries)
+                {
+                    logger.LogError("Entidad fallida: {Entity} - Estado: {State}",
+                        entry.Entity.GetType().Name, entry.State);
+                }
+
+                throw;
+            }
             catch (Exception ex)
             {
                 logger.LogError(ex, "Error durante el seed de datos maestros");
                 throw;
             }
         }
+
+        #region Pais
+
+        private static async Task SeedPaisAsync(ApplicationDbContext context, ILogger logger)
+        {
+            if (context.Pais.Any())
+            {
+                logger.LogInformation("Pais ya tiene datos, omitiendo seed.");
+                return;
+            }
+
+            var assembly = typeof(DbInitializer).Assembly;
+            var resourceName = "GoldBusiness.Infrastructure.Data.SeedData.Paises.csv";
+
+            using var stream = assembly.GetManifestResourceStream(resourceName);
+            if (stream == null)
+            {
+                logger.LogWarning("No se encontró Paises.csv");
+                return;
+            }
+
+            using var reader = new StreamReader(stream, System.Text.Encoding.UTF8);
+            await reader.ReadLineAsync(); // Saltar encabezado
+
+            // Formato: CodigoAlpha3,CodigoAlpha2,CodigoTelefono,DescripcionES,DescripcionEN,DescripcionFR,RegexTelefono,FormatoTelefono,FormatoEjemplo
+            var paisesData = new List<(string Alpha3, string Alpha2, string Tel, string DescES, string DescEN, string DescFR, string Regex, string Fmt, string Ej)>();
+
+            string? line;
+            while ((line = await reader.ReadLineAsync()) != null)
+            {
+                if (string.IsNullOrWhiteSpace(line)) continue;
+
+                var values = ParseCsvLine(line);
+                if (values.Length < 9) continue;
+
+                paisesData.Add((
+                    values[0].Trim(),
+                    values[1].Trim(),
+                    values[2].Trim(),
+                    values[3].Trim(),
+                    values[4].Trim(),
+                    values[5].Trim(),
+                    values[6].Trim(),
+                    values[7].Trim(),
+                    values[8].Trim()
+                ));
+            }
+
+            // ═══════════════════════════════════════════════════════════════
+            // CREAR ENTIDADES PAIS
+            // ═══════════════════════════════════════════════════════════════
+            var paises = new List<Pais>();
+
+            foreach (var d in paisesData)
+            {
+                try
+                {
+                    var pais = new Pais(d.Alpha3, d.Alpha2, d.Tel, d.DescES, d.Regex, d.Fmt, d.Ej, "system");
+                    paises.Add(pais);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogWarning(ex, "Error al crear país {Alpha2}: {Message}", d.Alpha2, ex.Message);
+                }
+            }
+
+            context.Pais.AddRange(paises);
+            await context.SaveChangesAsync();
+
+            logger.LogInformation("✅ {Count} países insertados desde CSV", paises.Count);
+
+            // ═══════════════════════════════════════════════════════════════
+            // TRADUCCIONES
+            // ═══════════════════════════════════════════════════════════════
+            var paisesDict = paises.ToDictionary(p => p.CodigoAlpha2, p => p.Id);
+            var traducciones = new List<PaisTranslation>();
+
+            foreach (var d in paisesData)
+            {
+                if (!paisesDict.TryGetValue(d.Alpha2, out var paisId)) continue;
+
+                traducciones.Add(new PaisTranslation(paisId, "es", d.DescES, "system"));
+                traducciones.Add(new PaisTranslation(paisId, "en", d.DescEN, "system"));
+                traducciones.Add(new PaisTranslation(paisId, "fr", d.DescFR, "system"));
+            }
+
+            context.PaisTranslation.AddRange(traducciones);
+            await context.SaveChangesAsync();
+
+            logger.LogInformation("✅ {Count} traducciones de países insertadas", traducciones.Count);
+        }
+
+        #endregion
+
+        #region Provincia
+
+        private static async Task SeedProvinciaAsync(ApplicationDbContext context, ILogger logger)
+        {
+            if (context.Provincia.Any())
+            {
+                logger.LogInformation("Provincia ya tiene datos, omitiendo seed.");
+                return;
+            }
+
+            var paises = context.Pais.ToDictionary(p => p.CodigoAlpha2, p => p.Id);
+
+            var assembly = typeof(DbInitializer).Assembly;
+            var resourceName = "GoldBusiness.Infrastructure.Data.SeedData.Provincias.csv";
+
+            using var stream = assembly.GetManifestResourceStream(resourceName);
+            if (stream == null)
+            {
+                logger.LogWarning("No se encontró Provincias.csv");
+                return;
+            }
+
+            using var reader = new StreamReader(stream, System.Text.Encoding.UTF8);
+            await reader.ReadLineAsync(); // Saltar encabezado
+
+            // ✅ Lectura única: almacenar datos para entidades Y traducciones
+            var datosParaTraducciones = new List<(string Codigo, string DescES, string DescEN, string DescFR)>();
+            var provincias = new List<Provincia>();
+
+            string? line;
+            while ((line = await reader.ReadLineAsync()) != null)
+            {
+                if (string.IsNullOrWhiteSpace(line)) continue;
+
+                var values = ParseCsvLine(line);
+                if (values.Length < 5) continue;
+
+                var codigo = values[0].Trim();
+                var paisCodigo = values[1].Trim();
+                var descES = Truncar(values[2].Trim(), 150);
+                var descEN = Truncar(values[3].Trim(), 150);
+                var descFR = Truncar(values[4].Trim(), 150);
+
+                if (codigo.Length > 20)
+                {
+                    logger.LogWarning("Provincia código demasiado largo, truncando: '{Codigo}'", codigo);
+                    codigo = codigo[..20];
+                }
+
+                if (!paises.TryGetValue(paisCodigo, out var paisId)) continue;
+
+                provincias.Add(new Provincia(codigo, descES, paisId, "system"));
+                datosParaTraducciones.Add((codigo, descES, descEN, descFR));
+            }
+
+            // ✅ Insertar en lotes de 1000
+            foreach (var batch in provincias.Chunk(1000))
+            {
+                context.Provincia.AddRange(batch);
+                await context.SaveChangesAsync();
+            }
+
+            logger.LogInformation("✅ {Count} provincias insertadas desde CSV", provincias.Count);
+
+            // ✅ Traducciones (usando datos almacenados, sin releer CSV)
+            var provinciasDict = provincias.ToDictionary(p => p.Codigo, p => p.Id);
+            var traducciones = new List<ProvinciaTranslation>();
+
+            foreach (var (codigo, descES, descEN, descFR) in datosParaTraducciones)
+            {
+                if (!provinciasDict.TryGetValue(codigo, out var provId)) continue;
+
+                traducciones.Add(new ProvinciaTranslation(provId, "es", descES, "system"));
+                traducciones.Add(new ProvinciaTranslation(provId, "en", descEN, "system"));
+                traducciones.Add(new ProvinciaTranslation(provId, "fr", descFR, "system"));
+            }
+
+            foreach (var batch in traducciones.Chunk(3000))
+            {
+                context.ProvinciaTranslation.AddRange(batch);
+                await context.SaveChangesAsync();
+            }
+
+            logger.LogInformation("✅ {Count} traducciones de provincias insertadas", traducciones.Count);
+        }
+
+        #endregion
+
+        #region Municipio
+
+        private static async Task SeedMunicipioAsync(ApplicationDbContext context, ILogger logger)
+        {
+            if (context.Municipio.Any())
+            {
+                logger.LogInformation("Municipio ya tiene datos, omitiendo seed.");
+                return;
+            }
+
+            var provincias = context.Provincia.ToDictionary(p => p.Codigo, p => p.Id);
+
+            var assembly = typeof(DbInitializer).Assembly;
+            var resourceName = "GoldBusiness.Infrastructure.Data.SeedData.Municipios.csv";
+
+            using var stream = assembly.GetManifestResourceStream(resourceName);
+            if (stream == null)
+            {
+                logger.LogWarning("No se encontró Municipios.csv");
+                return;
+            }
+
+            using var reader = new StreamReader(stream, System.Text.Encoding.UTF8);
+            await reader.ReadLineAsync(); // Saltar encabezado
+
+            var datosParaTraducciones = new List<(string Codigo, string DescES, string DescEN, string DescFR)>();
+            var municipios = new List<Municipio>();
+
+            string? line;
+            while ((line = await reader.ReadLineAsync()) != null)
+            {
+                if (string.IsNullOrWhiteSpace(line)) continue;
+
+                var values = ParseCsvLine(line);
+                if (values.Length < 6) continue;
+
+                var codigo = values[0].Trim();
+                var provCodigo = values[1].Trim();
+                var descES = Truncar(values[3].Trim(), 150);
+                var descEN = Truncar(values[4].Trim(), 150);
+                var descFR = Truncar(values[5].Trim(), 150);
+
+                if (codigo.Length > 25)
+                {
+                    logger.LogWarning("Municipio código demasiado largo, truncando: '{Codigo}'", codigo);
+                    codigo = codigo[..25];
+                }
+
+                if (!provincias.TryGetValue(provCodigo, out var provId)) continue;
+
+                municipios.Add(new Municipio(codigo, descES, provId, "system"));
+                datosParaTraducciones.Add((codigo, descES, descEN, descFR));
+            }
+
+            // ✅ Insertar en lotes de 1000 (municipios pueden ser 50,000+)
+            var totalInserted = 0;
+            foreach (var batch in municipios.Chunk(1000))
+            {
+                context.Municipio.AddRange(batch);
+                await context.SaveChangesAsync();
+                totalInserted += batch.Length;
+
+                if (totalInserted % 5000 == 0)
+                    logger.LogInformation("  Municipios insertados: {Count}/{Total}", totalInserted, municipios.Count);
+            }
+
+            logger.LogInformation("✅ {Count} municipios insertados desde CSV", municipios.Count);
+
+            // ✅ Traducciones en lotes
+            var municipiosDict = municipios.ToDictionary(m => m.Codigo, m => m.Id);
+            var traducciones = new List<MunicipioTranslation>();
+
+            foreach (var (codigo, descES, descEN, descFR) in datosParaTraducciones)
+            {
+                if (!municipiosDict.TryGetValue(codigo, out var munId)) continue;
+
+                traducciones.Add(new MunicipioTranslation(munId, "es", descES, "system"));
+                traducciones.Add(new MunicipioTranslation(munId, "en", descEN, "system"));
+                traducciones.Add(new MunicipioTranslation(munId, "fr", descFR, "system"));
+            }
+
+            var totalTradInserted = 0;
+            foreach (var batch in traducciones.Chunk(3000))
+            {
+                context.MunicipioTranslation.AddRange(batch);
+                await context.SaveChangesAsync();
+                totalTradInserted += batch.Length;
+
+                if (totalTradInserted % 15000 == 0)
+                    logger.LogInformation("  Traducciones municipio: {Count}/{Total}", totalTradInserted, traducciones.Count);
+            }
+
+            logger.LogInformation("✅ {Count} traducciones de municipios insertadas", traducciones.Count);
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Trunca un string al largo máximo especificado
+        /// </summary>
+        private static string Truncar(string value, int maxLength)
+        {
+            if (string.IsNullOrEmpty(value)) return value;
+            return value.Length > maxLength ? value[..maxLength] : value;
+        }
+
+        /// <summary>
+        /// Parse CSV respetando comillas
+        /// </summary>
+        private static string[] ParseCsvLine(string line)
+        {
+            var result = new List<string>();
+            var current = new System.Text.StringBuilder();
+            bool inQuotes = false;
+
+            for (int i = 0; i < line.Length; i++)
+            {
+                char c = line[i];
+                if (c == '"') inQuotes = !inQuotes;
+                else if (c == ',' && !inQuotes) { result.Add(current.ToString()); current.Clear(); }
+                else current.Append(c);
+            }
+            result.Add(current.ToString());
+            return result.ToArray();
+        }
+
 
         #region GrupoCuenta
 
