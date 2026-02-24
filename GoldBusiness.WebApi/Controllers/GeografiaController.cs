@@ -18,17 +18,20 @@ namespace GoldBusiness.WebApi.Controllers
         private readonly IPaisService _paisService;
         private readonly IProvinciaService _provinciaService;
         private readonly IMunicipioService _municipioService;
+        private readonly ICodigoPostalService _codigoPostalService;
 
         public GeografiaController(
             IPaisService paisService,
             IProvinciaService provinciaService,
             IMunicipioService municipioService,
+            ICodigoPostalService codigoPostalService,
             IStringLocalizer<GoldBusiness.Domain.Resources.ValidationMessages> localizer) 
             : base(localizer)
         {
             _paisService = paisService;
             _provinciaService = provinciaService;
             _municipioService = municipioService;
+            _codigoPostalService = codigoPostalService;
         }
 
         /// <summary>
@@ -88,5 +91,29 @@ namespace GoldBusiness.WebApi.Controllers
             var lang = GetCurrentLanguage();
             return Ok(await _municipioService.BuscarAsync(termino, paisId, lang));
         }
+
+        /// <summary>
+        /// Obtiene todos los códigos postales de un municipio.
+        /// </summary>
+        [HttpGet("municipios/{municipioId}/codigospostales")]
+        public async Task<ActionResult<IEnumerable<CodigoPostalDTO>>> GetCodigosPostalesByMunicipio(int municipioId)
+        {
+            var lang = GetCurrentLanguage();
+            return Ok(await _codigoPostalService.GetByMunicipioIdAsync(municipioId, lang));
+        }
+
+        /// <summary>
+        /// Búsqueda de códigos postales por término (útil para autocomplete).
+        /// </summary>
+        [HttpGet("codigospostales/buscar")]
+        public async Task<ActionResult<IEnumerable<CodigoPostalDTO>>> BuscarCodigosPostales(
+            [FromQuery] string termino,
+            [FromQuery] int? municipioId = null)
+        {
+            var lang = GetCurrentLanguage();
+            return Ok(await _codigoPostalService.BuscarAsync(termino, municipioId, lang));
+        }
     }
+
+
 }

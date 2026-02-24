@@ -47,6 +47,19 @@ namespace GoldBusiness.Infrastructure.Repositories
             return entity;
         }
 
+        public async Task<IEnumerable<CodigoPostal>> BuscarAsync(string termino, int? municipioId = null)
+        {
+            var query = _context.CodigoPostal.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(termino))
+                query = query.Where(cp => cp.Codigo.Contains(termino));
+
+            if (municipioId.HasValue)
+                query = query.Where(cp => cp.MunicipioId == municipioId.Value);
+
+            return await query.Where(cp => !cp.Cancelado).ToListAsync();
+        }
+
         public async Task UpdateAsync(CodigoPostal entity)
         {
             _context.CodigoPostal.Update(entity);

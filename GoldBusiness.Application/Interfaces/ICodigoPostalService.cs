@@ -10,5 +10,6 @@ namespace GoldBusiness.Application.Interfaces
         Task<CodigoPostalDTO> CreateAsync(CodigoPostalDTO dto, string lang, string creadoPor);
         Task<CodigoPostalDTO> UpdateAsync(int id, CodigoPostalDTO dto, string lang, string creadoPor);
         Task<CodigoPostalDTO?> SoftDeleteAsync(int id, string user);
+        Task<IEnumerable<CodigoPostalDTO>> BuscarAsync(string termino, int? municipioId = null, string lang = "es");
     }
 }

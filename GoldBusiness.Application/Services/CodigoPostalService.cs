@@ -80,6 +80,12 @@ namespace GoldBusiness.Application.Services
             return MapToDTO(entity, lang);
         }
 
+        public async Task<IEnumerable<CodigoPostalDTO>> BuscarAsync(string termino, int? municipioId = null, string lang = "es")
+        {
+            var resultados = await _repo.BuscarAsync(termino, municipioId);
+            return resultados.Select(cp => MapToDTO(cp, lang)).ToList();
+        }
+
         public async Task<CodigoPostalDTO?> SoftDeleteAsync(int id, string user)
         {
             var entity = await _repo.GetByIdAsync(id);
