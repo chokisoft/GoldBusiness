@@ -106,6 +106,8 @@ builder.Services.AddScoped<IProvinciaRepository, ProvinciaRepository>();
 builder.Services.AddScoped<IProvinciaService, ProvinciaService>();
 builder.Services.AddScoped<IMunicipioRepository, MunicipioRepository>();
 builder.Services.AddScoped<IMunicipioService, MunicipioService>();
+builder.Services.AddScoped<ICodigoPostalRepository, CodigoPostalRepository>();
+builder.Services.AddScoped<ICodigoPostalService, CodigoPostalService>();
 
 // Plan de Cuentas
 builder.Services.AddScoped<IGrupoCuentaRepository, GrupoCuentaRepository>();
@@ -691,6 +693,29 @@ using (var scope = app.Services.CreateScope())
                 traduccionesAgregadas++;
             }
         }
+
+/*
+        // Codigo Postal
+        var codigoPostalIds = await db.CodigoPostal.Select(x => x.Id).ToListAsync();
+        var codigoPostalConTradIds = await db.CodigoPostalTranslation
+            .Select(t => t.CodigoPostalId)
+            .Distinct()
+            .ToListAsync();
+        var codigoPostalSinTradIds = codigoPostalIds.Except(codigoPostalConTradIds).ToList();
+
+        if (codigoPostalSinTradIds.Any())
+        {
+            var codigoPostalSinTrad = await db.CodigoPostal
+                .Where(x => codigoPostalSinTradIds.Contains(x.Id))
+                .ToListAsync();
+
+            foreach (var item in codigoPostalSinTrad)
+            {
+                db.CodigoPostalTranslation.Add(new CodigoPostalTranslation(item.Id, "es", item.Descripcion, "system"));
+                traduccionesAgregadas++;
+            }
+        }
+*/
 
         // SystemConfiguration
         var systemConfigIds = await db.SystemConfiguration.Select(x => x.Id).ToListAsync();

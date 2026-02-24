@@ -18,6 +18,7 @@ namespace GoldBusiness.Infrastructure.Data
                 await SeedPaisAsync(context, logger);
                 await SeedProvinciaAsync(context, logger);
                 await SeedMunicipioAsync(context, logger);
+                await SeedCodigoPostalAsync(context, logger);
 
                 // Plan de cuentas
                 await SeedGrupoCuentaAsync(context, logger);
@@ -187,9 +188,9 @@ namespace GoldBusiness.Infrastructure.Data
             using var reader = new StreamReader(stream, System.Text.Encoding.UTF8);
             await reader.ReadLineAsync(); // Saltar encabezado
 
-            // ✅ Lectura única: almacenar datos para entidades Y traducciones
-            var datosParaTraducciones = new List<(string Codigo, string DescES, string DescEN, string DescFR)>();
+            var datosParaTraducciones = new List<(string Codigo, string DescES, string DescEN, string DescFR, int PaisId)>();
             var provincias = new List<Provincia>();
+            var seen = new HashSet<(int PaisId, string Codigo, bool Cancelado)>();
 
             string? line;
             while ((line = await reader.ReadLineAsync()) != null)
@@ -213,11 +214,18 @@ namespace GoldBusiness.Infrastructure.Data
 
                 if (!paises.TryGetValue(paisCodigo, out var paisId)) continue;
 
+                var key = (paisId, codigo, false); // Cancelado = false por defecto
+                if (seen.Contains(key))
+                {
+                    logger.LogWarning("Provincia duplicada detectada: PaisId={PaisId}, Codigo={Codigo}", paisId, codigo);
+                    continue;
+                }
+
+                seen.Add(key);
                 provincias.Add(new Provincia(codigo, descES, paisId, "system"));
-                datosParaTraducciones.Add((codigo, descES, descEN, descFR));
+                datosParaTraducciones.Add((codigo, descES, descEN, descFR, paisId));
             }
 
-            // ✅ Insertar en lotes de 1000
             foreach (var batch in provincias.Chunk(1000))
             {
                 context.Provincia.AddRange(batch);
@@ -226,13 +234,13 @@ namespace GoldBusiness.Infrastructure.Data
 
             logger.LogInformation("✅ {Count} provincias insertadas desde CSV", provincias.Count);
 
-            // ✅ Traducciones (usando datos almacenados, sin releer CSV)
-            var provinciasDict = provincias.ToDictionary(p => p.Codigo, p => p.Id);
+            // Traducciones (usando datos almacenados, sin releer CSV)
+            var provinciasDict = provincias.ToDictionary(p => (p.PaisId, p.Codigo), p => p.Id);
             var traducciones = new List<ProvinciaTranslation>();
 
-            foreach (var (codigo, descES, descEN, descFR) in datosParaTraducciones)
+            foreach (var (codigo, descES, descEN, descFR, paisId) in datosParaTraducciones)
             {
-                if (!provinciasDict.TryGetValue(codigo, out var provId)) continue;
+                if (!provinciasDict.TryGetValue((paisId, codigo), out var provId)) continue;
 
                 traducciones.Add(new ProvinciaTranslation(provId, "es", descES, "system"));
                 traducciones.Add(new ProvinciaTranslation(provId, "en", descEN, "system"));
@@ -343,6 +351,89 @@ namespace GoldBusiness.Infrastructure.Data
             }
 
             logger.LogInformation("✅ {Count} traducciones de municipios insertadas", traducciones.Count);
+        }
+
+        #endregion
+
+        #region Codigo Postal
+
+        private static async Task SeedCodigoPostalAsync(ApplicationDbContext context, ILogger logger)
+        {
+            if (context.CodigoPostal.Any())
+            {
+                logger.LogInformation("CodigoPostal ya tiene datos, omitiendo seed.");
+                return;
+            }
+
+            var municipios = context.Municipio.ToDictionary(m => m.Codigo, m => m.Id);
+            var assembly = typeof(DbInitializer).Assembly;
+            var resourceName = "GoldBusiness.Infrastructure.Data.SeedData.CodigosPostales.csv";
+
+            using var stream = assembly.GetManifestResourceStream(resourceName);
+            if (stream == null)
+            {
+                logger.LogWarning("No se encontró CodigosPostales.csv");
+                return;
+            }
+
+            using var reader = new StreamReader(stream, System.Text.Encoding.UTF8);
+            var header = await reader.ReadLineAsync(); // Saltar encabezado
+            logger.LogInformation("Encabezado CSV: {Header}", header);
+
+            var codigos = new List<CodigoPostal>();
+            var seen = new HashSet<(int MunicipioId, string Codigo, bool Cancelado)>();
+
+            string? line;
+            int lineNumber = 1;
+            int skipped = 0;
+
+            while ((line = await reader.ReadLineAsync()) != null)
+            {
+                lineNumber++;
+                if (string.IsNullOrWhiteSpace(line)) continue;
+
+                var values = ParseCsvLine(line);
+                if (values.Length < 5)
+                {
+                    skipped++;
+                    continue;
+                }
+
+                var codigoPostal = values[0].Trim();
+                var municipioCodigo = values[3].Trim();
+
+                if (!municipios.TryGetValue(municipioCodigo, out var municipioId))
+                {
+                    skipped++;
+                    continue;
+                }
+
+                var key = (municipioId, codigoPostal, false); // Cancelado = false por defecto
+                if (seen.Contains(key))
+                {
+                    skipped++;
+                    continue;
+                }
+
+                seen.Add(key);
+                codigos.Add(new CodigoPostal(codigoPostal, municipioId, "system"));
+            }
+
+            if (codigos.Count == 0)
+            {
+                logger.LogWarning("No se encontraron códigos postales válidos para insertar. Líneas saltadas: {Skipped}", skipped);
+                return;
+            }
+
+            logger.LogInformation("Insertando {Count} códigos postales en lotes de 1000...", codigos.Count);
+
+            foreach (var batch in codigos.Chunk(1000))
+            {
+                context.CodigoPostal.AddRange(batch);
+                await context.SaveChangesAsync();
+            }
+
+            logger.LogInformation("✅ {Count} códigos postales insertados (saltados: {Skipped})", codigos.Count, skipped);
         }
 
         #endregion

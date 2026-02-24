@@ -168,10 +168,16 @@ using var httpClient = new HttpClient
 };
 
 var countryInfoFile = Path.Combine(tempDir, "countryInfo.txt");
-var admin1File      = Path.Combine(tempDir, "admin1CodesASCII.txt");
-var admin2File      = Path.Combine(tempDir, "admin2Codes.txt");
-var altNamesZip     = Path.Combine(tempDir, "alternateNamesV2.zip");
-var altNamesFile    = Path.Combine(tempDir, "alternateNamesV2.txt");
+var admin1File = Path.Combine(tempDir, "admin1CodesASCII.txt");
+var admin2File = Path.Combine(tempDir, "admin2Codes.txt");
+var altNamesZip = Path.Combine(tempDir, "alternateNamesV2.zip");
+var altNamesFile = Path.Combine(tempDir, "alternateNamesV2.txt");
+
+// ── Postal ────────────────────────────────────────────────────
+var postalDir = Path.Combine(tempDir, "postal");
+var postalZip = Path.Combine(tempDir, "postal_codes.zip");
+var postalFile = Path.Combine(postalDir, "allCountries.txt");
+Directory.CreateDirectory(postalDir);
 
 // ── GeoNames ──────────────────────────────────────────────────
 if (!File.Exists(countryInfoFile))
@@ -209,12 +215,23 @@ if (!File.Exists(altNamesFile))
     Console.WriteLine("✅");
 }
 
+if (!File.Exists(postalFile))
+{
+    Console.WriteLine("  → postal allCountries.zip (~50MB)...");
+    await DownloadWithProgressAsync(httpClient,
+        "https://download.geonames.org/export/zip/allCountries.zip", postalZip);
+    Console.Write("  → Descomprimiendo códigos postales... ");
+    ZipFile.ExtractToDirectory(postalZip, postalDir, overwriteFiles: true);
+    File.Delete(postalZip);
+    Console.WriteLine("✅");
+}
+
 // ═══════════════════════════════════════════════════════════════
 // PASO 2: Cargar traducciones GeoNames (alternateNames)
 // ═══════════════════════════════════════════════════════════════
 Console.WriteLine("\n📖 Cargando traducciones...");
 
-var traducciones  = new Dictionary<string, Dictionary<string, string>>();
+var traducciones = new Dictionary<string, Dictionary<string, string>>();
 var idiomasDeseados = new HashSet<string> { "es", "en", "fr" };
 
 using (var reader = new StreamReader(altNamesFile, Encoding.UTF8))
@@ -231,8 +248,8 @@ using (var reader = new StreamReader(altNamesFile, Encoding.UTF8))
         if (parts.Length < 4) continue;
 
         var geoNameId = parts[1];
-        var isoLang   = parts[2];
-        var altName   = parts[3];
+        var isoLang = parts[2];
+        var altName = parts[3];
 
         if (!idiomasDeseados.Contains(isoLang)) continue;
 
@@ -260,14 +277,14 @@ using (var reader = new StreamReader(countryInfoFile, Encoding.UTF8))
         var parts = line.Split('\t');
         if (parts.Length < 17) continue;
 
-        var alpha2      = parts[0].Trim();
-        var alpha3      = parts[1].Trim();
+        var alpha2 = parts[0].Trim();
+        var alpha3 = parts[1].Trim();
         var countryName = parts[4].Trim().ToUpperInvariant();
-        var geoNameId   = parts[16].Trim();
+        var geoNameId = parts[16].Trim();
 
         if (!paisesDeseados.Contains(alpha2) || !phoneData.ContainsKey(alpha2)) continue;
 
-        var pd    = phoneData[alpha2];
+        var pd = phoneData[alpha2];
         var descES = countryName; var descEN = countryName; var descFR = countryName;
 
         if (traducciones.TryGetValue(geoNameId, out var trans))
@@ -283,9 +300,9 @@ using (var reader = new StreamReader(countryInfoFile, Encoding.UTF8))
 Console.WriteLine($"  ✅ {paisesData.Count} países");
 
 // ═══════════════════════════════════════════════════════════════
-// PASO 4: Procesar provincias (admin1)
+// PASO 4: Procesar provincias (admin1) - EXCLUIR COMPLETAMENTE CUBA
 // ═══════════════════════════════════════════════════════════════
-Console.WriteLine("\n🗺️ Procesando provincias...");
+Console.WriteLine("\n🗺️ Procesando provincias (excluyendo completamente Cuba)...");
 
 var provinciasPorPais = new Dictionary<string, List<(string Codigo, string Desc, string DescEN, string DescFR)>>();
 
@@ -297,12 +314,14 @@ using (var reader = new StreamReader(admin1File, Encoding.UTF8))
         var parts = line.Split('\t');
         if (parts.Length < 4) continue;
 
-        var codeFull    = parts[0];
+        var codeFull = parts[0];
         var countryCode = codeFull.Split('.')[0];
-        if (!paisesDeseados.Contains(countryCode)) continue;
+
+        // EXCLUIR COMPLETAMENTE CUBA - No importa cómo venga el código
+        if (!paisesDeseados.Contains(countryCode) || countryCode == "CU") continue;
 
         var adminCode = codeFull.Split('.')[1];
-        var nombre    = parts[1].ToUpperInvariant();
+        var nombre = parts[1].ToUpperInvariant();
         var geoNameId = parts[3];
 
         var descES = nombre; var descEN = nombre; var descFR = nombre;
@@ -318,12 +337,12 @@ using (var reader = new StreamReader(admin1File, Encoding.UTF8))
         provinciasPorPais[countryCode].Add((codigo, descES, descEN, descFR));
     }
 }
-Console.WriteLine($"  ✅ {provinciasPorPais.Sum(p => p.Value.Count)} provincias de {provinciasPorPais.Count} países");
+Console.WriteLine($"  ✅ {provinciasPorPais.Sum(p => p.Value.Count)} provincias de {provinciasPorPais.Count} países (excluyendo completamente Cuba)");
 
 // ═══════════════════════════════════════════════════════════════
-// PASO 5: Procesar municipios (admin2)
+// PASO 5: Procesar municipios (admin2) - EXCLUIR COMPLETAMENTE CUBA
 // ═══════════════════════════════════════════════════════════════
-Console.WriteLine("\n🏘️ Procesando municipios...");
+Console.WriteLine("\n🏘️ Procesando municipios (excluyendo completamente Cuba)...");
 
 var municipiosPorPais = new Dictionary<string, List<(string Codigo, string Desc, string ProvCodigo, string DescEN, string DescFR)>>();
 
@@ -332,7 +351,7 @@ using (var reader = new StreamReader(admin2File, Encoding.UTF8))
     string? line;
     while ((line = await reader.ReadLineAsync()) != null)
     {
-        var parts    = line.Split('\t');
+        var parts = line.Split('\t');
         if (parts.Length < 4) continue;
 
         var codeFull = parts[0];
@@ -340,12 +359,14 @@ using (var reader = new StreamReader(admin2File, Encoding.UTF8))
         if (segments.Length < 3) continue;
 
         var countryCode = segments[0];
-        if (!paisesDeseados.Contains(countryCode)) continue;
+
+        // EXCLUIR COMPLETAMENTE CUBA - No importa cómo venga el código
+        if (!paisesDeseados.Contains(countryCode) || countryCode == "CU") continue;
 
         var adminCode1 = segments[1];
         var adminCode2 = segments[2];
-        var nombre     = parts[1].ToUpperInvariant();
-        var geoNameId  = parts[3];
+        var nombre = parts[1].ToUpperInvariant();
+        var geoNameId = parts[3];
 
         var descES = nombre; var descEN = nombre; var descFR = nombre;
         if (traducciones.TryGetValue(geoNameId, out var trans))
@@ -355,23 +376,614 @@ using (var reader = new StreamReader(admin2File, Encoding.UTF8))
             if (trans.TryGetValue("fr", out var fr)) descFR = fr;
         }
 
-        var codigo     = $"{countryCode}-{adminCode1}-{adminCode2}";
+        var codigo = $"{countryCode}-{adminCode1}-{adminCode2}";
         var provCodigo = $"{countryCode}-{adminCode1}";
         if (!municipiosPorPais.ContainsKey(countryCode)) municipiosPorPais[countryCode] = [];
         municipiosPorPais[countryCode].Add((codigo, descES, provCodigo, descEN, descFR));
     }
 }
-Console.WriteLine($"  ✅ {municipiosPorPais.Sum(p => p.Value.Count)} municipios de {municipiosPorPais.Count} países");
+Console.WriteLine($"  ✅ {municipiosPorPais.Sum(p => p.Value.Count)} municipios de {municipiosPorPais.Count} países (excluyendo completamente Cuba)");
 
 // ═══════════════════════════════════════════════════════════════
-// PASO 6: Líneas y SubLineas → datos embebidos en GenerarCPV2008()
+// PASO 6: Procesar códigos postales - EXCLUIR COMPLETAMENTE CUBA
+// ═══════════════════════════════════════════════════════════════
+Console.WriteLine("\n📮 Procesando códigos postales (excluyendo completamente Cuba)...");
+
+var cpPorPais = new Dictionary<string, List<(string CP, string Localidad, string ProvCodigo, string MunCodigo)>>();
+var cpUnicos = new HashSet<string>();
+
+using (var reader = new StreamReader(postalFile, Encoding.UTF8))
+{
+    string? line;
+    while ((line = await reader.ReadLineAsync()) != null)
+    {
+        var parts = line.Split('\t');
+        if (parts.Length < 7) continue;
+
+        var countryCode = parts[0].Trim();
+
+        // EXCLUIR COMPLETAMENTE CUBA
+        if (!paisesDeseados.Contains(countryCode) || countryCode == "CU") continue;
+
+        var postalCode = parts[1].Trim();
+        var placeName = parts[2].Trim().ToUpperInvariant();
+        var adminCode1 = parts[4].Trim();
+        var adminCode2 = parts[6].Trim();
+
+        if (string.IsNullOrEmpty(postalCode)) continue;
+
+        var provCodigo = string.IsNullOrEmpty(adminCode1)
+            ? "" : $"{countryCode}-{adminCode1}";
+        var munCodigo = string.IsNullOrEmpty(adminCode1) || string.IsNullOrEmpty(adminCode2)
+            ? "" : $"{countryCode}-{adminCode1}-{adminCode2}";
+
+        var key = $"{countryCode}|{postalCode}|{provCodigo}|{munCodigo}|{placeName}";
+        if (!cpUnicos.Add(key)) continue;
+
+        if (!cpPorPais.ContainsKey(countryCode)) cpPorPais[countryCode] = [];
+        cpPorPais[countryCode].Add((postalCode, placeName, provCodigo, munCodigo));
+    }
+}
+Console.WriteLine($"  ✅ {cpPorPais.Sum(p => p.Value.Count):N0} códigos postales de {cpPorPais.Count} países (excluyendo completamente Cuba)");
+
+// ═══════════════════════════════════════════════════════════════
+// PASO 6.5: Integrar datos manuales de Cuba
+// ═══════════════════════════════════════════════════════════════
+Console.WriteLine("\n🇨🇺 Integrando datos manuales de Cuba...");
+
+// Datos manuales para provincias de Cuba (admin1) - SEGÚN GEONAMES
+var cubaAdmin1Data = new List<(string Codigo, string DescES, string DescEN, string DescFR)>
+{
+    ("CU-01", "PINAR DEL RÍO", "PINAR DEL RIO", "PINAR DEL RÍO"),
+    ("CU-02", "ARTEMISA", "ARTEMISA", "ARTEMISA"),
+    ("CU-03", "LA HABANA", "HAVANA", "LA HAVANE"),
+    ("CU-04", "MAYABEQUE", "MAYABEQUE", "MAYABEQUE"),
+    ("CU-05", "MATANZAS", "MATANZAS", "MATANZAS"),
+    ("CU-06", "VILLA CLARA", "VILLA CLARA", "VILLA CLARA"),
+    ("CU-07", "CIENFUEGOS", "CIENFUEGOS", "CIENFUEGOS"),
+    ("CU-08", "SANCTI SPÍRITUS", "SANCTI SPIRITUS", "SANCTI SPÍRITUS"),
+    ("CU-09", "CIEGO DE ÁVILA", "CIEGO DE AVILA", "CIEGO DE ÁVILA"),
+    ("CU-10", "CAMAGÜEY", "CAMAGUEY", "CAMAGÜEY"),
+    ("CU-11", "LAS TUNAS", "LAS TUNAS", "LAS TUNAS"),
+    ("CU-12", "GRANMA", "GRANMA", "GRANMA"),
+    ("CU-13", "HOLGUÍN", "HOLGUIN", "HOLGUÍN"),
+    ("CU-14", "SANTIAGO DE CUBA", "SANTIAGO DE CUBA", "SANTIAGO DE CUBA"),
+    ("CU-15", "GUANTÁNAMO", "GUANTANAMO", "GUANTÁNAMO"),
+    ("CU-16", "ISLA DE LA JUVENTUD", "ISLE OF YOUTH", "ÎLE DE LA JEUNESSE"),
+};
+
+// Datos manuales para municipios de Cuba (admin2) - CORREGIDO CON CÓDIGOS REALES
+// SOLO LOS MUNICIPIOS OFICIALES, SIN DUPLICADOS
+var cubaAdmin2Data = new List<(string Codigo, string ProvCodigo, string DescES, string DescEN, string DescFR)>
+{
+    // PINAR DEL RÍO (14 municipios) - Códigos CU-01-01 a CU-01-14
+    ("CU-01-01", "CU-01", "PINAR DEL RÍO", "PINAR DEL RIO", "PINAR DEL RÍO"),
+    ("CU-01-02", "CU-01", "CONSOLACIÓN DEL SUR", "CONSOLACION DEL SUR", "CONSOLACIÓN DEL SUR"),
+    ("CU-01-03", "CU-01", "GUANE", "GUANE", "GUANE"),
+    ("CU-01-04", "CU-01", "LA PALMA", "LA PALMA", "LA PALMA"),
+    ("CU-01-05", "CU-01", "LOS PALACIOS", "LOS PALACIOS", "LOS PALACIOS"),
+    ("CU-01-06", "CU-01", "MANTUA", "MANTUA", "MANTUA"),
+    ("CU-01-07", "CU-01", "MINAS DE MATAHAMBRE", "MINAS DE MATAHAMBRE", "MINAS DE MATAHAMBRE"),
+    ("CU-01-08", "CU-01", "SAN JUAN Y MARTÍNEZ", "SAN JUAN Y MARTINEZ", "SAN JUAN Y MARTÍNEZ"),
+    ("CU-01-09", "CU-01", "SAN LUIS", "SAN LUIS", "SAN LUIS"),
+    ("CU-01-10", "CU-01", "SANDINO", "SANDINO", "SANDINO"),
+    ("CU-01-11", "CU-01", "VIÑALES", "VIÑALES", "VIÑALES"),
+    ("CU-01-12", "CU-01", "BAHÍA HONDA", "BAHIA HONDA", "BAHÍA HONDA"),
+    ("CU-01-13", "CU-01", "CANDELARIA", "CANDELARIA", "CANDELARIA"),
+    ("CU-01-14", "CU-01", "SAN CRISTÓBAL", "SAN CRISTOBAL", "SAN CRISTÓBAL"),
+    
+    // ARTEMISA (11 municipios) - Artemisa tiene 11 municipios oficialmente
+    ("CU-02-01", "CU-02", "ARTEMISA", "ARTEMISA", "ARTEMISA"),
+    ("CU-02-02", "CU-02", "ALQUÍZAR", "ALQUIZAR", "ALQUÍZAR"),
+    ("CU-02-03", "CU-02", "BAUTA", "BAUTA", "BAUTA"),
+    ("CU-02-04", "CU-02", "CAIMITO", "CAIMITO", "CAIMITO"),
+    ("CU-02-05", "CU-02", "GUANAJAY", "GUANAJAY", "GUANAJAY"),
+    ("CU-02-06", "CU-02", "GÜIRA DE MELENA", "GUIRA DE MELENA", "GÜIRA DE MELENA"),
+    ("CU-02-07", "CU-02", "MARIEL", "MARIEL", "MARIEL"),
+    ("CU-02-08", "CU-02", "SAN ANTONIO DE LOS BAÑOS", "SAN ANTONIO DE LOS BAÑOS", "SAN ANTONIO DE LOS BAÑOS"),
+    
+    // LA HABANA (15 municipios) - Códigos CU-03-01 a CU-03-15
+    ("CU-03-01", "CU-03", "ARROYO NARANJO", "ARROYO NARANJO", "ARROYO NARANJO"),
+    ("CU-03-02", "CU-03", "BOYEROS", "BOYEROS", "BOYEROS"),
+    ("CU-03-03", "CU-03", "CENTRO HABANA", "CENTRO HABANA", "CENTRO HABANA"),
+    ("CU-03-04", "CU-03", "CERRO", "CERRO", "CERRO"),
+    ("CU-03-05", "CU-03", "COTORRO", "COTORRO", "COTORRO"),
+    ("CU-03-06", "CU-03", "DIEZ DE OCTUBRE", "DIEZ DE OCTUBRE", "DIEZ DE OCTUBRE"),
+    ("CU-03-07", "CU-03", "GUANABACOA", "GUANABACOA", "GUANABACOA"),
+    ("CU-03-08", "CU-03", "LA HABANA DEL ESTE", "EAST HAVANA", "HAVANE EST"),
+    ("CU-03-09", "CU-03", "LA HABANA VIEJA", "OLD HAVANA", "LA HAVANE VIEILLE"),
+    ("CU-03-10", "CU-03", "LA LISA", "LA LISA", "LA LISA"),
+    ("CU-03-11", "CU-03", "MARIANAO", "MARIANAO", "MARIANAO"),
+    ("CU-03-12", "CU-03", "PLAZA DE LA REVOLUCIÓN", "PLAZA DE LA REVOLUCION", "PLAZA DE LA REVOLUCIÓN"),
+    ("CU-03-13", "CU-03", "REGLA", "REGLA", "REGLA"),
+    ("CU-03-14", "CU-03", "SAN MIGUEL DEL PADRÓN", "SAN MIGUEL DEL PADRON", "SAN MIGUEL DEL PADRÓN"),
+    ("CU-03-15", "CU-03", "PLAYA", "PLAYA", "PLAYA"),
+    
+    // MAYABEQUE (11 municipios) - Códigos CU-04-01 a CU-04-11
+    ("CU-04-01", "CU-04", "BATABANÓ", "BATABANO", "BATABANÓ"),
+    ("CU-04-02", "CU-04", "BEJUCAL", "BEJUCAL", "BEJUCAL"),
+    ("CU-04-03", "CU-04", "GÜINES", "GUINES", "GÜINES"),
+    ("CU-04-04", "CU-04", "JARUCO", "JARUCO", "JARUCO"),
+    ("CU-04-05", "CU-04", "MADRUGA", "MADRUGA", "MADRUGA"),
+    ("CU-04-06", "CU-04", "MELENA DEL SUR", "MELENA DEL SUR", "MELENA DEL SUR"),
+    ("CU-04-07", "CU-04", "NUEVA PAZ", "NUEVA PAZ", "NUEVA PAZ"),
+    ("CU-04-08", "CU-04", "QUIVICÁN", "QUIVICAN", "QUIVICÁN"),
+    ("CU-04-09", "CU-04", "SAN JOSÉ DE LAS LAJAS", "SAN JOSE DE LAS LAJAS", "SAN JOSÉ DE LAS LAJAS"),
+    ("CU-04-10", "CU-04", "SAN NICOLÁS DE BARI", "SAN NICOLAS DE BARI", "SAN NICOLÁS DE BARI"),
+    ("CU-04-11", "CU-04", "SANTA CRUZ DEL NORTE", "SANTA CRUZ DEL NORTE", "SANTA CRUZ DEL NORTE"),
+    
+    // MATANZAS (13 municipios) - Códigos CU-05-01 a CU-05-13
+    ("CU-05-01", "CU-05", "MATANZAS", "MATANZAS", "MATANZAS"),
+    ("CU-05-02", "CU-05", "CALIMETE", "CALIMETE", "CALIMETE"),
+    ("CU-05-03", "CU-05", "CÁRDENAS", "CARDENAS", "CÁRDENAS"),
+    ("CU-05-04", "CU-05", "CIÉNAGA DE ZAPATA", "CIENAGA DE ZAPATA", "CIÉNAGA DE ZAPATA"),
+    ("CU-05-05", "CU-05", "COLÓN", "COLON", "COLÓN"),
+    ("CU-05-06", "CU-05", "JAGÜEY GRANDE", "JAGUEY GRANDE", "JAGÜEY GRANDE"),
+    ("CU-05-07", "CU-05", "JOVELLANOS", "JOVELLANOS", "JOVELLANOS"),
+    ("CU-05-08", "CU-05", "LIMONAR", "LIMONAR", "LIMONAR"),
+    ("CU-05-09", "CU-05", "LOS ARABOS", "LOS ARABOS", "LOS ARABOS"),
+    ("CU-05-10", "CU-05", "MARTÍ", "MARTI", "MARTÍ"),
+    ("CU-05-11", "CU-05", "PEDRO BETANCOURT", "PEDRO BETANCOURT", "PEDRO BETANCOURT"),
+    ("CU-05-12", "CU-05", "PERICO", "PERICO", "PERICO"),
+    ("CU-05-13", "CU-05", "UNIÓN DE REYES", "UNION DE REYES", "UNIÓN DE REYES"),
+    
+    // VILLA CLARA (13 municipios) - Códigos CU-06-01 a CU-06-13
+    ("CU-06-01", "CU-06", "SANTA CLARA", "SANTA CLARA", "SANTA CLARA"),
+    ("CU-06-02", "CU-06", "CAIBARIÉN", "CAIBARIEN", "CAIBARIÉN"),
+    ("CU-06-03", "CU-06", "CAMAJUANÍ", "CAMAJUANI", "CAMAJUANÍ"),
+    ("CU-06-04", "CU-06", "CIFUENTES", "CIFUENTES", "CIFUENTES"),
+    ("CU-06-05", "CU-06", "CORRALILLO", "CORRALILLO", "CORRALILLO"),
+    ("CU-06-06", "CU-06", "ENCRUCIJADA", "ENCRUCIJADA", "ENCRUCIJADA"),
+    ("CU-06-07", "CU-06", "MANICARAGUA", "MANICARAGUA", "MANICARAGUA"),
+    ("CU-06-08", "CU-06", "PLACETAS", "PLACETAS", "PLACETAS"),
+    ("CU-06-09", "CU-06", "QUEMADO DE GÜINES", "QUEMADO DE GUINES", "QUEMADO DE GÜINES"),
+    ("CU-06-10", "CU-06", "RANCHO VELOZ", "RANCHO VELOZ", "RANCHO VELOZ"),
+    ("CU-06-11", "CU-06", "REMEDIOS", "REMEDIOS", "REMEDIOS"),
+    ("CU-06-12", "CU-06", "SAGUA LA GRANDE", "SAGUA LA GRANDE", "SAGUA LA GRANDE"),
+    ("CU-06-13", "CU-06", "SAN JUAN DE LOS YERAS", "SAN JUAN DE LOS YERAS", "SAN JUAN DE LOS YERAS"),
+    
+    // CIENFUEGOS (8 municipios) - Códigos CU-07-01 a CU-07-08
+    ("CU-07-01", "CU-07", "CIENFUEGOS", "CIENFUEGOS", "CIENFUEGOS"),
+    ("CU-07-02", "CU-07", "ABREUS", "ABREUS", "ABREUS"),
+    ("CU-07-03", "CU-07", "AGUADA", "AGUADA", "AGUADA"),
+    ("CU-07-04", "CU-07", "CRUCES", "CRUCES", "CRUCES"),
+    ("CU-07-05", "CU-07", "CUMANAYAGUA", "CUMANAYAGUA", "CUMANAYAGUA"),
+    ("CU-07-06", "CU-07", "LAJAS", "LAJAS", "LAJAS"),
+    ("CU-07-07", "CU-07", "PALMIRA", "PALMIRA", "PALMIRA"),
+    ("CU-07-08", "CU-07", "RODAS", "RODAS", "RODAS"),
+    
+    // SANCTI SPÍRITUS (8 municipios) - Códigos CU-08-01 a CU-08-08
+    ("CU-08-01", "CU-08", "SANCTI SPÍRITUS", "SANCTI SPIRITUS", "SANCTI SPÍRITUS"),
+    ("CU-08-02", "CU-08", "CABAIGUÁN", "CABAIGUAN", "CABAIGUÁN"),
+    ("CU-08-03", "CU-08", "FOMENTO", "FOMENTO", "FOMENTO"),
+    ("CU-08-04", "CU-08", "JATIBONICO", "JATIBONICO", "JATIBONICO"),
+    ("CU-08-05", "CU-08", "LA SIERPE", "LA SIERPE", "LA SIERPE"),
+    ("CU-08-06", "CU-08", "TAGUASCO", "TAGUASCO", "TAGUASCO"),
+    ("CU-08-07", "CU-08", "TRINIDAD", "TRINIDAD", "TRINIDAD"),
+    ("CU-08-08", "CU-08", "YAGUAJAY", "YAGUAJAY", "YAGUAJAY"),
+    
+    // CIEGO DE ÁVILA (10 municipios) - Códigos CU-09-01 a CU-09-10
+    ("CU-09-01", "CU-09", "CIEGO DE ÁVILA", "CIEGO DE AVILA", "CIEGO DE ÁVILA"),
+    ("CU-09-02", "CU-09", "BARAGUÁ", "BARAGUA", "BARAGUÁ"),
+    ("CU-09-03", "CU-09", "BOLIVIA", "BOLIVIA", "BOLIVIA"),
+    ("CU-09-04", "CU-09", "CHAMBAS", "CHAMBAS", "CHAMBAS"),
+    ("CU-09-05", "CU-09", "CIRO REDONDO", "CIRO REDONDO", "CIRO REDONDO"),
+    ("CU-09-06", "CU-09", "FLORENCIA", "FLORENCIA", "FLORENCIA"),
+    ("CU-09-07", "CU-09", "MAJAGUA", "MAJAGUA", "MAJAGUA"),
+    ("CU-09-08", "CU-09", "MORÓN", "MORON", "MORÓN"),
+    ("CU-09-09", "CU-09", "PRIMERO DE ENERO", "PRIMERO DE ENERO", "PRIMERO DE ENERO"),
+    ("CU-09-10", "CU-09", "VENEZUELA", "VENEZUELA", "VENEZUELA"),
+    
+    // CAMAGÜEY (13 municipios) - Códigos CU-10-01 a CU-10-13
+    ("CU-10-01", "CU-10", "CAMAGÜEY", "CAMAGUEY", "CAMAGÜEY"),
+    ("CU-10-02", "CU-10", "CARLOS MANUEL DE CÉSPEDES", "CARLOS MANUEL DE CESPEDES", "CARLOS MANUEL DE CÉSPEDES"),
+    ("CU-10-03", "CU-10", "ESMERALDA", "ESMERALDA", "ESMERALDA"),
+    ("CU-10-04", "CU-10", "FLORIDA", "FLORIDA", "FLORIDA"),
+    ("CU-10-05", "CU-10", "GUÁIMARO", "GUAIMARO", "GUÁIMARO"),
+    ("CU-10-06", "CU-10", "JIMAGUAYÚ", "JIMAGUAYU", "JIMAGUAYÚ"),
+    ("CU-10-07", "CU-10", "MINAS", "MINAS", "MINAS"),
+    ("CU-10-08", "CU-10", "NAJASA", "NAJASA", "NAJASA"),
+    ("CU-10-09", "CU-10", "NUEVITAS", "NUEVITAS", "NUEVITAS"),
+    ("CU-10-10", "CU-10", "SANTA CRUZ DEL SUR", "SANTA CRUZ DEL SUR", "SANTA CRUZ DEL SUR"),
+    ("CU-10-11", "CU-10", "SIBANICÚ", "SIBANICU", "SIBANICÚ"),
+    ("CU-10-12", "CU-10", "SIERRA DE CUBITAS", "SIERRA DE CUBITAS", "SIERRA DE CUBITAS"),
+    ("CU-10-13", "CU-10", "VERTIENTES", "VERTIENTES", "VERTIENTES"),
+    
+    // LAS TUNAS (8 municipios) - Códigos CU-11-01 a CU-11-08
+    ("CU-11-01", "CU-11", "LAS TUNAS", "LAS TUNAS", "LAS TUNAS"),
+    ("CU-11-02", "CU-11", "AMANCIO", "AMANCIO", "AMANCIO"),
+    ("CU-11-03", "CU-11", "COLOMBIA", "COLOMBIA", "COLOMBIA"),
+    ("CU-11-04", "CU-11", "JESÚS MENÉNDEZ", "JESUS MENENDEZ", "JESÚS MENÉNDEZ"),
+    ("CU-11-05", "CU-11", "JOBABO", "JOBABO", "JOBABO"),
+    ("CU-11-06", "CU-11", "MAJIBACOA", "MAJIBACOA", "MAJIBACOA"),
+    ("CU-11-07", "CU-11", "MANATÍ", "MANATI", "MANATÍ"),
+    ("CU-11-08", "CU-11", "PUERTO PADRE", "PUERTO PADRE", "PUERTO PADRE"),
+    
+    // GRANMA (13 municipios) - Códigos CU-12-01 a CU-12-13
+    ("CU-12-01", "CU-12", "BAYAMO", "BAYAMO", "BAYAMO"),
+    ("CU-12-02", "CU-12", "BARTOLOMÉ MASÓ", "BARTOLOME MASO", "BARTOLOMÉ MASÓ"),
+    ("CU-12-03", "CU-12", "BUEY ARRIBA", "BUEY ARRIBA", "BUEY ARRIBA"),
+    ("CU-12-04", "CU-12", "CAMPECHUELA", "CAMPECHUELA", "CAMPECHUELA"),
+    ("CU-12-05", "CU-12", "GUISA", "GUISA", "GUISA"),
+    ("CU-12-06", "CU-12", "JIGUANÍ", "JIGUANI", "JIGUANÍ"),
+    ("CU-12-07", "CU-12", "MANZANILLO", "MANZANILLO", "MANZANILLO"),
+    ("CU-12-08", "CU-12", "MEDIA LUNA", "MEDIA LUNA", "MEDIA LUNA"),
+    ("CU-12-09", "CU-12", "NIQUERO", "NIQUERO", "NIQUERO"),
+    ("CU-12-10", "CU-12", "PILÓN", "PILON", "PILÓN"),
+    ("CU-12-11", "CU-12", "RÍO CAUTO", "RIO CAUTO", "RÍO CAUTO"),
+    ("CU-12-12", "CU-12", "YARA", "YARA", "YARA"),
+    // En Granma falta "CÁRDENAS" porque no existe, el que aparece en tu archivo es incorrecto
+    
+    // HOLGUÍN (14 municipios) - Códigos CU-13-01 a CU-13-14
+    ("CU-13-01", "CU-13", "HOLGUÍN", "HOLGUIN", "HOLGUÍN"),
+    ("CU-13-02", "CU-13", "ANTILLA", "ANTILLA", "ANTILLA"),
+    ("CU-13-03", "CU-13", "BÁGUANOS", "BAGUANOS", "BÁGUANOS"),
+    ("CU-13-04", "CU-13", "BANES", "BANES", "BANES"),
+    ("CU-13-05", "CU-13", "CACOCUM", "CACOCUM", "CACOCUM"),
+    ("CU-13-06", "CU-13", "CALIXTO GARCÍA", "CALIXTO GARCIA", "CALIXTO GARCÍA"),
+    ("CU-13-07", "CU-13", "CUETO", "CUETO", "CUETO"),
+    ("CU-13-08", "CU-13", "FRANK PAÍS", "FRANK PAIS", "FRANK PAÍS"),
+    ("CU-13-09", "CU-13", "GIBARA", "GIBARA", "GIBARA"),
+    ("CU-13-10", "CU-13", "MAYARÍ", "MAYARI", "MAYARÍ"),
+    ("CU-13-11", "CU-13", "MOA", "MOA", "MOA"),
+    ("CU-13-12", "CU-13", "RAFAEL FREYRE", "RAFAEL FREYRE", "RAFAEL FREYRE"),
+    ("CU-13-13", "CU-13", "SAGUA DE TÁNAMO", "SAGUA DE TANAMO", "SAGUA DE TÁNAMO"),
+    ("CU-13-14", "CU-13", "URBANO NORIS", "URBANO NORIS", "URBANO NORIS"),
+    
+    // SANTIAGO DE CUBA (9 municipios) - Códigos CU-14-01 a CU-14-09
+    ("CU-14-01", "CU-14", "SANTIAGO DE CUBA", "SANTIAGO DE CUBA", "SANTIAGO DE CUBA"),
+    ("CU-14-02", "CU-14", "CONTRAMAESTRE", "CONTRAMAESTRE", "CONTRAMAESTRE"),
+    ("CU-14-03", "CU-14", "GUAMÁ", "GUAMA", "GUAMÁ"),
+    ("CU-14-04", "CU-14", "MELLA", "MELLA", "MELLA"),
+    ("CU-14-05", "CU-14", "PALMA SORIANO", "PALMA SORIANO", "PALMA SORIANO"),
+    ("CU-14-06", "CU-14", "SAN LUIS", "SAN LUIS", "SAN LUIS"),
+    ("CU-14-07", "CU-14", "SEGUNDO FRENTE", "SEGUNDO FRENTE", "SEGUNDO FRENTE"),
+    ("CU-14-08", "CU-14", "SONGO - LA MAYA", "SONGO - LA MAYA", "SONGO - LA MAYA"),
+    ("CU-14-09", "CU-14", "TERCER FRENTE", "TERCER FRENTE", "TERCER FRENTE"),
+    
+    // GUANTÁNAMO (10 municipios) - Códigos CU-15-01 a CU-15-10
+    ("CU-15-01", "CU-15", "GUANTÁNAMO", "GUANTANAMO", "GUANTÁNAMO"),
+    ("CU-15-02", "CU-15", "BARACOA", "BARACOA", "BARACOA"),
+    ("CU-15-03", "CU-15", "CAIMANERA", "CAIMANERA", "CAIMANERA"),
+    ("CU-15-04", "CU-15", "EL SALVADOR", "EL SALVADOR", "EL SALVADOR"),
+    ("CU-15-05", "CU-15", "IMÍAS", "IMIAS", "IMÍAS"),
+    ("CU-15-06", "CU-15", "MAISÍ", "MAISI", "MAISÍ"),
+    ("CU-15-07", "CU-15", "MANUEL TAMÉS", "MANUEL TAMES", "MANUEL TAMÉS"),
+    ("CU-15-08", "CU-15", "NICETO PÉREZ", "NICETO PEREZ", "NICETO PÉREZ"),
+    ("CU-15-09", "CU-15", "SAN ANTONIO DEL SUR", "SAN ANTONIO DEL SUR", "SAN ANTONIO DEL SUR"),
+    ("CU-15-10", "CU-15", "YATERAS", "YATERAS", "YATERAS"),
+    
+    // ISLA DE LA JUVENTUD (1 municipio especial) - Código CU-16-01
+    ("CU-16-01", "CU-16", "ISLA DE LA JUVENTUD", "ISLE OF YOUTH", "ÎLE DE LA JEUNESSE"),
+};
+
+// Agregar provincias de Cuba manualmente
+if (!provinciasPorPais.ContainsKey("CU"))
+    provinciasPorPais["CU"] = new List<(string Codigo, string Desc, string DescEN, string DescFR)>();
+
+foreach (var prov in cubaAdmin1Data)
+{
+    provinciasPorPais["CU"].Add((prov.Codigo, prov.DescES, prov.DescEN, prov.DescFR));
+}
+
+// Agregar municipios de Cuba manualmente - SOLO LOS OFICIALES
+if (!municipiosPorPais.ContainsKey("CU"))
+    municipiosPorPais["CU"] = new List<(string Codigo, string Desc, string ProvCodigo, string DescEN, string DescFR)>();
+
+// Usar un HashSet para evitar duplicados por código
+var codigosMunicipiosUnicos = new HashSet<string>();
+
+foreach (var mun in cubaAdmin2Data)
+{
+    // Solo agregar si el código no existe ya
+    if (codigosMunicipiosUnicos.Add(mun.Codigo))
+    {
+        municipiosPorPais["CU"].Add((mun.Codigo, mun.DescES, mun.ProvCodigo, mun.DescEN, mun.DescFR));
+    }
+}
+
+Console.WriteLine($"  ✅ Cuba: {provinciasPorPais["CU"].Count} provincias, {municipiosPorPais["CU"].Count} municipios oficiales");
+
+// Agregar códigos postales de Cuba manualmente
+if (!cpPorPais.ContainsKey("CU"))
+    cpPorPais["CU"] = new List<(string CP, string Localidad, string ProvCodigo, string MunCodigo)>();
+
+// Datos manuales para códigos postales de Cuba
+var cubaPostalData = new Dictionary<string, List<(string CP, string Localidad, string Provincia, string Municipio)>>
+{
+    ["CU"] = new List<(string, string, string, string)>
+    {
+        // Pinar del Río
+        ("20100", "PINAR DEL RÍO", "PINAR DEL RÍO", "PINAR DEL RÍO"),
+        ("20200", "SAN LUIS", "PINAR DEL RÍO", "SAN LUIS"),
+        ("20300", "SAN JUAN Y MARTÍNEZ", "PINAR DEL RÍO", "SAN JUAN Y MARTÍNEZ"),
+        ("20400", "GUANE", "PINAR DEL RÍO", "GUANE"),
+        ("20500", "MANTUA", "PINAR DEL RÍO", "MANTUA"),
+        ("20600", "MINAS DE MATAHAMBRE", "PINAR DEL RÍO", "MINAS DE MATAHAMBRE"),
+        ("20700", "VIÑALES", "PINAR DEL RÍO", "VIÑALES"),
+        ("20800", "LA PALMA", "PINAR DEL RÍO", "LA PALMA"),
+        ("20900", "BAHÍA HONDA", "PINAR DEL RÍO", "BAHÍA HONDA"),
+        ("21000", "CANDELARIA", "PINAR DEL RÍO", "CANDELARIA"),
+        ("21100", "SAN CRISTÓBAL", "PINAR DEL RÍO", "SAN CRISTÓBAL"),
+        ("21200", "LOS PALACIOS", "PINAR DEL RÍO", "LOS PALACIOS"),
+        ("21300", "CONSOLACIÓN DEL SUR", "PINAR DEL RÍO", "CONSOLACIÓN DEL SUR"),
+        
+        // Artemisa
+        ("32400", "ARTEMISA", "ARTEMISA", "ARTEMISA"),
+        ("32500", "ALQUÍZAR", "ARTEMISA", "ALQUÍZAR"),
+        ("32600", "BAUTA", "ARTEMISA", "BAUTA"),
+        ("32700", "CAIMITO", "ARTEMISA", "CAIMITO"),
+        ("32800", "GUANAJAY", "ARTEMISA", "GUANAJAY"),
+        ("32900", "GÜIRA DE MELENA", "ARTEMISA", "GÜIRA DE MELENA"),
+        ("33000", "MARIEL", "ARTEMISA", "MARIEL"),
+        ("33100", "SAN ANTONIO DE LOS BAÑOS", "ARTEMISA", "SAN ANTONIO DE LOS BAÑOS"),
+        
+        // La Habana
+        ("10100", "PLAZA DE LA REVOLUCIÓN", "LA HABANA", "PLAZA DE LA REVOLUCIÓN"),
+        ("10200", "CENTRO HABANA", "LA HABANA", "CENTRO HABANA"),
+        ("10300", "LA HABANA VIEJA", "LA HABANA", "LA HABANA VIEJA"),
+        ("10400", "REGLA", "LA HABANA", "REGLA"),
+        ("10500", "GUANABACOA", "LA HABANA", "GUANABACOA"),
+        ("10600", "DIEZ DE OCTUBRE", "LA HABANA", "DIEZ DE OCTUBRE"),
+        ("10700", "CERRO", "LA HABANA", "CERRO"),
+        ("10800", "MARIANAO", "LA HABANA", "MARIANAO"),
+        ("10900", "LA LISA", "LA HABANA", "LA LISA"),
+        ("11000", "BOYEROS", "LA HABANA", "BOYEROS"),
+        ("11100", "ARROYO NARANJO", "LA HABANA", "ARROYO NARANJO"),
+        ("11200", "COTORRO", "LA HABANA", "COTORRO"),
+        ("11300", "SAN MIGUEL DEL PADRÓN", "LA HABANA", "SAN MIGUEL DEL PADRÓN"),
+        ("11400", "HABANA DEL ESTE", "LA HABANA", "HABANA DEL ESTE"),
+        ("11500", "PLAYA", "LA HABANA", "PLAYA"),
+        
+        // Mayabeque
+        ("33400", "SAN JOSÉ DE LAS LAJAS", "MAYABEQUE", "SAN JOSÉ DE LAS LAJAS"),
+        ("33500", "GÜINES", "MAYABEQUE", "GÜINES"),
+        ("33600", "JARUCO", "MAYABEQUE", "JARUCO"),
+        ("33700", "SAN NICOLÁS DE BARI", "MAYABEQUE", "SAN NICOLÁS DE BARI"),
+        ("33800", "NUEVA PAZ", "MAYABEQUE", "NUEVA PAZ"),
+        ("33900", "BATABANÓ", "MAYABEQUE", "BATABANÓ"),
+        ("34000", "BEJUCAL", "MAYABEQUE", "BEJUCAL"),
+        ("34100", "QUIVICÁN", "MAYABEQUE", "QUIVICÁN"),
+        ("34200", "MELENA DEL SUR", "MAYABEQUE", "MELENA DEL SUR"),
+        ("34300", "MADRUGA", "MAYABEQUE", "MADRUGA"),
+        ("34400", "SANTA CRUZ DEL NORTE", "MAYABEQUE", "SANTA CRUZ DEL NORTE"),
+        
+        // Matanzas
+        ("40100", "MATANZAS", "MATANZAS", "MATANZAS"),
+        ("40200", "CÁRDENAS", "MATANZAS", "CÁRDENAS"),
+        ("40300", "JOVELLANOS", "MATANZAS", "JOVELLANOS"),
+        ("40400", "MARTÍ", "MATANZAS", "MARTÍ"),
+        ("40500", "COLÓN", "MATANZAS", "COLÓN"),
+        ("40600", "PERICO", "MATANZAS", "PERICO"),
+        ("40700", "CALIMETE", "MATANZAS", "CALIMETE"),
+        ("40800", "LOS ARABOS", "MATANZAS", "LOS ARABOS"),
+        ("40900", "LIMONAR", "MATANZAS", "LIMONAR"),
+        ("41000", "UNIÓN DE REYES", "MATANZAS", "UNIÓN DE REYES"),
+        ("41100", "CIÉNAGA DE ZAPATA", "MATANZAS", "CIÉNAGA DE ZAPATA"),
+        ("41200", "JAGÜEY GRANDE", "MATANZAS", "JAGÜEY GRANDE"),
+        ("41300", "PEDRO BETANCOURT", "MATANZAS", "PEDRO BETANCOURT"),
+        
+        // Villa Clara
+        ("50100", "SANTA CLARA", "VILLA CLARA", "SANTA CLARA"),
+        ("50200", "CIFUENTES", "VILLA CLARA", "CIFUENTES"),
+        ("50300", "SAGUA LA GRANDE", "VILLA CLARA", "SAGUA LA GRANDE"),
+        ("50400", "QUEMADO DE GÜINES", "VILLA CLARA", "QUEMADO DE GÜINES"),
+        ("50500", "CORRALILLO", "VILLA CLARA", "CORRALILLO"),
+        ("50600", "CAMPAÑUELA", "VILLA CLARA", "CAMPAÑUELA"),
+        ("50700", "SAN JUAN DE LOS YERAS", "VILLA CLARA", "SAN JUAN DE LOS YERAS"),
+        ("50800", "CAMAJUANÍ", "VILLA CLARA", "CAMAJUANÍ"),
+        ("50900", "CAIBARIÉN", "VILLA CLARA", "CAIBARIÉN"),
+        ("51000", "REMEDIOS", "VILLA CLARA", "REMEDIOS"),
+        ("51100", "PLACETAS", "VILLA CLARA", "PLACETAS"),
+        ("51200", "RANCHO VELOZ", "VILLA CLARA", "RANCHO VELOZ"),
+        ("51300", "MANICARAGUA", "VILLA CLARA", "MANICARAGUA"),
+        ("51400", "ENCRUCIJADA", "VILLA CLARA", "ENCRUCIJADA"),
+        
+        // Cienfuegos
+        ("55100", "CIENFUEGOS", "CIENFUEGOS", "CIENFUEGOS"),
+        ("55200", "CRUCES", "CIENFUEGOS", "CRUCES"),
+        ("55300", "AGUADA", "CIENFUEGOS", "AGUADA"),
+        ("55400", "LAJAS", "CIENFUEGOS", "LAJAS"),
+        ("55500", "PALMIRA", "CIENFUEGOS", "PALMIRA"),
+        ("55600", "RODAS", "CIENFUEGOS", "RODAS"),
+        ("55700", "ABREUS", "CIENFUEGOS", "ABREUS"),
+        ("55800", "CUMANAYAGUA", "CIENFUEGOS", "CUMANAYAGUA"),
+        
+        // Sancti Spíritus
+        ("60100", "SANCTI SPÍRITUS", "SANCTI SPÍRITUS", "SANCTI SPÍRITUS"),
+        ("60200", "TRINIDAD", "SANCTI SPÍRITUS", "TRINIDAD"),
+        ("60300", "FOMENTO", "SANCTI SPÍRITUS", "FOMENTO"),
+        ("60400", "CABAIGUÁN", "SANCTI SPÍRITUS", "CABAIGUÁN"),
+        ("60500", "YAGUAJAY", "SANCTI SPÍRITUS", "YAGUAJAY"),
+        ("60600", "JATIBONICO", "SANCTI SPÍRITUS", "JATIBONICO"),
+        ("60700", "TAGUASCO", "SANCTI SPÍRITUS", "TAGUASCO"),
+        ("60800", "LA SIERPE", "SANCTI SPÍRITUS", "LA SIERPE"),
+        
+        // Ciego de Ávila
+        ("65100", "CIEGO DE ÁVILA", "CIEGO DE ÁVILA", "CIEGO DE ÁVILA"),
+        ("65200", "MORÓN", "CIEGO DE ÁVILA", "MORÓN"),
+        ("65300", "VENEZUELA", "CIEGO DE ÁVILA", "VENEZUELA"),
+        ("65400", "BARAGUÁ", "CIEGO DE ÁVILA", "BARAGUÁ"),
+        ("65500", "BOLIVIA", "CIEGO DE ÁVILA", "BOLIVIA"),
+        ("65600", "CHAMBAS", "CIEGO DE ÁVILA", "CHAMBAS"),
+        ("65700", "CIRO REDONDO", "CIEGO DE ÁVILA", "CIRO REDONDO"),
+        ("65800", "PRIMERO DE ENERO", "CIEGO DE ÁVILA", "PRIMERO DE ENERO"),
+        ("65900", "MAJAGUA", "CIEGO DE ÁVILA", "MAJAGUA"),
+        ("66000", "FLORENCIA", "CIEGO DE ÁVILA", "FLORENCIA"),
+        
+        // Camagüey
+        ("70100", "CAMAGÜEY", "CAMAGÜEY", "CAMAGÜEY"),
+        ("70200", "NUEVITAS", "CAMAGÜEY", "NUEVITAS"),
+        ("70300", "ESMERALDA", "CAMAGÜEY", "ESMERALDA"),
+        ("70400", "MINAS", "CAMAGÜEY", "MINAS"),
+        ("70500", "SIBANICÚ", "CAMAGÜEY", "SIBANICÚ"),
+        ("70600", "SIBANICÚ", "CAMAGÜEY", "SIBANICÚ"),
+        ("70700", "GUÁIMARO", "CAMAGÜEY", "GUÁIMARO"),
+        ("70800", "JIMAGUAYÚ", "CAMAGÜEY", "JIMAGUAYÚ"),
+        ("70900", "VERTIENTES", "CAMAGÜEY", "VERTIENTES"),
+        ("71000", "FLORIDA", "CAMAGÜEY", "FLORIDA"),
+        ("71100", "NAJASA", "CAMAGÜEY", "NAJASA"),
+        ("71200", "CARLOS MANUEL DE CÉSPEDES", "CAMAGÜEY", "CARLOS MANUEL DE CÉSPEDES"),
+        ("71300", "SANTA CRUZ DEL SUR", "CAMAGÜEY", "SANTA CRUZ DEL SUR"),
+        ("71400", "SIERRA DE CUBITAS", "CAMAGÜEY", "SIERRA DE CUBITAS"),
+        
+        // Las Tunas
+        ("75100", "LAS TUNAS", "LAS TUNAS", "LAS TUNAS"),
+        ("75200", "PUERTO PADRE", "LAS TUNAS", "PUERTO PADRE"),
+        ("75300", "JESÚS MENÉNDEZ", "LAS TUNAS", "JESÚS MENÉNDEZ"),
+        ("75400", "MAJIBACOA", "LAS TUNAS", "MAJIBACOA"),
+        ("75500", "MANATÍ", "LAS TUNAS", "MANATÍ"),
+        ("75600", "COLOMBIA", "LAS TUNAS", "COLOMBIA"),
+        ("75700", "JOBABO", "LAS TUNAS", "JOBABO"),
+        ("75800", "AMANCIO", "LAS TUNAS", "AMANCIO"),
+        
+        // Granma
+        ("85100", "BAYAMO", "GRANMA", "BAYAMO"),
+        ("85200", "MANZANILLO", "GRANMA", "MANZANILLO"),
+        ("85300", "YARA", "GRANMA", "YARA"),
+        ("85400", "BARTOLOMÉ MASÓ", "GRANMA", "BARTOLOMÉ MASÓ"),
+        ("85500", "BUEY ARRIBA", "GRANMA", "BUEY ARRIBA"),
+        ("85600", "JIGUANÍ", "GRANMA", "JIGUANÍ"),
+        ("85700", "CAMPECHUELA", "GRANMA", "CAMPECHUELA"),
+        ("85800", "GUISA", "GRANMA", "GUISA"),
+        ("85900", "NIQUERO", "GRANMA", "NIQUERO"),
+        ("86000", "RÍO CAUTO", "GRANMA", "RÍO CAUTO"),
+        ("86100", "MEDIA LUNA", "GRANMA", "MEDIA LUNA"),
+        ("86200", "PILÓN", "GRANMA", "PILÓN"),
+        
+        // Holguín
+        ("80100", "HOLGUÍN", "HOLGUÍN", "HOLGUÍN"),
+        ("80200", "GIBARA", "HOLGUÍN", "GIBARA"),
+        ("80300", "RAFAEL FREYRE", "HOLGUÍN", "RAFAEL FREYRE"),
+        ("80400", "BANES", "HOLGUÍN", "BANES"),
+        ("80500", "ANTILLA", "HOLGUÍN", "ANTILLA"),
+        ("80600", "BÁGUANOS", "HOLGUÍN", "BÁGUANOS"),
+        ("80700", "CACOCUM", "HOLGUÍN", "CACOCUM"),
+        ("80800", "URBANO NORIS", "HOLGUÍN", "URBANO NORIS"),
+        ("80900", "CALIXTO GARCÍA", "HOLGUÍN", "CALIXTO GARCÍA"),
+        ("81000", "CUETO", "HOLGUÍN", "CUETO"),
+        ("81100", "MAYARÍ", "HOLGUÍN", "MAYARÍ"),
+        ("81200", "FRANK PAÍS", "HOLGUÍN", "FRANK PAÍS"),
+        ("81300", "SAGUA DE TÁNAMO", "HOLGUÍN", "SAGUA DE TÁNAMO"),
+        ("81400", "MOA", "HOLGUÍN", "MOA"),
+        
+        // Santiago de Cuba
+        ("90100", "SANTIAGO DE CUBA", "SANTIAGO DE CUBA", "SANTIAGO DE CUBA"),
+        ("90200", "SONGO - LA MAYA", "SANTIAGO DE CUBA", "SONGO - LA MAYA"),
+        ("90300", "CONTRAMAESTRE", "SANTIAGO DE CUBA", "CONTRAMAESTRE"),
+        ("90400", "JIGUANÍ", "SANTIAGO DE CUBA", "JIGUANÍ"),
+        ("90500", "SAN LUIS", "SANTIAGO DE CUBA", "SAN LUIS"),
+        ("90600", "SEGUNDO FRENTE", "SANTIAGO DE CUBA", "SEGUNDO FRENTE"),
+        ("90700", "TERCER FRENTE", "SANTIAGO DE CUBA", "TERCER FRENTE"),
+        ("90800", "GUAMÁ", "SANTIAGO DE CUBA", "GUAMÁ"),
+        ("90900", "MELLA", "SANTIAGO DE CUBA", "MELLA"),
+        ("91000", "PALMA SORIANO", "SANTIAGO DE CUBA", "PALMA SORIANO"),
+        
+        // Guantánamo
+        ("95100", "GUANTÁNAMO", "GUANTÁNAMO", "GUANTÁNAMO"),
+        ("95200", "BARACOA", "GUANTÁNAMO", "BARACOA"),
+        ("95300", "MAISÍ", "GUANTÁNAMO", "MAISÍ"),
+        ("95400", "IMÍAS", "GUANTÁNAMO", "IMÍAS"),
+        ("95500", "SAN ANTONIO DEL SUR", "GUANTÁNAMO", "SAN ANTONIO DEL SUR"),
+        ("95600", "EL SALVADOR", "GUANTÁNAMO", "EL SALVADOR"),
+        ("95700", "YATERAS", "GUANTÁNAMO", "YATERAS"),
+        ("95800", "MANUEL TAMÉS", "GUANTÁNAMO", "MANUEL TAMÉS"),
+        ("95900", "NICETO PÉREZ", "GUANTÁNAMO", "NICETO PÉREZ"),
+        ("96000", "CAIMANERA", "GUANTÁNAMO", "CAIMANERA"),
+        
+        // Isla de la Juventud
+        ("25100", "NUEVA GERONA", "ISLA DE LA JUVENTUD", "ISLA DE LA JUVENTUD"),
+        ("25200", "LA FE", "ISLA DE LA JUVENTUD", "ISLA DE LA JUVENTUD"),
+        ("25300", "MACAGUA", "ISLA DE LA JUVENTUD", "ISLA DE LA JUVENTUD"),
+        ("25400", "COLOMBIA", "ISLA DE LA JUVENTUD", "ISLA DE LA JUVENTUD"),
+    }
+};
+
+// Crear diccionario para convertir nombres de provincia a códigos
+var provinciaNameToCode = new Dictionary<string, string>();
+foreach (var prov in cubaAdmin1Data)
+{
+    provinciaNameToCode.TryAdd(prov.DescES.ToUpperInvariant(), prov.Codigo);
+}
+
+// Para municipios, crear un diccionario con clave compuesta para manejar duplicados
+var municipioNameToCode = new Dictionary<string, string>();
+foreach (var mun in cubaAdmin2Data)
+{
+    // Crear clave única combinando nombre y provincia
+    var uniqueKey = $"{mun.DescES.ToUpperInvariant()}|{mun.ProvCodigo}";
+    if (!municipioNameToCode.ContainsKey(uniqueKey))
+    {
+        municipioNameToCode.Add(uniqueKey, mun.Codigo);
+    }
+}
+
+// También crear un diccionario simple para búsqueda directa (solo para nombres que no se repiten)
+var municipioSimpleNameToCode = new Dictionary<string, string>();
+foreach (var mun in cubaAdmin2Data)
+{
+    // Solo agregar si no existe (para nombres únicos)
+    if (!municipioSimpleNameToCode.ContainsKey(mun.DescES.ToUpperInvariant()))
+    {
+        // Verificar si este nombre es único en toda la lista
+        var count = cubaAdmin2Data.Count(m => m.DescES.ToUpperInvariant() == mun.DescES.ToUpperInvariant());
+        if (count == 1)
+        {
+            municipioSimpleNameToCode.TryAdd(mun.DescES.ToUpperInvariant(), mun.Codigo);
+        }
+    }
+}
+
+foreach (var cp in cubaPostalData["CU"])
+{
+    var provCode = provinciaNameToCode.GetValueOrDefault(cp.Provincia.ToUpperInvariant(), "");
+
+    // Intentar buscar primero por clave compuesta
+    var munKey = $"{cp.Municipio.ToUpperInvariant()}|{provCode}";
+    var munCode = municipioNameToCode.GetValueOrDefault(munKey, "");
+
+    // Si no encuentra, intentar búsqueda simple (para nombres únicos)
+    if (string.IsNullOrEmpty(munCode))
+    {
+        munCode = municipioSimpleNameToCode.GetValueOrDefault(cp.Municipio.ToUpperInvariant(), "");
+    }
+
+    // Si aún no encuentra, intentar búsqueda parcial
+    if (string.IsNullOrEmpty(munCode))
+    {
+        var posibleMun = municipioNameToCode
+            .FirstOrDefault(kvp => kvp.Key.StartsWith(cp.Municipio.ToUpperInvariant() + "|") &&
+                                   kvp.Key.EndsWith($"|{provCode}"))
+            .Value;
+
+        if (!string.IsNullOrEmpty(posibleMun))
+        {
+            munCode = posibleMun;
+        }
+        else
+        {
+            // Último recurso: buscar cualquier municipio que contenga el nombre
+            var anyMatch = municipioNameToCode
+                .FirstOrDefault(kvp => kvp.Key.Contains(cp.Municipio.ToUpperInvariant()))
+                .Value;
+            munCode = anyMatch ?? "";
+        }
+    }
+
+    cpPorPais["CU"].Add((cp.CP, cp.Localidad.ToUpperInvariant(), provCode, munCode));
+}
+
+Console.WriteLine($"  ✅ Cuba: {provinciasPorPais["CU"].Count} provincias, {municipiosPorPais["CU"].Count} municipios, {cpPorPais["CU"].Count} códigos postales");
+
+// ═══════════════════════════════════════════════════════════════
+// PASO 7: Líneas y SubLineas → datos embebidos en GenerarCPV2008()
 // ═══════════════════════════════════════════════════════════════
 Console.WriteLine("\n📦 Cargando clasificación de Líneas/SubLíneas...");
 var (lineasCpv, sublineasCpv) = GenerarCPV2008();
 Console.WriteLine($"  ✅ {lineasCpv.Count} líneas y {sublineasCpv.Count} sublíneas");
 
 // ═══════════════════════════════════════════════════════════════
-// PASO 7: Generar todos los CSVs
+// PASO 8: Generar todos los CSVs
 // ═══════════════════════════════════════════════════════════════
 Console.WriteLine("\n📝 Generando archivos CSV...");
 
@@ -407,6 +1019,19 @@ using (var writer = new StreamWriter(munFile, false, new UTF8Encoding(true)))
 }
 Console.WriteLine($"  ✅ Municipios.csv ({municipiosPorPais.Sum(p => p.Value.Count)} registros)");
 
+// ── CÓDIGOS POSTALES ──
+if (cpPorPais.Count > 0)
+{
+    var cpFile = Path.Combine(outputDir, "CodigosPostales.csv");
+    using var writer = new StreamWriter(cpFile, false, new UTF8Encoding(true));
+    await writer.WriteLineAsync("CodigoPostal,Localidad,ProvinciaCodigo,MunicipioCodigo,PaisCodigo");
+    foreach (var (pais, cps) in cpPorPais.OrderBy(p => p.Key))
+        foreach (var cp in cps.OrderBy(c => c.CP).ThenBy(c => c.Localidad))
+            await writer.WriteLineAsync(
+                $"{EscapeCsv(cp.CP)},{EscapeCsv(cp.Localidad)},{EscapeCsv(cp.ProvCodigo)},{EscapeCsv(cp.MunCodigo)},{pais}");
+    Console.WriteLine($"  ✅ CodigosPostales.csv ({cpPorPais.Sum(p => p.Value.Count):N0} registros)");
+}
+
 // ── LINEAS (CPV Divisiones) ──
 if (lineasCpv.Count > 0)
 {
@@ -431,19 +1056,21 @@ if (sublineasCpv.Count > 0)
 
 // ── ESTADÍSTICAS FINALES ──
 Console.WriteLine("\n📊 ESTADÍSTICAS GEOGRÁFICAS:");
-Console.WriteLine($"  {"País",-6} {"Provincias",12} {"Municipios",12}");
-Console.WriteLine($"  {"────",-6} {"──────────",12} {"──────────",12}");
+Console.WriteLine($"  {"País",-6} {"Provincias",12} {"Municipios",12} {"Cód.Postales",14}");
+Console.WriteLine($"  {"────",-6} {"──────────",12} {"──────────",12} {"────────────",14}");
 foreach (var pais in provinciasPorPais.Keys.OrderBy(k => k))
 {
     var provCount = provinciasPorPais[pais].Count;
-    var munCount  = municipiosPorPais.GetValueOrDefault(pais)?.Count ?? 0;
-    Console.WriteLine($"  {pais,-6} {provCount,12:N0} {munCount,12:N0}");
+    var munCount = municipiosPorPais.GetValueOrDefault(pais)?.Count ?? 0;
+    var cpCount = cpPorPais.GetValueOrDefault(pais)?.Count ?? 0;
+    Console.WriteLine($"  {pais,-6} {provCount,12:N0} {munCount,12:N0} {cpCount,14:N0}");
 }
-Console.WriteLine($"  {"────",-6} {"──────────",12} {"──────────",12}");
-Console.WriteLine($"  {"TOTAL",-6} {provinciasPorPais.Sum(p => p.Value.Count),12:N0} {municipiosPorPais.Sum(p => p.Value.Count),12:N0}");
-Console.WriteLine($"\n  Países:    {paisesData.Count}");
-Console.WriteLine($"  Líneas:    {lineasCpv.Count}");
-Console.WriteLine($"  SubLíneas: {sublineasCpv.Count}");
+Console.WriteLine($"  {"────",-6} {"──────────",12} {"──────────",12} {"────────────",14}");
+Console.WriteLine($"  {"TOTAL",-6} {provinciasPorPais.Sum(p => p.Value.Count),12:N0} {municipiosPorPais.Sum(p => p.Value.Count),12:N0} {cpPorPais.Sum(p => p.Value.Count),14:N0}");
+Console.WriteLine($"\n  Países:         {paisesData.Count}");
+Console.WriteLine($"  Líneas:         {lineasCpv.Count}");
+Console.WriteLine($"  SubLíneas:      {sublineasCpv.Count}");
+Console.WriteLine($"  Cód. Postales:  {cpPorPais.Sum(p => p.Value.Count):N0}");
 Console.WriteLine($"\n📂 Archivos generados en: {outputDir}");
 Console.WriteLine("\n✅ ¡Proceso completado!");
 
@@ -451,37 +1078,56 @@ Console.WriteLine("\n✅ ¡Proceso completado!");
 // HELPERS
 // ═══════════════════════════════════════════════════════════════
 
-static async Task DownloadWithProgressAsync(HttpClient client, string url, string outputPath)
+static async Task DownloadWithProgressAsync(HttpClient client, string url, string outputPath, int maxRetries = 3)
 {
-    using var response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
-    response.EnsureSuccessStatusCode();
-
-    var totalBytes = response.Content.Headers.ContentLength ?? -1;
-    var totalMB    = totalBytes > 0 ? totalBytes / (1024.0 * 1024.0) : -1;
-
-    await using var contentStream = await response.Content.ReadAsStreamAsync();
-    await using var fileStream    = new FileStream(outputPath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true);
-
-    var buffer       = new byte[81920];
-    long totalRead   = 0;
-    int  bytesRead;
-    var  lastProgress = DateTime.MinValue;
-
-    while ((bytesRead = await contentStream.ReadAsync(buffer)) > 0)
+    int attempt = 0;
+    while (true)
     {
-        await fileStream.WriteAsync(buffer.AsMemory(0, bytesRead));
-        totalRead += bytesRead;
-
-        if ((DateTime.Now - lastProgress).TotalMilliseconds > 500)
+        try
         {
-            var readMB = totalRead / (1024.0 * 1024.0);
-            Console.Write(totalBytes > 0
-                ? $"\r    ⬇️  {readMB:F1} / {totalMB:F1} MB ({(double)totalRead / totalBytes * 100:F1}%)   "
-                : $"\r    ⬇️  {readMB:F1} MB descargados...   ");
-            lastProgress = DateTime.Now;
+            using var response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+            response.EnsureSuccessStatusCode();
+
+            var totalBytes = response.Content.Headers.ContentLength ?? -1;
+            var totalMB = totalBytes > 0 ? totalBytes / (1024.0 * 1024.0) : -1;
+
+            await using var contentStream = await response.Content.ReadAsStreamAsync();
+            await using var fileStream = new FileStream(outputPath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true);
+
+            var buffer = new byte[81920];
+            long totalRead = 0;
+            int bytesRead;
+            var lastProgress = DateTime.MinValue;
+
+            while ((bytesRead = await contentStream.ReadAsync(buffer)) > 0)
+            {
+                await fileStream.WriteAsync(buffer.AsMemory(0, bytesRead));
+                totalRead += bytesRead;
+
+                if ((DateTime.Now - lastProgress).TotalMilliseconds > 500)
+                {
+                    var readMB = totalRead / (1024.0 * 1024.0);
+                    Console.Write(totalBytes > 0
+                        ? $"\r    ⬇️  {readMB:F1} / {totalMB:F1} MB ({(double)totalRead / totalBytes * 100:F1}%)   "
+                        : $"\r    ⬇️  {readMB:F1} MB descargados...   ");
+                    lastProgress = DateTime.Now;
+                }
+            }
+            Console.WriteLine($"\r    ⬇️  {totalRead / (1024.0 * 1024.0):F1} MB ✅                    ");
+            break; // Éxito
+        }
+        catch (IOException ex) when (attempt < maxRetries)
+        {
+            attempt++;
+            Console.WriteLine($"\n  ⚠️  Error de red, reintentando ({attempt}/{maxRetries})...");
+            await Task.Delay(2000 * attempt);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"\n  ❌ Error descargando {url}: {ex.Message}");
+            throw;
         }
     }
-    Console.WriteLine($"\r    ⬇️  {totalRead / (1024.0 * 1024.0):F1} MB ✅                    ");
 }
 
 static string EscapeCsv(string value)

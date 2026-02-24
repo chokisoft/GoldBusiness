@@ -301,6 +301,54 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.ToTable("Cliente");
                 });
 
+            modelBuilder.Entity("GoldBusiness.Domain.Entities.CodigoPostal", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Cancelado")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("Codigo")
+                        .IsRequired()
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
+
+                    b.Property<string>("CreadoPor")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<DateTime>("FechaHoraCreado")
+                        .HasColumnType("datetime");
+
+                    b.Property<DateTime?>("FechaHoraModificado")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("ModificadoPor")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<int>("MunicipioId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MunicipioId");
+
+                    b.HasIndex("MunicipioId", "Codigo", "Cancelado")
+                        .IsUnique()
+                        .HasDatabaseName("IX_CodigoPostal_Municipio_Codigo_Cancelado");
+
+                    b.ToTable("CodigoPostal");
+                });
+
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Comprobante", b =>
                 {
                     b.Property<int>("Id")
@@ -3443,6 +3491,17 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.Navigation("Producto");
                 });
 
+            modelBuilder.Entity("GoldBusiness.Domain.Entities.CodigoPostal", b =>
+                {
+                    b.HasOne("GoldBusiness.Domain.Entities.Municipio", "Municipio")
+                        .WithMany("CodigoPostal")
+                        .HasForeignKey("MunicipioId")
+                        .IsRequired()
+                        .HasConstraintName("FK_CodigoPostal_Municipio");
+
+                    b.Navigation("Municipio");
+                });
+
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Comprobante", b =>
                 {
                     b.HasOne("GoldBusiness.Domain.Entities.Establecimiento", "Establecimiento")
@@ -4318,6 +4377,8 @@ namespace GoldBusiness.Infrastructure.Migrations
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Municipio", b =>
                 {
+                    b.Navigation("CodigoPostal");
+
                     b.Navigation("Translations");
                 });
 

@@ -20,6 +20,7 @@ namespace GoldBusiness.Infrastructure.Context
         public DbSet<ProvinciaTranslation> ProvinciaTranslation { get; set; } = null!;
         public DbSet<Municipio> Municipio { get; set; } = null!;
         public DbSet<MunicipioTranslation> MunicipioTranslation { get; set; } = null!;
+        public DbSet<CodigoPostal> CodigoPostal { get; set; }
 
         // ═══════════════════════════════════════════════════════════════
         // 📚 DbSets - TODAS LAS ENTIDADES

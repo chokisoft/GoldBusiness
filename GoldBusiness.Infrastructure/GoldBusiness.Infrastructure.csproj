@@ -29,6 +29,7 @@
 		<None Remove="Data\SeedData\Paises.csv" />
 		<None Remove="Data\SeedData\Provincias.csv" />
 		<None Remove="Data\SeedData\Municipios.csv" />
+		<None Remove="Data\SeedData\CodigosPostales.csv" />
 		<None Remove="Data\SeedData\Lineas.csv" />
 		<None Remove="Data\SeedData\GrupoCuentas.csv" />
 		<None Remove="Data\SeedData\SubGruposCuentas.csv" />
@@ -46,6 +47,9 @@
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</EmbeddedResource>
 		<EmbeddedResource Include="Data\SeedData\Municipios.csv">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</EmbeddedResource>
+		<EmbeddedResource Include="Data\SeedData\CodigosPostales.csv">
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</EmbeddedResource>
 		<EmbeddedResource Include="Data\SeedData\Lineas.csv">

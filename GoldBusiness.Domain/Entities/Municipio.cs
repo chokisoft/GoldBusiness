@@ -16,6 +16,7 @@ namespace GoldBusiness.Domain.Entities
         // Navegación
         public Provincia Provincia { get; private set; } = null!;
         public IReadOnlyCollection<MunicipioTranslation> Translations => _translations;
+        public ICollection<CodigoPostal> CodigoPostal { get; set; } = new List<CodigoPostal>();
 
         protected Municipio() { }
 
