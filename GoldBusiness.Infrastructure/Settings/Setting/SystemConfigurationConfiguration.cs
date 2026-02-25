@@ -4,20 +4,19 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace GoldBusiness.Infrastructure.Settings.Setting
 {
-    public class SystemConfigurationConfiguration : IEntityTypeConfiguration<Domain.Entities.SystemConfiguration>
+    public class SystemConfigurationConfiguration : IEntityTypeConfiguration<SystemConfiguration>
     {
-        public void Configure(EntityTypeBuilder<Domain.Entities.SystemConfiguration> builder)
+        public void Configure(EntityTypeBuilder<SystemConfiguration> builder)
         {
-            builder.ToTable("SystemConfiguration");
-
-            builder.HasKey(e => e.Id);
+             builder.HasKey(e => e.Id);
             builder.Property(e => e.CodigoSistema).IsRequired().HasMaxLength(50);
             builder.Property(e => e.Licencia).IsRequired().HasMaxLength(100);
             builder.Property(e => e.NombreNegocio).IsRequired().HasMaxLength(256);
             builder.Property(e => e.Direccion).HasMaxLength(512);
-            builder.Property(e => e.Municipio).HasMaxLength(128);
-            builder.Property(e => e.Provincia).HasMaxLength(128);
-            builder.Property(e => e.CodPostal).HasMaxLength(20);
+            builder.HasOne(x => x.Pais).WithMany().HasForeignKey(x => x.PaisId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(x => x.Provincia).WithMany().HasForeignKey(x => x.ProvinciaId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(x => x.Municipio).WithMany().HasForeignKey(x => x.MunicipioId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(x => x.CodigoPostal).WithMany().HasForeignKey(x => x.CodigoPostalId).OnDelete(DeleteBehavior.Restrict);
             builder.Property(e => e.Imagen).HasMaxLength(500);
             builder.Property(e => e.Web).HasMaxLength(256);
             builder.Property(e => e.Email).HasMaxLength(256);

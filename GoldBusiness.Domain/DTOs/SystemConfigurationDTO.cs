@@ -29,19 +29,24 @@ namespace GoldBusiness.Domain.DTOs
         [StringLength(512, ErrorMessage = "La dirección no puede exceder 512 caracteres")]
         public string? Direccion { get; set; }
 
-        [Display(Name = "Municipio")]
-        [StringLength(128, ErrorMessage = "El municipio no puede exceder 128 caracteres")]
+        // NUEVO: IDs dependientes
+        [Required(ErrorMessage = "El país es obligatorio")]
+        public int PaisId { get; set; }
+
+        [Required(ErrorMessage = "La provincia es obligatoria")]
+        public int ProvinciaId { get; set; }
+
+        [Required(ErrorMessage = "El municipio es obligatorio")]
+        public int MunicipioId { get; set; }
+
+        [Required(ErrorMessage = "El código postal es obligatorio")]
+        public int CodigoPostalId { get; set; }
+
+        // Propiedades de presentación (para el cliente)
         public string? Municipio { get; set; }
-
-        [Display(Name = "Provincia")]
-        [StringLength(128, ErrorMessage = "La provincia no puede exceder 128 caracteres")]
         public string? Provincia { get; set; }
-
-        [Display(Name = "Código Postal")]
-        [StringLength(20, ErrorMessage = "El código postal no puede exceder 20 caracteres")]
         public string? CodPostal { get; set; }
 
-        // ✅ Almacena el nombre del archivo del logo (ej: GOLD-ERP-001.png), no una URL
         [Display(Name = "Logo del Negocio")]
         [StringLength(500, ErrorMessage = "El nombre de archivo no puede exceder 500 caracteres")]
         public string? Imagen { get; set; }

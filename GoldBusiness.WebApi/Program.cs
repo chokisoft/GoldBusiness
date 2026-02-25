@@ -734,7 +734,7 @@ using (var scope = app.Services.CreateScope())
             foreach (var item in systemConfigSinTrad)
             {
                 db.SystemConfigurationTranslation.Add(
-                    new SystemConfigurationTranslation(item.Id, "es", item.NombreNegocio, item.Direccion, item.Municipio, item.Provincia, "system"));
+                    new SystemConfigurationTranslation(item.Id, "es", item.NombreNegocio, item.Direccion, item.GetMunicipio("es"), item.GetProvincia("es"), "system"));
                 traduccionesAgregadas++;
             }
         }

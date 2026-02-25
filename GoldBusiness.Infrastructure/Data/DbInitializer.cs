@@ -701,15 +701,27 @@ namespace GoldBusiness.Infrastructure.Data
                 return;
             }
 
-            // ✅ Crear SystemConfiguration SIN cuentas (gracias a nullable)
+            // Reemplaza la sección donde se crea `sysConfig` por lo siguiente:
+            var firstPaisId = await context.Pais.Where(p => p.Descripcion.Contains("CUBA")).Select(p => p.Id).FirstOrDefaultAsync();
+            var firstProvinciaId = await context.Provincia.Where(p => p.PaisId == firstPaisId && p.Descripcion.Contains("HABANA")).Select(p => p.Id).FirstOrDefaultAsync();
+            var firstMunicipioId = await context.Municipio.Where(m => m.ProvinciaId == firstProvinciaId && m.Descripcion.Contains("BOYEROS")).Select(p => p.Id).FirstOrDefaultAsync();
+            var firstCodigoPostalId = await context.CodigoPostal.Where(c => c.MunicipioId == firstMunicipioId).Select(p => p.Id).FirstOrDefaultAsync();
+
+            // Si alguno no existe, usa 0 o lanza — aquí se usan 0 como fallback
+            firstPaisId = firstPaisId == 0 ? 0 : firstPaisId;
+            firstProvinciaId = firstProvinciaId == 0 ? 0 : firstProvinciaId;
+            firstMunicipioId = firstMunicipioId == 0 ? 0 : firstMunicipioId;
+            firstCodigoPostalId = firstCodigoPostalId == 0 ? 0 : firstCodigoPostalId;
+
             var sysConfig = new SystemConfiguration(
                 "CHK",
                 "uxi/LeQnoZmyHjpkrS2J7RgiO6dKhwdapmg5r7TuwpnDzq2FPwwOWbLwRU6zUcRME2XktTsXkNmonkrYHFFPzg==",
                 "CHOKISOFT SOLUCIONES TECNOLÓGICAS",
                 "CALLE 172 #17830 E/ 180 y 182, REPARTO 1ERO DE MAYO",
-                "BOYEROS",
-                "LA HABANA",
-                "10800",
+                firstPaisId,
+                firstProvinciaId,
+                firstMunicipioId,
+                firstCodigoPostalId,
                 "http://localhost/imagen/imagen.jpg",
                 "http://localhost/",
                 "chokisoft@gmail.com",

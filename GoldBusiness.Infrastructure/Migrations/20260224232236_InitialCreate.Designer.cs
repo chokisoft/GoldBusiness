@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GoldBusiness.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260223033015_InitialCreate")]
+    [Migration("20260224232236_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -2134,10 +2134,8 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.Property<DateTime>("Caducidad")
                         .HasColumnType("datetime");
 
-                    b.Property<string>("CodPostal")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                    b.Property<int>("CodigoPostalId")
+                        .HasColumnType("int");
 
                     b.Property<string>("CodigoSistema")
                         .IsRequired()
@@ -2186,20 +2184,19 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<string>("Municipio")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                    b.Property<int>("MunicipioId")
+                        .HasColumnType("int");
 
                     b.Property<string>("NombreNegocio")
                         .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<string>("Provincia")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                    b.Property<int>("PaisId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProvinciaId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Telefono")
                         .IsRequired()
@@ -2213,11 +2210,19 @@ namespace GoldBusiness.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CodigoPostalId");
+
                     b.HasIndex("CuentaCobrarId");
 
                     b.HasIndex("CuentaPagarId");
 
-                    b.ToTable("SystemConfiguration", (string)null);
+                    b.HasIndex("MunicipioId");
+
+                    b.HasIndex("PaisId");
+
+                    b.HasIndex("ProvinciaId");
+
+                    b.ToTable("SystemConfiguration");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Transaccion", b =>
@@ -3986,6 +3991,12 @@ namespace GoldBusiness.Infrastructure.Migrations
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.SystemConfiguration", b =>
                 {
+                    b.HasOne("GoldBusiness.Domain.Entities.CodigoPostal", "CodigoPostal")
+                        .WithMany()
+                        .HasForeignKey("CodigoPostalId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("GoldBusiness.Domain.Entities.Cuenta", "CuentaCobrar")
                         .WithMany("ConfiguracionCuentaCobrar")
                         .HasForeignKey("CuentaCobrarId")
@@ -3998,9 +4009,35 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .HasConstraintName("FK_Configuracion_CuentaPagar");
 
+                    b.HasOne("GoldBusiness.Domain.Entities.Municipio", "Municipio")
+                        .WithMany()
+                        .HasForeignKey("MunicipioId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("GoldBusiness.Domain.Entities.Pais", "Pais")
+                        .WithMany()
+                        .HasForeignKey("PaisId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("GoldBusiness.Domain.Entities.Provincia", "Provincia")
+                        .WithMany()
+                        .HasForeignKey("ProvinciaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("CodigoPostal");
+
                     b.Navigation("CuentaCobrar");
 
                     b.Navigation("CuentaPagar");
+
+                    b.Navigation("Municipio");
+
+                    b.Navigation("Pais");
+
+                    b.Navigation("Provincia");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.ClienteTranslation", b =>

@@ -1104,9 +1104,10 @@ namespace GoldBusiness.Infrastructure.Migrations
                     Licencia = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     NombreNegocio = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     Direccion = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
-                    Municipio = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    Provincia = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    CodPostal = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    PaisId = table.Column<int>(type: "int", nullable: false),
+                    ProvinciaId = table.Column<int>(type: "int", nullable: false),
+                    MunicipioId = table.Column<int>(type: "int", nullable: false),
+                    CodigoPostalId = table.Column<int>(type: "int", nullable: false),
                     Imagen = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     Web = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
@@ -1132,6 +1133,30 @@ namespace GoldBusiness.Infrastructure.Migrations
                         name: "FK_Configuracion_CuentaPagar",
                         column: x => x.CuentaPagarId,
                         principalTable: "Cuenta",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_SystemConfiguration_CodigoPostal_CodigoPostalId",
+                        column: x => x.CodigoPostalId,
+                        principalTable: "CodigoPostal",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_SystemConfiguration_Municipio_MunicipioId",
+                        column: x => x.MunicipioId,
+                        principalTable: "Municipio",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_SystemConfiguration_Pais_PaisId",
+                        column: x => x.PaisId,
+                        principalTable: "Pais",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_SystemConfiguration_Provincia_ProvinciaId",
+                        column: x => x.ProvinciaId,
+                        principalTable: "Provincia",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -2336,6 +2361,11 @@ namespace GoldBusiness.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_SystemConfiguration_CodigoPostalId",
+                table: "SystemConfiguration",
+                column: "CodigoPostalId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_SystemConfiguration_CuentaCobrarId",
                 table: "SystemConfiguration",
                 column: "CuentaCobrarId");
@@ -2344,6 +2374,21 @@ namespace GoldBusiness.Infrastructure.Migrations
                 name: "IX_SystemConfiguration_CuentaPagarId",
                 table: "SystemConfiguration",
                 column: "CuentaPagarId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SystemConfiguration_MunicipioId",
+                table: "SystemConfiguration",
+                column: "MunicipioId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SystemConfiguration_PaisId",
+                table: "SystemConfiguration",
+                column: "PaisId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SystemConfiguration_ProvinciaId",
+                table: "SystemConfiguration",
+                column: "ProvinciaId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SystemConfigurationTranslation_ConfiguracionId_Language",
@@ -2425,6 +2470,14 @@ namespace GoldBusiness.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
+                name: "FK_CodigoPostal_Municipio",
+                table: "CodigoPostal");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_SystemConfiguration_Municipio_MunicipioId",
+                table: "SystemConfiguration");
+
+            migrationBuilder.DropForeignKey(
                 name: "FK_Configuracion_CuentaCobrar",
                 table: "SystemConfiguration");
 
@@ -2452,9 +2505,6 @@ namespace GoldBusiness.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "ClienteTranslation");
-
-            migrationBuilder.DropTable(
-                name: "CodigoPostal");
 
             migrationBuilder.DropTable(
                 name: "ComprobanteDetalleTranslation");
@@ -2559,9 +2609,6 @@ namespace GoldBusiness.Infrastructure.Migrations
                 name: "Moneda");
 
             migrationBuilder.DropTable(
-                name: "Municipio");
-
-            migrationBuilder.DropTable(
                 name: "OperacionesDetalle");
 
             migrationBuilder.DropTable(
@@ -2571,9 +2618,6 @@ namespace GoldBusiness.Infrastructure.Migrations
                 name: "Comprobante");
 
             migrationBuilder.DropTable(
-                name: "Provincia");
-
-            migrationBuilder.DropTable(
                 name: "Localidad");
 
             migrationBuilder.DropTable(
@@ -2581,9 +2625,6 @@ namespace GoldBusiness.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Producto");
-
-            migrationBuilder.DropTable(
-                name: "Pais");
 
             migrationBuilder.DropTable(
                 name: "Cliente");
@@ -2610,6 +2651,9 @@ namespace GoldBusiness.Infrastructure.Migrations
                 name: "Linea");
 
             migrationBuilder.DropTable(
+                name: "Municipio");
+
+            migrationBuilder.DropTable(
                 name: "Cuenta");
 
             migrationBuilder.DropTable(
@@ -2620,6 +2664,15 @@ namespace GoldBusiness.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "GrupoCuenta");
+
+            migrationBuilder.DropTable(
+                name: "CodigoPostal");
+
+            migrationBuilder.DropTable(
+                name: "Provincia");
+
+            migrationBuilder.DropTable(
+                name: "Pais");
         }
     }
 }

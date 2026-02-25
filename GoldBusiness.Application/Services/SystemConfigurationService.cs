@@ -1,4 +1,8 @@
-﻿using GoldBusiness.Application.Helpers;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using GoldBusiness.Application.Helpers;
 using GoldBusiness.Application.Interfaces;
 using GoldBusiness.Domain.DTOs;
 using GoldBusiness.Domain.Entities;
@@ -49,8 +53,8 @@ namespace GoldBusiness.Application.Services
                         lang,
                         dto.NombreNegocio,
                         dto.Direccion ?? string.Empty,
-                        dto.Municipio ?? string.Empty,
-                        dto.Provincia ?? string.Empty,
+                        string.Empty,
+                        string.Empty,
                         creador);
 
                     existingEntity.ActualizarAuditoria(creador);
@@ -66,15 +70,15 @@ namespace GoldBusiness.Application.Services
                 }
             }
 
-            // No existe, crear nuevo registro
             var entity = new SystemConfiguration(
                 dto.CodigoSistema,
                 dto.Licencia,
                 dto.NombreNegocio,
                 dto.Direccion,
-                dto.Municipio,
-                dto.Provincia,
-                dto.CodPostal,
+                dto.PaisId,
+                dto.ProvinciaId,
+                dto.MunicipioId,
+                dto.CodigoPostalId,
                 dto.Imagen,
                 dto.Web,
                 dto.Email,
@@ -82,19 +86,17 @@ namespace GoldBusiness.Application.Services
                 dto.Caducidad,
                 creador);
 
-            // Establecer cuentas si existen
             if (dto.CuentaPagarId.HasValue || dto.CuentaCobrarId.HasValue)
             {
                 entity.SetCuentas(dto.CuentaPagarId, dto.CuentaCobrarId);
             }
 
-            // Agregar traducción
             entity.AddOrUpdateTranslation(
                 lang,
                 dto.NombreNegocio,
                 dto.Direccion ?? string.Empty,
-                dto.Municipio ?? string.Empty,
-                dto.Provincia ?? string.Empty,
+                string.Empty,
+                string.Empty,
                 creador);
 
             await _repo.AddAsync(entity);
@@ -114,14 +116,13 @@ namespace GoldBusiness.Application.Services
             if (entity == null)
                 throw new KeyNotFoundException($"SystemConfiguration con ID {id} no encontrada");
 
-            // Actualizar todas las propiedades
             entity.SetCodigoSistema(dto.CodigoSistema);
             entity.SetLicencia(dto.Licencia);
             entity.SetNombreNegocio(dto.NombreNegocio);
             entity.SetDireccion(dto.Direccion ?? string.Empty);
-            entity.SetMunicipio(dto.Municipio ?? string.Empty);
-            entity.SetProvincia(dto.Provincia ?? string.Empty);
-            entity.SetCodPostal(dto.CodPostal ?? string.Empty);
+            entity.SetProvincia(dto.ProvinciaId);
+            entity.SetMunicipio(dto.MunicipioId);
+            entity.SetCodigoPostal(dto.CodigoPostalId);
             entity.SetImagen(dto.Imagen ?? string.Empty);
             entity.SetWeb(dto.Web ?? string.Empty);
             entity.SetEmail(dto.Email ?? string.Empty);
@@ -129,16 +130,14 @@ namespace GoldBusiness.Application.Services
             entity.SetCaducidad(dto.Caducidad);
             entity.SetCuentas(dto.CuentaPagarId, dto.CuentaCobrarId);
 
-            // Actualizar traducción
             entity.AddOrUpdateTranslation(
                 lang,
                 dto.NombreNegocio,
                 dto.Direccion ?? string.Empty,
-                dto.Municipio ?? string.Empty,
-                dto.Provincia ?? string.Empty,
+                string.Empty,
+                string.Empty,
                 modificador);
 
-            // Actualizar auditoría
             entity.ActualizarAuditoria(modificador);
 
             await _repo.UpdateAsync(entity);
@@ -187,9 +186,18 @@ namespace GoldBusiness.Application.Services
                 Licencia = s.Licencia,
                 NombreNegocio = s.GetNombreNegocio(lang),
                 Direccion = s.GetDireccion(lang),
+
+                // Mapear IDs
+                PaisId = s.PaisId,
+                ProvinciaId = s.ProvinciaId,
+                MunicipioId = s.MunicipioId,
+                CodigoPostalId = s.CodigoPostalId,
+
+                // Propiedades de presentación (texto)
                 Municipio = s.GetMunicipio(lang),
                 Provincia = s.GetProvincia(lang),
-                CodPostal = s.CodPostal,
+                CodPostal = s.CodigoPostal?.Codigo ?? string.Empty,
+
                 Imagen = s.Imagen,
                 Web = s.Web,
                 Email = s.Email,

@@ -1,6 +1,10 @@
-﻿using GoldBusiness.Domain.Exceptions;
-using GoldBusiness.Domain.Translation;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using GoldBusiness.Domain.Exceptions;
 using GoldBusiness.Domain.Helpers;
+using GoldBusiness.Domain.Translation;
 
 namespace GoldBusiness.Domain.Entities
 {
@@ -14,21 +18,30 @@ namespace GoldBusiness.Domain.Entities
         public string Licencia { get; private set; } = string.Empty;
         public string NombreNegocio { get; private set; } = string.Empty;
         public string Direccion { get; private set; } = string.Empty;
-        public string Municipio { get; private set; } = string.Empty;
-        public string Provincia { get; private set; } = string.Empty;
-        public string CodPostal { get; private set; } = string.Empty;
+
+        // Localización dependiente
+        public int PaisId { get; private set; }
+        public Pais Pais { get; private set; } = null!;
+
+        public int ProvinciaId { get; private set; }
+        public Provincia Provincia { get; private set; } = null!;
+
+        public int MunicipioId { get; private set; }
+        public Municipio Municipio { get; private set; } = null!;
+
+        public int CodigoPostalId { get; private set; }
+        public CodigoPostal CodigoPostal { get; private set; } = null!;
+
         public string Imagen { get; private set; } = string.Empty;
         public string Web { get; private set; } = string.Empty;
         public string Email { get; private set; } = string.Empty;
         public string Telefono { get; private set; } = string.Empty;
 
-        // ✅ NULLABLE
         public int? CuentaPagarId { get; private set; }
         public int? CuentaCobrarId { get; private set; }
 
         public DateTime Caducidad { get; private set; }
 
-        // ✅ Propiedades de navegación NULLABLE
         public Cuenta? CuentaCobrar { get; private set; }
         public Cuenta? CuentaPagar { get; private set; }
 
@@ -37,15 +50,16 @@ namespace GoldBusiness.Domain.Entities
 
         protected SystemConfiguration() { }
 
-        // ✅ CONSTRUCTOR SIN REQUERIR CUENTAS
+        // Constructor actualizado para localización dependiente
         public SystemConfiguration(
             string codigoSistema,
             string licencia,
             string nombreNegocio,
             string? direccion,
-            string? municipio,
-            string? provincia,
-            string? codPostal,
+            int paisId,
+            int provinciaId,
+            int municipioId,
+            int codigoPostalId,
             string? imagen,
             string? web,
             string? email,
@@ -57,9 +71,10 @@ namespace GoldBusiness.Domain.Entities
             SetLicencia(licencia);
             SetNombreNegocio(nombreNegocio);
             SetDireccion(direccion ?? string.Empty);
-            SetMunicipio(municipio ?? string.Empty);
-            SetProvincia(provincia ?? string.Empty);
-            SetCodPostal(codPostal ?? string.Empty);
+            SetPais(paisId);
+            SetProvincia(provinciaId);
+            SetMunicipio(municipioId);
+            SetCodigoPostal(codigoPostalId);
             SetImagen(imagen ?? string.Empty);
             SetWeb(web ?? string.Empty);
             SetEmail(email ?? string.Empty);
@@ -68,10 +83,34 @@ namespace GoldBusiness.Domain.Entities
             EstablecerCreador(creadoPor);
         }
 
-        // ═══════════════════════════════════════════════════════════════
-        // 🔧 MÉTODOS DE DOMINIO - VALIDACIONES
-        // ═══════════════════════════════════════════════════════════════
+        // Métodos de dominio para cambiar dependencias
+        public void SetPais(int paisId)
+        {
+            PaisId = paisId;
+            ProvinciaId = 0;
+            MunicipioId = 0;
+            CodigoPostalId = 0;
+        }
 
+        public void SetProvincia(int provinciaId)
+        {
+            ProvinciaId = provinciaId;
+            MunicipioId = 0;
+            CodigoPostalId = 0;
+        }
+
+        public void SetMunicipio(int municipioId)
+        {
+            MunicipioId = municipioId;
+            CodigoPostalId = 0;
+        }
+
+        public void SetCodigoPostal(int codigoPostalId)
+        {
+            CodigoPostalId = codigoPostalId;
+        }
+
+        // Métodos de validación y actualización (sin cambios lógicos)
         public void SetCodigoSistema(string codigoSistema)
         {
             if (string.IsNullOrWhiteSpace(codigoSistema))
@@ -113,30 +152,6 @@ namespace GoldBusiness.Domain.Entities
             Direccion = direccion?.Trim() ?? string.Empty;
         }
 
-        public void SetMunicipio(string municipio)
-        {
-            if (!string.IsNullOrWhiteSpace(municipio) && municipio.Length > 128)
-                throw new DomainException("El municipio no puede exceder 128 caracteres.");
-
-            Municipio = municipio?.Trim() ?? string.Empty;
-        }
-
-        public void SetProvincia(string provincia)
-        {
-            if (!string.IsNullOrWhiteSpace(provincia) && provincia.Length > 128)
-                throw new DomainException("La provincia no puede exceder 128 caracteres.");
-
-            Provincia = provincia?.Trim() ?? string.Empty;
-        }
-
-        public void SetCodPostal(string codPostal)
-        {
-            if (!string.IsNullOrWhiteSpace(codPostal) && codPostal.Length > 20)
-                throw new DomainException("El código postal no puede exceder 20 caracteres.");
-
-            CodPostal = codPostal?.Trim() ?? string.Empty;
-        }
-
         public void SetImagen(string imagen)
         {
             if (!string.IsNullOrWhiteSpace(imagen))
@@ -144,10 +159,8 @@ namespace GoldBusiness.Domain.Entities
                 if (imagen.Length > 500)
                     throw new DomainException("El nombre de archivo del logo no puede exceder 500 caracteres.");
 
-                // ✅ VALIDACIÓN DUAL: Acepta nombres de archivo locales o URLs externas
                 if (imagen.Contains("://"))
                 {
-                    // Es una URL - validar formato
                     if (!Uri.TryCreate(imagen, UriKind.Absolute, out var uri) ||
                         (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
                     {
@@ -156,14 +169,12 @@ namespace GoldBusiness.Domain.Entities
                 }
                 else
                 {
-                    // Es un nombre de archivo local - validar caracteres y extensión
                     var invalidChars = Path.GetInvalidFileNameChars();
                     if (imagen.Any(c => invalidChars.Contains(c)))
                     {
                         throw new DomainException("El nombre de archivo contiene caracteres no válidos.");
                     }
 
-                    // Validar extensión permitida
                     var allowedExtensions = new[] { ".png", ".jpg", ".jpeg", ".gif", ".webp" };
                     var extension = Path.GetExtension(imagen).ToLowerInvariant();
 
@@ -218,22 +229,13 @@ namespace GoldBusiness.Domain.Entities
                 if (telefono.Length > 20)
                     throw new DomainException("El teléfono no puede exceder 20 caracteres.");
 
-                // Limpiar el teléfono (solo dígitos, manteniendo el + inicial si existe)
                 var telefonoLimpio = telefono.TrimStart().StartsWith("+")
                     ? "+" + System.Text.RegularExpressions.Regex.Replace(telefono, @"[^\d]", "")
                     : System.Text.RegularExpressions.Regex.Replace(telefono, @"[^\d]", "");
 
-                // Validar formatos por país
-                // Cuba: 8 dígitos (5XXX XXXX móvil o XX XXXXXX fijo), con o sin +53
                 var cubaRegex = new System.Text.RegularExpressions.Regex(@"^(?:\+?53)?[2-9]\d{7}$");
-
-                // España: 9 dígitos, con o sin +34
                 var espanaRegex = new System.Text.RegularExpressions.Regex(@"^(?:\+?34)?[6-9]\d{8}$");
-
-                // EE.UU.: 10 dígitos, con o sin +1
                 var usaRegex = new System.Text.RegularExpressions.Regex(@"^(?:\+?1)?[2-9]\d{9}$");
-
-                // Francia: 10 dígitos, con o sin +33
                 var franciaRegex = new System.Text.RegularExpressions.Regex(@"^(?:\+?33)?[1-9]\d{8}$");
 
                 var esValido = cubaRegex.IsMatch(telefonoLimpio) ||
@@ -261,17 +263,13 @@ namespace GoldBusiness.Domain.Entities
             Caducidad = caducidad;
         }
 
-        // ✅ CAMBIADO: Acepta valores nullable
         public void SetCuentas(int? cuentaPagarId, int? cuentaCobrarId)
         {
             CuentaPagarId = cuentaPagarId;
             CuentaCobrarId = cuentaCobrarId;
         }
 
-        // ═══════════════════════════════════════════════════════════════
         // 🌍 MÉTODOS DE TRADUCCIÓN
-        // ═══════════════════════════════════════════════════════════════
-
         public void AddOrUpdateTranslation(
             string language,
             string nombreNegocio,
@@ -288,8 +286,8 @@ namespace GoldBusiness.Domain.Entities
             {
                 existing.SetNombreNegocio(nombreNegocio, usuario);
                 existing.SetDireccion(direccion, usuario);
-                existing.SetMunicipio(direccion, usuario);
-                existing.SetProvincia(direccion, usuario);
+                existing.SetMunicipio(municipio, usuario);
+                existing.SetProvincia(provincia, usuario);
             }
             else
             {
@@ -348,8 +346,8 @@ namespace GoldBusiness.Domain.Entities
             if (match != null && !string.IsNullOrWhiteSpace(match.Direccion))
                 return match.Municipio;
 
-            if (!string.IsNullOrWhiteSpace(Municipio))
-                return Municipio;
+            if (Municipio != null && !string.IsNullOrWhiteSpace(Municipio.Descripcion))
+                return Municipio.Descripcion;
 
             var fallbackMatch = _translations.FirstOrDefault(t =>
                 string.Equals(t.Language, fb, StringComparison.OrdinalIgnoreCase));
@@ -368,8 +366,8 @@ namespace GoldBusiness.Domain.Entities
             if (match != null && !string.IsNullOrWhiteSpace(match.Provincia))
                 return match.Provincia;
 
-            if (!string.IsNullOrWhiteSpace(Provincia))
-                return Provincia;
+            if (Provincia != null && !string.IsNullOrWhiteSpace(Provincia.Descripcion))
+                return Provincia.Descripcion;
 
             var fallbackMatch = _translations.FirstOrDefault(t =>
                 string.Equals(t.Language, fb, StringComparison.OrdinalIgnoreCase));
@@ -378,18 +376,14 @@ namespace GoldBusiness.Domain.Entities
             return string.Empty;
         }
 
-
-        // ═══════════════════════════════════════════════════════════════
         // 🔧 MÉTODOS DE ACTUALIZACIÓN
-        // ═══════════════════════════════════════════════════════════════
-
-        // ✅ CAMBIADO: Acepta cuentas nullable
+        // Ahora Update trabaja con IDs para evitar conversiones incorrectas
         public void Update(
             string nombreNegocio,
             string direccion,
-            string municipio,
-            string provincia,
-            string codPostal,
+            int provinciaId,
+            int municipioId,
+            int codigoPostalId,
             string web,
             string email,
             string telefono,
@@ -400,9 +394,9 @@ namespace GoldBusiness.Domain.Entities
         {
             SetNombreNegocio(nombreNegocio);
             SetDireccion(direccion);
-            SetMunicipio(municipio);
-            SetProvincia(provincia);
-            SetCodPostal(codPostal);
+            SetProvincia(provinciaId);
+            SetMunicipio(municipioId);
+            SetCodigoPostal(codigoPostalId);
             SetWeb(web);
             SetEmail(email);
             SetTelefono(telefono);
@@ -418,17 +412,14 @@ namespace GoldBusiness.Domain.Entities
             ActualizarAuditoria(modificadoPor);
         }
 
-        // ═══════════════════════════════════════════════════════════════
         // 📊 MÉTODOS DE CONSULTA
-        // ═══════════════════════════════════════════════════════════════
-
         public bool EstaVigente() => Caducidad > DateTime.UtcNow;
         public bool EstaProximoAVencer(int diasAnticipacion = 30) => Caducidad <= DateTime.UtcNow.AddDays(diasAnticipacion) && Caducidad > DateTime.UtcNow;
         public bool EstaVencida() => Caducidad <= DateTime.UtcNow;
         public int DiasRestantes() => (Caducidad - DateTime.UtcNow).Days > 0 ? (Caducidad - DateTime.UtcNow).Days : 0;
-        public bool TieneImagen() => Imagen != null && Imagen.Length > 0;
+        public bool TieneImagen() => !string.IsNullOrEmpty(Imagen);
 
-        // ✅ NUEVO: Método para verificar si tiene cuentas configuradas
+        // Método para verificar si tiene cuentas configuradas
         public bool TieneCuentasConfiguradas() => CuentaPagarId.HasValue && CuentaCobrarId.HasValue;
     }
 }
