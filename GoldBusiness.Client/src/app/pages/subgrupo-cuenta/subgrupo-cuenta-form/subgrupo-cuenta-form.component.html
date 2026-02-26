@@ -1,7 +1,7 @@
 <div class="page-container">
   <div class="page-header">
     <h1 class="page-title">
-      {{ isEditMode ? ('subgrupoCuenta.editTitle' | translate) : ('subgrupoCuenta.newTitle' | translate) }}
+      {{ isEditMode ? ('subGrupoCuenta.editTitle' | translate) : ('subGrupoCuenta.newTitle' | translate) }}
     </h1>
   </div>
 
@@ -15,7 +15,7 @@
       
       <!-- ✅ GrupoCuenta -->
       <div class="form-group">
-        <label for="grupoCuentaId" class="form-label">{{ 'subgrupoCuenta.grupoCuenta' | translate }} *</label>
+        <label for="grupoCuentaId" class="form-label">{{ 'subGrupoCuenta.grupoCuenta' | translate }} *</label>
         <select id="grupoCuentaId"
                 formControlName="grupoCuentaId"
                 class="form-control"
@@ -33,49 +33,49 @@
       <!-- ✅ CAMBIO: Fila con 3 columnas -->
       <div class="form-row-three">
         <div class="form-group">
-          <label for="codigoUsuario" class="form-label">{{ 'subgrupoCuenta.codigoUsuario' | translate }} *</label>
+          <label for="codigoUsuario" class="form-label">{{ 'subGrupoCuenta.codigoUsuario' | translate }} *</label>
           <input type="text"
                  id="codigoUsuario"
                  formControlName="codigoUsuario"
                  class="form-control"
                  [class.is-invalid]="form.get('codigoUsuario')?.invalid && form.get('codigoUsuario')?.touched"
-                 [placeholder]="'subgrupoCuenta.codigoUsuarioPlaceholder' | translate"
+                 [placeholder]="'subGrupoCuenta.codigoUsuarioPlaceholder' | translate"
                  maxlength="3"
                  [disabled]="!selectedGrupoCodigo" />
-          <small class="form-text text-muted">{{ 'subgrupoCuenta.codigoUsuarioHelp' | translate }}</small>
+          <small class="form-text text-muted">{{ 'subGrupoCuenta.codigoUsuarioHelp' | translate }}</small>
           <div class="invalid-feedback" *ngIf="form.get('codigoUsuario')?.invalid && form.get('codigoUsuario')?.touched">
             {{ getErrorMessage('codigoUsuario') }}
           </div>
         </div>
 
         <div class="form-group">
-          <label for="codigoCompleto" class="form-label">{{ 'subgrupoCuenta.codigoCompleto' | translate }}</label>
+          <label for="codigoCompleto" class="form-label">{{ 'subGrupoCuenta.codigoCompleto' | translate }}</label>
           <input type="text"
                  id="codigoCompleto"
                  [value]="codigoCompleto"
                  class="form-control"
                  readonly
-                 [placeholder]="'subgrupoCuenta.codigoCompletoPlaceholder' | translate" />
-          <small class="form-text text-muted">{{ 'subgrupoCuenta.codigoCompletoHelp' | translate }}</small>
+                 [placeholder]="'subGrupoCuenta.codigoCompletoPlaceholder' | translate" />
+          <small class="form-text text-muted">{{ 'subGrupoCuenta.codigoCompletoHelp' | translate }}</small>
         </div>
 
         <div class="form-group">
           <label class="checkbox-label">
             <input type="checkbox" formControlName="deudora" class="form-checkbox" />
-            <span>{{ 'subgrupoCuenta.deudora' | translate }}</span>
+            <span>{{ 'subGrupoCuenta.deudora' | translate }}</span>
           </label>
-          <small class="form-text">{{ 'subgrupoCuenta.acreedora' | translate }} {{ 'common.ifNotChecked' | translate }}</small>
+          <small class="form-text">{{ 'subGrupoCuenta.acreedora' | translate }} {{ 'common.ifNotChecked' | translate }}</small>
         </div>
       </div>
 
       <div class="form-group">
-        <label for="descripcion" class="form-label">{{ 'subgrupoCuenta.descripcion' | translate }} *</label>
+        <label for="descripcion" class="form-label">{{ 'subGrupoCuenta.descripcion' | translate }} *</label>
         <input type="text"
                id="descripcion"
                formControlName="descripcion"
                class="form-control"
                [class.is-invalid]="form.get('descripcion')?.invalid && form.get('descripcion')?.touched"
-               [placeholder]="'subgrupoCuenta.descripcionPlaceholder' | translate"
+               [placeholder]="'subGrupoCuenta.descripcionPlaceholder' | translate"
                maxlength="256" />
         <div class="invalid-feedback" *ngIf="form.get('descripcion')?.invalid && form.get('descripcion')?.touched">
           {{ getErrorMessage('descripcion') }}

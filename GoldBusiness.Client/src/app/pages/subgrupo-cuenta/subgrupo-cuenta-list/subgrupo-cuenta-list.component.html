@@ -1,8 +1,8 @@
 <div class="page-container">
   <div class="page-header">
     <div class="header-content">
-      <h1 class="page-title">📂 {{ 'subgrupoCuenta.title' | translate }}</h1>
-      <p class="page-subtitle">{{ 'subgrupoCuenta.subtitle' | translate }}</p>
+      <h1 class="page-title">📂 {{ 'subGrupoCuenta.title' | translate }}</h1>
+      <p class="page-subtitle">{{ 'subGrupoCuenta.subtitle' | translate }}</p>
     </div>
     <div class="header-actions">
       <button class="btn btn-primary" [routerLink]="['nuevo']">
@@ -47,10 +47,10 @@
         <table class="data-table">
           <thead>
             <tr>
-              <th>{{ 'subgrupoCuenta.codigo' | translate }}</th>
+              <th>{{ 'subGrupoCuenta.codigo' | translate }}</th>
               <th>{{ 'grupoCuenta.descripcion' | translate }}</th>
-              <th>{{ 'subgrupoCuenta.descripcion' | translate }}</th>
-              <th>{{ 'subgrupoCuenta.tipo' | translate }}</th>
+              <th>{{ 'subGrupoCuenta.descripcion' | translate }}</th>
+              <th>{{ 'subGrupoCuenta.tipo' | translate }}</th>
               <th class="actions-column">{{ 'common.actions' | translate }}</th>
             </tr>
           </thead>
@@ -65,7 +65,7 @@
               <td>{{ subgrupo.descripcion }}</td>
               <td>
                 <span class="badge" [class.badge-success]="subgrupo.deudora" [class.badge-warning]="!subgrupo.deudora">
-                  {{ subgrupo.deudora ? ('subgrupoCuenta.deudora' | translate) : ('subgrupoCuenta.acreedora' | translate) }}
+                  {{ subgrupo.deudora ? ('subGrupoCuenta.deudora' | translate) : ('subGrupoCuenta.acreedora' | translate) }}
                 </span>
               </td>
               <td class="actions-column">

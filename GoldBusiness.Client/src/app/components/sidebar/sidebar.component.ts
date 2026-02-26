@@ -50,7 +50,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
             expanded: false,
             children: [
               { title: 'Grupos de Cuenta', titleKey: 'grupoCuenta.title', icon: '📁', route: '/nomencladores/grupo-cuenta' },
-              { title: 'SubGrupos de Cuenta', titleKey: 'subgrupoCuenta.title', icon: '📂', route: '/nomencladores/subgrupo-cuenta' },
+              { title: 'SubGrupos de Cuenta', titleKey: 'subGrupoCuenta.title', icon: '📂', route: '/nomencladores/subgrupo-cuenta' },
               { title: 'Cuentas', titleKey: 'cuenta.title', icon: '📄', route: '/nomencladores/cuenta' }
             ]
           }
