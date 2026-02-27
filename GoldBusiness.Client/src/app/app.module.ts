@@ -56,6 +56,51 @@ import { SystemConfigurationService } from './services/system-configuration.serv
 // Interceptors
 import { LanguageInterceptor } from './interceptors/language.interceptor';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { MonedaListComponent } from './pages/moneda/moneda-list/moneda-list.component';
+import { MonedaDetailComponent } from './pages/moneda/moneda-detail/moneda-detail.component';
+import { MonedaFormComponent } from './pages/moneda/moneda-form/moneda-form.component';
+import { EstablecimientoFormComponent } from './pages/establecimiento/establecimiento-form/establecimiento-form.component';
+import { EstablecimientoListComponent } from './pages/establecimiento/establecimiento-list/establecimiento-list.component';
+import { EstablecimientoDetailComponent } from './pages/establecimiento/establecimiento-detail/establecimiento-detail.component';
+import { ClienteDetailComponent } from './pages/cliente/cliente-detail/cliente-detail.component';
+import { ClienteFormComponent } from './pages/cliente/cliente-form/cliente-form.component';
+import { ClienteListComponent } from './pages/cliente/cliente-list/cliente-list.component';
+import { ProveedorListComponent } from './pages/proveedor/proveedor-list/proveedor-list.component';
+import { ProveedorDetailComponent } from './pages/proveedor/proveedor-detail/proveedor-detail.component';
+import { ProveedorFormComponent } from './pages/proveedor/proveedor-form/proveedor-form.component';
+import { LocalidadFormComponent } from './pages/localidad/localidad-form/localidad-form.component';
+import { LocalidadDetailComponent } from './pages/localidad/localidad-detail/localidad-detail.component';
+import { LocalidadListComponent } from './pages/localidad/localidad-list/localidad-list.component';
+import { LineaListComponent } from './pages/linea/linea-list/linea-list.component';
+import { LineaFormComponent } from './pages/linea/linea-form/linea-form.component';
+import { LineaDetailComponent } from './pages/linea/linea-detail/linea-detail.component';
+import { SubLineaDetailComponent } from './pages/subLinea/sub-linea-detail/sub-linea-detail.component';
+import { SubLineaFormComponent } from './pages/subLinea/sub-linea-form/sub-linea-form.component';
+import { SubLineaListComponent } from './pages/subLinea/sub-linea-list/sub-linea-list.component';
+import { UnidadMedidaListComponent } from './pages/unidadMedida/unidad-medida-list/unidad-medida-list.component';
+import { UnidadMedidaFormComponent } from './pages/unidadMedida/unidad-medida-form/unidad-medida-form.component';
+import { UnidadMedidaDetailComponent } from './pages/unidadMedida/unidad-medida-detail/unidad-medida-detail.component';
+import { PaisDetailComponent } from './pages/pais/pais-detail/pais-detail.component';
+import { PaisListComponent } from './pages/pais/pais-list/pais-list.component';
+import { PaisFormComponent } from './pages/pais/pais-form/pais-form.component';
+import { ProvinciaFormComponent } from './pages/provincia/provincia-form/provincia-form.component';
+import { ProvinciaListComponent } from './pages/provincia/provincia-list/provincia-list.component';
+import { ProvinciaDetailComponent } from './pages/provincia/provincia-detail/provincia-detail.component';
+import { MunicipioDetailComponent } from './pages/municipio/municipio-detail/municipio-detail.component';
+import { MunicipioListComponent } from './pages/municipio/municipio-list/municipio-list.component';
+import { MunicipioFormComponent } from './pages/municipio/municipio-form/municipio-form.component';
+import { CodigoPostalFormComponent } from './pages/codigoPostal/codigo-postal-form/codigo-postal-form.component';
+import { CodigoPostalDetailComponent } from './pages/codigoPostal/codigo-postal-detail/codigo-postal-detail.component';
+import { CodigoPostalListComponent } from './pages/codigoPostal/codigo-postal-list/codigo-postal-list.component';
+import { ProductoListComponent } from './pages/producto/producto-list/producto-list.component';
+import { ProductoFormComponent } from './pages/producto/producto-form/producto-form.component';
+import { ProductoDetailComponent } from './pages/producto/producto-detail/producto-detail.component';
+import { TransaccionDetailComponent } from './pages/transaccion/transaccion-detail/transaccion-detail.component';
+import { TransaccionFormComponent } from './pages/transaccion/transaccion-form/transaccion-form.component';
+import { TransaccionListComponent } from './pages/transaccion/transaccion-list/transaccion-list.component';
+import { ConceptoAjusteListComponent } from './pages/conceptoAjuste/concepto-ajuste-list/concepto-ajuste-list.component';
+import { ConceptoAjusteFormComponent } from './pages/conceptoAjuste/concepto-ajuste-form/concepto-ajuste-form.component';
+import { ConceptoAjusteDetailComponent } from './pages/conceptoAjuste/concepto-ajuste-detail/concepto-ajuste-detail.component';
 
 @NgModule({
   declarations: [
@@ -79,6 +124,14 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     CuentaListComponent,
     CuentaFormComponent,
     CuentaDetailComponent,
+    // Clientes
+    ClienteListComponent,
+    ClienteFormComponent,
+    ClienteDetailComponent,
+    // Proveedores
+    ProveedorListComponent,
+    ProveedorFormComponent,
+    ProveedorDetailComponent,
     // SystemConfiguration
     SystemConfigurationListComponent,
     SystemConfigurationFormComponent,
@@ -86,7 +139,52 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     // Pipes
     TranslatePipe,
     LocalizedDatePipe,
-    LocalizedPhonePipe
+    LocalizedPhonePipe,
+    MonedaListComponent,
+    MonedaDetailComponent,
+    MonedaFormComponent,
+    EstablecimientoFormComponent,
+    EstablecimientoListComponent,
+    EstablecimientoDetailComponent,
+    ClienteDetailComponent,
+    ClienteFormComponent,
+    ClienteListComponent,
+    ProveedorListComponent,
+    ProveedorDetailComponent,
+    ProveedorFormComponent,
+    LocalidadFormComponent,
+    LocalidadDetailComponent,
+    LocalidadListComponent,
+    LineaListComponent,
+    LineaFormComponent,
+    LineaDetailComponent,
+    SubLineaDetailComponent,
+    SubLineaFormComponent,
+    SubLineaListComponent,
+    UnidadMedidaListComponent,
+    UnidadMedidaFormComponent,
+    UnidadMedidaDetailComponent,
+    PaisDetailComponent,
+    PaisListComponent,
+    PaisFormComponent,
+    ProvinciaFormComponent,
+    ProvinciaListComponent,
+    ProvinciaDetailComponent,
+    MunicipioDetailComponent,
+    MunicipioListComponent,
+    MunicipioFormComponent,
+    CodigoPostalFormComponent,
+    CodigoPostalDetailComponent,
+    CodigoPostalListComponent,
+    ProductoListComponent,
+    ProductoFormComponent,
+    ProductoDetailComponent,
+    TransaccionDetailComponent,
+    TransaccionFormComponent,
+    TransaccionListComponent,
+    ConceptoAjusteListComponent,
+    ConceptoAjusteFormComponent,
+    ConceptoAjusteDetailComponent
   ],
   imports: [
     BrowserModule,

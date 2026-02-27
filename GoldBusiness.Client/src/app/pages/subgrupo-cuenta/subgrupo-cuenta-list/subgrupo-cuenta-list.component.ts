@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { skip } from 'rxjs/operators';
+import { skip, finalize } from 'rxjs/operators';
 import { SubGrupoCuentaService, SubGrupoCuentaDTO } from '../../../services/subgrupo-cuenta.service';
 import { LanguageService } from '../../../services/language.service';
 
@@ -23,6 +23,10 @@ export class SubGrupoCuentaListComponent implements OnInit, OnDestroy {
   currentPage: number = 1;
   pageSize: number = 10;
   totalPages: number = 0;
+
+  // Valores calculados para UI
+  startItem: number = 0;
+  endItem: number = 0;
 
   // Exponer Math para usarlo en el template
   Math = Math;
@@ -53,27 +57,40 @@ export class SubGrupoCuentaListComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.error = null;
 
-    this.subGrupoCuentaService.getAll().subscribe({
-      next: (data) => {
-        this.subGrupoCuentas = data.sort((a, b) => a.codigo.localeCompare(b.codigo));
-        this.filteredSubGrupoCuentas = [...this.subGrupoCuentas];
-        this.applyPagination();
-        this.loading = false;
-      },
-      error: (err) => {
-        this.error = 'Error al cargar los subgrupos de cuenta';
-        this.loading = false;
-        console.error('Error:', err);
-      }
+    Promise.resolve().then(() => {
+      this.subGrupoCuentaService.getAll()
+        .pipe(finalize(() => this.loading = false))
+        .subscribe({
+          next: (data) => {
+            this.subGrupoCuentas = data.sort((a, b) => a.codigo.localeCompare(b.codigo));
+            this.filteredSubGrupoCuentas = [...this.subGrupoCuentas];
+
+            if (!this.pageSize || this.pageSize <= 0) this.pageSize = 10;
+            const totalItems = this.filteredSubGrupoCuentas.length;
+            this.totalPages = totalItems === 0 ? 0 : Math.ceil(totalItems / this.pageSize);
+
+            if (this.totalPages === 0) {
+              this.currentPage = 1;
+            } else {
+              if (this.currentPage < 1) this.currentPage = 1;
+              if (this.currentPage > this.totalPages) this.currentPage = this.totalPages;
+            }
+
+            this.applyPagination();
+          },
+          error: (err) => {
+            this.error = 'Error al cargar los subgrupos de cuenta';
+            console.error('Error:', err);
+          }
+        });
     });
   }
 
   onSearch(): void {
     const term = this.searchTerm.toLowerCase().trim();
     
-    if (!term) {
-      this.filteredSubGrupoCuentas = [...this.subGrupoCuentas];
-    } else {
+    if (!term) this.filteredSubGrupoCuentas = [...this.subGrupoCuentas];
+    else {
       this.filteredSubGrupoCuentas = this.subGrupoCuentas.filter(subgrupo =>
         subgrupo.codigo.toLowerCase().includes(term) ||
         subgrupo.descripcion.toLowerCase().includes(term) ||
@@ -87,14 +104,32 @@ export class SubGrupoCuentaListComponent implements OnInit, OnDestroy {
   }
 
   applyPagination(): void {
-    this.totalPages = Math.ceil(this.filteredSubGrupoCuentas.length / this.pageSize);
+    if (!this.pageSize || this.pageSize <= 0) this.pageSize = 10;
+
+    const totalItems = this.filteredSubGrupoCuentas.length;
+    this.totalPages = totalItems === 0 ? 0 : Math.ceil(totalItems / this.pageSize);
+
+    if (this.totalPages === 0) {
+      this.currentPage = 1;
+      this.paginatedSubGrupoCuentas = [];
+      this.startItem = 0;
+      this.endItem = 0;
+      return;
+    }
+
+    this.currentPage = Math.min(Math.max(1, this.currentPage), this.totalPages);
+
     const startIndex = (this.currentPage - 1) * this.pageSize;
-    const endIndex = startIndex + this.pageSize;
+    const endIndex = Math.min(startIndex + this.pageSize, totalItems);
+
     this.paginatedSubGrupoCuentas = this.filteredSubGrupoCuentas.slice(startIndex, endIndex);
+
+    this.startItem = totalItems === 0 ? 0 : startIndex + 1;
+    this.endItem = endIndex;
   }
 
   goToPage(page: number): void {
-    if (page >= 1 && page <= this.totalPages) {
+    if (page >= 1 && (this.totalPages === 0 || page <= this.totalPages)) {
       this.currentPage = page;
       this.applyPagination();
     }
@@ -124,14 +159,16 @@ export class SubGrupoCuentaListComponent implements OnInit, OnDestroy {
       startPage = Math.max(1, endPage - maxVisiblePages + 1);
     }
 
-    for (let i = startPage; i <= endPage; i++) {
-      pages.push(i);
-    }
+    for (let i = startPage; i <= endPage; i++) pages.push(i);
 
     return pages;
   }
 
-  onPageSizeChange(): void {
+  onPageSizeChange(newSize?: number | string): void {
+    const parsed = Number(newSize);
+    if (!isNaN(parsed) && parsed > 0) this.pageSize = parsed;
+    else if (!this.pageSize || this.pageSize <= 0) this.pageSize = 10;
+
     this.currentPage = 1;
     this.applyPagination();
   }
@@ -139,9 +176,7 @@ export class SubGrupoCuentaListComponent implements OnInit, OnDestroy {
   delete(id: number, descripcion: string): void {
     if (confirm(`¿Está seguro de eliminar el subgrupo de cuenta "${descripcion}"?`)) {
       this.subGrupoCuentaService.delete(id).subscribe({
-        next: () => {
-          this.loadData();
-        },
+        next: () => this.loadData(),
         error: (err) => {
           this.error = 'Error al eliminar el subgrupo de cuenta';
           console.error('Error:', err);

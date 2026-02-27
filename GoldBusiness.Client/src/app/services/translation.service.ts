@@ -180,25 +180,30 @@ export class TranslationService {
       'en': 'Chart of Accounts',
       'fr': 'Plan Comptable'
     },
-    'sidebar.gestionFinanciera': {
-      'es': 'Gestión Financiera',
-      'en': 'Financial Management',
-      'fr': 'Gestion Financière'
-    },
-    'sidebar.ubicaciones': {
-      'es': 'Ubicaciones',
-      'en': 'Locations',
-      'fr': 'Emplacements'
-    },
     'sidebar.terceros': {
       'es': 'Terceros',
       'en': 'Third Parties',
       'fr': 'Tiers'
     },
-    'sidebar.productos': {
-      'es': 'Productos',
-      'en': 'Products',
-      'fr': 'Produits'
+    'sidebar.organizacion': {
+      'es': 'Organización',
+      'en': 'Organization',
+      'fr': 'Organisation'
+    },
+    'sidebar.clasificador': {
+      'es': 'Clasificador',
+      'en': 'Classifier',
+      'fr': 'Classificateur'
+    },
+    'sidebar.operaciones': {
+      'es': 'Operaciones',
+      'en': 'Operations',
+      'fr': 'Opérations'
+    },
+    'sidebar.producto': {
+      'es': 'Producto',
+      'en': 'Product',
+      'fr': 'Produit'
     },
     'sidebar.configuracion': {
       'es': 'Configuración',
@@ -229,6 +234,710 @@ export class TranslationService {
       'es': 'Prueba de Conexión',
       'en': 'Connection Test',
       'fr': 'Test de Connexion'
+    },
+
+    // ═══════════════════════════════════════════════════════════
+    // 👥 TERCEROS
+    // ═══════════════════════════════════════════════════════════
+    'proveedores.title': {
+      'es': 'Proveedores',
+      'en': 'Suppliers',
+      'fr': 'Fournisseurs'
+    },
+    'proveedores.subtitle': {
+      'es': 'Gestión de proveedores',
+      'en': 'Suppliers management',
+      'fr': 'Gestion des fournisseurs'
+    },
+    'proveedores.newTitle': {
+      'es': 'Nuevo Proveedor',
+      'en': 'New Supplier',
+      'fr': 'Nouveau Fournisseur'
+    },
+    'proveedores.editTitle': {
+      'es': 'Editar Proveedor',
+      'en': 'Edit Supplier',
+      'fr': 'Modifier Fournisseur'
+    },
+    'proveedores.detailTitle': {
+      'es': 'Detalle del Proveedor',
+      'en': 'Supplier Details',
+      'fr': 'Détails du Fournisseur'
+    },
+    'proveedores.codigo': {
+      'es': 'Código',
+      'en': 'Code',
+      'fr': 'Code'
+    },
+    'proveedores.nombre': {
+      'es': 'Nombre',
+      'en': 'Name',
+      'fr': 'Nom'
+    },
+    'proveedores.rfc': {
+      'es': 'RFC/CIF',
+      'en': 'Tax ID',
+      'fr': 'Numéro de TVA'
+    },
+    'proveedores.telefono': {
+      'es': 'Teléfono',
+      'en': 'Phone',
+      'fr': 'Téléphone'
+    },
+    'proveedores.email': {
+      'es': 'Email',
+      'en': 'Email',
+      'fr': 'Email'
+    },
+    'proveedores.direccion': {
+      'es': 'Dirección',
+      'en': 'Address',
+      'fr': 'Adresse'
+    },
+    'clientes.title': {
+      'es': 'Clientes',
+      'en': 'Clients',
+      'fr': 'Clients'
+    },
+    'clientes.subtitle': {
+      'es': 'Gestión de clientes',
+      'en': 'Clients management',
+      'fr': 'Gestion des clients'
+    },
+    'clientes.newTitle': {
+      'es': 'Nuevo Cliente',
+      'en': 'New Client',
+      'fr': 'Nouveau Client'
+    },
+    'clientes.editTitle': {
+      'es': 'Editar Cliente',
+      'en': 'Edit Client',
+      'fr': 'Modifier Client'
+    },
+    'clientes.detailTitle': {
+      'es': 'Detalle del Cliente',
+      'en': 'Client Details',
+      'fr': 'Détails du Client'
+    },
+
+    // ═══════════════════════════════════════════════════════════
+    // 🏢 ORGANIZACIÓN
+    // ═══════════════════════════════════════════════════════════
+    'establecimiento.title': {
+      'es': 'Establecimientos',
+      'en': 'Establishments',
+      'fr': 'Établissements'
+    },
+    'establecimiento.subtitle': {
+      'es': 'Gestión de establecimientos',
+      'en': 'Establishments management',
+      'fr': 'Gestion des établissements'
+    },
+    'establecimiento.newTitle': {
+      'es': 'Nuevo Establecimiento',
+      'en': 'New Establishment',
+      'fr': 'Nouvel Établissement'
+    },
+    'establecimiento.editTitle': {
+      'es': 'Editar Establecimiento',
+      'en': 'Edit Establishment',
+      'fr': 'Modifier Établissement'
+    },
+    'establecimiento.detailTitle': {
+      'es': 'Detalle del Establecimiento',
+      'en': 'Establishment Details',
+      'fr': 'Détails de l\'Établissement'
+    },
+    'establecimiento.codigo': {
+      'es': 'Código',
+      'en': 'Code',
+      'fr': 'Code'
+    },
+    'establecimiento.nombre': {
+      'es': 'Nombre',
+      'en': 'Name',
+      'fr': 'Nom'
+    },
+    'establecimiento.telefono': {
+      'es': 'Teléfono',
+      'en': 'Phone',
+      'fr': 'Téléphone'
+    },
+    'establecimiento.email': {
+      'es': 'Email',
+      'en': 'Email',
+      'fr': 'Email'
+    },
+    'establecimiento.direccion': {
+      'es': 'Dirección',
+      'en': 'Address',
+      'fr': 'Adresse'
+    },
+    'establecimiento.localidad': {
+      'es': 'Localidad',
+      'en': 'Locality',
+      'fr': 'Localité'
+    },
+
+    'localidad.title': {
+      'es': 'Localidades',
+      'en': 'Localities',
+      'fr': 'Localités'
+    },
+    'localidad.subtitle': {
+      'es': 'Gestión de localidades',
+      'en': 'Localities management',
+      'fr': 'Gestion des localités'
+    },
+    'localidad.newTitle': {
+      'es': 'Nueva Localidad',
+      'en': 'New Locality',
+      'fr': 'Nouvelle Localité'
+    },
+    'localidad.editTitle': {
+      'es': 'Editar Localidad',
+      'en': 'Edit Locality',
+      'fr': 'Modifier Localité'
+    },
+    'localidad.detailTitle': {
+      'es': 'Detalle de Localidad',
+      'en': 'Locality Details',
+      'fr': 'Détails de la Localité'
+    },
+    'localidad.nombre': {
+      'es': 'Nombre',
+      'en': 'Name',
+      'fr': 'Nom'
+    },
+    'localidad.municipio': {
+      'es': 'Municipio',
+      'en': 'Municipality',
+      'fr': 'Municipalité'
+    },
+    'localidad.codigoPostal': {
+      'es': 'Código Postal',
+      'en': 'Postal Code',
+      'fr': 'Code Postal'
+    },
+
+    'moneda.title': {
+      'es': 'Monedas',
+      'en': 'Currencies',
+      'fr': 'Devises'
+    },
+    'moneda.subtitle': {
+      'es': 'Gestión de monedas',
+      'en': 'Currencies management',
+      'fr': 'Gestion des devises'
+    },
+    'moneda.newTitle': {
+      'es': 'Nueva Moneda',
+      'en': 'New Currency',
+      'fr': 'Nouvelle Devise'
+    },
+    'moneda.editTitle': {
+      'es': 'Editar Moneda',
+      'en': 'Edit Currency',
+      'fr': 'Modifier Devise'
+    },
+    'moneda.detailTitle': {
+      'es': 'Detalle de Moneda',
+      'en': 'Currency Details',
+      'fr': 'Détails de la Devise'
+    },
+    'moneda.codigo': {
+      'es': 'Código',
+      'en': 'Code',
+      'fr': 'Code'
+    },
+    'moneda.nombre': {
+      'es': 'Nombre',
+      'en': 'Name',
+      'fr': 'Nom'
+    },
+    'moneda.simbolo': {
+      'es': 'Símbolo',
+      'en': 'Symbol',
+      'fr': 'Symbole'
+    },
+    'moneda.cambio': {
+      'es': 'Tasa de Cambio',
+      'en': 'Exchange Rate',
+      'fr': 'Taux de Change'
+    },
+
+    'pais.title': {
+      'es': 'Países',
+      'en': 'Countries',
+      'fr': 'Pays'
+    },
+    'pais.subtitle': {
+      'es': 'Gestión de países',
+      'en': 'Countries management',
+      'fr': 'Gestion des pays'
+    },
+    'pais.newTitle': {
+      'es': 'Nuevo País',
+      'en': 'New Country',
+      'fr': 'Nouveau Pays'
+    },
+    'pais.editTitle': {
+      'es': 'Editar País',
+      'en': 'Edit Country',
+      'fr': 'Modifier Pays'
+    },
+    'pais.detailTitle': {
+      'es': 'Detalle de País',
+      'en': 'Country Details',
+      'fr': 'Détails du Pays'
+    },
+    'pais.codigo': {
+      'es': 'Código',
+      'en': 'Code',
+      'fr': 'Code'
+    },
+    'pais.descripcion': {
+      'es': 'Descripción',
+      'en': 'Description',
+      'fr': 'Description'
+    },
+    'pais.nombre': {
+      'es': 'Nombre',
+      'en': 'Name',
+      'fr': 'Nom'
+    },
+    'pais.nacionalidad': {
+      'es': 'Nacionalidad',
+      'en': 'Nationality',
+      'fr': 'Nationalité'
+    },
+
+    'provincia.title': {
+      'es': 'Provincias',
+      'en': 'Provinces',
+      'fr': 'Provinces'
+    },
+    'provincia.subtitle': {
+      'es': 'Gestión de provincias',
+      'en': 'Provinces management',
+      'fr': 'Gestion des provinces'
+    },
+    'provincia.newTitle': {
+      'es': 'Nueva Provincia',
+      'en': 'New Province',
+      'fr': 'Nouvelle Province'
+    },
+    'provincia.editTitle': {
+      'es': 'Editar Provincia',
+      'en': 'Edit Province',
+      'fr': 'Modifier Province'
+    },
+    'provincia.detailTitle': {
+      'es': 'Detalle de Provincia',
+      'en': 'Province Details',
+      'fr': 'Détails de la Province'
+    },
+    'provincia.codigo': {
+      'es': 'Código',
+      'en': 'Code',
+      'fr': 'Code'
+    },
+    'provincia.descripcion': {
+      'es': 'Descripción',
+      'en': 'Description',
+      'fr': 'Description'
+    },
+    'provincia.nombre': {
+      'es': 'Nombre',
+      'en': 'Name',
+      'fr': 'Nom'
+    },
+    'provincia.pais': {
+      'es': 'País',
+      'en': 'Country',
+      'fr': 'Pays'
+    },
+
+    'municipio.title': {
+      'es': 'Municipios',
+      'en': 'Municipalities',
+      'fr': 'Municipalités'
+    },
+    'municipio.subtitle': {
+      'es': 'Gestión de municipios',
+      'en': 'Municipalities management',
+      'fr': 'Gestion des municipalités'
+    },
+    'municipio.newTitle': {
+      'es': 'Nuevo Municipio',
+      'en': 'New Municipality',
+      'fr': 'Nouvelle Municipalité'
+    },
+    'municipio.editTitle': {
+      'es': 'Editar Municipio',
+      'en': 'Edit Municipality',
+      'fr': 'Modifier Municipalité'
+    },
+    'municipio.detailTitle': {
+      'es': 'Detalle de Municipio',
+      'en': 'Municipality Details',
+      'fr': 'Détails de la Municipalité'
+    },
+    'municipio.codigo': {
+      'es': 'Código',
+      'en': 'Code',
+      'fr': 'Code'
+    },
+    'municipio.nombre': {
+      'es': 'Nombre',
+      'en': 'Name',
+      'fr': 'Nom'
+    },
+    'municipio.provincia': {
+      'es': 'Provincia',
+      'en': 'Province',
+      'fr': 'Province'
+    },
+
+    'codigoPostal.title': {
+      'es': 'Códigos Postales',
+      'en': 'Postal Codes',
+      'fr': 'Codes Postaux'
+    },
+    'codigoPostal.subtitle': {
+      'es': 'Gestión de códigos postales',
+      'en': 'Postal codes management',
+      'fr': 'Gestion des codes postaux'
+    },
+    'codigoPostal.newTitle': {
+      'es': 'Nuevo Código Postal',
+      'en': 'New Postal Code',
+      'fr': 'Nouveau Code Postal'
+    },
+    'codigoPostal.editTitle': {
+      'es': 'Editar Código Postal',
+      'en': 'Edit Postal Code',
+      'fr': 'Modifier Code Postal'
+    },
+    'codigoPostal.detailTitle': {
+      'es': 'Detalle de Código Postal',
+      'en': 'Postal Code Details',
+      'fr': 'Détails du Code Postal'
+    },
+    'codigoPostal.codigo': {
+      'es': 'Código',
+      'en': 'Code',
+      'fr': 'Code'
+    },
+    'codigoPostal.municipio': {
+      'es': 'Municipio',
+      'en': 'Municipality',
+      'fr': 'Municipalité'
+    },
+
+    // ═══════════════════════════════════════════════════════════
+    // 📋 CLASIFICADOR
+    // ═══════════════════════════════════════════════════════════
+    'linea.title': {
+      'es': 'Líneas',
+      'en': 'Lines',
+      'fr': 'Lignes'
+    },
+    'linea.subtitle': {
+      'es': 'Gestión de líneas',
+      'en': 'Lines management',
+      'fr': 'Gestion des lignes'
+    },
+    'linea.newTitle': {
+      'es': 'Nueva Línea',
+      'en': 'New Line',
+      'fr': 'Nouvelle Ligne'
+    },
+    'linea.editTitle': {
+      'es': 'Editar Línea',
+      'en': 'Edit Line',
+      'fr': 'Modifier Ligne'
+    },
+    'linea.detailTitle': {
+      'es': 'Detalle de Línea',
+      'en': 'Line Details',
+      'fr': 'Détails de la Ligne'
+    },
+    'linea.codigo': {
+      'es': 'Código',
+      'en': 'Code',
+      'fr': 'Code'
+    },
+    'linea.nombre': {
+      'es': 'Nombre',
+      'en': 'Name',
+      'fr': 'Nom'
+    },
+    'linea.descripcion': {
+      'es': 'Descripción',
+      'en': 'Description',
+      'fr': 'Description'
+    },
+
+    'subLinea.title': {
+      'es': 'Sublíneas',
+      'en': 'Sublines',
+      'fr': 'Sous-lignes'
+    },
+    'subLinea.subtitle': {
+      'es': 'Gestión de sublíneas',
+      'en': 'Sublines management',
+      'fr': 'Gestion des sous-lignes'
+    },
+    'subLinea.newTitle': {
+      'es': 'Nueva Sublínea',
+      'en': 'New Subline',
+      'fr': 'Nouvelle Sous-ligne'
+    },
+    'subLinea.editTitle': {
+      'es': 'Editar Sublínea',
+      'en': 'Edit Subline',
+      'fr': 'Modifier Sous-ligne'
+    },
+    'subLinea.detailTitle': {
+      'es': 'Detalle de Sublínea',
+      'en': 'Subline Details',
+      'fr': 'Détails de la Sous-ligne'
+    },
+    'subLinea.codigo': {
+      'es': 'Código',
+      'en': 'Code',
+      'fr': 'Code'
+    },
+    'subLinea.nombre': {
+      'es': 'Nombre',
+      'en': 'Name',
+      'fr': 'Nom'
+    },
+    'subLinea.linea': {
+      'es': 'Línea',
+      'en': 'Line',
+      'fr': 'Ligne'
+    },
+
+    'unidadMedida.title': {
+      'es': 'Unidades de Medida',
+      'en': 'Units of Measure',
+      'fr': 'Unités de Mesure'
+    },
+    'unidadMedida.subtitle': {
+      'es': 'Gestión de unidades de medida',
+      'en': 'Units of measure management',
+      'fr': 'Gestion des unités de mesure'
+    },
+    'unidadMedida.newTitle': {
+      'es': 'Nueva Unidad de Medida',
+      'en': 'New Unit of Measure',
+      'fr': 'Nouvelle Unité de Mesure'
+    },
+    'unidadMedida.editTitle': {
+      'es': 'Editar Unidad de Medida',
+      'en': 'Edit Unit of Measure',
+      'fr': 'Modifier Unité de Mesure'
+    },
+    'unidadMedida.detailTitle': {
+      'es': 'Detalle de Unidad de Medida',
+      'en': 'Unit of Measure Details',
+      'fr': 'Détails de l\'Unité de Mesure'
+    },
+    'unidadMedida.codigo': {
+      'es': 'Código',
+      'en': 'Code',
+      'fr': 'Code'
+    },
+    'unidadMedida.nombre': {
+      'es': 'Nombre',
+      'en': 'Name',
+      'fr': 'Nom'
+    },
+    'unidadMedida.abreviatura': {
+      'es': 'Abreviatura',
+      'en': 'Abbreviation',
+      'fr': 'Abréviation'
+    },
+
+    // ═══════════════════════════════════════════════════════════
+    // 🔄 OPERACIONES
+    // ═══════════════════════════════════════════════════════════
+    'transaccion.title': {
+      'es': 'Transacciones',
+      'en': 'Transactions',
+      'fr': 'Transactions'
+    },
+    'transaccion.subtitle': {
+      'es': 'Gestión de transacciones',
+      'en': 'Transactions management',
+      'fr': 'Gestion des transactions'
+    },
+    'transaccion.newTitle': {
+      'es': 'Nueva Transacción',
+      'en': 'New Transaction',
+      'fr': 'Nouvelle Transaction'
+    },
+    'transaccion.editTitle': {
+      'es': 'Editar Transacción',
+      'en': 'Edit Transaction',
+      'fr': 'Modifier Transaction'
+    },
+    'transaccion.detailTitle': {
+      'es': 'Detalle de Transacción',
+      'en': 'Transaction Details',
+      'fr': 'Détails de la Transaction'
+    },
+    'transaccion.codigo': {
+      'es': 'Código',
+      'en': 'Code',
+      'fr': 'Code'
+    },
+    'transaccion.nombre': {
+      'es': 'Nombre',
+      'en': 'Name',
+      'fr': 'Nom'
+    },
+    'transaccion.tipo': {
+      'es': 'Tipo',
+      'en': 'Type',
+      'fr': 'Type'
+    },
+    'transaccion.ingreso': {
+      'es': 'Ingreso',
+      'en': 'Income',
+      'fr': 'Revenu'
+    },
+    'transaccion.egreso': {
+      'es': 'Egreso',
+      'en': 'Expense',
+      'fr': 'Dépense'
+    },
+
+    'conceptoAjuste.title': {
+      'es': 'Conceptos de Ajuste',
+      'en': 'Adjustment Concepts',
+      'fr': 'Concepts d\'Ajustement'
+    },
+    'conceptoAjuste.subtitle': {
+      'es': 'Gestión de conceptos de ajuste',
+      'en': 'Adjustment concepts management',
+      'fr': 'Gestion des concepts d\'ajustement'
+    },
+    'conceptoAjuste.newTitle': {
+      'es': 'Nuevo Concepto de Ajuste',
+      'en': 'New Adjustment Concept',
+      'fr': 'Nouveau Concept d\'Ajustement'
+    },
+    'conceptoAjuste.editTitle': {
+      'es': 'Editar Concepto de Ajuste',
+      'en': 'Edit Adjustment Concept',
+      'fr': 'Modifier Concept d\'Ajustement'
+    },
+    'conceptoAjuste.detailTitle': {
+      'es': 'Detalle de Concepto de Ajuste',
+      'en': 'Adjustment Concept Details',
+      'fr': 'Détails du Concept d\'Ajustement'
+    },
+    'conceptoAjuste.codigo': {
+      'es': 'Código',
+      'en': 'Code',
+      'fr': 'Code'
+    },
+    'conceptoAjuste.nombre': {
+      'es': 'Nombre',
+      'en': 'Name',
+      'fr': 'Nom'
+    },
+    'conceptoAjuste.tipo': {
+      'es': 'Tipo de Ajuste',
+      'en': 'Adjustment Type',
+      'fr': 'Type d\'Ajustement'
+    },
+    'conceptoAjuste.aumento': {
+      'es': 'Aumento',
+      'en': 'Increase',
+      'fr': 'Augmentation'
+    },
+    'conceptoAjuste.disminucion': {
+      'es': 'Disminución',
+      'en': 'Decrease',
+      'fr': 'Diminution'
+    },
+
+    // ═══════════════════════════════════════════════════════════
+    // 📦 PRODUCTO
+    // ═══════════════════════════════════════════════════════════
+    'producto.title': {
+      'es': 'Productos',
+      'en': 'Products',
+      'fr': 'Produits'
+    },
+    'producto.subtitle': {
+      'es': 'Gestión de productos',
+      'en': 'Products management',
+      'fr': 'Gestion des produits'
+    },
+    'producto.newTitle': {
+      'es': 'Nuevo Producto',
+      'en': 'New Product',
+      'fr': 'Nouveau Produit'
+    },
+    'producto.editTitle': {
+      'es': 'Editar Producto',
+      'en': 'Edit Product',
+      'fr': 'Modifier Produit'
+    },
+    'producto.detailTitle': {
+      'es': 'Detalle de Producto',
+      'en': 'Product Details',
+      'fr': 'Détails du Produit'
+    },
+    'producto.codigo': {
+      'es': 'Código',
+      'en': 'Code',
+      'fr': 'Code'
+    },
+    'producto.nombre': {
+      'es': 'Nombre',
+      'en': 'Name',
+      'fr': 'Nom'
+    },
+    'producto.descripcion': {
+      'es': 'Descripción',
+      'en': 'Description',
+      'fr': 'Description'
+    },
+    'producto.precio': {
+      'es': 'Precio',
+      'en': 'Price',
+      'fr': 'Prix'
+    },
+    'producto.costo': {
+      'es': 'Costo',
+      'en': 'Cost',
+      'fr': 'Coût'
+    },
+    'producto.stock': {
+      'es': 'Stock',
+      'en': 'Stock',
+      'fr': 'Stock'
+    },
+    'producto.unidadMedida': {
+      'es': 'Unidad de Medida',
+      'en': 'Unit of Measure',
+      'fr': 'Unité de Mesure'
+    },
+    'producto.linea': {
+      'es': 'Línea',
+      'en': 'Line',
+      'fr': 'Ligne'
+    },
+    'producto.sublinea': {
+      'es': 'Sublínea',
+      'en': 'Subline',
+      'fr': 'Sous-ligne'
     },
 
     // ═══════════════════════════════════════════════════════════
@@ -438,7 +1147,6 @@ export class TranslationService {
       'en': '(if not checked)',
       'fr': '(si non coché)'
     },
-    // ✅ NUEVAS TRADUCCIONES COMUNES PARA VISTAS DE DETALLE
     'common.information': {
       'es': 'Información',
       'en': 'Information',
@@ -474,7 +1182,6 @@ export class TranslationService {
       'en': 'Inactive',
       'fr': 'Inactif'
     },
-    // ✅ TRADUCCIONES PARA PAGINACIÓN Y BÚSQUEDA
     'common.show': {
       'es': 'Mostrar',
       'en': 'Show',
@@ -505,6 +1212,7 @@ export class TranslationService {
       'en': 'No results found',
       'fr': 'Aucun résultat trouvé'
     },
+
     // ═══════════════════════════════════════════════════════════
     // 📁 GRUPO CUENTA
     // ═══════════════════════════════════════════════════════════
@@ -532,6 +1240,16 @@ export class TranslationService {
       'es': 'Detalle del Grupo de Cuenta',
       'en': 'Account Group Details',
       'fr': 'Détails du Groupe de Comptes'
+    },
+    'grupoCuenta.detailSubtitle': {
+      'es': 'Visualización completa de la información del grupo de cuenta',
+      'en': 'Complete view of account group information',
+      'fr': 'Vue complète des informations du groupe de comptes'
+    },
+    'grupoCuenta.mainInfo': {
+      'es': 'Información Principal',
+      'en': 'Main Information',
+      'fr': 'Informations Principales'
     },
     'grupoCuenta.codigo': {
       'es': 'Código',
@@ -563,17 +1281,6 @@ export class TranslationService {
       'en': 'General Information',
       'fr': 'Informations Générales'
     },
-    // ✅ NUEVAS TRADUCCIONES PARA VISTA DETALLE DE GRUPO CUENTA
-    'grupoCuenta.detailSubtitle': {
-      'es': 'Visualización completa de la información del grupo de cuenta',
-      'en': 'Complete view of account group information',
-      'fr': 'Vue complète des informations du groupe de comptes'
-    },
-    'grupoCuenta.mainInfo': {
-      'es': 'Información Principal',
-      'en': 'Main Information',
-      'fr': 'Informations Principales'
-    },
 
     // ═══════════════════════════════════════════════════════════
     // 📂 SUBGRUPO CUENTA
@@ -602,6 +1309,16 @@ export class TranslationService {
       'es': 'Detalle del SubGrupo de Cuenta',
       'en': 'Account Subgroup Details',
       'fr': 'Détails du Sous-groupe de Comptes'
+    },
+    'subGrupoCuenta.detailSubtitle': {
+      'es': 'Visualización completa de la información del subgrupo de cuenta',
+      'en': 'Complete view of account subgroup information',
+      'fr': 'Vue complète des informations du sous-groupe de comptes'
+    },
+    'subGrupoCuenta.mainInfo': {
+      'es': 'Información Principal',
+      'en': 'Main Information',
+      'fr': 'Informations Principales'
     },
     'subGrupoCuenta.codigo': {
       'es': 'Código',
@@ -648,11 +1365,6 @@ export class TranslationService {
       'en': 'Ex: Current Assets',
       'fr': 'Ex: Actif Circulant'
     },
-    'validation.codigo5Digitos': {
-      'es': 'El código debe ser un número de 5 dígitos',
-      'en': 'Code must be a 5-digit number',
-      'fr': 'Le code doit être un nombre à 5 chiffres'
-    },
     'subGrupoCuenta.codigoUsuario': {
       'es': 'Código (3 dígitos)',
       'en': 'Code (3 digits)',
@@ -683,27 +1395,6 @@ export class TranslationService {
       'en': 'Group code + your 3 digits = Full code',
       'fr': 'Code du groupe + vos 3 chiffres = Code complet'
     },
-    'validation.codigo3Digitos': {
-      'es': 'El código debe ser un número de 3 dígitos',
-      'en': 'Code must be a 3-digit number',
-      'fr': 'Le code doit être un nombre à 3 chiffres'
-    },
-    'validation.codigo2Digitos': {
-      'es': 'El código debe ser un número de 2 dígitos',
-      'en': 'Code must be a 2-digit number',
-      'fr': 'Le code doit être un nombre à 2 chiffres'
-    },
-    // ✅ NUEVAS TRADUCCIONES PARA VISTA DETALLE DE SUBGRUPO CUENTA
-    'subGrupoCuenta.detailSubtitle': {
-      'es': 'Visualización completa de la información del subgrupo de cuenta',
-      'en': 'Complete view of account subgroup information',
-      'fr': 'Vue complète des informations du sous-groupe de comptes'
-    },
-    'subGrupoCuenta.mainInfo': {
-      'es': 'Información Principal',
-      'en': 'Main Information',
-      'fr': 'Informations Principales'
-    },
 
     // ═══════════════════════════════════════════════════════════
     // 📄 CUENTA
@@ -733,17 +1424,6 @@ export class TranslationService {
       'en': 'Account Details',
       'fr': 'Détails du Compte'
     },
-    'cuenta.codigo': {
-      'es': 'Código',
-      'en': 'Code',
-      'fr': 'Code'
-    },
-    'cuenta.subGrupoCuenta': {
-      'es': 'SubGrupo de Cuenta',
-      'en': 'Account Subgroup',
-      'fr': 'Sous-groupe de Comptes'
-    },
-    // ✅ NUEVAS TRADUCCIONES PARA VISTA DETALLE DE CUENTA
     'cuenta.detailSubtitle': {
       'es': 'Visualización completa de la información de la cuenta',
       'en': 'Complete view of account information',
@@ -754,10 +1434,20 @@ export class TranslationService {
       'en': 'Main Information',
       'fr': 'Informations Principales'
     },
+    'cuenta.codigo': {
+      'es': 'Código',
+      'en': 'Code',
+      'fr': 'Code'
+    },
     'cuenta.descripcion': {
       'es': 'Descripción',
       'en': 'Description',
       'fr': 'Description'
+    },
+    'cuenta.subGrupoCuenta': {
+      'es': 'SubGrupo de Cuenta',
+      'en': 'Account Subgroup',
+      'fr': 'Sous-groupe de Comptes'
     },
     'cuenta.grupoCuenta': {
       'es': 'Grupo de Cuenta',
@@ -792,6 +1482,21 @@ export class TranslationService {
       'es': 'Detalle de Configuración del Sistema',
       'en': 'System Configuration Details',
       'fr': 'Détails de Configuration du Système'
+    },
+    'systemConfig.detailSubtitle': {
+      'es': 'Visualización completa de la configuración del sistema',
+      'en': 'Complete view of system configuration',
+      'fr': 'Vue complète de la configuration du système'
+    },
+    'systemConfig.infoSistema': {
+      'es': 'Información del Sistema',
+      'en': 'System Information',
+      'fr': 'Informations du Système'
+    },
+    'systemConfig.infoNegocio': {
+      'es': 'Información del Negocio',
+      'en': 'Business Information',
+      'fr': 'Informations de l\'Entreprise'
     },
     'systemConfig.codigoSistema': {
       'es': 'Código del Sistema',
@@ -853,6 +1558,11 @@ export class TranslationService {
       'en': 'Expiration Date',
       'fr': 'Date d\'Expiration'
     },
+    'systemConfig.estado': {
+      'es': 'Estado',
+      'en': 'Status',
+      'fr': 'Statut'
+    },
     'systemConfig.cuentaPagar': {
       'es': 'Cuenta Por Pagar',
       'en': 'Accounts Payable',
@@ -903,30 +1613,9 @@ export class TranslationService {
       'en': 'days remaining',
       'fr': 'jours restants'
     },
-    // ✅ NUEVAS TRADUCCIONES PARA VISTA DETALLE DE SYSTEM CONFIG
-    'systemConfig.detailSubtitle': {
-      'es': 'Visualización completa de la configuración del sistema',
-      'en': 'Complete view of system configuration',
-      'fr': 'Vue complète de la configuration du système'
-    },
-    'systemConfig.infoSistema': {
-      'es': 'Información del Sistema',
-      'en': 'System Information',
-      'fr': 'Informations du Système'
-    },
-    'systemConfig.estado': {
-      'es': 'Estado',
-      'en': 'Status',
-      'fr': 'Statut'
-    },
-    'systemConfig.infoNegocio': {
-      'es': 'Información del Negocio',
-      'en': 'Business Information',
-      'fr': 'Informations de l\'Entreprise'
-    },
 
     // ═══════════════════════════════════════════════════════════
-    // 🖼️ LOGO - NUEVAS TRADUCCIONES
+    // 🖼️ LOGO
     // ═══════════════════════════════════════════════════════════
     'systemConfig.logoUpload': {
       'es': 'Subir Logo',
@@ -1050,6 +1739,21 @@ export class TranslationService {
       'es': '⚠️ La contraseña debe tener al menos 8 caracteres',
       'en': '⚠️ Password must be at least 8 characters',
       'fr': '⚠️ Le mot de passe doit comporter au moins 8 caractères'
+    },
+    'validation.codigo5Digitos': {
+      'es': 'El código debe ser un número de 5 dígitos',
+      'en': 'Code must be a 5-digit number',
+      'fr': 'Le code doit être un nombre à 5 chiffres'
+    },
+    'validation.codigo3Digitos': {
+      'es': 'El código debe ser un número de 3 dígitos',
+      'en': 'Code must be a 3-digit number',
+      'fr': 'Le code doit être un nombre à 3 chiffres'
+    },
+    'validation.codigo2Digitos': {
+      'es': 'El código debe ser un número de 2 dígitos',
+      'en': 'Code must be a 2-digit number',
+      'fr': 'Le code doit être un nombre à 2 chiffres'
     },
     'error.loading': {
       'es': 'Error al cargar los datos',

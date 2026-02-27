@@ -43,28 +43,215 @@ export class SidebarComponent implements OnInit, OnDestroy {
         icon: '🗂️',
         expanded: false,
         children: [
+          // ============================================
+          // 📊 PLAN DE CUENTAS
+          // ============================================
           {
             title: 'Plan de Cuentas',
             titleKey: 'sidebar.planCuentas',
             icon: '📊',
             expanded: false,
             children: [
-              { title: 'Grupos de Cuenta', titleKey: 'grupoCuenta.title', icon: '📁', route: '/nomencladores/grupo-cuenta' },
-              { title: 'SubGrupos de Cuenta', titleKey: 'subGrupoCuenta.title', icon: '📂', route: '/nomencladores/subgrupo-cuenta' },
-              { title: 'Cuentas', titleKey: 'cuenta.title', icon: '📄', route: '/nomencladores/cuenta' }
+              {
+                title: 'Grupos de Cuenta',
+                titleKey: 'grupoCuenta.title',
+                icon: '📁',
+                route: '/nomencladores/grupo-cuenta'
+              },
+              {
+                title: 'SubGrupos de Cuenta',
+                titleKey: 'subGrupoCuenta.title',
+                icon: '📂',
+                route: '/nomencladores/subgrupo-cuenta'
+              },
+              {
+                title: 'Cuentas',
+                titleKey: 'cuenta.title',
+                icon: '📄',
+                route: '/nomencladores/cuenta'
+              }
+            ]
+          },
+
+          // ============================================
+          // 👥 TERCEROS
+          // ============================================
+          {
+            title: 'Terceros',
+            titleKey: 'sidebar.terceros',
+            icon: '👥',
+            expanded: false,
+            children: [
+              {
+                title: 'Proveedores',
+                titleKey: 'proveedores.title',
+                icon: '🏭',
+                route: '/nomencladores/proveedores'
+              },
+              {
+                title: 'Clientes',
+                titleKey: 'clientes.title',
+                icon: '👤',
+                route: '/nomencladores/clientes'
+              }
+            ]
+          },
+
+          // ============================================
+          // 🏢 ORGANIZACIÓN
+          // ============================================
+          {
+            title: 'Organización',
+            titleKey: 'sidebar.organizacion',
+            icon: '🏢',
+            expanded: false,
+            children: [
+              {
+                title: 'Establecimiento',
+                titleKey: 'establecimiento.title',
+                icon: '🏛️',
+                route: '/nomencladores/establecimiento'
+              },
+              {
+                title: 'Localidad',
+                titleKey: 'localidad.title',
+                icon: '📍',
+                route: '/nomencladores/localidad'
+              },
+              {
+                title: 'Moneda',
+                titleKey: 'moneda.title',
+                icon: '💱',
+                route: '/nomencladores/moneda'
+              },
+              {
+                title: 'País',
+                titleKey: 'pais.title',
+                icon: '🌍',
+                route: '/nomencladores/pais'
+              },
+              {
+                title: 'Provincia',
+                titleKey: 'provincia.title',
+                icon: '🗺️',
+                route: '/nomencladores/provincia'
+              },
+              {
+                title: 'Municipio',
+                titleKey: 'municipio.title',
+                icon: '🏘️',
+                route: '/nomencladores/municipio'
+              },
+              {
+                title: 'Código Postal',
+                titleKey: 'codigoPostal.title',
+                icon: '📮',
+                route: '/nomencladores/codigo-postal'
+              }
+            ]
+          },
+
+          // ============================================
+          // 📋 CLASIFICADOR
+          // ============================================
+          {
+            title: 'Clasificador',
+            titleKey: 'sidebar.clasificador',
+            icon: '📋',
+            expanded: false,
+            children: [
+              {
+                title: 'Línea',
+                titleKey: 'linea.title',
+                icon: '📏',
+                route: '/nomencladores/linea'
+              },
+              {
+                title: 'Sublínea',
+                titleKey: 'subLinea.title',
+                icon: '📐',
+                route: '/nomencladores/sublinea'
+              },
+              {
+                title: 'Unidad Medida',
+                titleKey: 'unidadMedida.title',
+                icon: '⚖️',
+                route: '/nomencladores/unidad-medida'
+              }
+            ]
+          },
+
+          // ============================================
+          // 🔄 OPERACIONES
+          // ============================================
+          {
+            title: 'Operaciones',
+            titleKey: 'sidebar.operaciones',
+            icon: '🔄',
+            expanded: false,
+            children: [
+              {
+                title: 'Transacción',
+                titleKey: 'transaccion.title',
+                icon: '💹',
+                route: '/nomencladores/transaccion'
+              },
+              {
+                title: 'Concepto Ajuste',
+                titleKey: 'conceptoAjuste.title',
+                icon: '⚙️',
+                route: '/nomencladores/concepto-ajuste'
+              }
+            ]
+          },
+
+          // ============================================
+          // 📦 PRODUCTO
+          // ============================================
+          {
+            title: 'Producto',
+            titleKey: 'sidebar.producto',
+            icon: '📦',
+            expanded: false,
+            children: [
+              {
+                title: 'Productos',
+                titleKey: 'producto.title',
+                icon: '🏷️',
+                route: '/nomencladores/producto'
+              }
             ]
           }
         ]
       },
+
+      // ============================================
+      // ⚙️ CONFIGURACIÓN
+      // ============================================
       {
         title: 'Configuración',
         titleKey: 'sidebar.configuracion',
         icon: '⚙️',
         expanded: false,
         children: [
-          { title: 'Negocio', titleKey: 'sidebar.negocio', icon: '🏢', route: '/configuracion' },
-          { title: 'Usuarios', titleKey: 'sidebar.usuarios', icon: '👤', route: '/usuarios' },
-          { title: 'Prueba de Conexión', titleKey: 'sidebar.testConnection', icon: '🔌', route: '/test-conexion' }
+          {
+            title: 'Negocio',
+            titleKey: 'sidebar.negocio',
+            icon: '🏢',
+            route: '/configuracion/negocio'  // Actualizado según el routing
+          },
+          {
+            title: 'Usuarios',
+            titleKey: 'sidebar.usuarios',
+            icon: '👥',
+            route: '/configuracion/usuarios'  // Actualizado según el routing
+          },
+          {
+            title: 'Prueba de Conexión',
+            titleKey: 'sidebar.testConnection',
+            icon: '🔌',
+            route: '/configuracion/test-conexion'  // Actualizado según el routing
+          }
         ]
       }
     ];
@@ -93,7 +280,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   getToggleTitle(): string {
-    return this.isCollapsed 
+    return this.isCollapsed
       ? this.translationService.translate('sidebar.expandMenu')
       : this.translationService.translate('sidebar.collapseMenu');
   }

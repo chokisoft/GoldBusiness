@@ -26,9 +26,11 @@ namespace GoldBusiness.Infrastructure.Context
         // 📚 DbSets - TODAS LAS ENTIDADES
         // ═══════════════════════════════════════════════════════════════
 
-        // Plan de Cuentas
+        // Configuración General
         public DbSet<SystemConfiguration> SystemConfiguration { get; set; } = null!;
         public DbSet<SystemConfigurationTranslation> SystemConfigurationTranslation { get; set; } = null!;
+
+        // Plan de Cuentas
         public DbSet<GrupoCuenta> GrupoCuenta { get; set; } = null!;
         public DbSet<GrupoCuentaTranslation> GrupoCuentaTranslation { get; set; } = null!;
         public DbSet<SubGrupoCuenta> SubGrupoCuenta { get; set; } = null!;

@@ -32,7 +32,7 @@
       </div>
       <div class="page-size-selector">
         <label>{{ 'common.show' | translate }}:</label>
-        <select [(ngModel)]="pageSize" (change)="onPageSizeChange()" class="form-control">
+        <select [(ngModel)]="pageSize" (ngModelChange)="onPageSizeChange($event)" class="form-control">
           <option [value]="5">5</option>
           <option [value]="10">10</option>
           <option [value]="25">25</option>

@@ -19,7 +19,7 @@ namespace GoldBusiness.Infrastructure.Repositories
                 .Include(p => p.Pais)
                     .ThenInclude(pais => pais.Translations)
                 .Include(p => p.Translations)
-                .OrderBy(p => p.Descripcion)
+                .OrderBy(p => p.Codigo)
                 .ToListAsync();
 
         public async Task<IEnumerable<Provincia>> GetByPaisIdAsync(int paisId)

@@ -17,7 +17,7 @@ namespace GoldBusiness.Infrastructure.Repositories
             => await _context.Pais
                 .Where(p => !p.Cancelado)
                 .Include(p => p.Translations)
-                .OrderBy(p => p.Descripcion)
+                .OrderBy(p => p.Codigo)
                 .ToListAsync();
 
         public async Task<Pais?> GetByIdAsync(int id)

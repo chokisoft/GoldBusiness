@@ -1,7 +1,7 @@
 <div class="page-container">
   <div class="page-header">
     <div class="header-content">
-      <h1 class="page-title">⚙️ {{ 'systemConfig.title' | translate }}</h1>
+      <h1 class="page-title">🏢 {{ 'systemConfig.title' | translate }}</h1>
       <p class="page-subtitle">{{ 'systemConfig.subtitle' | translate }}</p>
     </div>
     <div class="header-actions">
@@ -32,7 +32,8 @@
       </div>
       <div class="page-size-selector">
         <label>{{ 'common.show' | translate }}:</label>
-        <select [(ngModel)]="pageSize" (change)="onPageSizeChange()" class="form-control">
+        <!-- FIX: usar ngModelChange -->
+        <select [(ngModel)]="pageSize" (ngModelChange)="onPageSizeChange($event)" class="form-control">
           <option [value]="5">5</option>
           <option [value]="10">10</option>
           <option [value]="25">25</option>
@@ -99,8 +100,8 @@
     <div class="card-footer" *ngIf="totalPages > 0">
       <div class="pagination-info">
         {{ 'common.showing' | translate }} 
-        {{ (currentPage - 1) * pageSize + 1 }} - 
-        {{ Math.min(currentPage * pageSize, filteredConfigurations.length) }} 
+        {{ filteredConfigurations.length === 0 ? 0 : startItem }} - 
+        {{ endItem }} 
         {{ 'common.of' | translate }} 
         {{ filteredConfigurations.length }}
       </div>
