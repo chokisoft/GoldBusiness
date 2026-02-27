@@ -1073,7 +1073,21 @@ export class TranslationService {
       'en': 'Retry',
       'fr': 'Réessayer'
     },
-
+    'common.saving': {
+      'es': 'Guardando...',
+      'en': 'Saving...',
+      'fr': 'Enregistrement...'
+    },
+    'common.deleting': {
+      'es': 'Eliminando...',
+      'en': 'Deleting...',
+      'fr': 'Suppression...'
+    },
+    'common.processing': {
+      'es': 'Procesando...',
+      'en': 'Processing...',
+      'fr': 'Traitement...'
+    },
     // ═══════════════════════════════════════════════════════════
     // 📋 COMÚN - Botones y Acciones
     // ═══════════════════════════════════════════════════════════
@@ -1126,11 +1140,6 @@ export class TranslationService {
       'es': 'Cargando...',
       'en': 'Loading...',
       'fr': 'Chargement...'
-    },
-    'common.saving': {
-      'es': 'Guardando...',
-      'en': 'Saving...',
-      'fr': 'Enregistrement...'
     },
     'common.noData': {
       'es': 'No hay datos disponibles',

@@ -101,6 +101,7 @@ import { TransaccionListComponent } from './pages/transaccion/transaccion-list/t
 import { ConceptoAjusteListComponent } from './pages/conceptoAjuste/concepto-ajuste-list/concepto-ajuste-list.component';
 import { ConceptoAjusteFormComponent } from './pages/conceptoAjuste/concepto-ajuste-form/concepto-ajuste-form.component';
 import { ConceptoAjusteDetailComponent } from './pages/conceptoAjuste/concepto-ajuste-detail/concepto-ajuste-detail.component';
+import { LoaderComponent } from './components/loader/loader.component';
 
 @NgModule({
   declarations: [
@@ -109,6 +110,7 @@ import { ConceptoAjusteDetailComponent } from './pages/conceptoAjuste/concepto-a
     LanguageSelectorComponent,
     LoginComponent,
     DashboardComponent,
+    LoaderComponent,
     NavbarComponent,
     SidebarComponent,
     MainLayoutComponent,

@@ -10,10 +10,11 @@
   <!-- Sección de prueba -->
   <div class="test-section">
     <h3>{{ translations.connectionTitle }}</h3>
-    <button (click)="testConnection()"
-            [disabled]="isLoading"
-            class="btn-primary">
-      {{ isLoading ? translations.testing : translations.testButton }}
+    <button (click)="testConnection()" [disabled]="isLoading" class="btn-primary">
+      <span *ngIf="!isLoading">{{ translations.testButton }}</span>
+      <span *ngIf="isLoading">
+        <app-loader [message]="translations.testing" [size]="14" [inline]="true" [color]="'#fff'"></app-loader>
+      </span>
     </button>
   </div>
 

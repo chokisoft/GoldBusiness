@@ -1,0 +1,266 @@
+/* Loader principal con efectos modernos */
+:host {
+  display: block;
+}
+
+.loader-root {
+  --loader-primary: #2563eb;
+  --loader-light: #f0f9ff;
+  --loader-dark: #1e293b;
+  --loader-text: #334155;
+  --loader-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
+  --loader-glow: 0 0 20px rgba(37, 99, 235, 0.3);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+}
+
+  /* Modo inline para botones y espacios pequeños */
+  .loader-root.inline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    vertical-align: middle;
+    background: transparent;
+  }
+
+  /* Modo centrado para pantallas completas */
+  .loader-root.centered {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(8px);
+    border-radius: 16px;
+    box-shadow: var(--loader-shadow);
+  }
+
+  /* Loader con overlay para contenido */
+  .loader-root.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    border-radius: inherit;
+  }
+
+/* Contenedor del spinner con animación suave */
+.loader-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 24px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: var(--loader-shadow);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.loader-root.inline .loader-content {
+  flex-direction: row;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* Spinner principal con diseño moderno */
+.spinner {
+  position: relative;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent, var(--loader-primary));
+  mask: radial-gradient(circle at center, transparent 65%, black 66%);
+  -webkit-mask: radial-gradient(circle at center, transparent 65%, black 66%);
+  animation: spin 1s cubic-bezier(0.4, 0.0, 0.2, 1) infinite;
+}
+
+  .spinner::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    right: 2px;
+    bottom: 2px;
+    border-radius: 50%;
+    background: white;
+    z-index: 1;
+  }
+
+/* Spinner para modo inline */
+.loader-root.inline .spinner {
+  background: conic-gradient(from 0deg, transparent, currentColor);
+}
+
+  .loader-root.inline .spinner::before {
+    background: transparent;
+  }
+
+/* Efecto de pulso para el loader */
+.pulse {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--loader-primary);
+  opacity: 0.2;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Mensaje con tipografía elegante */
+.message {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--loader-text);
+  letter-spacing: 0.025em;
+  line-height: 1.5;
+  margin: 0;
+  animation: slideUp 0.3s ease-out;
+}
+
+.loader-root.inline .message {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--loader-dark);
+}
+
+/* Indicador de progreso para operaciones largas */
+.progress-dots {
+  display: flex;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+  .progress-dots span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--loader-primary);
+    animation: bounce 1.4s infinite ease-in-out both;
+  }
+
+    .progress-dots span:nth-child(1) {
+      animation-delay: -0.32s;
+    }
+
+    .progress-dots span:nth-child(2) {
+      animation-delay: -0.16s;
+    }
+
+/* Variante minimalista para modales */
+.loader-root.minimal {
+  background: transparent;
+  backdrop-filter: none;
+}
+
+  .loader-root.minimal .loader-content {
+    background: transparent;
+    box-shadow: none;
+    padding: 12px;
+  }
+
+/* Animaciones */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.2;
+  }
+
+  50% {
+    transform: scale(1.5);
+    opacity: 0.1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounce {
+  0%, 80%, 100% {
+    transform: scale(0);
+  }
+
+  40% {
+    transform: scale(1.0);
+  }
+}
+
+/* Estados de carga específicos */
+.loader-root.saving .spinner {
+  background: conic-gradient(from 0deg, transparent, #10b981);
+}
+
+.loader-root.deleting .spinner {
+  background: conic-gradient(from 0deg, transparent, #ef4444);
+}
+
+.loader-root.loading .spinner {
+  background: conic-gradient(from 0deg, transparent, #3b82f6);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .loader-root.centered {
+    min-height: 150px;
+  }
+
+  .loader-content {
+    padding: 16px;
+  }
+
+  .message {
+    font-size: 0.875rem;
+  }
+}
+
+/* Soporte para modo oscuro */
+@media (prefers-color-scheme: dark) {
+  .loader-root.centered {
+    background: rgba(15, 23, 42, 0.8);
+  }
+
+  .loader-content {
+    background: #1e293b;
+  }
+
+  .message {
+    color: #e2e8f0;
+  }
+
+  .loader-root.inline .message {
+    color: #f1f5f9;
+  }
+}

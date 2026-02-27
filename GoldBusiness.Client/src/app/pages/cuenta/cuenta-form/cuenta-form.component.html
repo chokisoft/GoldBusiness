@@ -38,7 +38,7 @@
               {{ subgrupo.codigo }} - {{ subgrupo.descripcion }}
             </option>
           </select>
-          <small class="form-text" *ngIf="loadingSubGrupos">⏳ Cargando subgrupos...</small>
+          <small class="form-text" *ngIf="loadingSubGrupos">⏳ {{ 'common.loading' | translate }}...</small>
           <div class="invalid-feedback" *ngIf="form.get('subGrupoCuentaId')?.invalid && form.get('subGrupoCuentaId')?.touched">
             Este campo es requerido
           </div>

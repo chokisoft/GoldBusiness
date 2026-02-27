@@ -86,9 +86,8 @@
               class="btn-login"
               [disabled]="isLoading">
         <span *ngIf="!isLoading">{{ translations.submit }}</span>
-        <span *ngIf="isLoading" class="loading">
-          <span class="spinner"></span>
-          {{ translations.loading }}
+        <span *ngIf="isLoading">
+          <app-loader [translateKey]="'login.loading'" [size]="18" [color]="'#fff'" [inline]="true"></app-loader>
         </span>
       </button>
 

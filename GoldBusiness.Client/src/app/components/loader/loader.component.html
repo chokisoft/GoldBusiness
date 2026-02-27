@@ -1,0 +1,26 @@
+<div class="loader-root"
+     [class.centered]="center && !inline"
+     [class.inline]="inline"
+     [class.overlay]="overlay"
+     [class.minimal]="minimal"
+     [class.saving]="type === 'saving'"
+     [class.deleting]="type === 'deleting'"
+     [class.loading]="type === 'loading' || !type"
+     [style.--loader-primary]="color">
+
+  <div class="loader-content">
+    <div class="spinner-container" [style.width.px]="size * 2" [style.height.px]="size * 2">
+      <div class="pulse" *ngIf="showPulse"></div>
+      <div class="spinner" [ngStyle]="spinnerStyle"></div>
+    </div>
+
+    <div class="message-container" *ngIf="displayedMessage">
+      <p class="message">{{ displayedMessage }}</p>
+      <div class="progress-dots" *ngIf="showProgress">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </div>
+</div>

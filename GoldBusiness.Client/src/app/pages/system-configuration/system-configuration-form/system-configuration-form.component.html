@@ -200,7 +200,9 @@
                 {{ cuenta.codigo }} - {{ cuenta.descripcion }}
               </option>
             </select>
-            <small class="form-text" *ngIf="loadingCuentas">⏳ {{ 'common.loading' | translate }}...</small>
+            <small class="form-text" *ngIf="loadingCuentas">⏳ {{ 'common.loading' | translate }}...
+              <app-loader [translateKey]="'common.loading'" [size]="14" [inline]="true"></app-loader>
+            </small>
             <div class="invalid-feedback" *ngIf="form.get('cuentaPagarId')?.invalid && form.get('cuentaPagarId')?.touched">
               {{ getErrorMessage('cuentaPagarId') }}
             </div>
@@ -229,7 +231,9 @@
         </button>
         <button type="submit" class="btn btn-primary" [disabled]="loading || form.invalid || loadingCuentas">
           <span *ngIf="!loading">💾 {{ 'common.save' | translate }}</span>
-          <span *ngIf="loading">⏳ {{ 'common.saving' | translate }}</span>
+          <span *ngIf="loading">
+            <app-loader [translateKey]="'common.saving'" [size]="14" [inline]="true" [color]="'#fff'"></app-loader>
+          </span>
         </button>
       </div>
     </form>
