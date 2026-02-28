@@ -1,5 +1,5 @@
 <div class="language-selector">
-  <label for="language-select">{{ label }}</label>
+  <label for="language-select" class="sr-only">{{ label }}</label>
   <select id="language-select"
           [(ngModel)]="selectedLanguageCode"
           (ngModelChange)="changeLanguage($event)"

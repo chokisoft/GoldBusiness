@@ -12,8 +12,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
   currentUser$: Observable<CurrentUser | null>;
   private languageSubscription?: Subscription;
 
-  // Traducciones dinámicas
+  // Traducciones dinámicas (agregada la propiedad subtitle)
   translations = {
+    title: '',
+    subtitle: '',
     inicio: '',
     acerca: '',
     logout: '',
@@ -43,6 +45,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   private loadTranslations(): void {
     this.translations = {
+      title: this.translationService.translate('login.title'),
+      subtitle: this.translationService.translate('login.subtitle'),
       inicio: this.translationService.translate('header.inicio'),
       acerca: this.translationService.translate('header.acerca'),
       logout: this.translationService.translate('header.logout'),

@@ -20,9 +20,9 @@ export class TranslationService {
     // 🔐 LOGIN
     // ═══════════════════════════════════════════════════════════
     'login.title': {
-      'es': 'GoldBusiness ERP',
-      'en': 'GoldBusiness ERP',
-      'fr': 'GoldBusiness ERP'
+      'es': 'GoldBusiness',
+      'en': 'GoldBusiness',
+      'fr': 'GoldBusiness'
     },
     'login.subtitle': {
       'es': 'Sistema de Gestión Empresarial',

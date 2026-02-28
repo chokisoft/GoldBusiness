@@ -1,32 +1,64 @@
 .language-selector {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px;
+  gap: 8px;
+  padding: 4px;
+  position: relative;
+  z-index: 10000; /* asegurar por encima de navbar-menu */
 }
 
-  .language-selector label {
-    font-weight: bold;
-    color: #333;
-  }
+/* Etiqueta accesible pero oculta visualmente */
+.sr-only {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
 
+/* Select: fondo blanco y texto oscuro para máxima legibilidad */
 .language-dropdown {
-  padding: 8px 12px;
-  border: 2px solid #007bff;
-  border-radius: 5px;
-  background-color: white;
-  font-size: 14px;
+  appearance: menulist;
+  -webkit-appearance: menulist;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background-color: #ffffff; /* blanco solicitado */
+  color: #222222; /* texto oscuro legible */
+  font-size: 13px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  position: relative;
+  z-index: 10001; /* prioridad visual sobre elementos adyacentes */
+  min-width: 120px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
-  .language-dropdown:hover {
-    border-color: #0056b3;
-    background-color: #f0f8ff;
-  }
+/* Asegurar que las opciones del select sean legibles */
+.language-dropdown option {
+  background-color: #ffffff;
+  color: #222222;
+}
 
-  .language-dropdown:focus {
-    outline: none;
-    border-color: #0056b3;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+/* Hover / focus legible */
+.language-dropdown:hover,
+.language-dropdown:focus {
+  border-color: rgba(0, 0, 0, 0.28);
+  outline: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+/* Ajustes responsivos */
+@media (max-width: 992px) {
+  .language-selector {
+    gap: 6px;
+    padding: 2px;
   }
+  .language-dropdown {
+    font-size: 12px;
+    min-width: 100px;
+  }
+}

@@ -3,8 +3,11 @@
     <!-- Logo/Marca -->
     <div class="navbar-brand">
       <a routerLink="/" class="brand-link">
-        <span class="brand-icon">💼</span>
-        <span class="brand-name">GoldBusiness ERP</span>
+        <img src="/assets/logo.png" alt="{{ translations.title }}" class="brand-image" />
+        <div class="brand-text">
+          <span class="brand-name">{{ translations.title }}</span>
+          <span class="subtitle">{{ translations.subtitle }}</span>
+        </div>
       </a>
     </div>
 
@@ -24,10 +27,8 @@
 
     <!-- Usuario y acciones -->
     <div class="navbar-user">
-      <!-- Selector de idioma -->
       <app-language-selector></app-language-selector>
 
-      <!-- Usuario actual -->
       <div class="user-info" *ngIf="currentUser$ | async as user">
         <span class="user-icon">👤</span>
         <div class="user-details">
@@ -38,7 +39,6 @@
         </div>
       </div>
 
-      <!-- Botón de logout -->
       <button class="btn-logout"
               (click)="logout()"
               [title]="translations.logout">

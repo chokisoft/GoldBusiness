@@ -45,12 +45,22 @@
   margin-bottom: 40px;
 }
 
+/* Contenedor del logo — ahora contiene una imagen */
 .logo {
-  font-size: 60px;
+  display: flex;
+  justify-content: center;
   margin-bottom: 15px;
-  animation: bounce 2s ease infinite;
 }
 
+/* Imagen del logo */
+.logo-image {
+  width: 100px;
+  height: auto;
+  animation: bounce 2s ease infinite;
+  display: block;
+}
+
+/* Efecto bounce (se aplica ahora a la imagen) */
 @keyframes bounce {
   0%, 100% {
     transform: translateY(0);
@@ -358,8 +368,8 @@ input {
     font-size: 24px;
   }
 
-  .logo {
-    font-size: 50px;
+  .logo-image {
+    width: 80px;
   }
 
   .btn-login {
