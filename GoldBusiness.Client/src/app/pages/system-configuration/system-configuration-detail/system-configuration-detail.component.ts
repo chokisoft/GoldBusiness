@@ -80,11 +80,13 @@ export class SystemConfigurationDetailComponent implements OnInit, OnDestroy {
   }
 
   goToEdit(): void {
-    if (this.id) this.router.navigate(['/configuracion/editar', this.id]);
+    // corrected path: use 'negocio' segment that matches app-routing.module.ts
+    if (this.id) this.router.navigate(['/configuracion/negocio/editar', this.id]);
   }
 
   goBack(): void {
-    this.router.navigate(['/configuracion']);
+    // corrected path: list route is '/configuracion/negocio'
+    this.router.navigate(['/configuracion/negocio']);
   }
 
   getEstadoBadgeClass(): string {

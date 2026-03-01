@@ -717,7 +717,7 @@ namespace GoldBusiness.Infrastructure.Data
                 "CHK",
                 "uxi/LeQnoZmyHjpkrS2J7RgiO6dKhwdapmg5r7TuwpnDzq2FPwwOWbLwRU6zUcRME2XktTsXkNmonkrYHFFPzg==",
                 "CHOKISOFT SOLUCIONES TECNOLÓGICAS",
-                "CALLE 172 #17830 E/ 180 y 182, REPARTO 1ERO DE MAYO",
+                "CALLE 172 #17830 E/ 180 y 182, REPARTO 1RO DE MAYO",
                 firstPaisId,
                 firstProvinciaId,
                 firstMunicipioId,

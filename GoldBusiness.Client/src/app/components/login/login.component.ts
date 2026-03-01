@@ -24,6 +24,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   translations = {
     title: '',
     subtitle: '',
+    formTitle: '',      // << nuevo
+    formSubtitle: '',   // << nuevo
     username: '',
     password: '',
     usernamePlaceholder: '',
@@ -98,6 +100,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.translations = {
       title: this.translationService.translate('login.title'),
       subtitle: this.translationService.translate('login.subtitle'),
+      formTitle: this.translationService.translate('login.formTitle'),       // << nuevo
+      formSubtitle: this.translationService.translate('login.formSubtitle'), // << nuevo
       username: this.translationService.translate('login.username'),
       password: this.translationService.translate('login.password'),
       usernamePlaceholder: this.translationService.translate('login.usernamePlaceholder'),

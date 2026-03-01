@@ -75,16 +75,20 @@ export class SystemConfigurationService {
     return this.apiService.delete<void>(`${this.endpoint}/${id}`);
   }
 
-  // Métodos para selects dependientes (NO usar barra inicial)
+  // Métodos para selects dependientes (rutas coherentes con WebApi controllers)
   getPaises(): Observable<Pais[]> {
     return this.apiService.get<Pais[]>('pais');
   }
+
+  // Corregido: coincide con ProvinciaController -> GET api/provincia/pais/{paisId}
   getProvinciasByPais(paisId: number): Observable<Provincia[]> {
-    return this.apiService.get<Provincia[]>(`provincia/by-pais/${paisId}`);
+    return this.apiService.get<Provincia[]>(`provincia/pais/${paisId}`);
   }
+
   getMunicipiosByProvincia(provinciaId: number): Observable<Municipio[]> {
     return this.apiService.get<Municipio[]>(`municipio/by-provincia/${provinciaId}`);
   }
+
   getCodigosPostalesByMunicipio(municipioId: number): Observable<CodigoPostal[]> {
     return this.apiService.get<CodigoPostal[]>(`codigopostal/by-municipio/${municipioId}`);
   }
@@ -102,12 +106,9 @@ export class SystemConfigurationService {
 
   /**
    * Devuelve la URL completa del logo para usar en [src] de <img>.
-   * Depende de que `ApiService` exponga un `buildUrl` o similar; si no existe,
-   * reemplaza la implementación por la construcción manual de la URL.
    */
   getLogoUrl(fileName: string): string {
     if (!fileName) return '';
-    // Si el filename ya es una URL absoluta, devolverla tal cual (evita /logo/http://... errores)
     if (fileName.startsWith('http://') || fileName.startsWith('https://')) {
       return fileName;
     }

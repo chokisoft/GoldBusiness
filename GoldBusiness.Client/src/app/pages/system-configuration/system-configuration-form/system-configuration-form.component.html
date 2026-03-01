@@ -81,33 +81,38 @@
           </div>
           <div class="form-group">
             <label for="provinciaId" class="form-label">{{ 'systemConfig.provincia' | translate }} *</label>
-            <!-- [disabled] eliminado: estado se controla desde el componente -->
-            <select id="provinciaId" formControlName="provinciaId" class="form-control">
+            <select id="provinciaId" formControlName="provinciaId" class="form-control"
+                    [disabled]="loadingProvincias || (form.get('provinciaId')?.disabled ?? false)">
               <option [ngValue]="null">{{ 'common.select' | translate }}</option>
               <option *ngFor="let provincia of provincias" [ngValue]="provincia.id">
                 {{ provincia.descripcion || provincia.nombre }}
               </option>
             </select>
+            <small *ngIf="loadingProvincias">⏳ {{ 'common.loading' | translate }}...</small>
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
             <label for="municipioId" class="form-label">{{ 'systemConfig.municipio' | translate }} *</label>
-            <select id="municipioId" formControlName="municipioId" class="form-control">
+            <select id="municipioId" formControlName="municipioId" class="form-control"
+                    [disabled]="loadingMunicipios || (form.get('municipioId')?.disabled ?? false)">
               <option [ngValue]="null">{{ 'common.select' | translate }}</option>
               <option *ngFor="let municipio of municipios" [ngValue]="municipio.id">
                 {{ municipio.descripcion || municipio.nombre }}
               </option>
             </select>
+            <small *ngIf="loadingMunicipios">⏳ {{ 'common.loading' | translate }}...</small>
           </div>
           <div class="form-group">
             <label for="codigoPostalId" class="form-label">{{ 'systemConfig.codigoPostal' | translate }} *</label>
-            <select id="codigoPostalId" formControlName="codigoPostalId" class="form-control">
+            <select id="codigoPostalId" formControlName="codigoPostalId" class="form-control"
+                    [disabled]="loadingCodigosPostales || (form.get('codigoPostalId')?.disabled ?? false)">
               <option [ngValue]="null">{{ 'common.select' | translate }}</option>
               <option *ngFor="let codigo of codigosPostales" [ngValue]="codigo.id">
                 {{ codigo.codigo }}
               </option>
             </select>
+            <small *ngIf="loadingCodigosPostales">⏳ {{ 'common.loading' | translate }}...</small>
           </div>
         </div>
 
@@ -149,39 +154,29 @@
           </div>
         </div>
 
-        <!-- ✅ BOTÓN PERSONALIZADO TRADUCIBLE -->
+        <!-- Input de logo oculto -->
         <div class="form-group" style="margin-top: 0.75rem;">
           <label for="logoFile" class="form-label">{{ 'systemConfig.logoSelectFile' | translate }}</label>
-
-          <!-- Input oculto -->
           <input type="file"
                  #fileInput
                  id="logoFile"
                  accept=".png,.jpg,.jpeg,.gif,.webp"
                  (change)="onLogoSelected($event)"
                  style="display: none;" />
-
-          <!-- Botón visible y traducible -->
-          <button type="button"
-                  class="btn btn-file-upload"
-                  (click)="fileInput.click()">
+          <button type="button" class="btn btn-file-upload" (click)="fileInput.click()">
             📁 {{ 'systemConfig.logoChooseFile' | translate }}
           </button>
-
           <small class="form-text">{{ 'systemConfig.logoFormatHint' | translate }}</small>
         </div>
 
-        <!-- Nombre del logo actual (guardado en BD) -->
         <div *ngIf="form.get('imagen')?.value && !selectedLogoFile" class="current-logo-name">
           <span class="file-icon">📎</span>
           <span class="file-name">{{ form.get('imagen')?.value }}</span>
-          <button type="button" class="btn btn-sm btn-danger"
-                  (click)="removeLogo()">
+          <button type="button" class="btn btn-sm btn-danger" (click)="removeLogo()">
             ✕ {{ 'systemConfig.logoRemove' | translate }}
           </button>
         </div>
 
-        <!-- Campo oculto que almacena el nombre del archivo -->
         <input type="hidden" formControlName="imagen" />
       </div>
 
@@ -192,7 +187,6 @@
         <div class="form-group-cuentas">
           <div class="form-group">
             <label for="cuentaPagarId" class="form-label">{{ 'systemConfig.cuentaPagar' | translate }} *</label>
-            <!-- [disabled] eliminado: estado se controla desde el componente -->
             <select id="cuentaPagarId" formControlName="cuentaPagarId" class="form-control"
                     [class.is-invalid]="form.get('cuentaPagarId')?.invalid && form.get('cuentaPagarId')?.touched">
               <option [ngValue]="null">{{ 'common.select' | translate }}</option>
@@ -200,7 +194,8 @@
                 {{ cuenta.codigo }} - {{ cuenta.descripcion }}
               </option>
             </select>
-            <small class="form-text" *ngIf="loadingCuentas">⏳ {{ 'common.loading' | translate }}...
+            <small class="form-text" *ngIf="loadingCuentas">
+              ⏳ {{ 'common.loading' | translate }}...
               <app-loader [translateKey]="'common.loading'" [size]="14" [inline]="true"></app-loader>
             </small>
             <div class="invalid-feedback" *ngIf="form.get('cuentaPagarId')?.invalid && form.get('cuentaPagarId')?.touched">

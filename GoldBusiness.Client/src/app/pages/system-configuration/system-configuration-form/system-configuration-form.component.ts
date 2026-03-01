@@ -29,6 +29,11 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
   municipios: Municipio[] = [];
   codigosPostales: CodigoPostal[] = [];
 
+  // Flags de carga para mostrar estado en UI
+  loadingProvincias = false;
+  loadingMunicipios = false;
+  loadingCodigosPostales = false;
+
   private languageSubscription?: Subscription;
   private paisSub?: Subscription;
   private provinciaSub?: Subscription;
@@ -103,6 +108,7 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
 
     // Cuando cambia el país habilitamos/deshabilitamos y cargamos provincias
     this.paisSub = this.form.get('paisId')?.valueChanges.subscribe((paisId: number) => {
+      console.debug('paisId changed ->', paisId);
       const provControl = this.form.get('provinciaId');
       // limpiar dependientes
       this.provincias = [];
@@ -120,6 +126,7 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
 
     // Cuando cambia la provincia habilitamos/deshabilitamos y cargamos municipios
     this.provinciaSub = this.form.get('provinciaId')?.valueChanges.subscribe((provinciaId: number) => {
+      console.debug('provinciaId changed ->', provinciaId);
       const munControl = this.form.get('municipioId');
       this.municipios = [];
       this.codigosPostales = [];
@@ -135,6 +142,7 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
 
     // Cuando cambia el municipio habilitamos/deshabilitamos y cargamos códigos postales
     this.municipioSub = this.form.get('municipioId')?.valueChanges.subscribe((municipioId: number) => {
+      console.debug('municipioId changed ->', municipioId);
       const cpControl = this.form.get('codigoPostalId');
       this.codigosPostales = [];
       this.form.patchValue({ codigoPostalId: null }, { emitEvent: false });
@@ -155,47 +163,46 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Handlers ahora aceptan Event o number. Extraen valor de forma segura.
-  onPaisChange(eventOrId: Event | number): void {
-    // La lógica de habilitar/cargar ahora la maneja valueChanges; aquí sólo aseguramos que el form reciba el valor
-    const paisId = this.extractId(eventOrId);
-    this.form.patchValue({ paisId }, { emitEvent: true });
-  }
-
   loadProvincias(paisId: number): void {
+    this.loadingProvincias = true;
     this.systemConfigurationService.getProvinciasByPais(paisId).subscribe({
-      next: (data) => this.provincias = data,
-      error: () => this.error = 'Error al cargar provincias'
+      next: (data) => {
+        this.provincias = data;
+        this.loadingProvincias = false;
+      },
+      error: () => {
+        this.loadingProvincias = false;
+        this.error = 'Error al cargar provincias';
+      }
     });
-  }
-
-  onProvinciaChange(eventOrId: Event | number): void {
-    const provinciaId = this.extractId(eventOrId);
-    this.form.patchValue({ provinciaId }, { emitEvent: true });
   }
 
   loadMunicipios(provinciaId: number): void {
+    this.loadingMunicipios = true;
     this.systemConfigurationService.getMunicipiosByProvincia(provinciaId).subscribe({
-      next: (data) => this.municipios = data,
-      error: () => this.error = 'Error al cargar municipios'
+      next: (data) => {
+        this.municipios = data;
+        this.loadingMunicipios = false;
+      },
+      error: () => {
+        this.loadingMunicipios = false;
+        this.error = 'Error al cargar municipios';
+      }
     });
-  }
-
-  onMunicipioChange(eventOrId: Event | number): void {
-    const municipioId = this.extractId(eventOrId);
-    this.form.patchValue({ municipioId }, { emitEvent: true });
   }
 
   loadCodigosPostales(municipioId: number): void {
+    this.loadingCodigosPostales = true;
     this.systemConfigurationService.getCodigosPostalesByMunicipio(municipioId).subscribe({
-      next: (data) => this.codigosPostales = data,
-      error: () => this.error = 'Error al cargar códigos postales'
+      next: (data) => {
+        this.codigosPostales = data;
+        this.loadingCodigosPostales = false;
+      },
+      error: () => {
+        this.loadingCodigosPostales = false;
+        this.error = 'Error al cargar códigos postales';
+      }
     });
-  }
-
-  onCodigoPostalChange(eventOrId: Event | number): void {
-    const codigoPostalId = this.extractId(eventOrId);
-    this.form.patchValue({ codigoPostalId }, { emitEvent: true });
   }
 
   private extractId(eventOrId: Event | number): number {
@@ -211,13 +218,11 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
       next: (data) => {
         this.cuentas = data.filter(c => !c.cancelado);
         this.loadingCuentas = false;
-        // Habilitar selects de cuentas cuando ya se cargaron
         this.form.get('cuentaPagarId')?.enable({ emitEvent: false });
         this.form.get('cuentaCobrarId')?.enable({ emitEvent: false });
       },
       error: () => {
         this.loadingCuentas = false;
-        // Habilitar para que el usuario pueda interactuar aunque la carga falló
         this.form.get('cuentaPagarId')?.enable({ emitEvent: false });
         this.form.get('cuentaCobrarId')?.enable({ emitEvent: false });
       }
@@ -229,12 +234,10 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.systemConfigurationService.getById(this.configId).subscribe({
       next: (data) => {
-        // Format date for <input type="date"> (yyyy-MM-dd)
         const formattedCaducidad = data.caducidad
           ? new Date(data.caducidad).toISOString().substring(0, 10)
           : '';
 
-        // Patch basic fields (without dependent selects IDs yet)
         this.form.patchValue({
           codigoSistema: data.codigoSistema,
           licencia: data.licencia,
@@ -249,17 +252,16 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
           caducidad: formattedCaducidad
         }, { emitEvent: false });
 
-        // Load dependent selects sequentially so selected IDs exist in options
         const paisId = data.paisId;
         const provinciaId = data.provinciaId;
         const municipioId = data.municipioId;
         const codigoPostalId = data.codigoPostalId;
 
+        // Cargar dependientes secuencialmente y establecer valores sin disparar eventos
         if (paisId) {
           this.systemConfigurationService.getProvinciasByPais(paisId).subscribe({
             next: (provs) => {
               this.provincias = provs;
-              // habilitar control y establecer valor sin disparar eventos
               this.form.get('provinciaId')?.enable({ emitEvent: false });
               this.form.patchValue({ paisId: paisId }, { emitEvent: false });
 
@@ -277,31 +279,22 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
                           this.form.get('codigoPostalId')?.enable({ emitEvent: false });
                           this.form.patchValue({ municipioId: municipioId, codigoPostalId: codigoPostalId }, { emitEvent: false });
                         },
-                        error: () => {
-                          // no bloquear en caso de fallo, sólo informar
-                          console.warn('Error cargando códigos postales');
-                        }
+                        error: () => console.warn('Error cargando códigos postales')
                       });
                     }
                   },
-                  error: () => {
-                    console.warn('Error cargando municipios');
-                  }
+                  error: () => console.warn('Error cargando municipios')
                 });
               }
             },
-            error: () => {
-              console.warn('Error cargando provincias');
-            }
+            error: () => console.warn('Error cargando provincias')
           });
         }
 
-        // Preview logo si aplica (getLogoUrl maneja urls absolutas)
         if (data.imagen) {
           this.logoPreviewUrl = this.systemConfigurationService.getLogoUrl(data.imagen);
         }
 
-        // disable codigoSistema in edit mode
         if (this.isEditMode) this.form.get('codigoSistema')?.disable();
 
         this.loading = false;
@@ -373,7 +366,7 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
     const dto: SystemConfigurationDTO = this.form.getRawValue();
     if (this.isEditMode) {
       this.systemConfigurationService.update(this.configId!, dto).subscribe({
-        next: () => this.router.navigate(['/configuracion']),
+        next: () => this.router.navigate(['/configuracion/negocio']),
         error: () => {
           this.error = 'Error al guardar configuración';
           this.loading = false;
@@ -381,7 +374,7 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
       });
     } else {
       this.systemConfigurationService.create(dto).subscribe({
-        next: () => this.router.navigate(['/configuracion']),
+        next: () => this.router.navigate(['/configuracion/negocio']),
         error: () => {
           this.error = 'Error al guardar configuración';
           this.loading = false;
@@ -390,7 +383,7 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  cancel(): void { this.router.navigate(['/configuracion']); }
+  cancel(): void { this.router.navigate(['/configuracion/negocio']); }
 
   getErrorMessage(fieldName: string): string {
     const control = this.form.get(fieldName);

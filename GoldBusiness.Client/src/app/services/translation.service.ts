@@ -19,6 +19,16 @@ export class TranslationService {
     // ═══════════════════════════════════════════════════════════
     // 🔐 LOGIN
     // ═══════════════════════════════════════════════════════════
+    'login.formTitle': {
+      'es': 'Acceso al sistema',
+      'en': 'System Access',
+      'fr': 'Accès au système'
+    },
+    'login.formSubtitle': {
+      'es': 'Ingrese sus credenciales',
+      'en': 'Enter your credentials',
+      'fr': 'Entrez vos identifiants'
+    },
     'login.title': {
       'es': 'GoldBusiness',
       'en': 'GoldBusiness',
@@ -80,11 +90,10 @@ export class TranslationService {
       'fr': 'Nom d\'utilisateur ou mot de passe incorrect. Veuillez réessayer.'
     },
     'login.footer': {
-      'es': '© 2026 Chokisoft - GoldBusiness ERP',
-      'en': '© 2026 Chokisoft - GoldBusiness ERP',
-      'fr': '© 2026 Chokisoft - GoldBusiness ERP'
+      'es': '\u00A9 {0} Chokisoft Soluciones Tecnológicas',
+      'en': '\u00A9 {0} Chokisoft Technology Solutions',
+      'fr': '\u00A9 {0} Chokisoft Solutions Technologiques'
     },
-
     // ═══════════════════════════════════════════════════════════
     // 🧪 TEST CONNECTION
     // ═══════════════════════════════════════════════════════════
@@ -1537,7 +1546,12 @@ export class TranslationService {
       'en': 'Province',
       'fr': 'Province'
     },
-    'systemConfig.codPostal': {
+    'systemConfig.pais': {
+      'es': 'País',
+      'en': 'Country',
+      'fr': 'Pays'
+    },
+    'systemConfig.codigoPostal': {
       'es': 'Código Postal',
       'en': 'Postal Code',
       'fr': 'Code Postal'
@@ -1803,10 +1817,15 @@ export class TranslationService {
     const currentLang = this.languageService.getCurrentLanguage();
     const translation = this.translations[key]?.[currentLang] || key;
 
+    // If requesting login.footer and no params provided, inject current year automatically
+    if (key === 'login.footer' && (!params || params.length === 0)) {
+      params = [new Date().getFullYear()];
+    }
+
     // Reemplazar parámetros si existen (ej: {0}, {1})
     if (params.length > 0) {
       return translation.replace(/{(\d+)}/g, (match, index) => {
-        return params[index] !== undefined ? params[index] : match;
+        return params[index] !== undefined ? String(params[index]) : match;
       });
     }
 

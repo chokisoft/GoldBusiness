@@ -1,112 +1,103 @@
 <div class="login-container">
-  <div class="login-card">
-    <!-- Logo y título -->
-    <div class="login-header">
-      <div class="logo">
-        <img src="\assets\logo.png" alt="{{ translations.title }}" class="logo-image" />
-      </div>
-      <h1>{{ translations.title }}</h1>
-      <p class="subtitle">{{ translations.subtitle }}</p>
-    </div>
+  <div class="login-card" role="dialog" aria-labelledby="loginTitle" aria-describedby="loginSubtitle">
+    <!-- Panel lateral con marca -->
+    <aside class="login-aside" aria-hidden="false">
+      <div class="aside-content">
+        <div class="logo">
+          <img src="assets/logo.png" alt="{{ translations.title }}" class="logo-image" />
+        </div>
+        <h1 id="loginTitle">{{ translations.title }}</h1>
+        <p id="loginSubtitle" class="aside-subtitle">{{ translations.subtitle }}</p>
 
-    <!-- Formulario de login -->
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
-
-      <!-- Campo de usuario -->
-      <div class="form-group">
-        <label for="username">
-          <span class="icon">👤</span>
-          {{ translations.username }}
-        </label>
-        <input type="text"
-               id="username"
-               formControlName="username"
-               [placeholder]="translations.usernamePlaceholder"
-               [class.error]="f['username'].invalid && f['username'].touched"
-               autocomplete="username"
-               autofocus>
-
-        <!-- Mensajes de error -->
-        <div class="error-message" *ngIf="f['username'].invalid && f['username'].touched">
-          <span *ngIf="f['username'].errors?.['required']">
-            {{ translations.usernameRequired }}
-          </span>
-          <span *ngIf="f['username'].errors?.['minlength']">
-            {{ translations.usernameMinLength }}
-          </span>
+        <div class="aside-info">
+          <p>{{ translations.footer }}</p>
         </div>
       </div>
+      <div class="aside-decor" aria-hidden="true"></div>
+    </aside>
 
-      <!-- Campo de contraseña -->
-      <div class="form-group">
-        <label for="password">
-          <span class="icon">🔒</span>
-          {{ translations.password }}
-        </label>
-        <div class="password-container">
-          <input [type]="showPassword ? 'text' : 'password'"
-                 id="password"
-                 formControlName="password"
-                 [placeholder]="translations.passwordPlaceholder"
-                 [class.error]="f['password'].invalid && f['password'].touched"
-                 autocomplete="current-password">
-
-          <!-- Botón para mostrar/ocultar contraseña -->
-          <button type="button"
-                  class="toggle-password"
-                  (click)="togglePasswordVisibility()"
-                  [attr.aria-label]="showPassword ? translations.hidePassword : translations.showPassword"
-                  [title]="showPassword ? translations.hidePassword : translations.showPassword">
-            {{ showPassword ? '🙈' : '👁️' }}
-          </button>
+    <!-- Zona del formulario -->
+    <main class="login-main">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form" novalidate>
+        <!-- Header del formulario: ahora localizable -->
+        <div class="form-header" role="region" aria-labelledby="formHeaderTitle">
+          <h2 id="formHeaderTitle">{{ translations.formTitle }}</h2>
+          <p class="form-subtitle">{{ translations.formSubtitle }}</p>
         </div>
 
-        <!-- Mensajes de error -->
-        <div class="error-message" *ngIf="f['password'].invalid && f['password'].touched">
-          <span *ngIf="f['password'].errors?.['required']">
-            {{ translations.passwordRequired }}
-          </span>
-          <span *ngIf="f['password'].errors?.['minlength']">
-            {{ translations.passwordMinLength }}
-          </span>
+        <!-- Usuario -->
+        <div class="form-group">
+          <label for="username">
+            <span class="icon" aria-hidden="true">👤</span>
+            {{ translations.username }}
+          </label>
+          <input type="text"
+                 id="username"
+                 formControlName="username"
+                 [placeholder]="translations.usernamePlaceholder"
+                 [class.error]="f['username'].invalid && f['username'].touched"
+                 autocomplete="username"
+                 autofocus
+                 aria-required="true"
+                 [attr.aria-invalid]="(f['username'].invalid && f['username'].touched) ? 'true' : null">
+          <div class="error-message" *ngIf="f['username'].invalid && f['username'].touched">
+            <span *ngIf="f['username'].errors?.['required']">{{ translations.usernameRequired }}</span>
+            <span *ngIf="f['username'].errors?.['minlength']">{{ translations.usernameMinLength }}</span>
+          </div>
         </div>
-      </div>
 
-      <!-- Mensaje de error general -->
-      <div class="alert alert-error" *ngIf="errorMessage">
-        ❌ {{ errorMessage }}
-      </div>
+        <!-- Contraseña -->
+        <div class="form-group">
+          <label for="password">
+            <span class="icon" aria-hidden="true">🔒</span>
+            {{ translations.password }}
+          </label>
+          <div class="password-container">
+            <input [type]="showPassword ? 'text' : 'password'"
+                   id="password"
+                   formControlName="password"
+                   [placeholder]="translations.passwordPlaceholder"
+                   [class.error]="f['password'].invalid && f['password'].touched"
+                   autocomplete="current-password"
+                   aria-required="true"
+                   [attr.aria-invalid]="(f['password'].invalid && f['password'].touched) ? 'true' : null">
+            <button type="button"
+                    class="toggle-password"
+                    (click)="togglePasswordVisibility()"
+                    [attr.aria-label]="showPassword ? translations.hidePassword : translations.showPassword"
+                    [title]="showPassword ? translations.hidePassword : translations.showPassword">
+              {{ showPassword ? '🙈' : '👁️' }}
+            </button>
+          </div>
+          <div class="error-message" *ngIf="f['password'].invalid && f['password'].touched">
+            <span *ngIf="f['password'].errors?.['required']">{{ translations.passwordRequired }}</span>
+            <span *ngIf="f['password'].errors?.['minlength']">{{ translations.passwordMinLength }}</span>
+          </div>
+        </div>
 
-      <!-- Información de sesión temporal -->
-      <div class="info-box">
-        <span class="info-icon">ℹ️</span>
-        <span class="info-text">La sesión expirará al cerrar el navegador</span>
-      </div>
+        <!-- Error general -->
+        <div class="alert alert-error" *ngIf="errorMessage" role="alert">
+          ❌ {{ errorMessage }}
+        </div>
 
-      <!-- Botón de submit -->
-      <button type="submit"
-              class="btn-login"
-              [disabled]="isLoading">
-        <span *ngIf="!isLoading">{{ translations.submit }}</span>
-        <span *ngIf="isLoading">
-          <app-loader [translateKey]="'login.loading'" [size]="18" [color]="'#fff'" [inline]="true"></app-loader>
-        </span>
-      </button>
+        <!-- Submit -->
+        <button type="submit" class="btn-login" [disabled]="isLoading" [attr.aria-disabled]="isLoading ? 'true' : null">
+          <span *ngIf="!isLoading">{{ translations.submit }}</span>
+          <span *ngIf="isLoading">
+            <app-loader [translateKey]="'login.loading'" [size]="18" [color]="'#fff'" [inline]="true"></app-loader>
+          </span>
+        </button>
 
-      <!-- Enlaces adicionales -->
-      <div class="login-footer">
-        <a href="#" class="link">{{ translations.forgotPassword }}</a>
-      </div>
-    </form>
+        <!-- Links -->
+        <div class="login-footer">
+          <a href="#" class="link">{{ translations.forgotPassword }}</a>
+        </div>
 
-    <!-- Selector de idioma -->
-    <div class="language-selector-wrapper">
-      <app-language-selector></app-language-selector>
-    </div>
-  </div>
-
-  <!-- Footer -->
-  <div class="login-page-footer">
-    <p>{{ translations.footer }}</p>
+        <!-- Selector de idioma debajo de "recordar contraseña" (centrado) -->
+        <div class="language-selector-input" aria-label="Selector de idioma">
+          <app-language-selector></app-language-selector>
+        </div>
+      </form>
+    </main>
   </div>
 </div>

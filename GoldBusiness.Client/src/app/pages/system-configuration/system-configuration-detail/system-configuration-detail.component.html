@@ -8,7 +8,8 @@
       <p class="page-subtitle">{{ 'systemConfig.detailSubtitle' | translate }}</p>
     </div>
     <div class="header-actions">
-      <button class="btn btn-warning" [routerLink]="['/configuracion/editar', id]">
+      <!-- corrected routerLink path to match app-routing: /configuracion/negocio/editar/:id -->
+      <button class="btn btn-warning" [routerLink]="['/configuracion/negocio/editar', id]">
         <span class="btn-icon">✏️</span>
         {{ 'common.edit' | translate }}
       </button>
