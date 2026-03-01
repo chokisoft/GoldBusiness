@@ -90,9 +90,9 @@ export class TranslationService {
       'fr': 'Nom d\'utilisateur ou mot de passe incorrect. Veuillez réessayer.'
     },
     'login.footer': {
-      'es': '\u00A9 {0} Chokisoft Soluciones Tecnológicas',
-      'en': '\u00A9 {0} Chokisoft Technology Solutions',
-      'fr': '\u00A9 {0} Chokisoft Solutions Technologiques'
+      'es': '\u00A9 {0} - Chokisoft Soluciones Tecnológicas',
+      'en': '\u00A9 {0} - Chokisoft Technology Solutions',
+      'fr': '\u00A9 {0} - Chokisoft Solutions Technologiques'
     },
     // ═══════════════════════════════════════════════════════════
     // 🧪 TEST CONNECTION

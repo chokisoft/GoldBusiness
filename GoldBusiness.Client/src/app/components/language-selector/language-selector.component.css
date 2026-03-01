@@ -4,7 +4,7 @@
   gap: 8px;
   padding: 4px;
   position: relative;
-  z-index: 10000; /* asegurar por encima de navbar-menu */
+  z-index: 10000;
 }
 
 /* Etiqueta accesible pero oculta visualmente */
@@ -20,45 +20,53 @@
   border: 0;
 }
 
-/* Select: fondo blanco y texto oscuro para máxima legibilidad */
+/* Dark / translucent select estilizado para el login */
 .language-dropdown {
   appearance: menulist;
   -webkit-appearance: menulist;
-  padding: 6px 10px;
-  border-radius: 6px;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  background-color: #ffffff; /* blanco solicitado */
-  color: #222222; /* texto oscuro legible */
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background-color: rgba(255,255,255,0.04); /* leve brillo sobre fondo oscuro */
+  color: #ffffff;
   font-size: 13px;
   cursor: pointer;
   position: relative;
-  z-index: 10001; /* prioridad visual sobre elementos adyacentes */
-  min-width: 120px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  z-index: 10001;
+  min-width: 140px;
+  box-shadow: 0 6px 20px rgba(2,6,23,0.45);
+  transition: box-shadow 0.16s ease, transform 0.12s ease, border-color 0.12s ease;
 }
 
-/* Asegurar que las opciones del select sean legibles */
+/* Opciones: mayor contraste donde el navegador lo permita */
 .language-dropdown option {
-  background-color: #ffffff;
-  color: #222222;
+  background-color: rgba(0,0,0,0.75);
+  color: #ffffff;
 }
 
-/* Hover / focus legible */
+/* Hover / focus usando color primario de la app (fallback aplicado) */
 .language-dropdown:hover,
 .language-dropdown:focus {
-  border-color: rgba(0, 0, 0, 0.28);
   outline: none;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  transform: translateY(-1px);
+  border-color: var(--color-primary, #667eea);
+  box-shadow: 0 10px 30px rgba(102,126,234,0.18);
 }
 
-/* Ajustes responsivos */
+/* Focus visible accesible */
+.language-dropdown:focus-visible {
+  box-shadow: 0 0 0 4px rgba(102,126,234,0.12);
+  border-color: var(--color-primary, #667eea);
+}
+
+/* Alineación interna de texto (bandera + nombre) */
+.language-dropdown option,
+.language-dropdown optgroup {
+  padding: 6px 8px;
+}
+
+/* Ajustes móviles */
 @media (max-width: 992px) {
-  .language-selector {
-    gap: 6px;
-    padding: 2px;
-  }
-  .language-dropdown {
-    font-size: 12px;
-    min-width: 100px;
-  }
+  .language-selector { gap: 6px; padding: 2px; }
+  .language-dropdown { font-size: 12px; min-width: 120px; padding: 6px 10px; }
 }
