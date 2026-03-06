@@ -17,8 +17,6 @@ dotnet ef migrations remove --project .\GoldBusiness.Infrastructure\GoldBusiness
 
 
 
-ng build --configuration production
-
 
 Despelgar en Azure   
 
@@ -31,6 +29,8 @@ Compress-Archive -Path .\* -DestinationPath ..\api.zip -Force
  az storage blob upload-batch --account-name goldbusinessstorage `
   -s "F:\Documents\Visual Studio 18\Projects\GoldBusiness\GoldBusiness.Client\dist\gold-business.client\browser" `
   -d '$web'
+
+ng build --configuration production
 
 az storage blob upload-batch --account-name goldbusinessstorage `
   -s "F:\Documents\Visual Studio 18\Projects\GoldBusiness\GoldBusiness.Client\dist\gold-business.client\browser" `

@@ -1,0 +1,49 @@
+name: Deploy Angular frontend to Azure Storage (static website)
+
+on:
+  push:
+    branches:
+      - master
+      - staging
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./GoldBusiness.Client
+
+      - name: Build (production)
+        run: npm run build -- --configuration production
+        working-directory: ./GoldBusiness.Client
+
+      - name: Azure Login (service principal)
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Upload to Storage $web (static website)
+        run: |
+          DIST_PATH="./GoldBusiness.Client/dist/gold-business.client/browser"
+          if [ ! -d "$DIST_PATH" ]; then
+            echo "ERROR: output folder not found: $DIST_PATH"
+            exit 1
+          fi
+          az storage blob upload-batch \
+            --account-name goldbusinessstorage \
+            -s "$DIST_PATH" \
+            -d '$web' \
+            --overwrite true \
+            --auth-mode login
+        shell: bash
