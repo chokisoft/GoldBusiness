@@ -1,0 +1,59 @@
+﻿name: Build and deploy ASP.Net Core WebApi to Azure Web App - goldbusinesswebapi-dev
+
+on:
+  push:
+    branches:
+      - master
+      - staging
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore WebApi project
+        run: dotnet restore ./GoldBusiness.WebApi/GoldBusiness.WebApi.csproj
+
+      - name: Build WebApi project
+        run: dotnet build ./GoldBusiness.WebApi/GoldBusiness.WebApi.csproj -c Release --no-restore
+
+      - name: Publish WebApi (includes project dependencies)
+        run: dotnet publish ./GoldBusiness.WebApi/GoldBusiness.WebApi.csproj -c Release -o ./publish --no-restore
+
+      - name: Validate AZURE_CREDENTIALS (no secret leaked)
+        env:
+          AZ_CREDS: ${{ secrets.AZURE_CREDENTIALS }}
+        run: |
+          python - <<'PY'
+import os, json, sys
+s = os.environ.get('AZ_CREDS','')
+if not s:
+    print('ERROR: AZURE_CREDENTIALS is empty')
+    sys.exit(1)
+try:
+    json.loads(s)
+    print('AZURE_CREDENTIALS is valid JSON')
+except Exception as e:
+    print('AZURE_CREDENTIALS is INVALID JSON:', e)
+    sys.exit(1)
+PY
+
+      - name: Azure Login (service principal)
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'goldbusinesswebapi-dev'
+          package: './publish'
