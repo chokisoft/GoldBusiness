@@ -23,12 +23,15 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
+      # Restaurar solo el WebApi
       - name: Restore WebApi
         run: dotnet restore ./GoldBusiness.WebApi/GoldBusiness.WebApi.csproj
 
+      # Compilar solo el WebApi (evita el Client.esproj)
       - name: Build WebApi
         run: dotnet build ./GoldBusiness.WebApi/GoldBusiness.WebApi.csproj -c Release --no-restore
 
+      # Publicar solo el WebApi
       - name: Publish WebApi
         run: dotnet publish ./GoldBusiness.WebApi/GoldBusiness.WebApi.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp --no-build
 
@@ -65,4 +68,3 @@ jobs:
           app-name: 'goldbusinesswebapi-dev'
           slot-name: 'Production'
           package: .
-          
