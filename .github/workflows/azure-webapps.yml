@@ -29,9 +29,13 @@ jobs:
       - name: Publish WebApi (includes project dependencies)
         run: dotnet publish ./GoldBusiness.WebApi/GoldBusiness.WebApi.csproj -c Release -o ./publish --no-restore
 
-      - name: Deploy to Azure Web App using Publish Profile
+      - name: Azure Login (service principal)
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'goldbusinesswebapi-dev'
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: './publish'
