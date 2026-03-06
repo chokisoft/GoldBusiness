@@ -228,6 +228,11 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("ERPAdminAccess", policy =>
         policy.RequireClaim("permission", "ERP:AdminAccess"));
 
+    // Uso recomendado: aceptar cualquiera de ambos permisos
+    options.AddPolicy("ERPAdminOrFullAccess", policy =>
+        policy.RequireClaim("permission", "ERP:FullAccess", "ERP:AdminAccess")
+    );
+
     options.AddPolicy("ERPFinanceAccess", policy =>
         policy.RequireClaim("permission", "ERP:FinanceAccess"));
 
@@ -247,10 +252,8 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("Development", policy =>
     {
-        var allowedOrigins = builder.Configuration.GetSection("Cors:Development:AllowedOrigins").Get<string[]>()
-            ?? new[] { "http://localhost:5173" };
-
-        policy.WithOrigins(allowedOrigins)
+        var devOrigins = builder.Configuration.GetSection("Cors:Development:AllowedOrigins").Get<string[]>() ?? new[] { "http://localhost:5173" };
+        policy.WithOrigins(devOrigins)
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
@@ -258,10 +261,8 @@ builder.Services.AddCors(options =>
 
     options.AddPolicy("Production", policy =>
     {
-        var allowedOrigins = builder.Configuration.GetSection("Cors:Production:AllowedOrigins").Get<string[]>()
-            ?? new[] { "https://goldbusiness.com" };
-
-        policy.WithOrigins(allowedOrigins)
+        var prodOrigins = builder.Configuration.GetSection("Cors:Production:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
+        policy.WithOrigins(prodOrigins)
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
@@ -624,6 +625,53 @@ using (var scope = app.Services.CreateScope())
         else
         {
             logger.LogWarning("⚠️ Usuario de seed no configurado en secrets.json");
+        }
+
+        // ✅ Crear usuario administrador por defecto
+        var adminUsername = builder.Configuration["Seed:DefaultAdmin:Username"];
+        var adminEmail = builder.Configuration["Seed:DefaultAdmin:Email"];
+        var adminPassword = builder.Configuration["Seed:DefaultAdmin:Password"];
+        var adminFullName = builder.Configuration["Seed:DefaultAdmin:FullName"];
+
+        if (!string.IsNullOrEmpty(adminUsername) && !string.IsNullOrEmpty(adminPassword))
+        {
+            var adminUser = await userManager.FindByNameAsync(adminUsername);
+            if (adminUser == null)
+            {
+                logger.LogInformation("Creando usuario administrador por defecto: {Username}", adminUsername);
+
+                var newAdmin = new ApplicationUser
+                {
+                    UserName = adminUsername,
+                    Email = adminEmail ?? $"{adminUsername}@example.com",
+                    EmailConfirmed = true,
+                    IsActive = true
+                };
+
+                var adminResult = await userManager.CreateAsync(newAdmin, adminPassword);
+                if (adminResult.Succeeded)
+                {
+                    await userManager.AddToRolesAsync(newAdmin, new[] { "ADMINISTRADOR" });
+                    await userManager.AddClaimAsync(newAdmin, new Claim("fullName", adminFullName ?? "Administrador"));
+                    await userManager.AddClaimAsync(newAdmin, new Claim("permission", "ERP:AdminAccess"));
+                    await userManager.AddClaimAsync(newAdmin, new Claim("accessLevel", "*"));
+
+                    logger.LogInformation("✅ Administrador '{Username}' creado y configurado", newAdmin.UserName);
+                }
+                else
+                {
+                    logger.LogError("❌ Error creando usuario administrador: {Errors}",
+                        string.Join(", ", adminResult.Errors.Select(e => e.Description)));
+                }
+            }
+            else
+            {
+                logger.LogInformation("✅ Usuario administrador '{Username}' ya existe", adminUser.UserName);
+            }
+        }
+        else
+        {
+            logger.LogInformation("⚠️ Usuario administrador de seed no configurado en secrets.json");
         }
 
         // ✅ Seed de traducciones automáticas

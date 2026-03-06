@@ -7,7 +7,7 @@ namespace GoldBusiness.WebApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Policy = "ERPFullAccess")]
+    [Authorize(Policy = "ERPAdminOrFullAccess")]
     public class MunicipioController : BaseEntityController
     {
         private readonly IMunicipioService _service;

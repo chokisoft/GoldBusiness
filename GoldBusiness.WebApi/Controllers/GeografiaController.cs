@@ -12,7 +12,7 @@ namespace GoldBusiness.WebApi.Controllers
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Policy = "ERPFullAccess")]
+    [Authorize(Policy = "ERPAdminOrFullAccess")]
     public class GeografiaController : BaseEntityController
     {
         private readonly IPaisService _paisService;

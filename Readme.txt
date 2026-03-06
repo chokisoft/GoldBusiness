@@ -1,8 +1,8 @@
-* Iniciar migración
+ï»¿* Iniciar migraciÃ³n
 
 dotnet ef migrations add InitialCreate --project .\GoldBusiness.Infrastructure\GoldBusiness.Infrastructure.csproj --startup-project .\GoldBusiness.WebApi\GoldBusiness.WebApi.csproj --context ApplicationDbContext
 
-* Agregar una migración
+* Agregar una migraciÃ³n
 
 dotnet ef migrations add AddIdentityTable --project .\GoldBusiness.Infrastructure\GoldBusiness.Infrastructure.csproj --startup-project .\GoldBusiness.WebApi\GoldBusiness.WebApi.csproj --context ApplicationDbContext
 dotnet ef migrations add AddBusinessTable --project .\GoldBusiness.Infrastructure\GoldBusiness.Infrastructure.csproj --startup-project .\GoldBusiness.WebApi\GoldBusiness.WebApi.csproj --context ApplicationDbContext
@@ -36,6 +36,32 @@ az storage blob upload-batch --account-name goldbusinessstorage `
   -s "F:\Documents\Visual Studio 18\Projects\GoldBusiness\GoldBusiness.Client\dist\gold-business.client\browser" `
   -d '$web' `
   --overwrite true
+
+
+
+# genera una clave segura base64 (â‰ˆ64 chars)
+openssl rand -base64 48
+
+Ejecuta exactamente esto en tu Cloud Shell (PowerShell). Sustituye el valor de $jwtKey si quieres regenerar la clave:
+# define la clave en una variable PowerShell (no queda en historial de comandos si no la vuelcas)
+$jwtKey = 'zTNcIFotKzhTzVoTxckrPCCYDYw59K1kTvRyDzqEwvmkoZzcj466vTurPxakxe2D'
+
+# establece las app settings usando doble guion bajo
+az webapp config appsettings set `
+  --resource-group rg-goldbusiness-dev `
+  --name goldbusinesswebapi-dev `
+  --settings Jwt__Issuer='https://goldbusinesswebapi-dev.azurewebsites.net' Jwt__Key=$jwtKey
+
+# verificar que se guardaron
+az webapp config appsettings list -g rg-goldbusiness-dev -n goldbusinesswebapi-dev --query "[?starts_with(name,'Jwt')]" -o table
+
+# reiniciar y vigilar logs
+az webapp restart -g rg-goldbusiness-dev -n goldbusinesswebapi-dev
+az webapp log tail -g rg-goldbusiness-dev -n goldbusinesswebapi-dev
+
+
+
+
 
 
 
@@ -161,7 +187,7 @@ namespace GoldBusiness.Infrastructure.Data
                 // GASTOS
                 new GrupoCuentaTranslation(grupos[4].Id, "es", "GASTOS", "system"),
                 new GrupoCuentaTranslation(grupos[4].Id, "en", "EXPENSES", "system"),
-                new GrupoCuentaTranslation(grupos[4].Id, "fr", "DÉPENSES", "system")
+                new GrupoCuentaTranslation(grupos[4].Id, "fr", "DÃ‰PENSES", "system")
             };
 
             context.GrupoCuentaTranslation.AddRange(traducciones);
@@ -187,11 +213,11 @@ namespace GoldBusiness.Infrastructure.Data
                 new Linea("AL", "ALIMENTOS", "system"),
                 new Linea("BE", "BEBIDAS", "system"),
                 new Linea("LI", "LIMPIEZA", "system"),
-                new Linea("EL", "ELECTRÓNICA", "system"),
+                new Linea("EL", "ELECTRÃ“NICA", "system"),
                 new Linea("TE", "TEXTIL", "system"),
-                new Linea("FE", "FERRETERÍA", "system"),
-                new Linea("JU", "JUGUETERÍA", "system"),
-                new Linea("LB", "LIBRERÍA", "system")
+                new Linea("FE", "FERRETERÃA", "system"),
+                new Linea("JU", "JUGUETERÃA", "system"),
+                new Linea("LB", "LIBRERÃA", "system")
             };
 
             context.Linea.AddRange(lineas);
@@ -215,28 +241,28 @@ namespace GoldBusiness.Infrastructure.Data
                 new LineaTranslation(lineas[2].Id, "en", "CLEANING", "system"),
                 new LineaTranslation(lineas[2].Id, "fr", "NETTOYAGE", "system"),
 
-                // ELECTRÓNICA
-                new LineaTranslation(lineas[3].Id, "es", "ELECTRÓNICA", "system"),
+                // ELECTRÃ“NICA
+                new LineaTranslation(lineas[3].Id, "es", "ELECTRÃ“NICA", "system"),
                 new LineaTranslation(lineas[3].Id, "en", "ELECTRONICS", "system"),
-                new LineaTranslation(lineas[3].Id, "fr", "ÉLECTRONIQUE", "system"),
+                new LineaTranslation(lineas[3].Id, "fr", "Ã‰LECTRONIQUE", "system"),
 
                 // TEXTIL
                 new LineaTranslation(lineas[4].Id, "es", "TEXTIL", "system"),
                 new LineaTranslation(lineas[4].Id, "en", "TEXTILE", "system"),
                 new LineaTranslation(lineas[4].Id, "fr", "TEXTILE", "system"),
 
-                // FERRETERÍA
-                new LineaTranslation(lineas[5].Id, "es", "FERRETERÍA", "system"),
+                // FERRETERÃA
+                new LineaTranslation(lineas[5].Id, "es", "FERRETERÃA", "system"),
                 new LineaTranslation(lineas[5].Id, "en", "HARDWARE", "system"),
                 new LineaTranslation(lineas[5].Id, "fr", "QUINCAILLERIE", "system"),
 
-                // JUGUETERÍA
-                new LineaTranslation(lineas[6].Id, "es", "JUGUETERÍA", "system"),
+                // JUGUETERÃA
+                new LineaTranslation(lineas[6].Id, "es", "JUGUETERÃA", "system"),
                 new LineaTranslation(lineas[6].Id, "en", "TOY STORE", "system"),
                 new LineaTranslation(lineas[6].Id, "fr", "JOUETS", "system"),
 
-                // LIBRERÍA
-                new LineaTranslation(lineas[7].Id, "es", "LIBRERÍA", "system"),
+                // LIBRERÃA
+                new LineaTranslation(lineas[7].Id, "es", "LIBRERÃA", "system"),
                 new LineaTranslation(lineas[7].Id, "en", "BOOKSTORE", "system"),
                 new LineaTranslation(lineas[7].Id, "fr", "LIBRAIRIE", "system")
             };
@@ -244,7 +270,7 @@ namespace GoldBusiness.Infrastructure.Data
             context.LineaTranslation.AddRange(traducciones);
             await context.SaveChangesAsync();
 
-            logger.LogInformation("Seed de Linea completado: {Count} líneas agregadas", lineas.Length);
+            logger.LogInformation("Seed de Linea completado: {Count} lÃ­neas agregadas", lineas.Length);
         }
 
         #endregion
@@ -259,7 +285,7 @@ namespace GoldBusiness.Infrastructure.Data
                 return;
             }
 
-            // Obtener las líneas creadas
+            // Obtener las lÃ­neas creadas
             var lineaAlimentos = context.Linea.First(l => l.Codigo == "AL");
             var lineaBebidas = context.Linea.First(l => l.Codigo == "BE");
 
@@ -272,8 +298,8 @@ namespace GoldBusiness.Infrastructure.Data
 
                 // Bebidas
                 new SubLinea("BEREF", "REFRESCOS", lineaBebidas.Id, "system"),
-                new SubLinea("BEALC", "BEBIDAS ALCOHÓLICAS", lineaBebidas.Id, "system"),
-                new SubLinea("BECAF", "CAFÉ Y TÉ", lineaBebidas.Id, "system")
+                new SubLinea("BEALC", "BEBIDAS ALCOHÃ“LICAS", lineaBebidas.Id, "system"),
+                new SubLinea("BECAF", "CAFÃ‰ Y TÃ‰", lineaBebidas.Id, "system")
             };
 
             context.SubLinea.AddRange(sublineas);
@@ -295,28 +321,28 @@ namespace GoldBusiness.Infrastructure.Data
                 // CONGELADOS
                 new SubLineaTranslation(sublineas[2].Id, "es", "CONGELADOS", "system"),
                 new SubLineaTranslation(sublineas[2].Id, "en", "FROZEN", "system"),
-                new SubLineaTranslation(sublineas[2].Id, "fr", "SURGELÉS", "system"),
+                new SubLineaTranslation(sublineas[2].Id, "fr", "SURGELÃ‰S", "system"),
 
                 // REFRESCOS
                 new SubLineaTranslation(sublineas[3].Id, "es", "REFRESCOS", "system"),
                 new SubLineaTranslation(sublineas[3].Id, "en", "SOFT DRINKS", "system"),
                 new SubLineaTranslation(sublineas[3].Id, "fr", "BOISSONS GAZEUSES", "system"),
 
-                // BEBIDAS ALCOHÓLICAS
-                new SubLineaTranslation(sublineas[4].Id, "es", "BEBIDAS ALCOHÓLICAS", "system"),
+                // BEBIDAS ALCOHÃ“LICAS
+                new SubLineaTranslation(sublineas[4].Id, "es", "BEBIDAS ALCOHÃ“LICAS", "system"),
                 new SubLineaTranslation(sublineas[4].Id, "en", "ALCOHOLIC BEVERAGES", "system"),
-                new SubLineaTranslation(sublineas[4].Id, "fr", "BOISSONS ALCOOLISÉES", "system"),
+                new SubLineaTranslation(sublineas[4].Id, "fr", "BOISSONS ALCOOLISÃ‰ES", "system"),
 
-                // CAFÉ Y TÉ
-                new SubLineaTranslation(sublineas[5].Id, "es", "CAFÉ Y TÉ", "system"),
+                // CAFÃ‰ Y TÃ‰
+                new SubLineaTranslation(sublineas[5].Id, "es", "CAFÃ‰ Y TÃ‰", "system"),
                 new SubLineaTranslation(sublineas[5].Id, "en", "COFFEE & TEA", "system"),
-                new SubLineaTranslation(sublineas[5].Id, "fr", "CAFÉ ET THÉ", "system")
+                new SubLineaTranslation(sublineas[5].Id, "fr", "CAFÃ‰ ET THÃ‰", "system")
             };
 
             context.SubLineaTranslation.AddRange(traducciones);
             await context.SaveChangesAsync();
 
-            logger.LogInformation("Seed de SubLinea completado: {Count} sublíneas agregadas", sublineas.Length);
+            logger.LogInformation("Seed de SubLinea completado: {Count} sublÃ­neas agregadas", sublineas.Length);
         }
 
         #endregion
@@ -350,7 +376,7 @@ namespace GoldBusiness.Infrastructure.Data
                 // UNIDAD
                 new UnidadMedidaTranslation(unidades[0].Id, "es", "UNIDAD", "system"),
                 new UnidadMedidaTranslation(unidades[0].Id, "en", "UNIT", "system"),
-                new UnidadMedidaTranslation(unidades[0].Id, "fr", "UNITÉ", "system"),
+                new UnidadMedidaTranslation(unidades[0].Id, "fr", "UNITÃ‰", "system"),
 
                 // KILOGRAMO
                 new UnidadMedidaTranslation(unidades[1].Id, "es", "KILOGRAMO", "system"),
@@ -365,12 +391,12 @@ namespace GoldBusiness.Infrastructure.Data
                 // METRO
                 new UnidadMedidaTranslation(unidades[3].Id, "es", "METRO", "system"),
                 new UnidadMedidaTranslation(unidades[3].Id, "en", "METER", "system"),
-                new UnidadMedidaTranslation(unidades[3].Id, "fr", "MÈTRE", "system"),
+                new UnidadMedidaTranslation(unidades[3].Id, "fr", "MÃˆTRE", "system"),
 
                 // CAJA
                 new UnidadMedidaTranslation(unidades[4].Id, "es", "CAJA", "system"),
                 new UnidadMedidaTranslation(unidades[4].Id, "en", "BOX", "system"),
-                new UnidadMedidaTranslation(unidades[4].Id, "fr", "BOÎTE", "system"),
+                new UnidadMedidaTranslation(unidades[4].Id, "fr", "BOÃŽTE", "system"),
 
                 // PAQUETE
                 new UnidadMedidaTranslation(unidades[5].Id, "es", "PAQUETE", "system"),

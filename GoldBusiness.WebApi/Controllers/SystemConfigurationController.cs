@@ -47,7 +47,7 @@ namespace GoldBusiness.WebApi.Controllers
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Policy = "ERPFullAccess")]
+    [Authorize(Policy = "ERPAdminOrFullAccess")]
     public class SystemConfigurationController : BaseEntityController
     {
         private readonly ISystemConfigurationService _service;

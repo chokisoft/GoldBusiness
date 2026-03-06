@@ -13,7 +13,7 @@ namespace GoldBusiness.WebApi.Controllers
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Policy = "ERPFullAccess")]
+    [Authorize(Policy = "ERPAdminOrFullAccess")]
     public class CuentaController(
         ICuentaService cuentaService,
         IStringLocalizer<GoldBusiness.Domain.Resources.ValidationMessages> localizer) : ControllerBase

@@ -11,7 +11,7 @@ namespace GoldBusiness.WebApi.Controllers
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Policy = "ERPFullAccess")]
+    [Authorize(Policy = "ERPAdminOrFullAccess")]
     public class DashboardController(
         IDashboardService service,
         ILogger<DashboardController> logger,

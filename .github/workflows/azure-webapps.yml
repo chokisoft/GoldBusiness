@@ -1,6 +1,3 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
 name: Build and deploy ASP.Net Core WebApi to Azure Web App - goldbusinesswebapi-dev
 
 on:
@@ -10,10 +7,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
 
     steps:
       - name: Checkout code
@@ -24,44 +19,18 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
-      - name: Restore WebApi
-        run: dotnet restore ./GoldBusiness.WebApi/GoldBusiness.WebApi.csproj
+      - name: Restore solution
+        run: dotnet restore ./GoldBusiness.sln
 
-      - name: Build WebApi
-        run: dotnet build ./GoldBusiness.WebApi/GoldBusiness.WebApi.csproj -c Release --no-restore
+      - name: Build solution
+        run: dotnet build ./GoldBusiness.sln -c Release --no-restore
 
-      - name: Publish WebApi
-        run: dotnet publish ./GoldBusiness.WebApi/GoldBusiness.WebApi.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp --no-build
+      - name: Publish WebApi (includes project dependencies)
+        run: dotnet publish ./GoldBusiness.WebApi/GoldBusiness.WebApi.csproj -c Release -o ./publish --no-restore
 
-      - name: Upload artifact for deployment
-        uses: actions/upload-artifact@v4
-        with:
-          name: webapi-app
-          path: ${{env.DOTNET_ROOT}}/myapp
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    permissions:
-      id-token: write
-      contents: read
-
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: webapi-app
-
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_04C3D1D9C8AE47ECBAB46B14846DF32E }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_B3C1FAFC3DE141C0BF7BC6350E824912 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E3D1A9F5A33B471E882E0CFCC7BCA164 }}
-
-      - name: Deploy to Azure Web App
+      - name: Deploy to Azure Web App using Publish Profile
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'goldbusinesswebapi-dev'
-          slot-name: 'Production'
-          package: .
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: './publish'
