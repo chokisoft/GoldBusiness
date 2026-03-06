@@ -1,4 +1,4 @@
-<aside class="sidebar" [class.collapsed]="isCollapsed">
+<aside class="sidebar" [class.collapsed]="isCollapsed" [class.open]="isOpen">
   <nav class="sidebar-nav">
     <ng-container *ngFor="let item of menuItems">
       <div class="menu-item" [class.has-children]="item.children">
@@ -31,7 +31,8 @@
                 <a *ngFor="let childItem of subItem.children"
                    [routerLink]="childItem.route"
                    routerLinkActive="active"
-                   class="menu-link">
+                   class="menu-link"
+                   (click)="onNavigate()">
                   <span class="menu-icon">{{ childItem.icon }}</span>
                   <span class="menu-text">{{ getTitle(childItem) }}</span>
                 </a>
@@ -42,7 +43,8 @@
             <a *ngIf="subItem.route"
                [routerLink]="subItem.route"
                routerLinkActive="active"
-               class="menu-link submenu-item">
+               class="menu-link submenu-item"
+               (click)="onNavigate()">
               <span class="menu-icon">{{ subItem.icon }}</span>
               <span class="menu-text">{{ getTitle(subItem) }}</span>
             </a>

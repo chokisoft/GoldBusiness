@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { TranslationService } from '../../services/translation.service';
 import { SidebarService } from '../../services/sidebar.service';
 import { Subscription } from 'rxjs';
@@ -20,6 +20,7 @@ interface MenuItem {
 export class SidebarComponent implements OnInit, OnDestroy {
   menuItems: MenuItem[] = [];
   isCollapsed = false;
+  isOpen = false; // controla apertura en móvil
   private sidebarSubscription?: Subscription;
 
   constructor(
@@ -30,10 +31,14 @@ export class SidebarComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     console.log('📂 Sidebar inicializado');
 
-    // Suscribirse al estado del sidebar
+    // Suscribirse al estado del sidebar (desktop)
     this.sidebarSubscription = this.sidebarService.collapsed$.subscribe(collapsed => {
       console.log('📂 Sidebar estado cambiado:', collapsed);
       this.isCollapsed = collapsed;
+      // Si estamos en escritorio y se colapsa/expande, aseguramos isOpen cerrado
+      if (window.innerWidth > 768) {
+        this.isOpen = false;
+      }
     });
 
     this.menuItems = [
@@ -276,12 +281,36 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   toggleSidebar(): void {
     console.log('🔄 Toggle sidebar');
+    // En móvil, la acción debe abrir/cerrar con la clase .open (no usar collapsed)
+    if (window.innerWidth <= 768) {
+      this.isOpen = !this.isOpen;
+      return;
+    }
+
+    // En escritorio/tablet grande usar el servicio que controla collapsed
     this.sidebarService.toggle();
+    // Aseguramos que cualquier estado "open" de móvil quede cerrado
+    this.isOpen = false;
+  }
+
+  // Cerrar sidebar móvil al navegar a una ruta
+  onNavigate(): void {
+    if (window.innerWidth <= 768) {
+      this.isOpen = false;
+    }
   }
 
   getToggleTitle(): string {
     return this.isCollapsed
       ? this.translationService.translate('sidebar.expandMenu')
       : this.translationService.translate('sidebar.collapseMenu');
+  }
+
+  // Si el usuario redimensiona a escritorio, cerramos el overlay móvil
+  @HostListener('window:resize')
+  onResize(): void {
+    if (window.innerWidth > 768 && this.isOpen) {
+      this.isOpen = false;
+    }
   }
 }
