@@ -1,38 +1,67 @@
-name: Deploy GoldBusiness API
+name: Build and deploy ASP.Net Core WebApi to Azure Web App - goldbusinesswebapi-dev
 
 on:
   push:
     branches:
       - master
-
-permissions:
-  id-token: write
-  contents: read
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup .NET
+      - name: Set up .NET 10
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
 
-      - name: Restore WebApi
-        run: dotnet restore ./GoldBusiness.WebApi/GoldBusiness.WebApi.csproj
+      # Restaurar toda la solución
+      - name: Restore solution
+        run: dotnet restore GoldBusiness.sln
 
-      - name: Build WebApi
-        run: dotnet build ./GoldBusiness.WebApi/GoldBusiness.WebApi.csproj -c Release --no-restore
+      # Compilar la solución EXCLUYENDO el Client
+      - name: Build solution (skip Client)
+        run: dotnet build GoldBusiness.sln -c Release --no-restore /p:ExcludeProjects="GoldBusiness.Client/GoldBusiness.Client.esproj"
 
+      # Publicar solo el WebApi
       - name: Publish WebApi
-        run: dotnet publish ./GoldBusiness.WebApi/GoldBusiness.WebApi.csproj -c Release -o publish --no-build
+        run: dotnet publish ./GoldBusiness.WebApi/GoldBusiness.WebApi.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp --no-build
 
-      - name: Deploy to Azure WebApp
-        uses: azure/webapps-deploy@v2
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v4
         with:
-          app-name: goldbusinesswebapi-dev
-          package: publish
+          name: webapi-app
+          path: ${{env.DOTNET_ROOT}}/myapp
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: webapi-app
+      
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_04C3D1D9C8AE47ECBAB46B14846DF32E }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_B3C1FAFC3DE141C0BF7BC6350E824912 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E3D1A9F5A33B471E882E0CFCC7BCA164 }}
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'goldbusinesswebapi-dev'
+          slot-name: 'Production'
+          package: .
