@@ -17,13 +17,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Instalar manualmente .NET 10 preview
-      - name: Install .NET 10 preview
+      # Instalar .NET 10 estable manualmente
+      - name: Install .NET 10 SDK
         run: |
-          wget https://dotnetcli.azureedge.net/dotnet/Sdk/10.0.100-preview.1/dotnet-sdk-10.0.100-preview.1-linux-x64.tar.gz -O dotnet10.tar.gz
-          mkdir -p $HOME/dotnet10
-          tar -zxf dotnet10.tar.gz -C $HOME/dotnet10
-          echo "$HOME/dotnet10" >> $GITHUB_PATH
+          sudo apt-get update
+          sudo apt-get install -y wget apt-transport-https
+          wget https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+          sudo dpkg -i packages-microsoft-prod.deb
+          sudo apt-get update
+          sudo apt-get install -y dotnet-sdk-10.0
 
       - name: Restore solution
         run: dotnet restore GoldBusiness.sln
