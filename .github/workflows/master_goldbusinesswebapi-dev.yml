@@ -27,7 +27,7 @@ jobs:
       - name: Restore WebApi
         run: dotnet restore ./GoldBusiness.WebApi/GoldBusiness.WebApi.csproj
 
-      # Compilar solo el WebApi (evita el Client.esproj)
+      # Compilar solo el WebApi
       - name: Build WebApi
         run: dotnet build ./GoldBusiness.WebApi/GoldBusiness.WebApi.csproj -c Release --no-restore
 
