@@ -19,13 +19,32 @@ namespace GoldBusiness.WebApi.Controllers
             _service = service;
         }
 
-        [HttpGet("by-provincia/{provinciaId}")]
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<GoldBusiness.Domain.DTOs.MunicipioDTO>>> Get()
+        {
+            var lang = GetCurrentLanguage();
+            var result = await _service.GetAllAsync(lang);
+            return Ok(result);
+        }
+
+        [HttpGet("provincia/{provinciaId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<GoldBusiness.Domain.DTOs.MunicipioDTO>>> GetByProvincia(int provinciaId)
         {
             var lang = GetCurrentLanguage();
             var list = await _service.GetByProvinciaIdAsync(provinciaId, lang);
             return Ok(list);
+        }
+
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<GoldBusiness.Domain.DTOs.MunicipioDTO>> Get(int id)
+        {
+            var lang = GetCurrentLanguage();
+            var dto = await _service.GetByIdAsync(id, lang);
+            return dto == null ? NotFound() : Ok(dto);
         }
     }
 }

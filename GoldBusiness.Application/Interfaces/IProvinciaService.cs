@@ -5,7 +5,9 @@ namespace GoldBusiness.Application.Interfaces
     public interface IProvinciaService
     {
         Task<IEnumerable<ProvinciaDTO>> GetAllAsync(string lang = "es");
+        Task<IEnumerable<ProvinciaDTO>> GetByProvinciaIdAsync(int paisId, string lang = "es");
         Task<IEnumerable<ProvinciaDTO>> GetByPaisIdAsync(int paisId, string lang = "es");
         Task<ProvinciaDTO?> GetByIdAsync(int id, string lang = "es");
+        Task<IEnumerable<ProvinciaDTO>> BuscarAsync(string termino, int? paisId = null, string lang = "es");
     }
 }

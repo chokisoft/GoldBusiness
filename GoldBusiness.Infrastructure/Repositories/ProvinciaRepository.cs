@@ -1,6 +1,7 @@
 using GoldBusiness.Domain.Entities;
 using GoldBusiness.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace GoldBusiness.Infrastructure.Repositories
 {
@@ -37,5 +38,22 @@ namespace GoldBusiness.Infrastructure.Repositories
                     .ThenInclude(pais => pais.Translations)
                 .Include(p => p.Translations)
                 .FirstOrDefaultAsync(p => p.Id == id && !p.Cancelado);
+
+        public async Task<IEnumerable<Provincia>> BuscarAsync(string termino, int? paisId = null)
+        {
+            var query = _context.Provincia
+                .Where(p => !p.Cancelado && p.Descripcion.Contains(termino));
+
+            if (paisId.HasValue)
+                query = query.Where(p => p.PaisId == paisId.Value);
+
+            return await query
+                .Include(p => p.Pais)
+                    .ThenInclude(pais => pais.Translations)
+                .Include(p => p.Translations)
+                .OrderBy(p => p.Descripcion)
+                .Take(20)
+                .ToListAsync();
+        }
     }
 }

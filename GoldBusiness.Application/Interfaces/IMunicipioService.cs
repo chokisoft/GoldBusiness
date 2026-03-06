@@ -7,6 +7,6 @@ namespace GoldBusiness.Application.Interfaces
         Task<IEnumerable<MunicipioDTO>> GetAllAsync(string lang = "es");
         Task<IEnumerable<MunicipioDTO>> GetByProvinciaIdAsync(int provinciaId, string lang = "es");
         Task<MunicipioDTO?> GetByIdAsync(int id, string lang = "es");
-        Task<IEnumerable<MunicipioDTO>> BuscarAsync(string termino, int? paisId = null, string lang = "es");
+        Task<IEnumerable<MunicipioDTO>> BuscarAsync(string termino, int? provinciaId = null, string lang = "es");
     }
 }

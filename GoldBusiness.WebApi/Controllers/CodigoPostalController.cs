@@ -19,7 +19,25 @@ namespace GoldBusiness.WebApi.Controllers
             _service = service;
         }
 
-        [HttpGet("by-municipio/{municipioId}")]
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<GoldBusiness.Domain.DTOs.CodigoPostalDTO>>> Get()
+        {
+            var lang = GetCurrentLanguage();
+            var result = await _service.GetAllAsync();
+            return Ok(result);
+        }
+
+        [HttpGet("paged")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> GetPaged([FromQuery] int page = 1, [FromQuery] int pageSize = 50, [FromQuery] string? term = null, [FromQuery] int? municipioId = null)
+        {
+            var lang = GetCurrentLanguage();
+            var (items, total) = await _service.GetPagedAsync(page, pageSize, term, municipioId, lang);
+            return Ok(new { items, total });
+        }
+
+        [HttpGet("municipio/{municipioId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<GoldBusiness.Domain.DTOs.CodigoPostalDTO>>> GetByMunicipio(int municipioId)
         {
@@ -27,5 +45,16 @@ namespace GoldBusiness.WebApi.Controllers
             var list = await _service.GetByMunicipioIdAsync(municipioId, lang);
             return Ok(list);
         }
+
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<GoldBusiness.Domain.DTOs.CodigoPostalDTO>> Get(int id)
+        {
+            var lang = GetCurrentLanguage();
+            var dto = await _service.GetByIdAsync(id, lang);
+            return dto == null ? NotFound() : Ok(dto);
+        }
+
     }
 }

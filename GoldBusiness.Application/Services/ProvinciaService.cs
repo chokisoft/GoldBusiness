@@ -2,6 +2,7 @@ using GoldBusiness.Application.Interfaces;
 using GoldBusiness.Domain.DTOs;
 using GoldBusiness.Domain.Entities;
 using GoldBusiness.Infrastructure.Repositories;
+using System.Linq;
 
 namespace GoldBusiness.Application.Services
 {
@@ -19,6 +20,10 @@ namespace GoldBusiness.Application.Services
                 .Select(p => MapToDTO(p, lang))
                 .ToList();
 
+        // Implementación adicional para cumplir la firma del interface
+        public Task<IEnumerable<ProvinciaDTO>> GetByProvinciaIdAsync(int paisId, string lang = "es")
+            => GetByPaisIdAsync(paisId, lang);
+
         public async Task<IEnumerable<ProvinciaDTO>> GetByPaisIdAsync(int paisId, string lang = "es")
             => (await _repo.GetByPaisIdAsync(paisId))
                 .Select(p => MapToDTO(p, lang))
@@ -29,6 +34,11 @@ namespace GoldBusiness.Application.Services
             var entity = await _repo.GetByIdAsync(id);
             return entity != null ? MapToDTO(entity, lang) : null;
         }
+
+        public async Task<IEnumerable<ProvinciaDTO>> BuscarAsync(string termino, int? paisId = null, string lang = "es")
+            => (await _repo.BuscarAsync(termino, paisId))
+                .Select(m => MapToDTO(m, lang))
+                .ToList();
 
         private static ProvinciaDTO MapToDTO(Provincia entity, string lang)
         {

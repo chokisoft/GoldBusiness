@@ -4,6 +4,7 @@ using GoldBusiness.Domain.Entities;
 using GoldBusiness.Domain.Helpers;
 using GoldBusiness.Infrastructure.Repositories;
 using Microsoft.Extensions.Localization;
+using System.Linq;
 
 namespace GoldBusiness.Application.Services
 {
@@ -26,6 +27,13 @@ namespace GoldBusiness.Application.Services
                 .Where(dto => dto is not null)
                 .Select(dto => dto!)
                 .ToList();
+
+        public async Task<(IEnumerable<CodigoPostalDTO> Items, int Total)> GetPagedAsync(int page, int pageSize, string termino = null, int? municipioId = null, string lang = "es")
+        {
+            var (items, total) = await _repo.GetPagedAsync(page, pageSize, termino, municipioId);
+            var dtos = items.Select(cp => MapToDTO(cp, lang)).ToList();
+            return (dtos, total);
+        }
 
         public async Task<IEnumerable<CodigoPostalDTO>> GetByMunicipioIdAsync(int municipioId, string lang = "es")
             => (await _repo.GetByMunicipioIdAsync(municipioId))
@@ -96,18 +104,38 @@ namespace GoldBusiness.Application.Services
             return MapToDTO(entity);
         }
 
-        private static CodigoPostalDTO MapToDTO(CodigoPostal cp, string lang = "es") => new()
+        private static CodigoPostalDTO MapToDTO(CodigoPostal cp, string lang = "es")
         {
-            Id = cp.Id,
-            Codigo = cp.Codigo,
-            MunicipioId = cp.MunicipioId,
-            MunicipioCodigo = cp.Municipio?.Codigo ?? string.Empty,
-            MunicipioDescripcion = cp.Municipio?.Descripcion ?? string.Empty,
-            Cancelado = cp.Cancelado,
-            CreadoPor = cp.CreadoPor,
-            FechaHoraCreado = cp.FechaHoraCreado,
-            ModificadoPor = cp.ModificadoPor,
-            FechaHoraModificado = cp.FechaHoraModificado
-        };
+            // Municipio values (with translations when present)
+            var municipio = cp.Municipio;
+            var municipioTranslation = municipio?.Translations.FirstOrDefault(t => t.Language == lang);
+            var municipioDescripcion = municipioTranslation?.Descripcion ?? municipio?.Descripcion ?? string.Empty;
+            var municipioCodigo = municipio?.Codigo ?? string.Empty;
+            var municipioId = municipio?.Id ?? 0;
+
+            // Provincia via Municipio (with translations)
+            var provincia = municipio?.Provincia;
+            var provinciaTranslation = provincia?.Translations.FirstOrDefault(t => t.Language == lang);
+            var provinciaDescripcion = provinciaTranslation?.Descripcion ?? provincia?.Descripcion ?? string.Empty;
+            var provinciaCodigo = provincia?.Codigo ?? string.Empty;
+            var provinciaId = provincia?.Id ?? 0;
+
+            return new CodigoPostalDTO
+            {
+                Id = cp.Id,
+                Codigo = cp.Codigo,
+                MunicipioId = municipioId,
+                MunicipioCodigo = municipioCodigo,
+                MunicipioDescripcion = municipioDescripcion,
+                ProvinciaId = provinciaId,
+                ProvinciaCodigo = provinciaCodigo,
+                ProvinciaDescripcion = provinciaDescripcion,
+                Cancelado = cp.Cancelado,
+                CreadoPor = cp.CreadoPor,
+                FechaHoraCreado = cp.FechaHoraCreado,
+                ModificadoPor = cp.ModificadoPor,
+                FechaHoraModificado = cp.FechaHoraModificado
+            };
+        }
     }
 }

@@ -86,7 +86,7 @@ export class SystemConfigurationService {
   }
 
   getMunicipiosByProvincia(provinciaId: number): Observable<Municipio[]> {
-    return this.apiService.get<Municipio[]>(`municipio/by-provincia/${provinciaId}`);
+    return this.apiService.get<Municipio[]>(`municipio/provincia/${provinciaId}`);
   }
 
   getCodigosPostalesByMunicipio(municipioId: number): Observable<CodigoPostal[]> {

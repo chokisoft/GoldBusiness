@@ -17,6 +17,35 @@ dotnet ef migrations remove --project .\GoldBusiness.Infrastructure\GoldBusiness
 
 
 
+ng build --configuration production
+
+
+Despelgar en Azure   
+
+dotnet publish -c Release -r linux-x64 --self-contained false -o ./publish
+Compress-Archive -Path .\* -DestinationPath ..\api.zip -Force
+
+ az webapp deploy --resource-group rg-goldbusiness-dev --name goldbusinesswebapi-dev --src-path /home/rolando/api.zip --type zip
+
+
+ az storage blob upload-batch --account-name goldbusinessstorage `
+  -s "F:\Documents\Visual Studio 18\Projects\GoldBusiness\GoldBusiness.Client\dist\gold-business.client\browser" `
+  -d '$web'
+
+az storage blob upload-batch --account-name goldbusinessstorage `
+  -s "F:\Documents\Visual Studio 18\Projects\GoldBusiness\GoldBusiness.Client\dist\gold-business.client\browser" `
+  -d '$web' `
+  --overwrite true
+
+
+
+Acceso al sitio 
+
+
+https://goldbusinessstorage.z19.web.core.windows.net/login
+
+https://goldbusinesswebapi-dev.azurewebsites.net/swagger/index.html
+
 <environmentVariable name="ASPNETCORE_ENVIRONMENT" value="Production" />
 <environmentVariable name="ConnectionStrings__DefaultConnection" value="Server=localhost;Database=GoldBusiness;User Id=sa;Password=C3r4p10*;MultipleActiveResultSets=true;Encrypt=False;TrustServerCertificate=True" />
 <environmentVariable name="Jwt__Key" value="Pr0d_C!av3S3gur@2024#Meg4L0ng4&amp;Extr4F0rt3&amp;PRODUCCION-KEY-67890!!" />

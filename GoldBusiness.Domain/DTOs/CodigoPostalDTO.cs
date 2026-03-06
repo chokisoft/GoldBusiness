@@ -7,6 +7,12 @@ namespace GoldBusiness.Domain.DTOs
         public int MunicipioId { get; init; }
         public string MunicipioCodigo { get; init; } = string.Empty;
         public string MunicipioDescripcion { get; init; } = string.Empty;
+
+        // Provincia (relación a través de Municipio)
+        public int ProvinciaId { get; init; }
+        public string ProvinciaCodigo { get; init; } = string.Empty;
+        public string ProvinciaDescripcion { get; init; } = string.Empty;
+
         public bool Cancelado { get; init; }
         public string CreadoPor { get; init; } = string.Empty;
         public DateTime FechaHoraCreado { get; init; }
