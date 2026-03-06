@@ -11,6 +11,9 @@ concurrency:
   group: frontend-deploy-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  AZURE_STORAGE_ACCOUNT: goldbusinessstorage
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -19,13 +22,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Cache Node modules
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: npm-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            npm-cache-${{ runner.os }}-
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
         working-directory: ./GoldBusiness.Client
 
       - name: Build (production)
@@ -38,17 +50,31 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Upload to Storage $web (static website)
+        shell: bash
         run: |
-          DIST_PATH="./GoldBusiness.Client/dist/gold-business.client"
+          DIST_ROOT="./GoldBusiness.Client/dist/gold-business.client"
+          if [ -d "${DIST_ROOT}/browser" ]; then
+            DIST_PATH="${DIST_ROOT}/browser"
+          else
+            DIST_PATH="${DIST_ROOT}"
+          fi
+
           if [ ! -d "$DIST_PATH" ]; then
             echo "ERROR: output folder not found: $DIST_PATH"
             ls -la ./GoldBusiness.Client/dist || true
             exit 1
           fi
+
+          echo "Uploading from $DIST_PATH to \$web on account ${AZURE_STORAGE_ACCOUNT}"
           az storage blob upload-batch \
-            --account-name goldbusinessstorage \
-            -s "$DIST_PATH" \
-            -d '$web' \
+            --account-name "${AZURE_STORAGE_ACCOUNT}" \
+            --source "$DIST_PATH" \
+            --destination '$web' \
             --overwrite true \
-            --auth-mode login
-        shell: bash
+            --auth-mode login \
+            --no-progress
+
+      - name: Verify public index
+        run: |
+          echo "HEAD https://${{ env.AZURE_STORAGE_ACCOUNT }}.z19.web.core.windows.net/index.html"
+          curl -I "https://${{ env.AZURE_STORAGE_ACCOUNT }}.z19.web.core.windows.net/index.html" | sed -n '1,12p'
