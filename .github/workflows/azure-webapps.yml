@@ -17,24 +17,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Instalar .NET 10 estable manualmente
-      - name: Install .NET 10 SDK
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y wget apt-transport-https
-          wget https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-          sudo dpkg -i packages-microsoft-prod.deb
-          sudo apt-get update
-          sudo apt-get install -y dotnet-sdk-10.0
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
 
-      - name: Restore solution
-        run: dotnet restore GoldBusiness.sln
+      - name: Restore WebApi
+        run: dotnet restore ./GoldBusiness.WebApi/GoldBusiness.WebApi.csproj
 
-      - name: Build solution
-        run: dotnet build GoldBusiness.sln -c Release --no-restore
+      - name: Build WebApi
+        run: dotnet build ./GoldBusiness.WebApi/GoldBusiness.WebApi.csproj -c Release --no-restore
 
-      - name: Publish solution
-        run: dotnet publish GoldBusiness.sln -c Release -o publish --no-build
+      - name: Publish WebApi
+        run: dotnet publish ./GoldBusiness.WebApi/GoldBusiness.WebApi.csproj -c Release -o publish --no-build
 
       - name: Deploy to Azure WebApp
         uses: azure/webapps-deploy@v2
