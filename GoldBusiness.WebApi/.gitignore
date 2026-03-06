@@ -1,0 +1,68 @@
+# Archivos de compilación
+bin/
+obj/
+*.exe
+*.dll
+*.pdb
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Archivos de editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Archivos de dependencias
+packages/
+.nuget/
+
+# Archivos temporales
+*.tmp
+*.temp
+*.log
+
+# Información de depuración
+.vs/
+
+# Archivos de configuración local
+appsettings.Development.json
+appsettings.Production.json
+
+# Certificados SSL
+*.pfx
+*.pem
+*.key
+
+# Archivos publish profile local
+*.pubxml.user
+PublishProfiles/
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+
+# Entornos virtuales
+venv/
+env/
+ENV/
+
+# NuGet
+*.nupkg
+*.snupkg
+
+# Rider
+.idea/
+*.sln.iml

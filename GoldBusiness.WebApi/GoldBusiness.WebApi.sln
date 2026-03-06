@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoldBusiness.WebApi", "GoldBusiness.WebApi.csproj", "{459653D7-2686-E129-F9E8-21A3811941FD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{459653D7-2686-E129-F9E8-21A3811941FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{459653D7-2686-E129-F9E8-21A3811941FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{459653D7-2686-E129-F9E8-21A3811941FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{459653D7-2686-E129-F9E8-21A3811941FD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {32DA86D4-93D7-4198-AFCE-BCBB8FC654D7}
+	EndGlobalSection
+EndGlobal
