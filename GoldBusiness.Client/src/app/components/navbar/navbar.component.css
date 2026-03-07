@@ -148,6 +148,12 @@
   .desktop-sidebar-toggle { display:none; }
   .user-info { padding:0.36rem; width:40px; height:40px; border-radius:50%; justify-content:center; }
   .user-icon { font-size:1.05rem; color:var(--toggle-accent-color); }
+
+  /* Hide brand name on mobile to avoid overlap with menu/toggles.
+     If you want the title visible when the sidebar is collapsed, keep the
+     existing rule: body.sidebar-collapsed .brand-name { display:none !important; }.
+     This mobile rule is intentionally scoped to small screens only. */
+  .brand-name { display: none; }
 }
 
 /* Desktop toggles */
