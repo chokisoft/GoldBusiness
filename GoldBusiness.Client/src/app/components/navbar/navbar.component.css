@@ -183,9 +183,11 @@
   /* Ensure important elements don't shrink and remain visible */
   .mobile-sidebar-toggle, .brand-image, .btn-logout { flex: 0 0 auto; }
 
-  /* Keep language selector container compact but do not override its internal colors */
-  app-language-selector { display: flex; flex: 0 0 auto; align-items: center; margin: 0 4px; }
+  /* Separate language selector a la derecha un poco más para equilibrar */
+  app-language-selector { display: flex; flex: 0 0 auto; align-items: center; margin: 0 0.6rem; }
   app-language-selector .language-selector { padding: 0; }
+
+  /* Keep language selector container compact but do not override its internal colors */
 }
 
 /* Desktop toggles */
