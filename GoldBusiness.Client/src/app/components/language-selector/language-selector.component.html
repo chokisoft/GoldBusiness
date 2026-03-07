@@ -1,12 +1,41 @@
-<div class="language-selector">
-  <label for="language-select" class="sr-only">{{ label }}</label>
-  <select id="language-select"
-          [(ngModel)]="selectedLanguageCode"
-          (ngModelChange)="changeLanguage($event)"
-          class="language-dropdown">
-    <option *ngFor="let lang of availableLanguages"
-            [value]="lang.code">
-      {{ lang.flag }} - {{ lang.name }}
-    </option>
-  </select>
+<div class="language-selector" [attr.aria-label]="label">
+  <!-- Desktop / regular: keep existing select -->
+  <ng-container *ngIf="!compact">
+    <label for="language-select" class="sr-only">{{ label }}</label>
+    <select id="language-select"
+            [(ngModel)]="selectedLanguageCode"
+            (ngModelChange)="changeLanguage($event)"
+            class="language-dropdown">
+      <option *ngFor="let lang of availableLanguages"
+              [value]="lang.code">
+        {{ lang.flag }} - {{ lang.name }}
+      </option>
+    </select>
+  </ng-container>
+
+  <!-- Mobile compact: icon-button + popover -->
+  <ng-container *ngIf="compact">
+    <button
+      #compactBtn
+      class="compact-btn"
+      type="button"
+      aria-haspopup="listbox"
+      [attr.aria-expanded]="popoverOpen"
+      (click)="togglePopover()"
+      [title]="getCurrentLanguageInfo().name">
+      <span class="flag">{{ getCurrentLanguageInfo().flag }}</span>
+      <span class="visually-hidden">{{ getCurrentLanguageInfo().name }}</span>
+    </button>
+
+    <div class="language-popover" *ngIf="popoverOpen" role="listbox" tabindex="-1" [ngStyle]="popoverStyle" [class.open]="popoverOpen">
+      <ul>
+        <li *ngFor="let lang of availableLanguages; let i = index">
+          <button type="button" (click)="changeLanguage(lang.code)" [attr.aria-selected]="lang.code === selectedLanguageCode">
+            <span class="flag">{{ lang.flag }}</span>
+            <span class="name">{{ lang.name }}</span>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </ng-container>
 </div>

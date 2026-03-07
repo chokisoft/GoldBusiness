@@ -58,7 +58,6 @@
   backdrop-filter: blur(8px);
   border: 1px solid rgba(255,255,255,0.08);
 
-  /* horizontal scroll allowed; block vertical overflow */
   overflow-x: auto !important;
   overflow-y: hidden !important;
   white-space: nowrap;
@@ -97,11 +96,11 @@
 .user-role { font-size:0.72rem; color: rgba(255,255,255,0.85); padding:0; background:transparent; border-radius:0; text-transform:uppercase; letter-spacing:0.6px; opacity:0.9; }
 
 /* Logout */
-.btn-logout { display:flex; align-items:center; gap:0.5rem; padding:0.48rem 1rem; background: rgba(220,53,69,0.15); color:white; border-radius:50px; border:1px solid rgba(220,53,69,0.28); transition: all 0.22s; font-weight:500; font-size:0.95rem; white-space:nowrap; }
+.btn-logout { display:flex; align-items:center; gap:0.5rem; padding:0.48rem 1rem; background: rgba(220,53,69,0.15); color:white; border-radius:50px; border:1px solid rgba(220,53,69,0.28); transition: all 0.22s; font-weight:500; font-size:0.95rem; white-space:nowrap; flex: 0 0 auto; }
 .btn-logout:hover { transform: translateY(-2px); background: rgba(220,53,69,0.22); }
 
 /* Toggles */
-.mobile-sidebar-toggle { display:none; margin-left:0.5rem; background:var(--navbar-gradient); color:var(--toggle-accent-color); border:1px solid rgba(255,255,255,0.06); width:40px; height:40px; border-radius:50%; align-items:center; justify-content:center; box-shadow:var(--toggle-shadow); padding:0; display:inline-flex; font-size:1.05rem; }
+.mobile-sidebar-toggle { display:none; margin-left:0.5rem; background:var(--navbar-gradient); color:var(--toggle-accent-color); border:1px solid rgba(255,255,255,0.06); width:40px; height:40px; border-radius:50%; align-items:center; justify-content:center; box-shadow:var(--toggle-shadow); padding:0; display:inline-flex; font-size:1.05rem; flex: 0 0 auto; }
 .mobile-sidebar-toggle:hover { filter: brightness(1.06); transform: translateY(-2px); }
 .desktop-sidebar-toggle { display:none; margin-left:0.5rem; background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)); color:var(--toggle-accent-color); border:1px solid rgba(255,255,255,0.06); width:36px; height:36px; border-radius:8px; align-items:center; justify-content:center; display:inline-flex; font-size:1.05rem; }
 .desktop-sidebar-toggle:hover { background: rgba(255,255,255,0.06); transform: translateY(-1px); }
@@ -126,7 +125,7 @@
   .navbar-menu::-webkit-scrollbar { height: 6px; display: none; }
 }
 
-/* NEW: <=1000px: HIDE center menu and show mobile toggle to prevent any overlap */
+/* NEW: <=1200px: HIDE center menu and show mobile toggle to prevent any overlap */
 @media (max-width: 1200px) {
   .navbar-menu { display: none !important; }   /* hide center menu when space is tight */
   .mobile-sidebar-toggle { display: inline-flex !important; } /* show burger */
@@ -141,19 +140,29 @@
   .user-details { display: none; }
 }
 
-/* <=768px: mobile compact */
+/* <=768px: mobile compact (ajustes finales: controles un poco más pequeños) */
 @media (max-width: 768px) {
   .nav-link span:not(.brand-icon, .user-icon, .logout-icon) { display:none; }
   .mobile-sidebar-toggle { display:inline-flex; }
   .desktop-sidebar-toggle { display:none; }
-  .user-info { padding:0.36rem; width:40px; height:40px; border-radius:50%; justify-content:center; }
-  .user-icon { font-size:1.05rem; color:var(--toggle-accent-color); }
 
-  /* Hide brand name on mobile to avoid overlap with menu/toggles.
-     If you want the title visible when the sidebar is collapsed, keep the
-     existing rule: body.sidebar-collapsed .brand-name { display:none !important; }.
-     This mobile rule is intentionally scoped to small screens only. */
-  .brand-name { display: none; }
+  /* Slightly smaller touch controls (still >= 32px) */
+  .mobile-sidebar-toggle { width:34px; height:34px; font-size:14px; }
+  .btn-logout { padding: 0.28rem; width:34px; height:34px; border-radius:8px; font-size:14px; gap:0; justify-content:center; }
+  .user-info { padding:0.28rem; width:34px; height:34px; border-radius:8px; justify-content:center; flex: 0 0 auto; }
+  .user-icon { font-size:1rem; color:var(--toggle-accent-color); }
+
+  /* Reduce container padding and brand link padding to gain space on very small screens */
+  .navbar-container { padding: 0 0.45rem; }
+  .brand-link { padding: 0.12rem; }
+  .brand-image { width: 28px; }
+
+  /* Ensure important elements don't shrink and remain visible */
+  .mobile-sidebar-toggle, .brand-image, .btn-logout { flex: 0 0 auto; }
+
+  /* Keep language selector container compact but do not override its internal colors */
+  app-language-selector { display: flex; flex: 0 0 auto; align-items: center; margin: 0 4px; }
+  app-language-selector .language-selector { padding: 0; }
 }
 
 /* Desktop toggles */

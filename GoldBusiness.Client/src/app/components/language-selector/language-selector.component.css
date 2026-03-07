@@ -8,7 +8,7 @@
 }
 
 /* Etiqueta accesible pero oculta visualmente */
-.sr-only {
+.sr-only, .visually-hidden {
   position: absolute !important;
   width: 1px;
   height: 1px;
@@ -20,14 +20,14 @@
   border: 0;
 }
 
-/* Dark / translucent select estilizado para el login */
+/* Desktop select - restored theme/colours */
 .language-dropdown {
   appearance: menulist;
   -webkit-appearance: menulist;
   padding: 8px 12px;
   border-radius: 8px;
   border: 1px solid rgba(255,255,255,0.08);
-  background-color: rgba(255,255,255,0.04); /* leve brillo sobre fondo oscuro */
+  background-color: rgba(255,255,255,0.04);
   color: #ffffff;
   font-size: 13px;
   cursor: pointer;
@@ -38,35 +38,105 @@
   transition: box-shadow 0.16s ease, transform 0.12s ease, border-color 0.12s ease;
 }
 
-/* Opciones: mayor contraste donde el navegador lo permita */
-.language-dropdown option {
-  background-color: rgba(0,0,0,0.75);
-  color: #ffffff;
-}
-
-/* Hover / focus usando color primario de la app (fallback aplicado) */
-.language-dropdown:hover,
-.language-dropdown:focus {
+/* Prevent persistent white border after selection: explicit focus styling */
+.language-dropdown:focus,
+.language-dropdown:focus-visible,
+.language-dropdown:active {
   outline: none;
-  transform: translateY(-1px);
   border-color: var(--color-primary, #667eea);
-  box-shadow: 0 10px 30px rgba(102,126,234,0.18);
+  box-shadow: 0 10px 30px rgba(102,126,234,0.12);
 }
 
-/* Focus visible accesible */
-.language-dropdown:focus-visible {
-  box-shadow: 0 0 0 4px rgba(102,126,234,0.12);
-  border-color: var(--color-primary, #667eea);
+/* Options */
+.language-dropdown option { background-color: rgba(0,0,0,0.75); color: #fff; }
+
+/* Compact button (mobile) - slightly smaller to match navbar */
+.compact-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 3px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(2,6,23,0.28);
+  font-size: 16px;
+
+  -webkit-tap-highlight-color: rgba(255,255,255,0.06);
+  touch-action: manipulation;
 }
 
-/* Alineación interna de texto (bandera + nombre) */
-.language-dropdown option,
-.language-dropdown optgroup {
-  padding: 6px 8px;
+/* POPUP: panel visual que imita el select nativo de escritorio
+   (posicionamiento calculado desde TS con [ngStyle], por eso no usamos fixed aquí) */
+.language-popover {
+  background: rgba(30,40,60,0.98);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 8px;
+  padding: 6px;
+  min-width: 140px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+  color: #fff;
+  z-index: 20000;
+  backdrop-filter: none;
+  transition: opacity 0.12s ease, transform 0.12s ease;
 }
 
-/* Ajustes móviles */
-@media (max-width: 992px) {
-  .language-selector { gap: 6px; padding: 2px; }
-  .language-dropdown { font-size: 12px; min-width: 120px; padding: 6px 10px; }
+/* cuando está abierto queremos borde de foco similar al select enfocado */
+.language-popover.open {
+  border-color: var(--color-primary, #4a90e2);
+  box-shadow: 0 12px 36px rgba(74,144,226,0.12);
+}
+
+/* lista y items */
+.language-popover ul { list-style: none; margin: 0; padding: 0; }
+.language-popover li + li { margin-top: 6px; }
+
+/* imita el look de las opciones del select: fondo oscuro y filas con feedback táctil */
+.language-popover button {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+  padding: 10px 12px;
+  background: linear-gradient(rgba(0,0,0,0.18), rgba(0,0,0,0.12));
+  color: #fff;
+  border: none;
+  text-align: left;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1;
+
+  -webkit-tap-highlight-color: rgba(255,255,255,0.06);
+  touch-action: manipulation;
+}
+
+/* estados hover/selected (hover en móvil no existe; :active ayuda en touch) */
+.language-popover button:hover,
+.language-popover button[aria-selected="true"] {
+  background: rgba(255,255,255,0.03);
+  outline: none;
+  box-shadow: 0 8px 20px rgba(102,126,234,0.08);
+}
+.language-popover button:active {
+  background: rgba(255,255,255,0.04);
+}
+
+/* flag y texto */
+.language-popover .flag { font-size: 18px; width: 28px; text-align: center; }
+.language-popover .name { font-size: 13px; color: rgba(255,255,255,0.95); }
+
+/* ajustes para pantallas muy angostas */
+@media (max-width: 420px) {
+  .language-popover {
+    min-width: unset;
+    width: auto;
+    left: 8px;
+    right: 8px;
+  }
+  .language-popover button { padding: 10px; }
 }

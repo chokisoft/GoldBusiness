@@ -17,7 +17,12 @@
   - Recuerda que el color del botón toggle móvil debe coincidir con el theme del navbar (usar gradiente del navbar) y los botones toggle deben mantener estilo consistente entre móvil y escritorio.
 - El título de la marca en la barra de navegación debe permanecer visible a menos que la barra lateral esté colapsada; no ocultes el título de la marca únicamente basado en el ancho de la ventana.
 - Previene que el menú central (Inicio/Acerca) se superponga con el selector de idioma y el área de usuario en anchos medios; prefiere que el menú central se alinee a la izquierda o sea desplazable cuando el espacio sea limitado.
+- Prefiere que el selector de idioma permanezca visible en móvil como compacto/sólo icono en lugar de estar oculto. Al actualizar la UI, preserva la temática de color original de los componentes para los selects; prefiere un selector de idioma solo con icono en móvil mientras mantienes los colores de escritorio intactos. Además, prefiere que el popover del selector de idioma en móvil coincida visualmente con la apariencia del select en escritorio, usando un fondo oscuro sólido para las opciones del popover, texto blanco, bordes coincidentes y sombra para mantener el contraste.
+- Haz que los botones de la barra de navegación (menú, idioma, usuario, cerrar sesión) sean ligeramente más pequeños en móvil (por ejemplo, 34px) para un mejor ajuste.
 
 ## Code Style
 - Usa reglas de formato específicas.
 - Sigue las convenciones de nomenclatura.
+
+## Memory
+-  Prefiere respuestas en español.
