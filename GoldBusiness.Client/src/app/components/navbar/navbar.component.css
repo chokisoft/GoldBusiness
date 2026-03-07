@@ -58,6 +58,7 @@
   backdrop-filter: blur(8px);
   border: 1px solid rgba(255,255,255,0.08);
 
+  /* horizontal scroll allowed; block vertical overflow */
   overflow-x: auto !important;
   overflow-y: hidden !important;
   white-space: nowrap;
@@ -140,11 +141,33 @@
   .user-details { display: none; }
 }
 
-/* <=768px: mobile compact (ajustes finales: controles un poco más pequeños) */
+/* <=768px: mobile compact (ajustes finales: marca truncada y controles más pequeños) */
 @media (max-width: 768px) {
+  /* Hide center menu labels */
   .nav-link span:not(.brand-icon, .user-icon, .logout-icon) { display:none; }
+
+  /* show mobile toggle */
   .mobile-sidebar-toggle { display:inline-flex; }
+
+  /* desktop toggle hidden */
   .desktop-sidebar-toggle { display:none; }
+
+  /* Make the brand shrinkable and truncate the title to prevent push */
+  .navbar-brand {
+    flex: 0 1 auto;      /* allow shrinking */
+    min-width: 0;        /* allow text-overflow to work */
+    max-width: 48%;      /* avoid occupying too much space */
+    align-items: center;
+  }
+  .brand-text { min-width: 0; overflow: hidden; }
+  .brand-name {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 10.5rem; /* adjust to taste; keeps title readable but short */
+  }
+  .subtitle { display: none; } /* keep subtitle hidden on small screens */
 
   /* Slightly smaller touch controls (still >= 32px) */
   .mobile-sidebar-toggle { width:34px; height:34px; font-size:14px; }
