@@ -165,7 +165,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 10.5rem; /* adjust to taste; keeps title readable but short */
+    max-width: 10.5rem; /* keeps title readable pero corta */
   }
   .subtitle { display: none; } /* keep subtitle hidden on small screens */
 
@@ -183,8 +183,11 @@
   /* Ensure important elements don't shrink and remain visible */
   .mobile-sidebar-toggle, .brand-image, .btn-logout { flex: 0 0 auto; }
 
-  /* Separate language selector a la derecha un poco más para equilibrar */
-  app-language-selector { display: flex; flex: 0 0 auto; align-items: center; margin: 0 0.6rem; }
+  /* Tighter gap between user controls, and move language slightly to the right
+     so it doesn't sit too close to the menu toggle. This avoids solapamiento
+     y deja separación uniforme entre idioma - usuario - logout. */
+  .navbar-user { gap: 0.5rem; }
+  app-language-selector { display: flex; flex: 0 0 auto; align-items: center; margin-left: 0.45rem; margin-right: 0; }
   app-language-selector .language-selector { padding: 0; }
 
   /* Keep language selector container compact but do not override its internal colors */
