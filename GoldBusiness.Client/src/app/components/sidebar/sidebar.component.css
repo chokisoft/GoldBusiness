@@ -8,7 +8,7 @@
   color: #e0e0e0;
   overflow-y: auto;
   overflow-x: visible; /* Cambiado de hidden a visible */
-  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1), width 0.28s ease;
   z-index: 999;
   box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
   border-right: 1px solid rgba(255, 255, 255, 0.05);
@@ -284,4 +284,36 @@
 
 .sidebar::-webkit-scrollbar-thumb:hover {
   background: rgba(74, 144, 226, 0.5);
+}
+
+/* Cuando el sidebar está en modo móvil, .sidebar.open (ya definida en styles.css) */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    position: fixed;
+    top: 70px;
+    left: 0;
+    width: 280px;
+    height: calc(100% - 70px);
+    z-index: 10000;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* asegurar que scroll del body quede atrás si el sidebar está abierto (opcional: gestionarlo con clase en body) */
+  body.sidebar-mobile-open {
+    overflow: hidden;
+  }
+}
+
+/* Backdrop */
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 9998;
+  opacity: 1;
+  transition: opacity 0.25s ease;
 }

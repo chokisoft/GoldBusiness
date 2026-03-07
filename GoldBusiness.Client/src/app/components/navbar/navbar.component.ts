@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AuthService, CurrentUser } from '../../services/auth.service';
 import { TranslationService } from '../../services/translation.service';
 import { Observable, Subscription } from 'rxjs';
+import { SidebarService } from '../../services/sidebar.service';
 
 @Component({
   selector: 'app-navbar',
@@ -11,8 +12,9 @@ import { Observable, Subscription } from 'rxjs';
 export class NavbarComponent implements OnInit, OnDestroy {
   currentUser$: Observable<CurrentUser | null>;
   private languageSubscription?: Subscription;
+  private sidebarSubscription?: Subscription;
+  isCollapsed = false;
 
-  // Traducciones dinámicas (agregada la propiedad subtitle)
   translations = {
     title: '',
     subtitle: '',
@@ -24,23 +26,21 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   constructor(
     private authService: AuthService,
-    private translationService: TranslationService
+    private translationService: TranslationService,
+    private sidebarService: SidebarService
   ) {
     this.currentUser$ = this.authService.currentUser$;
   }
 
   ngOnInit(): void {
-    // Cargar traducciones iniciales
     this.loadTranslations();
-
-    // Suscribirse a cambios de idioma
-    this.languageSubscription = this.translationService.translations$.subscribe(() => {
-      this.loadTranslations();
-    });
+    this.languageSubscription = this.translationService.translations$.subscribe(() => this.loadTranslations());
+    this.sidebarSubscription = this.sidebarService.collapsed$.subscribe(c => this.isCollapsed = c);
   }
 
   ngOnDestroy(): void {
     this.languageSubscription?.unsubscribe();
+    this.sidebarSubscription?.unsubscribe();
   }
 
   private loadTranslations(): void {
@@ -58,5 +58,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
     if (confirm(this.translations.logoutConfirm)) {
       this.authService.logout();
     }
+  }
+
+  toggleMobileSidebar(): void {
+    this.sidebarService.toggleMobile();
+  }
+
+  toggleDesktopSidebar(): void {
+    this.sidebarService.toggle();
   }
 }

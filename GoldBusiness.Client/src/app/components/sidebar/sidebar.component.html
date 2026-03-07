@@ -1,8 +1,8 @@
-<aside class="sidebar" [class.collapsed]="isCollapsed" [class.open]="isOpen">
+<aside class="sidebar" [class.collapsed]="isCollapsed" [class.open]="isOpen" role="navigation" aria-label="Main sidebar">
   <nav class="sidebar-nav">
     <ng-container *ngFor="let item of menuItems">
       <div class="menu-item" [class.has-children]="item.children">
-        <div class="menu-header" (click)="toggleItem(item)" [class.expanded]="item.expanded">
+        <div class="menu-header" (click)="toggleItem(item)" [class.expanded]="item.expanded" role="button" tabindex="0">
           <div class="menu-title">
             <span class="menu-icon">{{ item.icon }}</span>
             <span class="menu-text" *ngIf="!isCollapsed">{{ getTitle(item) }}</span>
@@ -32,7 +32,7 @@
                    [routerLink]="childItem.route"
                    routerLinkActive="active"
                    class="menu-link"
-                   (click)="onNavigate()">
+                   (click)="closeMobile()">
                   <span class="menu-icon">{{ childItem.icon }}</span>
                   <span class="menu-text">{{ getTitle(childItem) }}</span>
                 </a>
@@ -44,7 +44,7 @@
                [routerLink]="subItem.route"
                routerLinkActive="active"
                class="menu-link submenu-item"
-               (click)="onNavigate()">
+               (click)="closeMobile()">
               <span class="menu-icon">{{ subItem.icon }}</span>
               <span class="menu-text">{{ getTitle(subItem) }}</span>
             </a>
@@ -55,11 +55,6 @@
   </nav>
 </aside>
 
-<!-- Botón flotante FUERA del sidebar para evitar que sea cortado -->
-<button class="sidebar-toggle-floating" 
-        (click)="toggleSidebar()" 
-        [class.collapsed]="isCollapsed" 
-        [title]="getToggleTitle()">
-  <span>{{ isCollapsed ? '›' : '‹' }}</span>
-</button>
+<!-- Backdrop móvil (se muestra solo cuando isOpen = true) -->
+<div class="sidebar-backdrop" *ngIf="isOpen" (click)="closeMobile()" aria-hidden="true"></div>
 

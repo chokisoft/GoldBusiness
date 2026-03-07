@@ -1,6 +1,5 @@
 <nav class="navbar">
   <div class="navbar-container">
-    <!-- Logo/Marca -->
     <div class="navbar-brand">
       <a routerLink="/" class="brand-link">
         <img src="/assets/logo.png" alt="{{ translations.title }}" class="brand-image" />
@@ -9,39 +8,35 @@
           <span class="subtitle">{{ translations.subtitle }}</span>
         </div>
       </a>
+
+      <!-- Mobile toggle (circle, themed) -->
+      <button class="mobile-sidebar-toggle" aria-label="Toggle menu" (click)="toggleMobileSidebar()">
+        <span class="mobile-sidebar-icon">☰</span>
+      </button>
+
+      <!-- Desktop toggle (compact) -->
+      <button class="desktop-sidebar-toggle" aria-label="Collapse/Expand sidebar" (click)="toggleDesktopSidebar()" [title]="isCollapsed ? 'Expandir menú' : 'Colapsar menú'">
+        <span class="desktop-sidebar-icon">{{ isCollapsed ? '›' : '‹' }}</span>
+      </button>
     </div>
 
-    <!-- Menú de navegación -->
     <div class="navbar-menu">
-      <a routerLink="/inicio"
-         routerLinkActive="active"
-         class="nav-link">
-        🏠 {{ translations.inicio }}
-      </a>
-      <a routerLink="/acerca"
-         routerLinkActive="active"
-         class="nav-link">
-        ℹ️ {{ translations.acerca }}
-      </a>
+      <a routerLink="/inicio" routerLinkActive="active" class="nav-link">🏠 {{ translations.inicio }}</a>
+      <a routerLink="/acerca" routerLinkActive="active" class="nav-link">ℹ️ {{ translations.acerca }}</a>
     </div>
 
-    <!-- Usuario y acciones -->
     <div class="navbar-user">
       <app-language-selector></app-language-selector>
 
-      <div class="user-info" *ngIf="currentUser$ | async as user">
+      <div class="user-info" *ngIf="currentUser$ | async as user" title="{{ user.fullName || user.userName }}">
         <span class="user-icon">👤</span>
         <div class="user-details">
           <span class="user-name">{{ user.fullName || user.userName }}</span>
-          <span class="user-role" *ngIf="user.roles && user.roles.length > 0">
-            {{ user.roles[0] }}
-          </span>
+          <span class="user-role" *ngIf="user.roles && user.roles.length > 0">{{ user.roles[0] }}</span>
         </div>
       </div>
 
-      <button class="btn-logout"
-              (click)="logout()"
-              [title]="translations.logout">
+      <button class="btn-logout" (click)="logout()" [title]="translations.logout">
         <span class="logout-icon">🚪</span>
         <span class="logout-text">{{ translations.logout }}</span>
       </button>

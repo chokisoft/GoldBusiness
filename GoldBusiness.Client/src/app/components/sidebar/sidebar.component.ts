@@ -20,8 +20,9 @@ interface MenuItem {
 export class SidebarComponent implements OnInit, OnDestroy {
   menuItems: MenuItem[] = [];
   isCollapsed = false;
-  isOpen = false; // controla apertura en móvil
+  isOpen = false; // overlay móvil
   private sidebarSubscription?: Subscription;
+  private mobileSubscription?: Subscription;
 
   constructor(
     public translationService: TranslationService,
@@ -29,16 +30,15 @@ export class SidebarComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    console.log('📂 Sidebar inicializado');
-
-    // Suscribirse al estado del sidebar (desktop)
     this.sidebarSubscription = this.sidebarService.collapsed$.subscribe(collapsed => {
-      console.log('📂 Sidebar estado cambiado:', collapsed);
       this.isCollapsed = collapsed;
-      // Si estamos en escritorio y se colapsa/expande, aseguramos isOpen cerrado
       if (window.innerWidth > 768) {
         this.isOpen = false;
       }
+    });
+
+    this.mobileSubscription = this.sidebarService.mobileOpen$.subscribe(open => {
+      this.isOpen = open;
     });
 
     this.menuItems = [
@@ -48,33 +48,15 @@ export class SidebarComponent implements OnInit, OnDestroy {
         icon: '🗂️',
         expanded: false,
         children: [
-          // ============================================
-          // 📊 PLAN DE CUENTAS
-          // ============================================
           {
             title: 'Plan de Cuentas',
             titleKey: 'sidebar.planCuentas',
             icon: '📊',
             expanded: false,
             children: [
-              {
-                title: 'Grupos de Cuenta',
-                titleKey: 'grupoCuenta.title',
-                icon: '📁',
-                route: '/nomencladores/grupo-cuenta'
-              },
-              {
-                title: 'SubGrupos de Cuenta',
-                titleKey: 'subGrupoCuenta.title',
-                icon: '📂',
-                route: '/nomencladores/subgrupo-cuenta'
-              },
-              {
-                title: 'Cuentas',
-                titleKey: 'cuenta.title',
-                icon: '📄',
-                route: '/nomencladores/cuenta'
-              }
+              { title: 'Grupos de Cuenta', titleKey: 'grupoCuenta.title', icon: '📁', route: '/nomencladores/grupo-cuenta' },
+              { title: 'SubGrupos de Cuenta', titleKey: 'subGrupoCuenta.title', icon: '📂', route: '/nomencladores/subgrupo-cuenta' },
+              { title: 'Cuentas', titleKey: 'cuenta.title', icon: '📄', route: '/nomencladores/cuenta' }
             ]
           },
 
@@ -263,14 +245,12 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log('🧹 Sidebar destruido');
     this.sidebarSubscription?.unsubscribe();
+    this.mobileSubscription?.unsubscribe();
   }
 
   getTitle(item: MenuItem): string {
-    return item.titleKey
-      ? this.translationService.translate(item.titleKey)
-      : item.title;
+    return item.titleKey ? this.translationService.translate(item.titleKey) : item.title;
   }
 
   toggleItem(item: MenuItem): void {
@@ -280,23 +260,23 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   toggleSidebar(): void {
-    console.log('🔄 Toggle sidebar');
-    // En móvil, la acción debe abrir/cerrar con la clase .open (no usar collapsed)
     if (window.innerWidth <= 768) {
-      this.isOpen = !this.isOpen;
+      this.sidebarService.toggleMobile();
       return;
     }
-
-    // En escritorio/tablet grande usar el servicio que controla collapsed
     this.sidebarService.toggle();
-    // Aseguramos que cualquier estado "open" de móvil quede cerrado
-    this.isOpen = false;
   }
 
-  // Cerrar sidebar móvil al navegar a una ruta
-  onNavigate(): void {
-    if (window.innerWidth <= 768) {
-      this.isOpen = false;
+  closeMobile(): void {
+    if (this.isOpen) {
+      this.sidebarService.setMobileOpen(false);
+    }
+  }
+
+  @HostListener('window:resize')
+  onResize(): void {
+    if (window.innerWidth > 768 && this.isOpen) {
+      this.sidebarService.setMobileOpen(false);
     }
   }
 
@@ -304,13 +284,5 @@ export class SidebarComponent implements OnInit, OnDestroy {
     return this.isCollapsed
       ? this.translationService.translate('sidebar.expandMenu')
       : this.translationService.translate('sidebar.collapseMenu');
-  }
-
-  // Si el usuario redimensiona a escritorio, cerramos el overlay móvil
-  @HostListener('window:resize')
-  onResize(): void {
-    if (window.innerWidth > 768 && this.isOpen) {
-      this.isOpen = false;
-    }
   }
 }
