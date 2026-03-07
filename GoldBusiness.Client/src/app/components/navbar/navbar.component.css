@@ -170,9 +170,9 @@
   .subtitle { display: none; } /* keep subtitle hidden on small screens */
 
   /* Slightly smaller touch controls (still >= 32px) */
-  .mobile-sidebar-toggle { width:34px; height:34px; font-size:14px; }
-  .btn-logout { padding: 0.28rem; width:34px; height:34px; border-radius:8px; font-size:14px; gap:0; justify-content:center; }
-  .user-info { padding:0.28rem; width:34px; height:34px; border-radius:8px; justify-content:center; flex: 0 0 auto; }
+  .mobile-sidebar-toggle { width:32px; height:32px; font-size:14px; }
+  .btn-logout { padding: 0.28rem; width:32px; height:32px; border-radius:8px; font-size:14px; gap:0; justify-content:center; }
+  .user-info { padding:0.28rem; width:32px; height:32px; border-radius:8px; justify-content:center; flex: 0 0 auto; }
   .user-icon { font-size:1rem; color:var(--toggle-accent-color); }
 
   /* Reduce container padding and brand link padding to gain space on very small screens */
