@@ -17,6 +17,23 @@ dotnet ef database update --project .\GoldBusiness.Infrastructure\GoldBusiness.I
 dotnet ef migrations remove --project .\GoldBusiness.Infrastructure\GoldBusiness.Infrastructure.csproj --startup-project .\GoldBusiness.WebApi\GoldBusiness.WebApi.csproj --context ApplicationDbContext
 
 
+* Generador de codigo 
+
+// Ejemplos
+# Ruta completa (larga)
+dotnet run -- "F:\Documents\Visual Studio 18\Projects\GoldBusiness\GoldBusiness.Domain\Entities\Producto.cs" Producto
+
+# Modo normal (igual que antes - RECOMENDADO)
+dotnet run -- "..\GoldBusiness.Domain\Entities\Proveedor.cs" Proveedor
+
+# Modo preview (solo simula, no crea archivos)
+dotnet run -- "..\GoldBusiness.Domain\Entities\Proveedor.cs" Proveedor --preview
+
+# Versión corta del preview
+dotnet run -- "..\GoldBusiness.Domain\Entities\Proveedor.cs" Proveedor -p
+
+
+
 
 
 
