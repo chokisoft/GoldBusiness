@@ -115,13 +115,12 @@
   padding: 12px 14px;
   background: transparent;
   display: flex;
+  flex-direction: column; /* ✅ Añadir para acomodar form + selector */
   align-items: center;
   justify-content: center;
-
-  /* Match parent rounded corners on the right side */
   border-top-right-radius: 16px;
   border-bottom-right-radius: 16px;
-  overflow: hidden; /* prevent inner elements drawing outside corners */
+  overflow: visible; /* ✅ CRUCIAL: cambiar de hidden a visible */
 }
 
 /* Header del formulario */
@@ -190,8 +189,16 @@ input.error:focus { box-shadow: 0 6px 20px rgba(248,113,113,0.12); }
 }
 .toggle-password:hover { transform: scale(1.04); background: rgba(255,255,255,0.06); }
 
-/* Language selector */
-.language-selector-input { display: flex; justify-content: center; margin-top: 8px; margin-bottom: 0; }
+/* Language selector - con espacio adecuado */
+.language-selector-input { 
+  display: flex; 
+  justify-content: center; 
+  margin-top: 12px;
+  margin-bottom: 8px;
+  padding: 0 6px;
+  position: relative;
+  z-index: 10001;
+}
 
 /* Alert */
 .alert { padding: 8px 12px; border-radius: 8px; font-size: 14px; display: flex; align-items: center; gap: 8px; }
@@ -247,10 +254,9 @@ input.error:focus { box-shadow: 0 6px 20px rgba(248,113,113,0.12); }
 @media (max-width: 880px) {
   .login-card { grid-template-columns: 1fr; max-width: 480px; }
   .login-aside { display: none; }
-  /* When aside is hidden, ensure main gets full rounded corners */
   .login-main {
     border-radius: 16px;
-    overflow: hidden;
+    overflow: visible; /* ✅ CRUCIAL: visible en vez de hidden */
   }
   .login-header { display: block; text-align: center; margin-bottom: 8px; }
   .logo-compact .logo-image { width: 96px; }

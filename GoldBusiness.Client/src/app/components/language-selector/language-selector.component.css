@@ -4,7 +4,7 @@
   gap: 8px;
   padding: 4px;
   position: relative;
-  z-index: 10000;
+  z-index: 1; /* Reducido de 10000 a 1 */
 }
 
 /* Etiqueta accesible pero oculta visualmente */
@@ -20,7 +20,7 @@
   border: 0;
 }
 
-/* Desktop select - restored theme/colours */
+/* ===== SELECT NORMAL PARA DESKTOP Y LOGIN ===== */
 .language-dropdown {
   appearance: menulist;
   -webkit-appearance: menulist;
@@ -32,111 +32,179 @@
   font-size: 13px;
   cursor: pointer;
   position: relative;
-  z-index: 10001;
+  z-index: 1; /* Reducido para no interferir */
   min-width: 140px;
   box-shadow: 0 6px 20px rgba(2,6,23,0.45);
   transition: box-shadow 0.16s ease, transform 0.12s ease, border-color 0.12s ease;
 }
 
-/* Prevent persistent white border after selection: explicit focus styling */
 .language-dropdown:focus,
 .language-dropdown:focus-visible,
 .language-dropdown:active {
   outline: none;
   border-color: var(--color-primary, #667eea);
   box-shadow: 0 10px 30px rgba(102,126,234,0.12);
+  z-index: 10; /* Solo cuando está abierto/enfocado */
 }
 
-/* Options */
-.language-dropdown option { background-color: rgba(0,0,0,0.75); color: #fff; }
+.language-dropdown:hover {
+  transform: translateY(-1px);
+  border-color: var(--color-primary, #667eea);
+  box-shadow: 0 10px 30px rgba(102,126,234,0.18);
+}
 
-/* Compact button (mobile) - slightly smaller to match navbar */
-.compact-btn {
+/* Opciones con el mismo estilo dark para consistencia */
+.language-dropdown option {
+  background-color: rgba(0,0,0,0.75);
+  color: #fff;
+  padding: 8px;
+}
+
+/* ===== MODO COMPACTO PARA MÓVIL (SOLO NAVBAR) ===== */
+
+/* Wrapper que contiene la bandera visible y el select */
+.compact-wrapper {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
-  padding: 3px;
-  border-radius: 6px;
-  background: rgba(255,255,255,0.04);
+  width: 38px;
+  height: 38px;
+  background-color: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.08);
-  color: #fff;
-  cursor: pointer;
-  box-shadow: 0 6px 14px rgba(2,6,23,0.28);
-  font-size: 16px;
-
-  -webkit-tap-highlight-color: rgba(255,255,255,0.06);
-  touch-action: manipulation;
-}
-
-/* POPUP: panel visual que imita el select nativo de escritorio
-   (posicionamiento calculado desde TS con [ngStyle], por eso no usamos fixed aquí) */
-.language-popover {
-  background: rgba(30,40,60,0.98);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 8px;
-  padding: 6px;
-  min-width: 140px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.45);
-  color: #fff;
-  z-index: 20000;
-  backdrop-filter: none;
-  transition: opacity 0.12s ease, transform 0.12s ease;
-}
-
-/* cuando está abierto queremos borde de foco similar al select enfocado */
-.language-popover.open {
-  border-color: var(--color-primary, #4a90e2);
-  box-shadow: 0 12px 36px rgba(74,144,226,0.12);
-}
-
-/* lista y items */
-.language-popover ul { list-style: none; margin: 0; padding: 0; }
-.language-popover li + li { margin-top: 6px; }
-
-/* imita el look de las opciones del select: fondo oscuro y filas con feedback táctil */
-.language-popover button {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  width: 100%;
-  padding: 10px 12px;
-  background: linear-gradient(rgba(0,0,0,0.18), rgba(0,0,0,0.12));
-  color: #fff;
-  border: none;
-  text-align: left;
   border-radius: 6px;
+  box-shadow: 0 6px 14px rgba(2,6,23,0.28);
   cursor: pointer;
-  font-size: 13px;
+  transition: all 0.2s ease;
+  overflow: hidden; /* CAMBIADO: de visible a hidden para contener el select */
+  flex-shrink: 0; /* AÑADIDO: evita que se comprima */
+  isolation: isolate;
+}
+
+.compact-wrapper:hover {
+  transform: translateY(-1px);
+  background-color: rgba(255,255,255,0.06);
+  border-color: var(--color-primary, #667eea);
+  box-shadow: 0 8px 18px rgba(102,126,234,0.2);
+}
+
+/* Bandera visible en el centro */
+.compact-flag-display {
+  position: relative;
+  display: inline-block;
+  font-size: 22px;
   line-height: 1;
-
-  -webkit-tap-highlight-color: rgba(255,255,255,0.06);
-  touch-action: manipulation;
+  pointer-events: none;
+  z-index: 1;
+  user-select: none;
+  color: #fff;
+  text-align: center;
 }
 
-/* estados hover/selected (hover en móvil no existe; :active ayuda en touch) */
-.language-popover button:hover,
-.language-popover button[aria-selected="true"] {
-  background: rgba(255,255,255,0.03);
-  outline: none;
-  box-shadow: 0 8px 20px rgba(102,126,234,0.08);
-}
-.language-popover button:active {
-  background: rgba(255,255,255,0.04);
+/* Select COMPLETAMENTE transparente DETRÁS */
+.language-dropdown.compact {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  
+  /* Hacer TODO completamente invisible */
+  opacity: 0 !important;
+  color: transparent !important;
+  background: transparent !important;
+  border: none !important;
+  
+  cursor: pointer;
+  z-index: 2; /* MANTENIDO: pero contenido dentro del wrapper con overflow:hidden */
+  
+  /* Remover apariencia nativa */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  
+  padding: 0;
+  margin: 0;
+  
+  /* Ocultar texto completamente */
+  font-size: 0 !important;
+  line-height: 0 !important;
+  text-indent: -9999px !important;
+  overflow: hidden !important;
 }
 
-/* flag y texto */
-.language-popover .flag { font-size: 18px; width: 28px; text-align: center; }
-.language-popover .name { font-size: 13px; color: rgba(255,255,255,0.95); }
+/* Cuando el select está abierto/enfocado, darle z-index alto */
+.language-dropdown.compact:focus,
+.language-dropdown.compact:active {
+  z-index: 9999; /* AUMENTADO: para que el dropdown aparezca sobre todo */
+}
 
-/* ajustes para pantallas muy angostas */
-@media (max-width: 420px) {
-  .language-popover {
-    min-width: unset;
-    width: auto;
-    left: 8px;
-    right: 8px;
+/* Ocultar cualquier elemento interno del select */
+.language-dropdown.compact::after,
+.language-dropdown.compact::before {
+  display: none !important;
+}
+
+/* Ocultar la flecha del select */
+.language-dropdown.compact::-webkit-calendar-picker-indicator {
+  display: none !important;
+  opacity: 0 !important;
+}
+
+.language-dropdown.compact::-webkit-inner-spin-button,
+.language-dropdown.compact::-webkit-outer-spin-button {
+  display: none !important;
+}
+
+/* LAS OPCIONES DEL SELECT COMPACTO - MISMO ESTILO QUE EL SELECT NORMAL */
+.language-dropdown.compact option {
+  display: block !important;
+  opacity: 1 !important;
+  /* MISMO estilo que .language-dropdown option */
+  background-color: rgba(0,0,0,0.95) !important;
+  color: #ffffff !important;
+  padding: 10px 12px !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+  text-indent: 0 !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+}
+
+/* Opción seleccionada con estilo especial */
+.language-dropdown.compact option:checked {
+  background-color: rgba(102, 126, 234, 0.2) !important;
+  font-weight: 600 !important;
+}
+
+/* Focus state para el wrapper */
+.compact-wrapper:has(.language-dropdown.compact:focus) {
+  border-color: var(--color-primary, #667eea);
+  box-shadow: 0 0 0 3px rgba(102,126,234,0.12);
+  z-index: 9999; /* AUMENTADO: Solo cuando está enfocado */
+}
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 768px) {
+  .language-selector {
+    gap: 4px;
+    padding: 2px;
   }
-  .language-popover button { padding: 10px; }
+  
+  .compact-wrapper {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .compact-flag-display {
+    font-size: 20px;
+  }
+}
+
+/* Ajustes para navbar */
+@media (max-width: 992px) {
+  .language-dropdown:not(.compact) {
+    font-size: 12px;
+    min-width: 120px;
+    padding: 6px 10px;
+  }
 }

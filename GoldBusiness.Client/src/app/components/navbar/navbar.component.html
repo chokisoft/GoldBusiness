@@ -26,7 +26,8 @@
     </div>
 
     <div class="navbar-user">
-      <app-language-selector></app-language-selector>
+      <!-- Selector compacto en móvil -->
+      <app-language-selector [forceCompact]="true"></app-language-selector>
 
       <div class="user-info" *ngIf="currentUser$ | async as user" title="{{ user.fullName || user.userName }}">
         <span class="user-icon">👤</span>
