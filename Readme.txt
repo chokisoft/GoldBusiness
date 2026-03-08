@@ -1,6 +1,8 @@
 ﻿* Iniciar migración
 
 dotnet ef migrations add InitialCreate --project .\GoldBusiness.Infrastructure\GoldBusiness.Infrastructure.csproj --startup-project .\GoldBusiness.WebApi\GoldBusiness.WebApi.csproj --context ApplicationDbContext
+dotnet ef migrations add AddRefreshTokens --project .\GoldBusiness.Infrastructure\GoldBusiness.Infrastructure.csproj --startup-project .\GoldBusiness.WebApi\GoldBusiness.WebApi.csproj --context ApplicationDbContext
+
 
 * Agregar una migración
 
