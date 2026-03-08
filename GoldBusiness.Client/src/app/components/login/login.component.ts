@@ -61,10 +61,10 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Si ya está autenticado, redirigir al dashboard
+    // ✅ NUEVO: Si ya está autenticado, redirigir
     if (this.authService.isAuthenticated()) {
       console.log('✅ Usuario ya autenticado, redirigiendo al dashboard...');
-      this.router.navigate(['/dashboard']); // ← CAMBIADO de '/' a '/dashboard'
+      this.router.navigate(['/dashboard']);
       return;
     }
 
@@ -75,7 +75,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     });
 
     // Obtener la URL de retorno (o dashboard por defecto)
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard'; // ← CAMBIADO de '/' a '/dashboard'
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
     console.log('📍 URL de retorno configurada:', this.returnUrl);
 
     // Cargar traducciones iniciales

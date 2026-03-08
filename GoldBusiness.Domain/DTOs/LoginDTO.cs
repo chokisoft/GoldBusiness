@@ -58,5 +58,9 @@ namespace GoldBusiness.Domain.DTOs
             ErrorMessageResourceName = nameof(ValidationMessages.StringLength)
         )]
         public string Password { get; set; } = string.Empty;
+
+        // ✅ NUEVO: Metadata para tracking de seguridad
+        public string? IpAddress { get; set; }
+        public string? UserAgent { get; set; }
     }
 }

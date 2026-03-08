@@ -157,6 +157,9 @@ builder.Services.AddScoped<IFichaProductoService, FichaProductoService>();
 builder.Services.AddScoped<IUnidadMedidaRepository, UnidadMedidaRepository>();
 builder.Services.AddScoped<IUnidadMedidaService, UnidadMedidaService>();
 
+// Background Service para limpieza de tokens
+builder.Services.AddHostedService<TokenCleanupService>();
+
 // ============================================
 // 🔐 JWT AUTHENTICATION
 // ============================================
@@ -196,7 +199,7 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
         NameClaimType = ClaimTypes.Name,
         RoleClaimType = ClaimTypes.Role,
-        ClockSkew = TimeSpan.FromMinutes(2)
+        ClockSkew = TimeSpan.Zero
     };
 
     options.Events = new JwtBearerEvents
@@ -204,13 +207,43 @@ builder.Services.AddAuthentication(options =>
         OnAuthenticationFailed = context =>
         {
             var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
-            logger.LogWarning(context.Exception, "JWT authentication failed.");
+
+            // ✅ Detectar token expirado y agregar header personalizado
+            if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+            {
+                context.Response.Headers.Append("Token-Expired", "true");
+                logger.LogWarning("⏰ Token expirado desde IP: {IpAddress}",
+                    context.HttpContext.Connection.RemoteIpAddress);
+            }
+            else
+            {
+                logger.LogWarning(context.Exception, "❌ JWT authentication failed desde IP: {IpAddress}",
+                    context.HttpContext.Connection.RemoteIpAddress);
+            }
+
             return Task.CompletedTask;
         },
         OnChallenge = context =>
         {
             var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
-            logger.LogWarning("JWT challenge: {Error} - {Description}", context.Error, context.ErrorDescription);
+            logger.LogWarning("🔐 JWT challenge: {Error} - {Description} desde IP: {IpAddress}",
+                context.Error,
+                context.ErrorDescription,
+                context.HttpContext.Connection.RemoteIpAddress);
+            return Task.CompletedTask;
+        },
+        // ✅ NUEVO: Log cuando token es validado exitosamente
+        OnTokenValidated = context =>
+        {
+            var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
+            var env = context.HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
+
+            if (env.IsDevelopment())
+            {
+                var userName = context.Principal?.Identity?.Name;
+                logger.LogDebug("✅ Token validado para usuario: {UserName}", userName);
+            }
+
             return Task.CompletedTask;
         }
     };
@@ -256,7 +289,8 @@ builder.Services.AddCors(options =>
         policy.WithOrigins(devOrigins)
               .AllowAnyHeader()
               .AllowAnyMethod()
-              .AllowCredentials();
+              .AllowCredentials()
+              .WithExposedHeaders("Token-Expired");
     });
 
     options.AddPolicy("Production", policy =>
@@ -265,7 +299,8 @@ builder.Services.AddCors(options =>
         policy.WithOrigins(prodOrigins)
               .AllowAnyHeader()
               .AllowAnyMethod()
-              .AllowCredentials();
+              .AllowCredentials()
+              .WithExposedHeaders("Token-Expired");
     });
 });
 
@@ -1128,3 +1163,53 @@ app.MapControllers();
 app.MapHealthChecks("/health");
 
 app.Run();
+
+// ============================================
+// 🧹 BACKGROUND SERVICE PARA LIMPIEZA DE TOKENS
+// ============================================
+
+/// <summary>
+/// Servicio en segundo plano que limpia tokens expirados cada 24 horas
+/// </summary>
+public class TokenCleanupService : BackgroundService
+{
+    private readonly IServiceProvider _serviceProvider;
+    private readonly ILogger<TokenCleanupService> _logger;
+    private readonly TimeSpan _interval = TimeSpan.FromHours(24);
+
+    public TokenCleanupService(IServiceProvider serviceProvider, ILogger<TokenCleanupService> logger)
+    {
+        _serviceProvider = serviceProvider;
+        _logger = logger;
+    }
+
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        _logger.LogInformation("🧹 Token Cleanup Service iniciado");
+
+        // Esperar 1 minuto antes de la primera ejecución
+        await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            try
+            {
+                using var scope = _serviceProvider.CreateScope();
+                var authService = scope.ServiceProvider.GetRequiredService<IAuthService>();
+
+                _logger.LogInformation("🔄 Ejecutando limpieza de tokens expirados...");
+                var deletedCount = await authService.CleanExpiredTokensAsync();
+
+                _logger.LogInformation("✅ Limpieza completada. Tokens eliminados: {Count}", deletedCount);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "❌ Error durante limpieza de tokens");
+            }
+
+            await Task.Delay(_interval, stoppingToken);
+        }
+
+        _logger.LogInformation("🛑 Token Cleanup Service detenido");
+    }
+}

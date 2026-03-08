@@ -140,32 +140,19 @@ import { SystemConfigurationFormComponent } from './pages/system-configuration/s
 import { SystemConfigurationDetailComponent } from './pages/system-configuration/system-configuration-detail/system-configuration-detail.component';
 
 const routes: Routes = [
-  // Ruta pública de login
-  {
-    path: 'login',
-    component: LoginComponent
-  },
+  // Rutas públicas
+  { path: 'login', component: LoginComponent },
+  { path: 'test-connection', component: TestConnectionComponent },
 
-  // Rutas protegidas con el nuevo layout
+  // ✅ Todas las rutas protegidas usan authGuard
   {
     path: '',
     component: MainLayoutComponent,
-    canActivate: [authGuard],
+    canActivate: [authGuard], // 🔒 Guard aplicado
     children: [
-      {
-        path: '',
-        redirectTo: 'dashboard',
-        pathMatch: 'full'
-      },
-
-      // ============================================
-      // 📊 DASHBOARD
-      // ============================================
-      {
-        path: 'dashboard',
-        component: DashboardComponent
-      },
-
+      { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
+      { path: 'dashboard', component: DashboardComponent },
+      
       // ============================================
       // 📁 NOMENCLADORES
       // ============================================
@@ -386,11 +373,8 @@ const routes: Routes = [
     ]
   },
 
-  // Ruta 404
-  {
-    path: '**',
-    redirectTo: '/login'
-  }
+  // ✅ Ruta wildcard redirige a login
+  { path: '**', redirectTo: '/login' }
 ];
 
 @NgModule({

@@ -30,6 +30,9 @@ namespace GoldBusiness.Infrastructure.Context
         public DbSet<SystemConfiguration> SystemConfiguration { get; set; } = null!;
         public DbSet<SystemConfigurationTranslation> SystemConfigurationTranslation { get; set; } = null!;
 
+        // Para Refresh Tokens
+        public DbSet<RefreshToken> RefreshToken { get; set; }
+
         // Plan de Cuentas
         public DbSet<GrupoCuenta> GrupoCuenta { get; set; } = null!;
         public DbSet<GrupoCuentaTranslation> GrupoCuentaTranslation { get; set; } = null!;
