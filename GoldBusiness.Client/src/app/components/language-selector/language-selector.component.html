@@ -1,5 +1,5 @@
 <div class="language-selector" [attr.aria-label]="label">
-  <!-- Desktop / regular: keep existing select -->
+  <!-- Desktop / regular: select con banderas SVG -->
   <ng-container *ngIf="!compact">
     <label for="language-select" class="sr-only">{{ label }}</label>
     <select id="language-select"
@@ -8,16 +8,22 @@
             class="language-dropdown">
       <option *ngFor="let lang of availableLanguages"
               [value]="lang.code">
-        {{ lang.flag }} - {{ lang.name }}
+        {{ lang.code.toUpperCase() }} - {{ lang.name }}
       </option>
     </select>
+    <!-- Bandera al lado del select (opcional) -->
+    <img [src]="getCurrentLanguageFlag()" 
+         [alt]="selectedLanguageCode" 
+         class="flag-icon" />
   </ng-container>
 
-  <!-- Mobile compact: wrapper con bandera visible + select oculto -->
+  <!-- Mobile compact: wrapper con bandera visible como imagen -->
   <ng-container *ngIf="compact">
     <div class="compact-wrapper">
-      <!-- Bandera visible - ESTE ES EL ELEMENTO CLAVE -->
-      <span class="compact-flag-display">{{ getCurrentLanguageFlag() }}</span>
+      <!-- Bandera visible como imagen SVG -->
+      <img [src]="getCurrentLanguageFlag()" 
+           [alt]="selectedLanguageCode" 
+           class="compact-flag-display" />
       
       <!-- Select oculto pero funcional -->
       <label for="language-select-compact" class="sr-only">{{ label }}</label>
@@ -27,7 +33,7 @@
               class="language-dropdown compact">
         <option *ngFor="let lang of availableLanguages"
                 [value]="lang.code">
-          {{ lang.flag }} - {{ lang.name }}
+          {{ lang.code.toUpperCase() }} - {{ lang.name }}
         </option>
       </select>
     </div>

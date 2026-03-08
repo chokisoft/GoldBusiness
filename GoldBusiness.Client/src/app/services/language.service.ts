@@ -4,7 +4,8 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export interface Language {
   code: string;
   name: string;
-  flag: string;
+  flag: string; // Ahora es la ruta al SVG local
+  emoji: string; // Emoji original como fallback
 }
 
 @Injectable({
@@ -13,11 +14,11 @@ export interface Language {
 export class LanguageService {
   private readonly STORAGE_KEY = 'selectedLanguage';
 
-  // Idiomas soportados (deben coincidir con tu API)
+  // Idiomas soportados con banderas SVG locales
   public readonly availableLanguages: Language[] = [
-    { code: 'es', name: 'Español', flag: '🇪🇸' },
-    { code: 'en', name: 'English', flag: '🇺🇸' },
-    { code: 'fr', name: 'Français', flag: '🇫🇷' }
+    { code: 'es', name: 'Español', flag: 'assets/flags/es.svg', emoji: '🇪🇸' },
+    { code: 'en', name: 'English', flag: 'assets/flags/us.svg', emoji: '🇺🇸' },
+    { code: 'fr', name: 'Français', flag: 'assets/flags/fr.svg', emoji: '🇫🇷' }
   ];
 
   // BehaviorSubject para el idioma actual

@@ -4,10 +4,18 @@
   gap: 8px;
   padding: 4px;
   position: relative;
-  z-index: 1; /* Reducido de 10000 a 1 */
+  z-index: 1;
 }
 
-/* Etiqueta accesible pero oculta visualmente */
+/* Icono de bandera al lado del select normal */
+.flag-icon {
+  width: 24px;
+  height: 18px;
+  object-fit: cover;
+  border-radius: 2px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
 .sr-only, .visually-hidden {
   position: absolute !important;
   width: 1px;
@@ -20,7 +28,6 @@
   border: 0;
 }
 
-/* ===== SELECT NORMAL PARA DESKTOP Y LOGIN ===== */
 .language-dropdown {
   appearance: menulist;
   -webkit-appearance: menulist;
@@ -32,7 +39,7 @@
   font-size: 13px;
   cursor: pointer;
   position: relative;
-  z-index: 1; /* Reducido para no interferir */
+  z-index: 1;
   min-width: 140px;
   box-shadow: 0 6px 20px rgba(2,6,23,0.45);
   transition: box-shadow 0.16s ease, transform 0.12s ease, border-color 0.12s ease;
@@ -44,7 +51,7 @@
   outline: none;
   border-color: var(--color-primary, #667eea);
   box-shadow: 0 10px 30px rgba(102,126,234,0.12);
-  z-index: 10; /* Solo cuando está abierto/enfocado */
+  z-index: 10;
 }
 
 .language-dropdown:hover {
@@ -53,16 +60,14 @@
   box-shadow: 0 10px 30px rgba(102,126,234,0.18);
 }
 
-/* Opciones con el mismo estilo dark para consistencia */
 .language-dropdown option {
   background-color: rgba(0,0,0,0.75);
   color: #fff;
   padding: 8px;
 }
 
-/* ===== MODO COMPACTO PARA MÓVIL (SOLO NAVBAR) ===== */
+/* ===== MODO COMPACTO PARA MÓVIL ===== */
 
-/* Wrapper que contiene la bandera visible y el select */
 .compact-wrapper {
   position: relative;
   display: inline-flex;
@@ -76,8 +81,8 @@
   box-shadow: 0 6px 14px rgba(2,6,23,0.28);
   cursor: pointer;
   transition: all 0.2s ease;
-  overflow: hidden; /* CAMBIADO: de visible a hidden para contener el select */
-  flex-shrink: 0; /* AÑADIDO: evita que se comprima */
+  overflow: hidden;
+  flex-shrink: 0;
   isolation: isolate;
 }
 
@@ -88,79 +93,61 @@
   box-shadow: 0 8px 18px rgba(102,126,234,0.2);
 }
 
-/* Bandera visible en el centro */
+/* Bandera visible en el centro como imagen */
 .compact-flag-display {
   position: relative;
   display: inline-block;
-  font-size: 22px;
-  line-height: 1;
+  width: 26px;
+  height: 20px;
+  object-fit: cover;
+  border-radius: 3px;
   pointer-events: none;
   z-index: 1;
   user-select: none;
-  color: #fff;
-  text-align: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
-/* Select COMPLETAMENTE transparente DETRÁS */
 .language-dropdown.compact {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  
-  /* Hacer TODO completamente invisible */
   opacity: 0 !important;
   color: transparent !important;
   background: transparent !important;
   border: none !important;
-  
   cursor: pointer;
-  z-index: 2; /* MANTENIDO: pero contenido dentro del wrapper con overflow:hidden */
-  
-  /* Remover apariencia nativa */
+  z-index: 2;
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  
   padding: 0;
   margin: 0;
-  
-  /* Ocultar texto completamente */
   font-size: 0 !important;
   line-height: 0 !important;
   text-indent: -9999px !important;
   overflow: hidden !important;
 }
 
-/* Cuando el select está abierto/enfocado, darle z-index alto */
 .language-dropdown.compact:focus,
 .language-dropdown.compact:active {
-  z-index: 9999; /* AUMENTADO: para que el dropdown aparezca sobre todo */
+  z-index: 9999;
 }
 
-/* Ocultar cualquier elemento interno del select */
 .language-dropdown.compact::after,
 .language-dropdown.compact::before {
   display: none !important;
 }
 
-/* Ocultar la flecha del select */
 .language-dropdown.compact::-webkit-calendar-picker-indicator {
   display: none !important;
   opacity: 0 !important;
 }
 
-.language-dropdown.compact::-webkit-inner-spin-button,
-.language-dropdown.compact::-webkit-outer-spin-button {
-  display: none !important;
-}
-
-/* LAS OPCIONES DEL SELECT COMPACTO - MISMO ESTILO QUE EL SELECT NORMAL */
 .language-dropdown.compact option {
   display: block !important;
   opacity: 1 !important;
-  /* MISMO estilo que .language-dropdown option */
   background-color: rgba(0,0,0,0.95) !important;
   color: #ffffff !important;
   padding: 10px 12px !important;
@@ -170,20 +157,17 @@
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
 }
 
-/* Opción seleccionada con estilo especial */
 .language-dropdown.compact option:checked {
   background-color: rgba(102, 126, 234, 0.2) !important;
   font-weight: 600 !important;
 }
 
-/* Focus state para el wrapper */
 .compact-wrapper:has(.language-dropdown.compact:focus) {
   border-color: var(--color-primary, #667eea);
   box-shadow: 0 0 0 3px rgba(102,126,234,0.12);
-  z-index: 9999; /* AUMENTADO: Solo cuando está enfocado */
+  z-index: 9999;
 }
 
-/* Ajustes para pantallas pequeñas */
 @media (max-width: 768px) {
   .language-selector {
     gap: 4px;
@@ -196,11 +180,11 @@
   }
   
   .compact-flag-display {
-    font-size: 20px;
+    width: 24px;
+    height: 18px;
   }
 }
 
-/* Ajustes para navbar */
 @media (max-width: 992px) {
   .language-dropdown:not(.compact) {
     font-size: 12px;
