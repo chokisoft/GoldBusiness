@@ -39,7 +39,7 @@ export class SubGrupoCuentaFormComponent implements OnInit, OnDestroy {
     this.form = this.fb.group({
       codigoUsuario: [
         { value: '', disabled: true },
-        [Validators.required, Validators.pattern(/^\d{3$/), Validators.minLength(3), Validators.maxLength(3)]
+        [Validators.required, Validators.pattern(/^\d{3}$/), Validators.minLength(3), Validators.maxLength(3)]
       ],
       grupoCuentaId: [null, Validators.required],
       descripcion: ['', [Validators.required, Validators.maxLength(256)]],

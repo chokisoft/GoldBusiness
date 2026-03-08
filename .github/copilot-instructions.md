@@ -19,10 +19,14 @@
 - Previene que el menú central (Inicio/Acerca) se superponga con el selector de idioma y el área de usuario en anchos medios; prefiere que el menú central se alinee a la izquierda o sea desplazable cuando el espacio sea limitado.
 - Prefiere que el selector de idioma permanezca visible en móvil como compacto/sólo icono en lugar de estar oculto. Al actualizar la UI, preserva la temática de color original de los componentes para los selects; prefiere un selector de idioma solo con icono en móvil mientras mantienes los colores de escritorio intactos. Además, prefiere que el popover del selector de idioma en móvil coincida visualmente con la apariencia del select en escritorio, usando un fondo oscuro sólido para las opciones del popover, texto blanco, bordes coincidentes y sombra para mantener el contraste.
 - Haz que los botones de la barra de navegación (menú, idioma, usuario, cerrar sesión) sean ligeramente más pequeños en móvil (por ejemplo, 34px) para un mejor ajuste.
+- Implementa la misma experiencia de generación de código para `Cuenta` como para `SubGrupoCuenta`: usa el dropdown de `SubGrupoCuenta` más un campo de entrada de código de usuario de 3 dígitos para componer el `Cuenta.codigo` de 8 dígitos (prefijo = `subgrupo.codigo` seleccionado (5) + 3 dígitos de usuario).
+- Usa una UI de cascada consistente en los formularios de Plan Cuenta: muestra 'Prefijo seleccionado' solo cuando exista un prefijo, desactiva la entrada de código de usuario cuando no se seleccione un prefijo, y coincide con el diseño/comportamiento del formulario de SubGrupoCuenta.
+- Alinear verticalmente el checkbox 'Deudora' en formularios del Plan de Cuenta y en SubGrupoCuenta para que quede centrado con respecto a los inputs en .form-row-three.
 
 ## Code Style
 - Usa reglas de formato específicas.
 - Sigue las convenciones de nomenclatura.
 
 ## Memory
--  Prefiere respuestas en español.
+-  Prefiere respuestas en español (es).
+- Alinear verticalmente el checkbox 'Deudora' en SubGrupoCuenta: centrar el bloque de checkbox con respecto a los inputs en .form-row-three (alineación vertical preferida).

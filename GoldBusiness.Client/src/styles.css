@@ -62,6 +62,25 @@
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
+/* Global page container used by forms/pages (unified and wider) */
+.page-container {
+  max-width: 1100px; /* Increased width for complex forms (Cuenta) */
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Card baseline shared by form pages */
+.card {
+  background: var(--color-white);
+  border-radius: var(--border-radius-xl);
+  box-shadow: var(--shadow-md);
+  padding: 2.25rem;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ELEMENTOS DE TIPOGRAFÍA Y LAYOUT
+   ═══════════════════════════════════════════════════════════ */
+
 body {
   margin: 0;
   padding: 0;
@@ -75,64 +94,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ✅ Títulos con escala proporcional */
-h1, .h1 {
-  font-size: var(--font-size-3xl);
-  font-weight: 600;
-  line-height: var(--line-height-tight);
-  margin-top: 0;
-  margin-bottom: var(--spacing-lg);
-  color: var(--color-text);
-}
-
-h2, .h2 {
-  font-size: var(--font-size-2xl);
-  font-weight: 600;
-  line-height: var(--line-height-tight);
-  margin-top: 0;
-  margin-bottom: var(--spacing-lg);
-  color: var(--color-text);
-}
-
-h3, .h3 {
-  font-size: var(--font-size-xl);
-  font-weight: 600;
-  line-height: var(--line-height-tight);
-  margin-top: 0;
-  margin-bottom: var(--spacing-base);
-  color: var(--color-text);
-}
-
-h4, .h4 {
-  font-size: var(--font-size-lg);
-  font-weight: 600;
-  line-height: var(--line-height-tight);
-  margin-top: 0;
-  margin-bottom: var(--spacing-base);
-  color: var(--color-text);
-}
-
-h5, .h5 {
-  font-size: var(--font-size-md);
-  font-weight: 600;
-  line-height: var(--line-height-tight);
-  margin-top: 0;
-  margin-bottom: var(--spacing-sm);
-  color: var(--color-text);
-}
-
-h6, .h6 {
-  font-size: var(--font-size-base);
-  font-weight: 600;
-  line-height: var(--line-height-tight);
-  margin-top: 0;
-  margin-bottom: var(--spacing-sm);
-  color: var(--color-text);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-/* ✅ Títulos de página específicos para ERP */
+/* Page titles */
 .page-title {
   font-size: var(--font-size-2xl);
   font-weight: 600;
@@ -141,33 +103,109 @@ h6, .h6 {
   line-height: var(--line-height-tight);
 }
 
-.page-subtitle {
+/* Inputs + selects baseline */
+.form-control {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
   font-size: var(--font-size-base);
-  font-weight: 400;
+  line-height: 1.5;
+  color: var(--color-text);
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.08);
+}
+
+/* Small helper text */
+.form-text {
+  font-size: 0.875rem;
   color: var(--color-text-light);
-  margin: 0 0 var(--spacing-lg) 0;
-  line-height: var(--line-height-base);
+  margin-top: 0.25rem;
 }
 
-/* ✅ Enlaces */
-a {
-  color: var(--color-primary);
-  text-decoration: none;
-  transition: color 0.2s ease;
+/* Small utility */
+.text-muted { color: var(--color-text-light); }
+
+/* ═══════════════════════════════════════════════════════════
+   GRID UTILITIES FOR FORMS
+   - .form-row: two-column layout (default)
+   - .form-row-three: three-column layout used by SubGrupoCuenta / Cuenta
+   These utilities are responsive and collapse at sensible breakpoints.
+   ═══════════════════════════════════════════════════════════ */
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  align-items: start;
 }
 
-  a:hover {
-    color: var(--color-secondary);
-    text-decoration: underline;
+.form-row-three {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+/* Align checkbox column visually similar to SubGrupoCuenta */
+.form-row-three .form-group:last-child {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 1.2rem;
+}
+
+/* Compact helpers for smaller screens */
+@media (max-width: 992px) {
+  .form-row-three {
+    grid-template-columns: 1fr;
+  }
+  .form-row {
+    grid-template-columns: 1fr;
   }
 
-/* ✅ Campos de formulario heredan la fuente */
-input, select, textarea, button {
-  font-family: inherit;
-  font-size: var(--font-size-base);
+  .card {
+    padding: 1.25rem;
+  }
 }
 
-/* ✅ Botones - Tamaño base */
+/* Small screen tweaks */
+@media (max-width: 576px) {
+  .page-container {
+    padding: 0 0.75rem;
+  }
+  .form-row-three .form-group:last-child { padding-top: 0; }
+}
+
+/* Errors and invalid state */
+.invalid-feedback {
+  color: var(--color-danger);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: none;
+}
+
+.form-control.is-invalid ~ .invalid-feedback {
+  display: block;
+}
+
+/* Disabled / readonly fields */
+.form-control:disabled,
+.form-control[readonly] {
+  background-color: #f1f3f5;
+  cursor: not-allowed;
+  opacity: 0.9;
+  color: var(--color-text-light);
+}
+
+/* Buttons baseline */
 .btn {
   font-size: var(--font-size-base);
   font-weight: 500;
@@ -252,6 +290,35 @@ table {
     background-color: var(--color-background);
     cursor: pointer;
   }
+
+  /* Estilos específicos para impresión */
+@media print {
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  table th,
+  table td {
+    padding: 0.5rem;
+    font-size: 11pt;
+  }
+
+  table th {
+    background-color: var(--color-primary);
+    color: white;
+    border: none;
+  }
+
+  table tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+
+  /* Ocultar elementos no relevantes en impresión */
+  .no-print {
+    display: none !important;
+  }
+}
 
 /* ✅ Mensajes pequeños */
 small, .small, .text-small {
@@ -389,7 +456,7 @@ small, .small, .text-small {
   .form-control:focus {
     outline: none;
     border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.08);
   }
 
   .form-control::placeholder {
@@ -487,7 +554,7 @@ body.sidebar-expanded .main-content {
     background: var(--color-text-light);
   }
 
-/* ═══════════════════════════════════════════════════════════
+ /* ═══════════════════════════════════════════════════════════
    ANIMACIONES SUAVES
    ═══════════════════════════════════════════════════════════ */
 
@@ -683,13 +750,19 @@ body.sidebar-expanded .main-content {
   .search-input:focus {
     outline: none;
     border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.08);
   }
 
   .search-input::placeholder {
     color: var(--color-text-lighter);
     font-style: italic;
   }
+
+  /* Borde y sombra en búsqueda avanzada */
+.search-container.advanced .search-input {
+  border-color: var(--color-success);
+  box-shadow: 0 0 0 3px rgba(72, 187, 120, 0.1);
+}
 
 /* Icono de búsqueda */
 .search-icon {
@@ -739,6 +812,12 @@ body.sidebar-expanded .main-content {
 
     .page-size-selector select:hover {
       border-color: var(--color-primary);
+    }
+
+    .page-size-selector select:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.08);
     }
 
 /* ═══════════════════════════════════════════════════════════
@@ -809,6 +888,21 @@ body.sidebar-expanded .main-content {
   .pagination .btn:last-child {
     padding: 0.375rem 1rem;
   }
+
+  /* Info adicional en paginación */
+  .pagination-info {
+    font-size: var(--font-size-xs);
+    color: var(--color-text);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+  }
+
+    .pagination-info .separator {
+      color: var(--color-text-light);
+      font-weight: 400;
+      font-size: 1rem;
+    }
 
 /* ═══════════════════════════════════════════════════════════
    📱 RESPONSIVE - BÚSQUEDA Y PAGINACIÓN

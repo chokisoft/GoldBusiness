@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { skip } from 'rxjs/operators';
 import { CuentaService, CuentaDTO } from '../../../services/cuenta.service';
 import { SubGrupoCuentaService, SubGrupoCuentaDTO } from '../../../services/subgrupo-cuenta.service';
+import { GrupoCuentaService, GrupoCuentaDTO } from '../../../services/grupo-cuenta.service';
 import { TranslationService } from '../../../services/translation.service';
 import { LanguageService } from '../../../services/language.service';
 
@@ -19,8 +20,17 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
   cuentaId: number | null = null;
   loading = false;
   error: string | null = null;
-  subGruposCuenta: SubGrupoCuentaDTO[] = [];
+
+  // All subgrupos loaded once; UI shows filteredSubgrupos according to selected grupo
+  allSubGrupos: SubGrupoCuentaDTO[] = [];
+  filteredSubGrupos: SubGrupoCuentaDTO[] = [];
   loadingSubGrupos = true;
+
+  gruposCuenta: GrupoCuentaDTO[] = [];
+  loadingGrupos = true;
+
+  selectedSubGrupoCodigo: string = '';
+  codigoCompleto: string = '';
 
   private languageSubscription?: Subscription;
 
@@ -28,14 +38,19 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private cuentaService: CuentaService,
     private subGrupoCuentaService: SubGrupoCuentaService,
+    private grupoCuentaService: GrupoCuentaService,
     private router: Router,
     private route: ActivatedRoute,
     private translate: TranslationService,
     private languageService: LanguageService
   ) {
     this.form = this.fb.group({
-      codigo: ['', [Validators.required, Validators.maxLength(10)]],
-      subGrupoCuentaId: [null, Validators.required],
+      // readonly calculated code
+      codigo: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(8), Validators.maxLength(8), Validators.pattern(/^\d{8}$/)]],
+      codigoUsuario: [{ value: '', disabled: true }, [Validators.required, Validators.pattern(/^\d{3}$/), Validators.minLength(3), Validators.maxLength(3)]],
+      grupoCuentaId: [null, Validators.required],
+      // start disabled until a grupo is selected (same UX as País->Provincia)
+      subGrupoCuentaId: [{ value: null, disabled: true }, Validators.required],
       descripcion: ['', [Validators.required, Validators.maxLength(256)]],
       systemConfigurationId: [1]
     });
@@ -43,7 +58,8 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.setupFormSubscriptions();
-    this.loadSubGruposCuenta();
+    this.loadGruposCuenta();
+    this.loadAllSubGrupos(); // load once, will filter locally
 
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
@@ -55,7 +71,8 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
       .pipe(skip(1))
       .subscribe(() => {
         console.log('🔄 CuentaForm: Idioma cambiado, recargando datos...');
-        this.loadSubGruposCuenta(); // chains to loadCuenta() in edit mode
+        this.loadGruposCuenta();
+        this.loadAllSubGrupos();
       });
   }
 
@@ -64,6 +81,21 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
   }
 
   private setupFormSubscriptions(): void {
+    // When a group changes, filter subgroups
+    this.form.get('grupoCuentaId')?.valueChanges.subscribe(grupoId => {
+      this.onGrupoCuentaChange(grupoId);
+    });
+
+    // When subgrupo changes, set selected prefix and enable codigoUsuario
+    this.form.get('subGrupoCuentaId')?.valueChanges.subscribe(subId => {
+      this.onSubGrupoChange(subId);
+    });
+
+    // When codigoUsuario changes, update composed code
+    this.form.get('codigoUsuario')?.valueChanges.subscribe(() => {
+      this.updateCodigoCompleto();
+    });
+
     this.form.get('descripcion')?.valueChanges.subscribe(value => {
       if (value && typeof value === 'string' && value !== value.toUpperCase()) {
         this.form.get('descripcion')?.setValue(value.toUpperCase(), { emitEvent: false });
@@ -71,11 +103,28 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  loadSubGruposCuenta(): void {
+  loadGruposCuenta(): void {
+    this.loadingGrupos = true;
+    this.grupoCuentaService.getAll().subscribe({
+      next: (data) => {
+        this.gruposCuenta = data.filter(g => g.activo !== false);
+        this.loadingGrupos = false;
+      },
+      error: (err: any) => {
+        console.error('Error loading grupos:', err);
+        this.error = 'Error al cargar grupos de cuenta';
+        this.loadingGrupos = false;
+      }
+    });
+  }
+
+  loadAllSubGrupos(): void {
     this.loadingSubGrupos = true;
     this.subGrupoCuentaService.getAll().subscribe({
       next: (data) => {
-        this.subGruposCuenta = data.filter(s => !s.cancelado);
+        this.allSubGrupos = data.filter(s => !s.cancelado);
+        // Initially no filter until a grupo is selected
+        this.filteredSubGrupos = [];
         this.loadingSubGrupos = false;
 
         if (this.isEditMode && this.cuentaId) {
@@ -90,18 +139,118 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
     });
   }
 
+  onGrupoCuentaChange(grupoId: number | null): void {
+    if (!grupoId) {
+      this.filteredSubGrupos = [];
+      // disable the control at FormControl level (UX igual a País->Provincia)
+      this.form.get('subGrupoCuentaId')?.setValue(null);
+      this.form.get('subGrupoCuentaId')?.disable();
+      this.form.get('codigoUsuario')?.disable();
+      this.form.get('codigoUsuario')?.setValue('');
+      this.selectedSubGrupoCodigo = '';
+      this.updateCodigoCompleto();
+      return;
+    }
+
+    const gid = Number(grupoId);
+    this.filteredSubGrupos = this.allSubGrupos.filter(s => Number(s.grupoCuentaId) === gid);
+    // reset subgrupo selection when group changes
+    this.form.get('subGrupoCuentaId')?.setValue(null);
+    // enable the control so user can select a subgrupo
+    this.form.get('subGrupoCuentaId')?.enable();
+    this.form.get('codigoUsuario')?.disable();
+    this.form.get('codigoUsuario')?.setValue('');
+    this.selectedSubGrupoCodigo = '';
+    this.updateCodigoCompleto();
+  }
+
+  onSubGrupoChange(subGrupoId: number | null): void {
+    if (!subGrupoId) {
+      this.selectedSubGrupoCodigo = '';
+      this.form.get('codigoUsuario')?.disable();
+      this.form.get('codigoUsuario')?.setValue('');
+      this.updateCodigoCompleto();
+      return;
+    }
+
+    const subIdNumber = Number(subGrupoId);
+    const subSeleccionado = this.allSubGrupos.find(s => Number(s.id) === subIdNumber);
+
+    if (!subSeleccionado) {
+      this.selectedSubGrupoCodigo = '';
+      this.form.get('codigoUsuario')?.disable();
+      this.form.get('codigoUsuario')?.setValue('');
+      this.updateCodigoCompleto();
+      return;
+    }
+
+    this.selectedSubGrupoCodigo = subSeleccionado.codigo || '';
+    if (this.selectedSubGrupoCodigo) {
+      this.form.get('codigoUsuario')?.enable();
+    } else {
+      this.form.get('codigoUsuario')?.disable();
+      this.form.get('codigoUsuario')?.setValue('');
+    }
+
+    this.updateCodigoCompleto();
+  }
+
+  updateCodigoCompleto(): void {
+    const codigoUsuario = this.form.get('codigoUsuario')?.value || '';
+
+    if (this.selectedSubGrupoCodigo && codigoUsuario && codigoUsuario.length === 3) {
+      this.codigoCompleto = this.selectedSubGrupoCodigo + codigoUsuario;
+      this.form.get('codigo')?.setValue(this.codigoCompleto, { emitEvent: false });
+    } else {
+      this.codigoCompleto = this.selectedSubGrupoCodigo ? `${this.selectedSubGrupoCodigo}___` : '';
+      this.form.get('codigo')?.setValue('', { emitEvent: false });
+    }
+  }
+
   loadCuenta(): void {
     if (!this.cuentaId) return;
 
     this.loading = true;
     this.cuentaService.getById(this.cuentaId).subscribe({
       next: (data) => {
-        this.form.patchValue(data);
+        // data.codigo is 8 digits: subgrupo (5) + usuario (3)
+        const codigoSubGrupo = data.codigo.substring(0, 5);
+        const codigoUsuario = data.codigo.substring(5, 8);
 
-        if (this.isEditMode) {
-          this.form.get('codigo')?.disable();
-          this.form.get('subGrupoCuentaId')?.disable();
+        const subgrupo = this.allSubGrupos.find(s => s.codigo === codigoSubGrupo);
+
+        // If subgrupo found, we can set its parent grupo and filtered list
+        if (subgrupo) {
+          this.form.patchValue({
+            grupoCuentaId: subgrupo.grupoCuentaId
+          });
+          // apply filter so subgrupo select lists correct items
+          this.filteredSubGrupos = this.allSubGrupos.filter(s => Number(s.grupoCuentaId) === Number(subgrupo.grupoCuentaId));
+          // enable subgrupo control to patch value
+          this.form.get('subGrupoCuentaId')?.enable();
         }
+
+        this.form.patchValue({
+          subGrupoCuentaId: subgrupo?.id,
+        });
+
+        setTimeout(() => {
+          this.form.patchValue({
+            codigoUsuario: codigoUsuario,
+            descripcion: data.descripcion,
+            systemConfigurationId: data.systemConfigurationId
+          });
+
+          this.selectedSubGrupoCodigo = subgrupo?.codigo || '';
+          this.updateCodigoCompleto();
+
+          if (this.isEditMode) {
+            this.form.get('grupoCuentaId')?.disable();
+            this.form.get('subGrupoCuentaId')?.disable();
+            this.form.get('codigoUsuario')?.disable();
+            this.form.get('codigo')?.disable();
+          }
+        }, 100);
 
         this.loading = false;
       },
@@ -114,15 +263,26 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
-    if (this.form.invalid) {
+    const codigoUsuario = this.form.get('codigoUsuario')?.value;
+    if (this.form.invalid || !this.codigoCompleto || !codigoUsuario || codigoUsuario.length !== 3) {
       this.form.markAllAsTouched();
+
+      if (!codigoUsuario || codigoUsuario.length !== 3) {
+        this.form.get('codigoUsuario')?.markAsTouched();
+      }
       return;
     }
 
     this.loading = true;
     this.error = null;
 
-    const dto: CuentaDTO = this.form.getRawValue();
+    const raw = this.form.getRawValue();
+    const dto: CuentaDTO = {
+      ...raw,
+      codigo: this.codigoCompleto,
+      subGrupoCuentaId: raw.subGrupoCuentaId,
+      systemConfigurationId: raw.systemConfigurationId
+    };
 
     if (this.isEditMode) {
       this.cuentaService.update(this.cuentaId!, dto).subscribe({
@@ -161,6 +321,12 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
     if (control?.hasError('maxlength')) {
       const maxLength = control.errors?.['maxlength'].requiredLength;
       return this.translate.translate('validation.maxLength', [maxLength]);
+    }
+    if (control?.hasError('pattern') || control?.hasError('minlength')) {
+      if (fieldName === 'codigoUsuario') {
+        return this.translate.translate('validation.codigo3Digitos');
+      }
+      return this.translate.translate('validation.codigo8Digitos');
     }
     return '';
   }

@@ -1097,6 +1097,17 @@ export class TranslationService {
       'en': 'Processing...',
       'fr': 'Traitement...'
     },
+    'common.select': {
+      'es': 'Seleccione',
+      'en': 'Select',
+      'fr': 'Sélectionner'
+    },
+    'common.loading': {
+      'es': 'Cargando',
+      'en': 'Loading',
+      'fr': 'Chargement'
+    },
+
     // ═══════════════════════════════════════════════════════════
     // 📋 COMÚN - Botones y Acciones
     // ═══════════════════════════════════════════════════════════
@@ -1145,20 +1156,10 @@ export class TranslationService {
       'en': 'Actions',
       'fr': 'Actions'
     },
-    'common.loading': {
-      'es': 'Cargando...',
-      'en': 'Loading...',
-      'fr': 'Chargement...'
-    },
     'common.noData': {
       'es': 'No hay datos disponibles',
       'en': 'No data available',
       'fr': 'Aucune donnée disponible'
-    },
-    'common.select': {
-      'es': 'Seleccionar',
-      'en': 'Select',
-      'fr': 'Sélectionner'
     },
     'common.ifNotChecked': {
       'es': '(si no está marcado)',
@@ -1413,6 +1414,11 @@ export class TranslationService {
       'en': 'Group code + your 3 digits = Full code',
       'fr': 'Code du groupe + vos 3 chiffres = Code complet'
     },
+    'subGrupoCuenta.prefijoSeleccionado': {
+      'es': 'Prefijo seleccionado',
+      'en': 'Selected prefix',
+      'fr': 'Préfixe sélectionné'
+    },
 
     // ═══════════════════════════════════════════════════════════
     // 📄 CUENTA
@@ -1471,6 +1477,16 @@ export class TranslationService {
       'es': 'Grupo de Cuenta',
       'en': 'Account Group',
       'fr': 'Groupe de Comptes'
+    },
+    'cuenta.selectGrupoToSeeSubgrupos': {
+      'es': 'Seleccione un grupo para ver subgrupos.',
+      'en': 'Select a group to see subgroups.',
+      'fr': 'Sélectionnez un groupe pour voir les sous-groupes.'
+    },
+    'cuenta.descripcionPlaceholder': {
+      'es': 'Descripción de la cuenta',
+      'en': 'Account description',
+      'fr': 'Description du compte'
     },
 
     // ═══════════════════════════════════════════════════════════
