@@ -1,1 +1,91 @@
-<p>sub-linea-form works!</p>
+<div class="page-container">
+  <div class="page-header">
+    <h1 class="page-title">
+      {{ isEditMode ? ('sub-linea.editTitle' | translate) : ('sub-linea.newTitle' | translate) }}
+    </h1>
+  </div>
+
+  <div class="alert alert-error" *ngIf="error">
+    <span class="alert-icon">⚠️</span>
+    {{ error }}
+  </div>
+
+  <div class="card">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
+      <!-- Linea selector -->
+      <div class="form-group">
+        <label for="lineaId" class="form-label">{{ 'sub-linea.lineaId' | translate }} *</label>
+        <select id="lineaId"
+                formControlName="lineaId"
+                class="form-control"
+                [class.is-invalid]="form.get('lineaId')?.invalid && form.get('lineaId')?.touched"
+                [disabled]="loadingLineas">
+          <option [value]="null">{{ 'common.select' | translate }}</option>
+          <option *ngFor="let item of lineas" [value]="item.id">
+            {{ item.codigo }} - {{ item.descripcion }}
+          </option>
+        </select>
+        <small class="form-text" *ngIf="loadingLineas">⏳ {{ 'common.loading' | translate }}...</small>
+        <div class="invalid-feedback" *ngIf="form.get('lineaId')?.invalid && form.get('lineaId')?.touched">
+          {{ getErrorMessage('lineaId') }}
+        </div>
+      </div>
+
+      <!-- Fila con 2 columnas: Código usuario y Código completo -->
+      <div class="form-row-two">
+        <div class="form-group">
+          <label for="codigoUsuario" class="form-label">{{ 'subGrupoCuenta.codigoUsuario' | translate }} *</label>
+          <input type="text"
+                 id="codigoUsuario"
+                 formControlName="codigoUsuario"
+                 class="form-control"
+                 maxlength="3"
+                 placeholder="001"
+                 [class.is-invalid]="form.get('codigoUsuario')?.invalid && form.get('codigoUsuario')?.touched"
+                 [disabled]="!selectedLineaCodigo" />
+          <small class="form-text text-muted">{{ 'subGrupoCuenta.codigoUsuarioHelp' | translate }}</small>
+          <div class="invalid-feedback" *ngIf="form.get('codigoUsuario')?.invalid && form.get('codigoUsuario')?.touched">
+            {{ getErrorMessage('codigoUsuario') }}
+          </div>
+          <small class="form-text text-muted" *ngIf="selectedLineaCodigo">{{ 'subGrupoCuenta.prefijoSeleccionado' | translate }}: {{ selectedLineaCodigo }}</small>
+        </div>
+
+        <div class="form-group">
+          <label for="codigo" class="form-label">{{ 'subGrupoCuenta.codigoCompleto' | translate }}</label>
+          <input type="text"
+                 id="codigo"
+                 formControlName="codigo"
+                 class="form-control"
+                 readonly
+                 [value]="codigoCompleto"
+                 [placeholder]="'subGrupoCuenta.codigoCompletoPlaceholder' | translate" />
+          <small class="form-text text-muted">{{ 'subGrupoCuenta.codigoCompletoHelp' | translate }}</small>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="descripcion" class="form-label">{{ 'sub-linea.descripcion' | translate }} *</label>
+        <input type="text"
+               id="descripcion"
+               formControlName="descripcion"
+               class="form-control"
+               maxlength="256"
+               [placeholder]="'sub-linea.descripcionPlaceholder' | translate"
+               [class.is-invalid]="form.get('descripcion')?.invalid && form.get('descripcion')?.touched" />
+        <div class="invalid-feedback" *ngIf="form.get('descripcion')?.invalid && form.get('descripcion')?.touched">
+          {{ getErrorMessage('descripcion') }}
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="loading">
+          ❌ {{ 'common.cancel' | translate }}
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="loading || form.invalid || loadingLineas || !codigoCompleto">
+          <span *ngIf="!loading">💾 {{ 'common.save' | translate }}</span>
+          <span *ngIf="loading">⏳ {{ 'common.saving' | translate }}</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -78,14 +78,16 @@ namespace GoldBusiness.CodeGen
 
             // Interface DTO
             sb.AppendLine($"export interface {_metadata.EntityName}DTO {{");
-            sb.AppendLine("  id?: number;");
 
-            foreach (var prop in _metadata.Properties)
+            // ✅ Solo agregar propiedades que NO sean "Id" (para evitar duplicación)
+            foreach (var prop in _metadata.Properties.Where(p => p.Name != "Id"))
             {
                 var tsType = MapToTypeScriptType(prop.Type);
                 var optional = prop.IsNullable ? "?" : "";
                 sb.AppendLine($"  {ToCamelCase(prop.Name)}{optional}: {tsType};");
             }
+
+            sb.AppendLine("  id?: number;");
 
             // Propiedades de auditoría
             sb.AppendLine();
@@ -272,7 +274,11 @@ namespace GoldBusiness.CodeGen
 
             // Ordenamiento por código o el primer campo string
             var sortField = GetPrimarySortField();
-            sb.AppendLine($"            this.{_metadata.PluralCamelCase} = data.sort((a, b) => a.{sortField}.localeCompare(b.{sortField}));");
+            sb.AppendLine($"            this.{_metadata.PluralCamelCase} = data.sort((a, b) => {{");
+            sb.AppendLine($"              const aVal = a.{sortField} ?? '';");
+            sb.AppendLine($"              const bVal = b.{sortField} ?? '';");
+            sb.AppendLine($"              return aVal.localeCompare(bVal);");
+            sb.AppendLine($"            }});");
             sb.AppendLine($"            this.filtered{_metadata.PluralEntityName} = [...this.{_metadata.PluralCamelCase}];");
             sb.AppendLine();
             sb.AppendLine("            if (!this.pageSize || this.pageSize <= 0) this.pageSize = 10;");
@@ -485,7 +491,7 @@ namespace GoldBusiness.CodeGen
             sb.AppendLine("                          [title]=\"'common.view' | translate\"><span>👁️</span></button>");
             sb.AppendLine("                  <button class=\"btn btn-sm btn-warning\" [routerLink]=\"['editar', item.id]\"");
             sb.AppendLine("                          [title]=\"'common.edit' | translate\"><span>✏️</span></button>");
-            sb.AppendLine($"                  <button class=\"btn btn-sm btn-danger\" (click)=\"delete(item.id!, item.{ToCamelCase(GetPrimaryDisplayField())})\"");
+            sb.AppendLine($"                  <button class=\"btn btn-sm btn-danger\" (click)=\"delete(item.id!, item.{ToCamelCase(GetPrimaryDisplayField())} || '')\"");
             sb.AppendLine("                          [title]=\"'common.delete' | translate\"><span>🗑️</span></button>");
             sb.AppendLine("                </div>");
             sb.AppendLine("              </td>");
@@ -503,8 +509,12 @@ namespace GoldBusiness.CodeGen
             sb.AppendLine("    <div class=\"card-footer\" *ngIf=\"totalPages > 0\">");
             sb.AppendLine("      <div class=\"pagination-info\">");
             sb.AppendLine("        {{ 'common.showing' | translate }} {{ (currentPage - 1) * pageSize + 1 }} -");
-            sb.AppendLine($"        {{{{ Math.min(currentPage * pageSize, filtered{_metadata.PluralEntityName}.length) }}}} {{ 'common.of' | translate }}");
-            sb.AppendLine($"        {{{{ filtered{_metadata.PluralEntityName}.length }}}}");
+            sb.Append("        {{ Math.min(currentPage * pageSize, filtered");
+            sb.Append(_metadata.PluralEntityName);
+            sb.AppendLine(".length) }} {{ 'common.of' | translate }}");
+            sb.Append("        {{ filtered");
+            sb.Append(_metadata.PluralEntityName);
+            sb.AppendLine(".length }}");
             sb.AppendLine("      </div>");
             sb.AppendLine("      <div class=\"pagination\">");
             sb.AppendLine("        <button class=\"btn btn-sm btn-secondary\" (click)=\"previousPage()\" [disabled]=\"currentPage === 1\">");
@@ -993,7 +1003,7 @@ namespace GoldBusiness.CodeGen
                 sb.AppendLine($"        this.{ToPluralCamelCase(fk.RelatedEntity)} = data;");
                 sb.AppendLine($"        this.loading{fk.RelatedEntity}s = false;");
                 sb.AppendLine("      },");
-                sb.AppendLine("      error: (err: any) => {");
+                sb.AppendLine("      error: (err) => {");
                 sb.AppendLine($"        this.error = 'Error al cargar {ToPluralCamelCase(fk.RelatedEntity)}';");
                 sb.AppendLine($"        this.loading{fk.RelatedEntity}s = false;");
                 sb.AppendLine("      }");
@@ -1019,6 +1029,7 @@ namespace GoldBusiness.CodeGen
             sb.AppendLine("  }");
             sb.AppendLine();
 
+            // ✅ CORRECCIÓN: Método onSubmit SIN duplicación
             sb.AppendLine("  onSubmit(): void {");
             sb.AppendLine("    if (this.form.invalid) {");
             sb.AppendLine("      Object.keys(this.form.controls).forEach(key => {");
@@ -1032,19 +1043,27 @@ namespace GoldBusiness.CodeGen
             sb.AppendLine();
             sb.AppendLine($"    const formData: {_metadata.EntityName}DTO = this.form.getRawValue();");
             sb.AppendLine();
-            sb.AppendLine("    const request = this.isEditMode");
-            sb.AppendLine($"      ? this.{_metadata.CamelCase}Service.update(this.{_metadata.CamelCase}Id!, formData)");
-            sb.AppendLine($"      : this.{_metadata.CamelCase}Service.create(formData);");
-            sb.AppendLine();
-            sb.AppendLine("    request.subscribe({");
-            sb.AppendLine("      next: () => {");
-            sb.AppendLine($"        this.router.navigate(['/nomencladores/{_metadata.KebabCase}']);");
-            sb.AppendLine("      },");
-            sb.AppendLine("      error: (err) => {");
-            sb.AppendLine("        this.loading = false;");
-            sb.AppendLine("        this.error = this.isEditMode ? 'Error al actualizar' : 'Error al crear';");
-            sb.AppendLine("      }");
-            sb.AppendLine("    });");
+            sb.AppendLine("    if (this.isEditMode) {");
+            sb.AppendLine($"      this.{_metadata.CamelCase}Service.update(this.{_metadata.CamelCase}Id!, formData).subscribe({{");
+            sb.AppendLine("        next: () => {");
+            sb.AppendLine($"          this.router.navigate(['/nomencladores/{_metadata.KebabCase}']);");
+            sb.AppendLine("        },");
+            sb.AppendLine("        error: (err) => {");
+            sb.AppendLine("          this.loading = false;");
+            sb.AppendLine("          this.error = 'Error al actualizar';");
+            sb.AppendLine("        }");
+            sb.AppendLine("      });");
+            sb.AppendLine("    } else {");
+            sb.AppendLine($"      this.{_metadata.CamelCase}Service.create(formData).subscribe({{");
+            sb.AppendLine("        next: () => {");
+            sb.AppendLine($"          this.router.navigate(['/nomencladores/{_metadata.KebabCase}']);");
+            sb.AppendLine("        },");
+            sb.AppendLine("        error: (err) => {");
+            sb.AppendLine("          this.loading = false;");
+            sb.AppendLine("          this.error = 'Error al crear';");
+            sb.AppendLine("        }");
+            sb.AppendLine("      });");
+            sb.AppendLine("    }");
             sb.AppendLine("  }");
             sb.AppendLine();
 

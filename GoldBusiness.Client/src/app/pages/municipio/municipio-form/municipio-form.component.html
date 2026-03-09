@@ -1,1 +1,76 @@
-<p>municipio-form works!</p>
+<div class="page-container">
+  <div class="page-header">
+    <h1 class="page-title">
+      {{ isEditMode ? ('municipio.editTitle' | translate) : ('municipio.newTitle' | translate) }}
+    </h1>
+  </div>
+
+  <div class="alert alert-error" *ngIf="error">
+    <span class="alert-icon">⚠️</span>
+    {{ error }}
+  </div>
+
+  <div class="card">
+    <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" class="form-container" *ngIf="!loading">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="provinciaId" class="form-label">{{ 'municipio.provincia' | translate }} *</label>
+          <select id="provinciaId"
+                  formControlName="provinciaId"
+                  class="form-control"
+                  [class.is-invalid]="itemForm.get('provinciaId')?.invalid && itemForm.get('provinciaId')?.touched">
+            <option value="">{{ 'common.select' | translate }}</option>
+            <option *ngFor="let provincia of provincias" [value]="provincia.id">
+              {{ provincia.descripcion }}
+            </option>
+          </select>
+          <div class="invalid-feedback" *ngIf="itemForm.get('provinciaId')?.hasError('required') && itemForm.get('provinciaId')?.touched">
+            {{ 'validation.required' | translate }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="codigo" class="form-label">{{ 'municipio.codigo' | translate }} *</label>
+          <input type="text"
+                 id="codigo"
+                 formControlName="codigo"
+                 class="form-control"
+                 [class.is-invalid]="itemForm.get('codigo')?.invalid && itemForm.get('codigo')?.touched"
+                 [placeholder]="'municipio.codigoPlaceholder' | translate"
+                 maxlength="10" />
+          <div class="invalid-feedback" *ngIf="itemForm.get('codigo')?.hasError('required') && itemForm.get('codigo')?.touched">
+            {{ 'validation.required' | translate }}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="descripcion" class="form-label">{{ 'municipio.nombre' | translate }} *</label>
+        <input type="text"
+               id="descripcion"
+               formControlName="descripcion"
+               class="form-control"
+               [class.is-invalid]="itemForm.get('descripcion')?.invalid && itemForm.get('descripcion')?.touched"
+               [placeholder]="'municipio.nombrePlaceholder' | translate"
+               maxlength="100" />
+        <div class="invalid-feedback" *ngIf="itemForm.get('descripcion')?.hasError('required') && itemForm.get('descripcion')?.touched">
+          {{ 'validation.required' | translate }}
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="onCancel()" [disabled]="saving">
+          ❌ {{ 'common.cancel' | translate }}
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="saving || itemForm.invalid">
+          <span *ngIf="!saving">💾 {{ 'common.save' | translate }}</span>
+          <span *ngIf="saving">⏳ {{ 'common.saving' | translate }}</span>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div *ngIf="loading" class="loading-container">
+    <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
+  </div>
+</div>

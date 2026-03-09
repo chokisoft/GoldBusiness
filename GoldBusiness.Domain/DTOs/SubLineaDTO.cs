@@ -70,17 +70,11 @@ namespace GoldBusiness.Domain.DTOs
         public string? ModificadoPor { get; set; }
         public DateTime? FechaHoraModificado { get; set; }
 
+        /// <summary>
+        /// Jerarquía completa.
+        /// </summary>
         public string LineaCodigo { get; set; } = string.Empty;
         public string LineaDescripcion { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Cantidad de productos.
-        /// </summary>
-        [Display(
-            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Productos),
-            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
-        )]
-        public int CantidadProductos { get; set; }
 
         public string CodigoDescripcion => $"{Codigo} | {Descripcion}";
     }

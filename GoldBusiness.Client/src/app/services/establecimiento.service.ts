@@ -5,9 +5,12 @@ import { ApiService } from './api.service';
 export interface EstablecimientoDTO {
   id?: number;
   codigo: string;
-  descripcion: string;  // ✅ CAMBIO: Solo 'descripcion', eliminado 'nombre'
-  negocioId?: number; // ✅ Vinculo al negocio
-  negocioDescripcion?: string; // Opcional: texto para mostrar el negocio en listas
+  descripcion: string;
+  telefono?: string;
+  email?: string;
+  direccion?: string;
+  localidadId?: number;
+  localidadDescripcion?: string;
   activo?: boolean;
   fechaHoraCreado?: string;
   fechaHoraModificado?: string;
@@ -19,7 +22,7 @@ export interface EstablecimientoDTO {
   providedIn: 'root'
 })
 export class EstablecimientoService {
-  constructor(private api: ApiService) { }
+  constructor(private api: ApiService) {}
 
   getAll(): Observable<EstablecimientoDTO[]> {
     return this.api.get<EstablecimientoDTO[]>('Establecimiento');

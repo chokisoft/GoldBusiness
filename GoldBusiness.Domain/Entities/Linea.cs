@@ -40,7 +40,10 @@ namespace GoldBusiness.Domain.Entities
             if (string.IsNullOrWhiteSpace(codigo) || codigo.Length != 2)
                 throw new DomainException("El código debe tener exactamente 2 caracteres.");
 
-            Codigo = codigo.ToUpperInvariant();
+            if (!codigo.All(char.IsDigit))
+                throw new DomainException("El código debe ser numérico (01-99).");
+
+            Codigo = codigo;
         }
 
         public void SetDescripcion(string descripcion)

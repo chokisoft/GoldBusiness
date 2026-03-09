@@ -30,7 +30,6 @@
       </div>
       <div class="page-size-selector">
         <label>{{ 'common.show' | translate }}:</label>
-        <!-- usar ngModelChange para asegurarnos de que pageSize ya está actualizado -->
         <select [(ngModel)]="pageSize" (ngModelChange)="onPageSizeChange($event)" class="form-control">
           <option [value]="5">5</option>
           <option [value]="10">10</option>
@@ -47,30 +46,30 @@
           <thead>
             <tr>
               <th>{{ 'establecimiento.codigo' | translate }}</th>
-              <th>{{ 'establecimiento.descripcion' | translate }}</th>
-              <th>{{ 'establecimiento.negocio' | translate }}</th>
+              <th>{{ 'establecimiento.nombre' | translate }}</th>
+              <th>{{ 'establecimiento.localidad' | translate }}</th>
               <th class="actions-column">{{ 'common.actions' | translate }}</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let grupo of paginatedestablecimientos">
-              <td>{{ grupo.codigo }}</td>
-              <td>{{ grupo.descripcion }}</td>
-              <td>{{ grupo.negocioDescripcion }}</td>
+            <tr *ngFor="let item of paginatedestablecimientos">
+              <td>{{ item.codigo }}</td>
+              <td>{{ item.descripcion }}</td>
+              <td>{{ item.localidadDescripcion || '-' }}</td>
               <td class="actions-column">
                 <div class="action-buttons">
                   <button class="btn btn-sm btn-info"
-                          [routerLink]="[grupo.id]"
+                          [routerLink]="[item.id]"
                           [title]="'common.view' | translate">
                     <span>👁️‍🗨️</span>
                   </button>
                   <button class="btn btn-sm btn-warning"
-                          [routerLink]="['editar', grupo.id]"
+                          [routerLink]="['editar', item.id]"
                           [title]="'common.edit' | translate">
                     <span>✏️</span>
                   </button>
                   <button class="btn btn-sm btn-danger"
-                          (click)="delete(grupo.id!, grupo.descripcion)"
+                          (click)="delete(item.id!, item.descripcion)"
                           [title]="'common.delete' | translate">
                     <span>🗑️</span>
                   </button>

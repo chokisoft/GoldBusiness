@@ -1,1 +1,56 @@
-<p>transaccion-detail works!</p>
+<div class="page-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">
+        📊 {{ 'transaccion.detailTitle' | translate }}
+      </h1>
+      <p class="page-subtitle">{{ 'transaccion.detailSubtitle' | translate }}</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-warning" [routerLink]="['/nomencladores/transaccion/editar', id]">
+        <span class="btn-icon">✏️</span>
+        {{ 'common.edit' | translate }}
+      </button>
+      <button class="btn btn-secondary" (click)="goBack()">
+        <span class="btn-icon">↩️</span>
+        {{ 'common.back' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <div class="alert alert-error" *ngIf="error">
+    <span class="alert-icon">⚠️</span>
+    {{ error }}
+  </div>
+
+  <div class="card" *ngIf="!loading && transaccion">
+    <div class="card-header">
+      📊 {{ 'common.information' | translate }}
+    </div>
+    <div class="card-body">
+      <div class="info-section">
+        <h3 class="section-title">
+          🔑 {{ 'transaccion.mainInfo' | translate }}
+        </h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">{{ 'transaccion.id' | translate }}</span>
+            <span class="info-value">{{ transaccion.id }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">{{ 'transaccion.codigo' | translate }}</span>
+            <span class="info-value">{{ transaccion.codigo }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">{{ 'transaccion.descripcion' | translate }}</span>
+            <span class="info-value">{{ transaccion.descripcion }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading-container">
+    <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
+  </div>
+</div>

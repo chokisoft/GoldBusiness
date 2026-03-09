@@ -528,4 +528,13 @@
 	<data name="Field_Logo" xml:space="preserve">
   <value>Logo</value>
 </data>
+	<data name="LineaCodigoFormato" xml:space="preserve">
+  <value>The line code must be a 2-digit number (Example: 01, 02, 99)</value>
+</data>
+	<data name="UnidadMedidaCodigoLongitud" xml:space="preserve">
+  <value>The unit of measure code must be exactly 3 characters</value>
+</data>
+	<data name="UnidadMedidaCodigoFormato" xml:space="preserve">
+  <value>The code must be alphanumeric with 3 characters (Example: UND, KG, LTS)</value>
+</data>
 </root>

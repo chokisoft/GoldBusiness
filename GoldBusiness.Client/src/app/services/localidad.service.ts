@@ -5,9 +5,9 @@ import { ApiService } from './api.service';
 export interface LocalidadDTO {
   id?: number;
   codigo: string;
-  descripcion: string;  // ✅ CAMBIO: Solo 'descripcion', eliminado 'nombre'
-  establecimientoId?: number; // ✅ Vinculo al negocio
-  establecimientoDescripcion?: string; // Opcional: texto para mostrar el negocio en listas
+  descripcion: string;
+  municipioId: number;
+  municipioDescripcion?: string;
   activo?: boolean;
   fechaHoraCreado?: string;
   fechaHoraModificado?: string;
@@ -19,7 +19,7 @@ export interface LocalidadDTO {
   providedIn: 'root'
 })
 export class LocalidadService {
-  constructor(private api: ApiService) { }
+  constructor(private api: ApiService) {}
 
   getAll(): Observable<LocalidadDTO[]> {
     return this.api.get<LocalidadDTO[]>('Localidad');
@@ -27,6 +27,11 @@ export class LocalidadService {
 
   getById(id: number): Observable<LocalidadDTO> {
     return this.api.get<LocalidadDTO>(`Localidad/${id}`);
+  }
+
+  // MÉTODO AGREGADO para cascada
+  getByMunicipioId(municipioId: number): Observable<LocalidadDTO[]> {
+    return this.api.get<LocalidadDTO[]>(`Localidad/municipio/${municipioId}`);
   }
 
   create(data: LocalidadDTO): Observable<LocalidadDTO> {

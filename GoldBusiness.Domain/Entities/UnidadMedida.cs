@@ -39,6 +39,9 @@ namespace GoldBusiness.Domain.Entities
             if (string.IsNullOrWhiteSpace(codigo) || codigo.Length != 3)
                 throw new DomainException("El código debe tener exactamente 3 caracteres.");
 
+            if (!codigo.All(c => char.IsLetterOrDigit(c)))
+                throw new DomainException("El código debe ser alfanumérico (sin espacios ni caracteres especiales).");
+
             Codigo = codigo.ToUpperInvariant();
         }
 

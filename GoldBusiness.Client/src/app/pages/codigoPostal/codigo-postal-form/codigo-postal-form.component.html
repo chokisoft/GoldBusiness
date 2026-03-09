@@ -1,1 +1,135 @@
-<p>codigo-postal-form works!</p>
+<div class="page-container">
+  <div class="page-header">
+    <h1 class="page-title">
+      📮 {{ isEditMode ? ('codigoPostal.editTitle' | translate) : ('codigoPostal.newTitle' | translate) }}
+    </h1>
+  </div>
+
+  <div class="alert alert-error" *ngIf="error">
+    <span class="alert-icon">⚠️</span>
+    {{ error }}
+  </div>
+
+  <div class="card">
+    <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" class="form-container" *ngIf="!loading">
+
+      <!-- Sección: Ubicación Geográfica -->
+      <div class="form-section">
+        <h3 class="section-subtitle">🌍 Ubicación Geográfica</h3>
+
+        <!-- Primera fila: País -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="paisId" class="form-label">{{ 'codigoPostal.pais' | translate }} *</label>
+            <select id="paisId"
+                    formControlName="paisId"
+                    class="form-control"
+                    [class.is-invalid]="itemForm.get('paisId')?.invalid && itemForm.get('paisId')?.touched"
+                    (change)="onPaisChange()"
+                    [disabled]="loadingPaises">
+              <option value="">{{ 'common.select' | translate }}</option>
+              <option *ngFor="let pais of paises" [value]="pais.id">
+                {{ pais.descripcion }}
+              </option>
+            </select>
+            <small class="form-text" *ngIf="loadingPaises">⏳ {{ 'common.loading' | translate }}...</small>
+            <div class="invalid-feedback" *ngIf="itemForm.get('paisId')?.invalid && itemForm.get('paisId')?.touched">
+              {{ 'validation.required' | translate }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Segunda fila: Provincia y Municipio -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="provinciaId" class="form-label">{{ 'codigoPostal.provincia' | translate }} *</label>
+            <select id="provinciaId"
+                    formControlName="provinciaId"
+                    class="form-control"
+                    [class.is-invalid]="itemForm.get('provinciaId')?.invalid && itemForm.get('provinciaId')?.touched"
+                    (change)="onProvinciaChange()"
+                    [disabled]="!itemForm.get('paisId')?.value || loadingProvincias">
+              <option value="">{{ 'common.select' | translate }}</option>
+              <option *ngFor="let provincia of provincias" [value]="provincia.id">
+                {{ provincia.descripcion }}
+              </option>
+            </select>
+            <small class="form-text" *ngIf="loadingProvincias">⏳ {{ 'common.loading' | translate }}...</small>
+            <small class="form-text" *ngIf="!loadingProvincias && !itemForm.get('paisId')?.value">
+              {{ 'codigoPostal.selectPaisFirst' | translate }}
+            </small>
+            <div class="invalid-feedback" *ngIf="itemForm.get('provinciaId')?.invalid && itemForm.get('provinciaId')?.touched">
+              {{ 'validation.required' | translate }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="municipioId" class="form-label">{{ 'codigoPostal.municipio' | translate }} *</label>
+            <select id="municipioId"
+                    formControlName="municipioId"
+                    class="form-control"
+                    [class.is-invalid]="itemForm.get('municipioId')?.invalid && itemForm.get('municipioId')?.touched"
+                    [disabled]="!itemForm.get('provinciaId')?.value || loadingMunicipios">
+              <option value="">{{ 'common.select' | translate }}</option>
+              <option *ngFor="let municipio of municipios" [value]="municipio.id">
+                {{ municipio.descripcion }}
+              </option>
+            </select>
+            <small class="form-text" *ngIf="loadingMunicipios">⏳ {{ 'common.loading' | translate }}...</small>
+            <small class="form-text" *ngIf="!loadingMunicipios && !itemForm.get('provinciaId')?.value">
+              {{ 'codigoPostal.selectProvinciaFirst' | translate }}
+            </small>
+            <div class="invalid-feedback" *ngIf="itemForm.get('municipioId')?.invalid && itemForm.get('municipioId')?.touched">
+              {{ 'validation.required' | translate }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sección: Información del Código Postal -->
+      <div class="form-section">
+        <h3 class="section-subtitle">📋 Información del Código Postal</h3>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="codigo" class="form-label">{{ 'codigoPostal.codigo' | translate }} *</label>
+            <input type="text"
+                   id="codigo"
+                   formControlName="codigo"
+                   class="form-control"
+                   [class.is-invalid]="itemForm.get('codigo')?.invalid && itemForm.get('codigo')?.touched"
+                   [placeholder]="'codigoPostal.codigoPlaceholder' | translate"
+                   maxlength="20" />
+            <div class="invalid-feedback" *ngIf="itemForm.get('codigo')?.invalid && itemForm.get('codigo')?.touched">
+              {{ 'validation.required' | translate }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="descripcion" class="form-label">{{ 'codigoPostal.descripcion' | translate }}</label>
+            <input type="text"
+                   id="descripcion"
+                   formControlName="descripcion"
+                   class="form-control"
+                   [placeholder]="'codigoPostal.descripcionPlaceholder' | translate"
+                   maxlength="500" />
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="onCancel()" [disabled]="saving">
+          ❌ {{ 'common.cancel' | translate }}
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="saving || itemForm.invalid || loadingPaises || loadingProvincias || loadingMunicipios">
+          <span *ngIf="!saving">💾 {{ 'common.save' | translate }}</span>
+          <span *ngIf="saving">⏳ {{ 'common.saving' | translate }}</span>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div *ngIf="loading" class="loading-container">
+    <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
+  </div>
+</div>

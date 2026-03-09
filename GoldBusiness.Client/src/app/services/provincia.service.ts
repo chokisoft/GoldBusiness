@@ -5,9 +5,9 @@ import { ApiService } from './api.service';
 export interface ProvinciaDTO {
   id?: number;
   codigo: string;
-  descripcion: string;  // ✅ CAMBIO: Solo 'descripcion', eliminado 'nombre'
-  paisId?: number; // ✅ Vinculo al país
-  paisDescripcion?: string; // Opcional: texto para mostrar el país en listas
+  descripcion: string;
+  paisId: number;
+  paisDescripcion?: string;
   activo?: boolean;
   fechaHoraCreado?: string;
   fechaHoraModificado?: string;
@@ -19,7 +19,7 @@ export interface ProvinciaDTO {
   providedIn: 'root'
 })
 export class ProvinciaService {
-  constructor(private api: ApiService) { }
+  constructor(private api: ApiService) {}
 
   getAll(): Observable<ProvinciaDTO[]> {
     return this.api.get<ProvinciaDTO[]>('Provincia');
@@ -27,6 +27,10 @@ export class ProvinciaService {
 
   getById(id: number): Observable<ProvinciaDTO> {
     return this.api.get<ProvinciaDTO>(`Provincia/${id}`);
+  }
+
+  getByPaisId(paisId: number): Observable<ProvinciaDTO[]> {
+    return this.api.get<ProvinciaDTO[]>(`Provincia/pais/${paisId}`);
   }
 
   create(data: ProvinciaDTO): Observable<ProvinciaDTO> {

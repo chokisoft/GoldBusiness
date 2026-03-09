@@ -1,1 +1,76 @@
-<p>concepto-ajuste-form works!</p>
+<div class="page-container">
+  <div class="page-header">
+    <h1 class="page-title">
+      {{ isEditMode ? ('concepto-ajuste.editTitle' | translate) : ('concepto-ajuste.newTitle' | translate) }}
+    </h1>
+  </div>
+
+  <div class="alert alert-error" *ngIf="error">
+    <span class="alert-icon">⚠️</span>
+    {{ error }}
+  </div>
+
+  <div class="card">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
+      <div class="form-group">
+        <label for="codigo" class="form-label">
+          {{ 'concepto-ajuste.codigo' | translate }}
+        </label>
+        <input type="text" id="codigo" formControlName="codigo" class="form-control"
+               [class.is-invalid]="form.get('codigo')?.invalid && form.get('codigo')?.touched" />
+        <div class="invalid-feedback" *ngIf="form.get('codigo')?.invalid && form.get('codigo')?.touched">
+          {{ getErrorMessage('codigo') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="descripcion" class="form-label">
+          {{ 'concepto-ajuste.descripcion' | translate }}
+        </label>
+        <input type="text" id="descripcion" formControlName="descripcion" class="form-control"
+               [class.is-invalid]="form.get('descripcion')?.invalid && form.get('descripcion')?.touched" />
+        <div class="invalid-feedback" *ngIf="form.get('descripcion')?.invalid && form.get('descripcion')?.touched">
+          {{ getErrorMessage('descripcion') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="cuentaId" class="form-label">
+          {{ 'concepto-ajuste.cuentaId' | translate }}
+ *        </label>
+        <select id="cuentaId" formControlName="cuentaId" class="form-control"
+                [class.is-invalid]="form.get('cuentaId')?.invalid && form.get('cuentaId')?.touched"
+                [disabled]="loadingCuentas">
+          <option [value]="null">{{ 'common.select' | translate }}</option>
+          <option *ngFor="let item of cuentas" [value]="item.id">
+            {{ item.codigo }} - {{ item.descripcion }}
+          </option>
+        </select>
+        <div class="invalid-feedback" *ngIf="form.get('cuentaId')?.invalid && form.get('cuentaId')?.touched">
+          {{ getErrorMessage('cuentaId') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="cuenta" class="form-label">
+          {{ 'concepto-ajuste.cuenta' | translate }}
+ *        </label>
+        <input type="text" id="cuenta" formControlName="cuenta" class="form-control"
+               [class.is-invalid]="form.get('cuenta')?.invalid && form.get('cuenta')?.touched" />
+        <div class="invalid-feedback" *ngIf="form.get('cuenta')?.invalid && form.get('cuenta')?.touched">
+          {{ getErrorMessage('cuenta') }}
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="loading">
+          ❌ {{ 'common.cancel' | translate }}
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="loading || form.invalid">
+          <span *ngIf="!loading">💾 {{ 'common.save' | translate }}</span>
+          <span *ngIf="loading">⏳ {{ 'common.saving' | translate }}</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

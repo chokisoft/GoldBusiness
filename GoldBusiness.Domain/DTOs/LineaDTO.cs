@@ -11,8 +11,8 @@ namespace GoldBusiness.Domain.DTOs
         public int Id { get; set; }
 
         /// <summary>
-        /// Código de la línea (2 caracteres alfanuméricos).
-        /// Ejemplo: "AL" = Alimentos, "BE" = Bebidas ó "01" = Alimentos, "02" = Bebidas.
+        /// Código de la línea (2 dígitos numéricos).
+        /// Ejemplo: "01" = Alimentos, "02" = Bebidas.
         /// </summary>
         [Required(
             ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
@@ -25,6 +25,10 @@ namespace GoldBusiness.Domain.DTOs
         [StringLength(2, MinimumLength = 2,
             ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
             ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.LineaCodigoLongitud)
+        )]
+        [RegularExpression(@"^\d{2}$",
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.LineaCodigoFormato)
         )]
         public string Codigo { get; set; } = string.Empty;
 
@@ -52,15 +56,6 @@ namespace GoldBusiness.Domain.DTOs
         public DateTime FechaHoraCreado { get; set; }
         public string? ModificadoPor { get; set; }
         public DateTime? FechaHoraModificado { get; set; }
-
-        /// <summary>
-        /// Cantidad de sublíneas.
-        /// </summary>
-        [Display(
-            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Sublineas),
-            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
-        )]
-        public int CantidadSubLineas { get; set; }
 
         public string CodigoDescripcion => $"{Codigo} | {Descripcion}";
     }

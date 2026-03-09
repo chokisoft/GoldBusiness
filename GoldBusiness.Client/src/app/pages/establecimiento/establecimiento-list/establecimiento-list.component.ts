@@ -96,7 +96,7 @@ export class EstablecimientoListComponent implements OnInit, OnDestroy {
       this.filteredestablecimientos = this.establecimientos.filter(grupo =>
         grupo.codigo.toLowerCase().includes(term) ||
         (grupo.descripcion || '').toLowerCase().includes(term) ||
-        (grupo.negocioDescripcion || '').toLowerCase().includes(term)
+        (grupo.localidadDescripcion || '').toLowerCase().includes(term)
       );
     }
 

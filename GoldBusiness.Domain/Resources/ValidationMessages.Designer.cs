@@ -934,6 +934,15 @@ namespace GoldBusiness.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to El código de la línea debe ser numérico de 2 dígitos (Ejemplo: 01, 02, 99).
+        /// </summary>
+        public static string LineaCodigoFormato {
+            get {
+                return ResourceManager.GetString("LineaCodigoFormato", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to El código de la línea debe tener exactamente 2 caracteres.
         /// </summary>
         public static string LineaCodigoLongitud {
@@ -1375,7 +1384,16 @@ namespace GoldBusiness.Domain.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to El código de la unidad de medida no puede exceder 3 caracteres..
+        ///   Looks up a localized string similar to El código debe ser alfanumérico de 3 caracteres (Ejemplo: UND, KG, LTS).
+        /// </summary>
+        public static string UnidadMedidaCodigoFormato {
+            get {
+                return ResourceManager.GetString("UnidadMedidaCodigoFormato", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El código de la unidad de medida debe tener exactamente 3 caracteres.
         /// </summary>
         public static string UnidadMedidaCodigoLongitud {
             get {

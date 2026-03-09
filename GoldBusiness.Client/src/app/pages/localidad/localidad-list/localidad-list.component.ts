@@ -96,7 +96,7 @@ export class LocalidadListComponent implements OnInit, OnDestroy {
       this.filteredlocalidads = this.localidads.filter(grupo =>
         grupo.codigo.toLowerCase().includes(term) ||
         (grupo.descripcion || '').toLowerCase().includes(term) ||
-        (grupo.establecimientoDescripcion || '').toLowerCase().includes(term)
+        (grupo.municipioDescripcion || '').toLowerCase().includes(term)
       );
     }
 

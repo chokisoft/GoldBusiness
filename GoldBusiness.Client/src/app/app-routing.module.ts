@@ -9,16 +9,16 @@ import { authGuard } from './guards/auth.guard';
 // ============================================
 // 📁 NOMENCLADORES - GRUPO CUENTA
 // ============================================
-import { GrupoCuentaListComponent } from './pages/grupo-cuenta/grupo-cuenta-list/grupo-cuenta-list.component';
-import { GrupoCuentaFormComponent } from './pages/grupo-cuenta/grupo-cuenta-form/grupo-cuenta-form.component';
-import { GrupoCuentaDetailComponent } from './pages/grupo-cuenta/grupo-cuenta-detail/grupo-cuenta-detail.component';
+import { GrupoCuentaListComponent } from './pages/grupoCuenta/grupo-cuenta-list/grupo-cuenta-list.component';
+import { GrupoCuentaFormComponent } from './pages/grupoCuenta/grupo-cuenta-form/grupo-cuenta-form.component';
+import { GrupoCuentaDetailComponent } from './pages/grupoCuenta/grupo-cuenta-detail/grupo-cuenta-detail.component';
 
 // ============================================
 // 📁 NOMENCLADORES - SUBGRUPO CUENTA
 // ============================================
-import { SubGrupoCuentaListComponent } from './pages/subgrupo-cuenta/subgrupo-cuenta-list/subgrupo-cuenta-list.component';
-import { SubGrupoCuentaFormComponent } from './pages/subgrupo-cuenta/subgrupo-cuenta-form/subgrupo-cuenta-form.component';
-import { SubGrupoCuentaDetailComponent } from './pages/subgrupo-cuenta/subgrupo-cuenta-detail/subgrupo-cuenta-detail.component';
+import { SubGrupoCuentaListComponent } from './pages/subGrupoCuenta/subgrupo-cuenta-list/subgrupo-cuenta-list.component';
+import { SubGrupoCuentaFormComponent } from './pages/subGrupoCuenta/subgrupo-cuenta-form/subgrupo-cuenta-form.component';
+import { SubGrupoCuentaDetailComponent } from './pages/subGrupoCuenta/subgrupo-cuenta-detail/subgrupo-cuenta-detail.component';
 
 // ============================================
 // 📁 NOMENCLADORES - CUENTA
@@ -135,9 +135,9 @@ import { ProductoDetailComponent } from './pages/producto/producto-detail/produc
 // ============================================
 // ⚙️ CONFIGURACIÓN
 // ============================================
-import { SystemConfigurationListComponent } from './pages/system-configuration/system-configuration-list/system-configuration-list.component';
-import { SystemConfigurationFormComponent } from './pages/system-configuration/system-configuration-form/system-configuration-form.component';
-import { SystemConfigurationDetailComponent } from './pages/system-configuration/system-configuration-detail/system-configuration-detail.component';
+import { SystemConfigurationListComponent } from './pages/systemConfiguration/system-configuration-list/system-configuration-list.component';
+import { SystemConfigurationFormComponent } from './pages/systemConfiguration/system-configuration-form/system-configuration-form.component';
+import { SystemConfigurationDetailComponent } from './pages/systemConfiguration/system-configuration-detail/system-configuration-detail.component';
 
 const routes: Routes = [
   // Rutas públicas

@@ -1,1 +1,134 @@
-<p>moneda-form works!</p>
+<div class="page-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">
+        💱 {{ isEditMode ? ('moneda.editTitle' | translate) : ('moneda.newTitle' | translate) }}
+      </h1>
+      <p class="page-subtitle">
+        {{ isEditMode ? ('moneda.editTitle' | translate) : ('moneda.newTitle' | translate) }}
+      </p>
+    </div>
+  </div>
+
+  <div class="alert alert-error" *ngIf="error">
+    <span class="alert-icon">⚠️</span>
+    {{ error }}
+  </div>
+
+  <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
+    <!-- Información Principal -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="section-title">{{ 'moneda.mainInfo' | translate }}</h3>
+      </div>
+      <div class="card-body">
+        <div class="form-row">
+          <!-- Código -->
+          <div class="form-group">
+            <label for="codigo">
+              {{ 'moneda.codigo' | translate }} <span class="required">*</span>
+            </label>
+            <input type="text"
+                   id="codigo"
+                   formControlName="codigo"
+                   class="form-control"
+                   [class.is-invalid]="itemForm.get('codigo')?.invalid && itemForm.get('codigo')?.touched"
+                   [placeholder]="'moneda.codigoPlaceholder' | translate"
+                   maxlength="3" />
+            <div class="invalid-feedback" *ngIf="itemForm.get('codigo')?.hasError('required') && itemForm.get('codigo')?.touched">
+              {{ 'validation.required' | translate }}
+            </div>
+          </div>
+
+          <!-- Nombre -->
+          <div class="form-group">
+            <label for="nombre">
+              {{ 'moneda.nombre' | translate }} <span class="required">*</span>
+            </label>
+            <input type="text"
+                   id="nombre"
+                   formControlName="nombre"
+                   class="form-control"
+                   [class.is-invalid]="itemForm.get('nombre')?.invalid && itemForm.get('nombre')?.touched"
+                   [placeholder]="'moneda.nombrePlaceholder' | translate"
+                   maxlength="100" />
+            <div class="invalid-feedback" *ngIf="itemForm.get('nombre')?.hasError('required') && itemForm.get('nombre')?.touched">
+              {{ 'validation.required' | translate }}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <!-- Símbolo -->
+          <div class="form-group">
+            <label for="simbolo">
+              {{ 'moneda.simbolo' | translate }}
+            </label>
+            <input type="text"
+                   id="simbolo"
+                   formControlName="simbolo"
+                   class="form-control"
+                   [placeholder]="'moneda.simboloPlaceholder' | translate"
+                   maxlength="10" />
+          </div>
+
+          <!-- Descripción -->
+          <div class="form-group">
+            <label for="descripcion">
+              {{ 'moneda.descripcion' | translate }}
+            </label>
+            <input type="text"
+                   id="descripcion"
+                   formControlName="descripcion"
+                   class="form-control"
+                   [placeholder]="'moneda.descripcionPlaceholder' | translate"
+                   maxlength="500" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Información de Tasa de Cambio -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="section-title">{{ 'moneda.infoTasaCambio' | translate }}</h3>
+      </div>
+      <div class="card-body">
+        <div class="form-row">
+          <!-- Tasa de Cambio -->
+          <div class="form-group">
+            <label for="cambio">
+              {{ 'moneda.cambio' | translate }}
+            </label>
+            <input type="number"
+                   id="cambio"
+                   formControlName="cambio"
+                   class="form-control"
+                   [placeholder]="'moneda.cambioPlaceholder' | translate"
+                   step="0.01"
+                   min="0" />
+          </div>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <div class="button-group">
+          <button type="button" class="btn btn-secondary" (click)="onCancel()">
+            <span class="btn-icon">❌</span>
+            {{ 'common.cancel' | translate }}
+          </button>
+          <button type="submit"
+                  class="btn btn-primary"
+                  [disabled]="itemForm.invalid || saving">
+            <span class="btn-icon">💾</span>
+            {{ saving ? ('common.saving' | translate) : ('common.save' | translate) }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <div *ngIf="loading" class="loading-container">
+    <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
+  </div>
+</div>

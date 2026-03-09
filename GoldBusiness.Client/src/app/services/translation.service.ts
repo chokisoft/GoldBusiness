@@ -357,6 +357,26 @@ export class TranslationService {
       'en': 'Establishment Details',
       'fr': 'Détails de l\'Établissement'
     },
+    'establecimiento.detailSubtitle': {
+      'es': 'Visualización completa de la información del establecimiento',
+      'en': 'Complete view of establishment information',
+      'fr': 'Vue complète des informations de l\'établissement'
+    },
+    'establecimiento.mainInfo': {
+      'es': 'Información Principal',
+      'en': 'Main Information',
+      'fr': 'Informations Principales'
+    },
+    'establecimiento.infoContacto': {
+      'es': 'Información de Contacto',
+      'en': 'Contact Information',
+      'fr': 'Informations de Contact'
+    },
+    'establecimiento.infoUbicacion': {
+      'es': 'Información de Ubicación',
+      'en': 'Location Information',
+      'fr': 'Informations de Localisation'
+    },
     'establecimiento.codigo': {
       'es': 'Código',
       'en': 'Code',
@@ -366,6 +386,11 @@ export class TranslationService {
       'es': 'Nombre',
       'en': 'Name',
       'fr': 'Nom'
+    },
+    'establecimiento.descripcion': {
+      'es': 'Descripción',
+      'en': 'Description',
+      'fr': 'Description'
     },
     'establecimiento.telefono': {
       'es': 'Teléfono',
@@ -386,6 +411,41 @@ export class TranslationService {
       'es': 'Localidad',
       'en': 'Locality',
       'fr': 'Localité'
+    },
+    'establecimiento.codigoPlaceholder': {
+      'es': 'Ej: EST001',
+      'en': 'Ex: EST001',
+      'fr': 'Ex: EST001'
+    },
+    'establecimiento.nombrePlaceholder': {
+      'es': 'Ej: Sucursal Centro',
+      'en': 'Ex: Downtown Branch',
+      'fr': 'Ex: Succursale Centre-Ville'
+    },
+    'establecimiento.descripcionPlaceholder': {
+      'es': 'Ej: Sucursal principal en el centro de la ciudad',
+      'en': 'Ex: Main branch in downtown',
+      'fr': 'Ex: Succursale principale au centre-ville'
+    },
+    'establecimiento.direccionPlaceholder': {
+      'es': 'Ej: Calle Principal 123',
+      'en': 'Ex: Main Street 123',
+      'fr': 'Ex: Rue Principale 123'
+    },
+    'establecimiento.telefonoPlaceholder': {
+      'es': 'Ej: +52 55 1234 5678',
+      'en': 'Ex: +52 55 1234 5678',
+      'fr': 'Ex: +52 55 1234 5678'
+    },
+    'establecimiento.emailPlaceholder': {
+      'es': 'Ej: establecimiento@empresa.com',
+      'en': 'Ex: establishment@company.com',
+      'fr': 'Ex: etablissement@entreprise.com'
+    },
+    'establecimiento.negocio': {
+      'es': 'Negocio',
+      'en': 'Business',
+      'fr': 'Entreprise'
     },
 
     'localidad.title': {
@@ -413,10 +473,30 @@ export class TranslationService {
       'en': 'Locality Details',
       'fr': 'Détails de la Localité'
     },
+    'localidad.detailSubtitle': {
+      'es': 'Visualización completa de la información de la localidad',
+      'en': 'Complete view of locality information',
+      'fr': 'Vue complète des informations de la localité'
+    },
+    'localidad.mainInfo': {
+      'es': 'Información Principal',
+      'en': 'Main Information',
+      'fr': 'Informations Principales'
+    },
+    'localidad.codigo': {
+      'es': 'Código',
+      'en': 'Code',
+      'fr': 'Code'
+    },
     'localidad.nombre': {
       'es': 'Nombre',
       'en': 'Name',
       'fr': 'Nom'
+    },
+    'localidad.descripcion': {
+      'es': 'Descripción',
+      'en': 'Description',
+      'fr': 'Description'
     },
     'localidad.municipio': {
       'es': 'Municipio',
@@ -427,6 +507,21 @@ export class TranslationService {
       'es': 'Código Postal',
       'en': 'Postal Code',
       'fr': 'Code Postal'
+    },
+    'localidad.codigoPlaceholder': {
+      'es': 'Ej: LOC001',
+      'en': 'Ex: LOC001',
+      'fr': 'Ex: LOC001'
+    },
+    'localidad.nombrePlaceholder': {
+      'es': 'Ej: Centro Histórico',
+      'en': 'Ex: Historic Center',
+      'fr': 'Ex: Centre Historique'
+    },
+    'localidad.descripcionPlaceholder': {
+      'es': 'Ej: Zona histórica del municipio',
+      'en': 'Ex: Historic area of the municipality',
+      'fr': 'Ex: Zone historique de la municipalité'
     },
 
     'moneda.title': {
@@ -454,6 +549,21 @@ export class TranslationService {
       'en': 'Currency Details',
       'fr': 'Détails de la Devise'
     },
+    'moneda.detailSubtitle': {
+      'es': 'Visualización completa de la información de la moneda',
+      'en': 'Complete view of currency information',
+      'fr': 'Vue complète des informations de la devise'
+    },
+    'moneda.mainInfo': {
+      'es': 'Información Principal',
+      'en': 'Main Information',
+      'fr': 'Informations Principales'
+    },
+    'moneda.infoTasaCambio': {
+      'es': 'Información de Tasa de Cambio',
+      'en': 'Exchange Rate Information',
+      'fr': 'Informations de Taux de Change'
+    },
     'moneda.codigo': {
       'es': 'Código',
       'en': 'Code',
@@ -464,6 +574,11 @@ export class TranslationService {
       'en': 'Name',
       'fr': 'Nom'
     },
+    'moneda.descripcion': {
+      'es': 'Descripción',
+      'en': 'Description',
+      'fr': 'Description'
+    },
     'moneda.simbolo': {
       'es': 'Símbolo',
       'en': 'Symbol',
@@ -473,6 +588,31 @@ export class TranslationService {
       'es': 'Tasa de Cambio',
       'en': 'Exchange Rate',
       'fr': 'Taux de Change'
+    },
+    'moneda.codigoPlaceholder': {
+      'es': 'Ej: USD, EUR, MXN',
+      'en': 'Ex: USD, EUR, MXN',
+      'fr': 'Ex: USD, EUR, MXN'
+    },
+    'moneda.nombrePlaceholder': {
+      'es': 'Ej: Dólar Estadounidense',
+      'en': 'Ex: US Dollar',
+      'fr': 'Ex: Dollar Américain'
+    },
+    'moneda.descripcionPlaceholder': {
+      'es': 'Ej: Moneda oficial de Estados Unidos',
+      'en': 'Ex: Official currency of United States',
+      'fr': 'Ex: Monnaie officielle des États-Unis'
+    },
+    'moneda.simboloPlaceholder': {
+      'es': 'Ej: $, €, £',
+      'en': 'Ex: $, €, £',
+      'fr': 'Ex: $, €, £'
+    },
+    'moneda.cambioPlaceholder': {
+      'es': 'Ej: 1.00, 20.50',
+      'en': 'Ex: 1.00, 20.50',
+      'fr': 'Ex: 1.00, 20.50'
     },
 
     'pais.title': {
@@ -500,25 +640,55 @@ export class TranslationService {
       'en': 'Country Details',
       'fr': 'Détails du Pays'
     },
+    'pais.detailSubtitle': {
+      'es': 'Visualización completa de la información del país',
+      'en': 'Complete view of country information',
+      'fr': 'Vue complète des informations du pays'
+    },
+    'pais.mainInfo': {
+      'es': 'Información Principal',
+      'en': 'Main Information',
+      'fr': 'Informations Principales'
+    },
     'pais.codigo': {
       'es': 'Código',
       'en': 'Code',
       'fr': 'Code'
-    },
-    'pais.descripcion': {
-      'es': 'Descripción',
-      'en': 'Description',
-      'fr': 'Description'
     },
     'pais.nombre': {
       'es': 'Nombre',
       'en': 'Name',
       'fr': 'Nom'
     },
+    'pais.descripcion': {
+      'es': 'Descripción',
+      'en': 'Description',
+      'fr': 'Description'
+    },
     'pais.nacionalidad': {
       'es': 'Nacionalidad',
       'en': 'Nationality',
       'fr': 'Nationalité'
+    },
+    'pais.codigoPlaceholder': {
+      'es': 'Ej: MX, US, ES',
+      'en': 'Ex: MX, US, ES',
+      'fr': 'Ex: MX, US, ES'
+    },
+    'pais.nombrePlaceholder': {
+      'es': 'Ej: México',
+      'en': 'Ex: Mexico',
+      'fr': 'Ex: Mexique'
+    },
+    'pais.descripcionPlaceholder': {
+      'es': 'Ej: País de América del Norte',
+      'en': 'Ex: Country in North America',
+      'fr': 'Ex: Pays en Amérique du Nord'
+    },
+    'pais.nacionalidadPlaceholder': {
+      'es': 'Ej: Mexicana',
+      'en': 'Ex: Mexican',
+      'fr': 'Ex: Mexicaine'
     },
 
     'provincia.title': {
@@ -546,25 +716,50 @@ export class TranslationService {
       'en': 'Province Details',
       'fr': 'Détails de la Province'
     },
+    'provincia.detailSubtitle': {
+      'es': 'Visualización completa de la información de la provincia',
+      'en': 'Complete view of province information',
+      'fr': 'Vue complète des informations de la province'
+    },
+    'provincia.mainInfo': {
+      'es': 'Información Principal',
+      'en': 'Main Information',
+      'fr': 'Informations Principales'
+    },
     'provincia.codigo': {
       'es': 'Código',
       'en': 'Code',
       'fr': 'Code'
-    },
-    'provincia.descripcion': {
-      'es': 'Descripción',
-      'en': 'Description',
-      'fr': 'Description'
     },
     'provincia.nombre': {
       'es': 'Nombre',
       'en': 'Name',
       'fr': 'Nom'
     },
+    'provincia.descripcion': {
+      'es': 'Descripción',
+      'en': 'Description',
+      'fr': 'Description'
+    },
     'provincia.pais': {
       'es': 'País',
       'en': 'Country',
       'fr': 'Pays'
+    },
+    'provincia.codigoPlaceholder': {
+      'es': 'Ej: PROV01',
+      'en': 'Ex: PROV01',
+      'fr': 'Ex: PROV01'
+    },
+    'provincia.nombrePlaceholder': {
+      'es': 'Ej: Ciudad de México',
+      'en': 'Ex: Mexico City',
+      'fr': 'Ex: Mexico'
+    },
+    'provincia.descripcionPlaceholder': {
+      'es': 'Ej: Capital del país',
+      'en': 'Ex: Capital of the country',
+      'fr': 'Ex: Capitale du pays'
     },
 
     'municipio.title': {
@@ -592,6 +787,16 @@ export class TranslationService {
       'en': 'Municipality Details',
       'fr': 'Détails de la Municipalité'
     },
+    'municipio.detailSubtitle': {
+      'es': 'Visualización completa de la información del municipio',
+      'en': 'Complete view of municipality information',
+      'fr': 'Vue complète des informations de la municipalité'
+    },
+    'municipio.mainInfo': {
+      'es': 'Información Principal',
+      'en': 'Main Information',
+      'fr': 'Informations Principales'
+    },
     'municipio.codigo': {
       'es': 'Código',
       'en': 'Code',
@@ -602,10 +807,30 @@ export class TranslationService {
       'en': 'Name',
       'fr': 'Nom'
     },
+    'municipio.descripcion': {
+      'es': 'Descripción',
+      'en': 'Description',
+      'fr': 'Description'
+    },
     'municipio.provincia': {
       'es': 'Provincia',
       'en': 'Province',
       'fr': 'Province'
+    },
+    'municipio.codigoPlaceholder': {
+      'es': 'Ej: MUN001',
+      'en': 'Ex: MUN001',
+      'fr': 'Ex: MUN001'
+    },
+    'municipio.nombrePlaceholder': {
+      'es': 'Ej: Benito Juárez',
+      'en': 'Ex: Benito Juarez',
+      'fr': 'Ex: Benito Juarez'
+    },
+    'municipio.descripcionPlaceholder': {
+      'es': 'Ej: Municipio central de la provincia',
+      'en': 'Ex: Central municipality of the province',
+      'fr': 'Ex: Municipalité centrale de la province'
     },
 
     'codigoPostal.title': {
@@ -633,15 +858,75 @@ export class TranslationService {
       'en': 'Postal Code Details',
       'fr': 'Détails du Code Postal'
     },
+    'codigoPostal.detailSubtitle': {
+      'es': 'Visualización completa de la información del código postal',
+      'en': 'Complete view of postal code information',
+      'fr': 'Vue complète des informations du code postal'
+    },
+    'codigoPostal.mainInfo': {
+      'es': 'Información Principal',
+      'en': 'Main Information',
+      'fr': 'Informations Principales'
+    },
     'codigoPostal.codigo': {
       'es': 'Código',
       'en': 'Code',
       'fr': 'Code'
     },
+    'codigoPostal.descripcion': {
+      'es': 'Descripción',
+      'en': 'Description',
+      'fr': 'Description'
+    },
+    'codigoPostal.pais': {
+      'es': 'País',
+      'en': 'Country',
+      'fr': 'Pays'
+    },
+    'codigoPostal.provincia': {
+      'es': 'Provincia',
+      'en': 'Province',
+      'fr': 'Province'
+    },
     'codigoPostal.municipio': {
       'es': 'Municipio',
       'en': 'Municipality',
       'fr': 'Municipalité'
+    },
+    'codigoPostal.selectPaisFirst': {
+      'es': 'Seleccione un país primero',
+      'en': 'Select a country first',
+      'fr': 'Sélectionnez d\'abord un pays'
+    },
+    'codigoPostal.selectProvinciaFirst': {
+      'es': 'Seleccione una provincia primero',
+      'en': 'Select a province first',
+      'fr': 'Sélectionnez d\'abord une province'
+    },
+    'codigoPostal.paisDescripcion': {
+      'es': 'País',
+      'en': 'Country',
+      'fr': 'Pays'
+    },
+    'codigoPostal.provinciaDescripcion': {
+      'es': 'Provincia',
+      'en': 'Province',
+      'fr': 'Province'
+    },
+    'codigoPostal.municipioDescripcion': {
+      'es': 'Municipio',
+      'en': 'Municipality',
+      'fr': 'Municipalité'
+    },
+    'codigoPostal.codigoPlaceholder': {
+      'es': 'Ej: 03100',
+      'en': 'Ex: 03100',
+      'fr': 'Ex: 03100'
+    },
+    'codigoPostal.descripcionPlaceholder': {
+      'es': 'Ej: Colonia Del Valle Centro',
+      'en': 'Ex: Del Valle Centro Neighborhood',
+      'fr': 'Ex: Quartier Del Valle Centro'
     },
 
     // ═══════════════════════════════════════════════════════════
@@ -687,6 +972,11 @@ export class TranslationService {
       'en': 'Description',
       'fr': 'Description'
     },
+    'linea.descripcionPlaceholder': {
+      'es': 'Ej: Alimentos, Bebidas',
+      'en': 'Ex: Food, Beverages',
+      'fr': 'Ex: Aliments, Boissons'
+    },
 
     'subLinea.title': {
       'es': 'Sublíneas',
@@ -728,6 +1018,41 @@ export class TranslationService {
       'en': 'Line',
       'fr': 'Ligne'
     },
+    'subLinea.descripcion': {
+      'es': 'Descripción',
+      'en': 'Description',
+      'fr': 'Description'
+    },
+    'sub-linea.codigo': {
+      'es': 'Código',
+      'en': 'Code',
+      'fr': 'Code'
+    },
+    'sub-linea.descripcion': {
+      'es': 'Descripción',
+      'en': 'Description',
+      'fr': 'Description'
+    },
+    'sub-linea.lineaId': {
+      'es': 'Línea',
+      'en': 'Line',
+      'fr': 'Ligne'
+    },
+    'sub-linea.editTitle': {
+      'es': 'Editar Sublínea',
+      'en': 'Edit Subline',
+      'fr': 'Modifier Sous-ligne'
+    },
+    'sub-linea.newTitle': {
+      'es': 'Nueva Sublínea',
+      'en': 'New Subline',
+      'fr': 'Nouvelle Sous-ligne'
+    },
+    'sub-linea.descripcionPlaceholder': {
+      'es': 'Ej: Confecciones Exteriores',
+      'en': 'Ex: Outdoor Clothing',
+      'fr': 'Ex: Vêtements d\'Extérieur'
+    },
 
     'unidadMedida.title': {
       'es': 'Unidades de Medida',
@@ -759,15 +1084,25 @@ export class TranslationService {
       'en': 'Code',
       'fr': 'Code'
     },
-    'unidadMedida.nombre': {
-      'es': 'Nombre',
-      'en': 'Name',
-      'fr': 'Nom'
-    },
     'unidadMedida.abreviatura': {
       'es': 'Abreviatura',
       'en': 'Abbreviation',
       'fr': 'Abréviation'
+    },
+    'unidadMedida.descripcion': {
+      'es': 'Descripción',
+      'en': 'Description',
+      'fr': 'Description'
+    },
+    'unidadMedida.descripcionPlaceholder': {
+      'es': 'Ej: Unidad, Kilogramo, Litro',
+      'en': 'Ex: Unit, Kilogram, Liter',
+      'fr': 'Ex: Unité, Kilogramme, Litre'
+    },
+    'unidadMedida.codigoPlaceholder': {
+      'es': 'Ej: UNO',
+      'en': 'Ex: UNE',
+      'fr': 'Ex: UNÉ'
     },
 
     // ═══════════════════════════════════════════════════════════
@@ -1107,6 +1442,21 @@ export class TranslationService {
       'en': 'Loading',
       'fr': 'Chargement'
     },
+    'common.emailPlaceholder': {
+      'es': 'Ej: ejemplo@empresa.com',
+      'en': 'Ex: example@company.com',
+      'fr': 'Ex: exemple@entreprise.com'
+    },
+    'common.telefonoPlaceholder': {
+      'es': 'Ej: +52 55 1234 5678',
+      'en': 'Ex: +52 55 1234 5678',
+      'fr': 'Ex: +52 55 1234 5678'
+    },
+    'common.webPlaceholder': {
+      'es': 'Ej: www.empresa.com',
+      'en': 'Ex: www.company.com',
+      'fr': 'Ex: www.entreprise.com'
+    },
 
     // ═══════════════════════════════════════════════════════════
     // 📋 COMÚN - Botones y Acciones
@@ -1291,9 +1641,9 @@ export class TranslationService {
       'fr': 'Ex: 01'
     },
     'grupoCuenta.descripcionPlaceholder': {
-      'es': 'Ej: Descripción del Grupo Cuenta',
-      'en': 'Ex: Account Group Description',
-      'fr': 'Ex: Description du Groupe de Compte'
+      'es': 'Ej: Activo, Pasivo, Patrimonio',
+      'en': 'Ex: Asset, Liability, Equity',
+      'fr': 'Ex: Actif, Passif, Capitaux Propres'
     },
     'grupoCuenta.infoBasica': {
       'es': 'Información General',
@@ -1380,9 +1730,9 @@ export class TranslationService {
       'fr': 'Description'
     },
     'subGrupoCuenta.descripcionPlaceholder': {
-      'es': 'Ej: Activo Circulante',
-      'en': 'Ex: Current Assets',
-      'fr': 'Ex: Actif Circulant'
+      'es': 'Ej: Activo Circulante, Efectivo y Equivalentes',
+      'en': 'Ex: Current Assets, Cash and Equivalents',
+      'fr': 'Ex: Actif Circulant, Trésorerie et Équivalents'
     },
     'subGrupoCuenta.codigoUsuario': {
       'es': 'Código (3 dígitos)',
@@ -1484,9 +1834,9 @@ export class TranslationService {
       'fr': 'Sélectionnez un groupe pour voir les sous-groupes.'
     },
     'cuenta.descripcionPlaceholder': {
-      'es': 'Descripción de la cuenta',
-      'en': 'Account description',
-      'fr': 'Description du compte'
+      'es': 'Ej: Efectivo en Caja, Bancos Moneda Nacional',
+      'en': 'Ex: Cash on Hand, National Currency Banks',
+      'fr': 'Ex: Espèces en Caisse, Banques en Monnaie Nationale'
     },
 
     // ═══════════════════════════════════════════════════════════
@@ -1794,6 +2144,27 @@ export class TranslationService {
       'en': 'Code must be a 2-digit number',
       'fr': 'Le code doit être un nombre à 2 chiffres'
     },
+    'validation.numeric': {
+      'es': 'El código debe ser numérico',
+      'en': 'Code must be numeric',
+      'fr': 'Le code doit être numérique'
+    },
+    'validation.alphanumeric': {
+      'es': 'El código debe ser alfanumérico',
+      'en': 'Code must be alphanumeric',
+      'fr': 'Le code doit être alphanumérique'
+    },
+    'validation.length': {
+      'es': 'Longitud inválida',
+      'en': 'Invalid length',
+      'fr': 'Longueur invalide'
+    },
+    'validation.invalid': {
+      'es': 'Valor inválido',
+      'en': 'Invalid value',
+      'fr': 'Valeur invalide'
+    },
+
     'error.loading': {
       'es': 'Error al cargar los datos',
       'en': 'Error loading data',

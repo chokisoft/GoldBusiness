@@ -5,7 +5,9 @@ import { ApiService } from './api.service';
 export interface MonedaDTO {
   id?: number;
   codigo: string;
-  descripcion: string;  // ✅ CAMBIO: Solo 'descripcion', eliminado 'nombre'
+  descripcion: string;
+  simbolo?: string;
+  cambio?: number;
   activo?: boolean;
   fechaHoraCreado?: string;
   fechaHoraModificado?: string;

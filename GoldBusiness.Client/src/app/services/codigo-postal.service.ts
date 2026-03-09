@@ -5,41 +5,36 @@ import { ApiService } from './api.service';
 export interface CodigoPostalDTO {
   id?: number;
   codigo: string;
-  // No hay descripción en CodigoPostal; mantenemos codigo y relaciones
-  municipioId?: number;
-  municipioCodigo?: string;
+  descripcion?: string;
+  municipioId: number;
   municipioDescripcion?: string;
-
-  // Provincia (agregado)
-  provinciaId?: number;
-  provinciaCodigo?: string;
   provinciaDescripcion?: string;
-
+  paisDescripcion?: string;
   activo?: boolean;
   fechaHoraCreado?: string;
   fechaHoraModificado?: string;
   creadoPor?: string;
   modificadoPor?: string;
+  municipio?: {
+    id: number;
+    provinciaId: number;
+    descripcion: string;
+    provincia?: {
+      id: number;
+      paisId: number;
+      descripcion: string;
+    };
+  };
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class CodigoPostalService {
-  constructor(private api: ApiService) { }
+  constructor(private api: ApiService) {}
 
   getAll(): Observable<CodigoPostalDTO[]> {
     return this.api.get<CodigoPostalDTO[]>('CodigoPostal');
-  }
-
-  getPaged(page: number, pageSize: number, term?: string, municipioId?: number) {
-    const params = new URLSearchParams();
-    params.set('page', String(page));
-    params.set('pageSize', String(pageSize));
-    if (term) params.set('term', term);
-    if (municipioId) params.set('municipioId', String(municipioId));
-    const url = `CodigoPostal/paged?${params.toString()}`;
-    return this.api.get<{ items: CodigoPostalDTO[]; total: number }>(url);
   }
 
   getById(id: number): Observable<CodigoPostalDTO> {

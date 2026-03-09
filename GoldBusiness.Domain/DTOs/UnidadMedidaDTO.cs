@@ -9,6 +9,10 @@ namespace GoldBusiness.Domain.DTOs
     {
         public int Id { get; set; }
 
+        /// <summary>
+        /// Código de la unidad de medida (3 caracteres alfanuméricos).
+        /// Ejemplo: "UND" = Unidad, "KG" = Kilogramo, "LTS" = Litros.
+        /// </summary>
         [Required(
             ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
             ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.CodigoObligatorio)
@@ -17,9 +21,13 @@ namespace GoldBusiness.Domain.DTOs
             Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Codigo),
             ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
         )]
-        [StringLength(10,
+        [StringLength(3, MinimumLength = 3,
             ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
             ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.UnidadMedidaCodigoLongitud)
+        )]
+        [RegularExpression(@"^[A-Z0-9]{3}$",
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.UnidadMedidaCodigoFormato)
         )]
         public string Codigo { get; set; } = string.Empty;
 
@@ -47,5 +55,7 @@ namespace GoldBusiness.Domain.DTOs
         public DateTime FechaHoraCreado { get; set; }
         public string? ModificadoPor { get; set; }
         public DateTime? FechaHoraModificado { get; set; }
+
+        public string CodigoDescripcion => $"{Codigo} | {Descripcion}";
     }
 }
