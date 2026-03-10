@@ -18,7 +18,6 @@
   </div>
 
   <div class="card" *ngIf="!loading && !error">
-    <!-- Barra de búsqueda y filtros -->
     <div class="card-header">
       <div class="search-container">
         <input type="text"
@@ -30,7 +29,6 @@
       </div>
       <div class="page-size-selector">
         <label>{{ 'common.show' | translate }}:</label>
-        <!-- usar ngModelChange para asegurarnos de que pageSize ya está actualizado -->
         <select [(ngModel)]="pageSize" (ngModelChange)="onPageSizeChange($event)" class="form-control">
           <option [value]="5">5</option>
           <option [value]="10">10</option>
@@ -53,7 +51,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let grupo of paginatedmunicipios">
+            <tr *ngFor="let grupo of municipios">
               <td>{{ grupo.codigo }}</td>
               <td>{{ grupo.descripcion }}</td>
               <td>{{ grupo.provinciaDescripcion }}</td>
@@ -62,7 +60,7 @@
                   <button class="btn btn-sm btn-info"
                           [routerLink]="[grupo.id]"
                           [title]="'common.view' | translate">
-                    <span>👁️‍🗨️</span>
+                    <span>👁️</span>
                   </button>
                   <button class="btn btn-sm btn-warning"
                           [routerLink]="['editar', grupo.id]"
@@ -77,7 +75,7 @@
                 </div>
               </td>
             </tr>
-            <tr *ngIf="paginatedmunicipios.length === 0">
+            <tr *ngIf="municipios.length === 0">
               <td colspan="4" class="text-center">
                 {{ searchTerm ? ('common.noResults' | translate) : ('common.noData' | translate) }}
               </td>
@@ -87,37 +85,38 @@
       </div>
     </div>
 
-    <!-- Paginación -->
+    <!-- ✅ Paginación Estandarizada -->
     <div class="card-footer" *ngIf="totalPages > 0">
       <div class="pagination-info">
-        {{ 'common.showing' | translate }}
-        {{ filteredmunicipios.length === 0 ? 0 : startItem }} -
-        {{ endItem }}
-        {{ 'common.of' | translate }}
-        {{ filteredmunicipios.length }}
+        {{ 'common.showing' | translate }} 
+        {{ (currentPage - 1) * pageSize + 1 }} - 
+        {{ Math.min(currentPage * pageSize, totalItems) }} 
+        {{ 'common.of' | translate }} 
+        {{ totalItems }}
       </div>
       <div class="pagination">
-        <div class="pagination">
-          <button class="btn btn-sm btn-secondary"
-                  (click)="previousPage()"
-                  [disabled]="currentPage === 1">
-            ‹ {{ 'common.previous' | translate }}
-          </button>
+        <button 
+          class="btn btn-sm btn-secondary" 
+          (click)="previousPage()"
+          [disabled]="currentPage === 1">
+          ‹ {{ 'common.previous' | translate }}
+        </button>
+        
+        <button 
+          *ngFor="let page of getPageNumbers()"
+          class="btn btn-sm"
+          [class.btn-primary]="page === currentPage"
+          [class.btn-secondary]="page !== currentPage"
+          (click)="goToPage(page)">
+          {{ page }}
+        </button>
 
-          <button *ngFor="let page of getPageNumbers()"
-                  class="btn btn-sm"
-                  [class.btn-primary]="page === currentPage"
-                  [class.btn-secondary]="page !== currentPage"
-                  (click)="goToPage(page)">
-            {{ page }}
-          </button>
-
-          <button class="btn btn-sm btn-secondary"
-                  (click)="nextPage()"
-                  [disabled]="currentPage === totalPages">
-            {{ 'common.next' | translate }} ›
-          </button>
-        </div>
+        <button 
+          class="btn btn-sm btn-secondary" 
+          (click)="nextPage()"
+          [disabled]="currentPage === totalPages">
+          {{ 'common.next' | translate }} ›
+        </button>
       </div>
     </div>
   </div>

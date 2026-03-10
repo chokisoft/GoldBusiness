@@ -11,17 +11,16 @@ import { LanguageService } from '../../../services/language.service';
 })
 export class CodigoPostalListComponent implements OnInit, OnDestroy {
   codigosPostales: CodigoPostalDTO[] = [];
-  filteredCodigosPostales: CodigoPostalDTO[] = [];
-  paginatedCodigosPostales: CodigoPostalDTO[] = [];
   loading = false;
   error: string | null = null;
 
   // Propiedades de búsqueda
   searchTerm: string = '';
 
-  // Propiedades de paginación
+  // Propiedades de paginación del SERVIDOR
   currentPage: number = 1;
   pageSize: number = 10;
+  totalItems: number = 0;
   totalPages: number = 0;
 
   // Valores calculados para UI
@@ -32,6 +31,7 @@ export class CodigoPostalListComponent implements OnInit, OnDestroy {
   Math = Math;
 
   private languageSubscription?: Subscription;
+  private searchDebounceTimer?: any;
 
   constructor(
     private codigopostalService: CodigoPostalService,
@@ -51,105 +51,74 @@ export class CodigoPostalListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.languageSubscription?.unsubscribe();
+    if (this.searchDebounceTimer) {
+      clearTimeout(this.searchDebounceTimer);
+    }
   }
 
   loadData(): void {
     this.loading = true;
     this.error = null;
 
-    // Deferir la suscripción para que Angular renderice `loading = true` primero
-    Promise.resolve().then(() => {
-      this.codigopostalService.getAll()
-        .pipe(finalize(() => this.loading = false))
-        .subscribe({
-          next: (data) => {
-            console.log('✅ GET /CodigoPostal response:', data);
-            this.codigosPostales = data.sort((a, b) => a.codigo.localeCompare(b.codigo));
-            this.filteredCodigosPostales = [...this.codigosPostales];
+    // Usar paginación del servidor
+    const searchTerm = this.searchTerm.trim() || undefined;
 
-            if (!this.pageSize || this.pageSize <= 0) this.pageSize = 10;
-            const totalItems = this.filteredCodigosPostales.length;
-            this.totalPages = totalItems === 0 ? 0 : Math.ceil(totalItems / this.pageSize);
+    this.codigopostalService.getPaged(this.currentPage, this.pageSize, searchTerm)
+      .pipe(finalize(() => this.loading = false))
+      .subscribe({
+        next: (response) => {
+          console.log('✅ GET /CodigoPostal/paged response:', response);
+          this.codigosPostales = response.items;
+          this.totalItems = response.total;
+          this.totalPages = Math.ceil(this.totalItems / this.pageSize);
 
-            if (this.totalPages === 0) {
-              this.currentPage = 1;
-            } else {
-              this.currentPage = Math.min(Math.max(1, this.currentPage), this.totalPages);
-            }
-
-            this.applyPagination();
-          },
-          error: (err) => {
-            console.error('❌ Error loading CodigoPostal list:', err);
-            this.error = `Error al cargar los códigos postales: ${err?.message ?? err.statusText ?? err.status}`;
+          // Calcular valores para la UI
+          if (this.totalItems === 0) {
+            this.startItem = 0;
+            this.endItem = 0;
+          } else {
+            this.startItem = (this.currentPage - 1) * this.pageSize + 1;
+            this.endItem = Math.min(this.currentPage * this.pageSize, this.totalItems);
           }
-        });
-    });
+        },
+        error: (err) => {
+          console.error('❌ Error loading CodigoPostal list:', err);
+          this.error = `Error al cargar los códigos postales: ${err?.message ?? err.statusText ?? err.status}`;
+        }
+      });
   }
 
   onSearch(): void {
-    const term = this.searchTerm.toLowerCase().trim();
-
-    if (!term) {
-      this.filteredCodigosPostales = [...this.codigosPostales];
-    } else {
-      this.filteredCodigosPostales = this.codigosPostales.filter(item =>
-        item.codigo.toLowerCase().includes(term) ||
-        (item.municipioDescripcion || '').toLowerCase().includes(term) ||
-        (item.provinciaDescripcion || '').toLowerCase().includes(term)
-      );
+    // Debounce la búsqueda para evitar muchas peticiones
+    if (this.searchDebounceTimer) {
+      clearTimeout(this.searchDebounceTimer);
     }
 
-    // Volver a la primera página al filtrar — esto es intencional para UX consistente
-    this.currentPage = 1;
-    this.applyPagination();
-  }
-
-  applyPagination(): void {
-    if (!this.pageSize || this.pageSize <= 0) {
-      this.pageSize = 10;
-    }
-
-    const totalItems = this.filteredCodigosPostales.length;
-    this.totalPages = totalItems === 0 ? 0 : Math.ceil(totalItems / this.pageSize);
-
-    if (this.totalPages === 0) {
+    this.searchDebounceTimer = setTimeout(() => {
+      // Volver a la primera página al buscar
       this.currentPage = 1;
-      this.paginatedCodigosPostales = [];
-      this.startItem = 0;
-      this.endItem = 0;
-      return;
-    }
-
-    this.currentPage = Math.min(Math.max(1, this.currentPage), this.totalPages);
-
-    const startIndex = (this.currentPage - 1) * this.pageSize;
-    const endIndex = Math.min(startIndex + this.pageSize, totalItems);
-
-    this.paginatedCodigosPostales = this.filteredCodigosPostales.slice(startIndex, endIndex);
-
-    this.startItem = totalItems === 0 ? 0 : startIndex + 1;
-    this.endItem = endIndex;
+      this.loadData();
+    }, 300); // 300ms de debounce
   }
 
   goToPage(page: number): void {
-    if (page >= 1 && (this.totalPages === 0 || page <= this.totalPages)) {
+    if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
-      this.applyPagination();
+      this.loadData();
     }
   }
 
   nextPage(): void {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
-      this.applyPagination();
+      this.loadData();
     }
   }
 
   previousPage(): void {
     if (this.currentPage > 1) {
       this.currentPage--;
-      this.applyPagination();
+      this.loadData();
     }
   }
 
@@ -172,21 +141,19 @@ export class CodigoPostalListComponent implements OnInit, OnDestroy {
 
   onPageSizeChange(newSize?: number | string): void {
     const parsed = Number(newSize);
-    if (!isNaN(parsed) && parsed > 0) {
-      this.pageSize = parsed;
-    } else if (!this.pageSize || this.pageSize <= 0) {
-      this.pageSize = 10;
-    }
-
-    // Reiniciar página y recalcular con el nuevo pageSize
+    if (!isNaN(parsed) && parsed > 0) this.pageSize = parsed;
+    else if (!this.pageSize || this.pageSize <= 0) this.pageSize = 10;
     this.currentPage = 1;
-    this.applyPagination();
+    this.loadData();
   }
 
   delete(id: number, codigo: string): void {
     if (confirm(`¿Estás seguro de eliminar el código postal "${codigo}"?`)) {
       this.codigopostalService.delete(id).subscribe({
         next: () => {
+          if (this.codigosPostales.length === 1 && this.currentPage > 1) {
+            this.currentPage--;
+          }
           this.loadData();
         },
         error: (err) => {

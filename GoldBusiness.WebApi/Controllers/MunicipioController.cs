@@ -28,6 +28,15 @@ namespace GoldBusiness.WebApi.Controllers
             return Ok(result);
         }
 
+        [HttpGet("paged")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> GetPaged([FromQuery] int page = 1, [FromQuery] int pageSize = 50, [FromQuery] string? term = null, [FromQuery] int? provinciaId = null)
+        {
+            var lang = GetCurrentLanguage();
+            var (items, total) = await _service.GetPagedAsync(page, pageSize, term, provinciaId, lang);
+            return Ok(new { items, total });
+        }
+
         [HttpGet("provincia/{provinciaId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<GoldBusiness.Domain.DTOs.MunicipioDTO>>> GetByProvincia(int provinciaId)

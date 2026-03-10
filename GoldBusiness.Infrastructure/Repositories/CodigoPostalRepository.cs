@@ -17,10 +17,9 @@ namespace GoldBusiness.Infrastructure.Repositories
             => await _context.CodigoPostal
                 .Where(cp => !cp.Cancelado)
                 .Include(cp => cp.Municipio)
-                    .ThenInclude(m => m.Translations)
-                .Include(cp => cp.Municipio)
-                    .ThenInclude(m => m.Provincia)
-                        .ThenInclude(p => p.Translations)
+                    .ThenInclude(m => m!.Translations)
+                .Include(cp => cp.Municipio!.Provincia)
+                    .ThenInclude(p => p!.Translations)
                 .OrderBy(cp => cp.Codigo)
                 .ToListAsync();
 
@@ -40,10 +39,9 @@ namespace GoldBusiness.Infrastructure.Repositories
 
             var items = await query
                 .Include(cp => cp.Municipio)
-                    .ThenInclude(m => m.Translations)
-                .Include(cp => cp.Municipio)
-                    .ThenInclude(m => m.Provincia)
-                        .ThenInclude(p => p.Translations)
+                    .ThenInclude(m => m!.Translations)
+                .Include(cp => cp.Municipio!.Provincia)
+                    .ThenInclude(p => p!.Translations)
                 .OrderBy(cp => cp.Codigo)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
@@ -56,20 +54,18 @@ namespace GoldBusiness.Infrastructure.Repositories
             => await _context.CodigoPostal
                 .Where(cp => cp.MunicipioId == municipioId && !cp.Cancelado)
                 .Include(cp => cp.Municipio)
-                    .ThenInclude(m => m.Translations)
-                .Include(cp => cp.Municipio)
-                    .ThenInclude(m => m.Provincia)
-                        .ThenInclude(p => p.Translations)
+                    .ThenInclude(m => m!.Translations)
+                .Include(cp => cp.Municipio!.Provincia)
+                    .ThenInclude(p => p!.Translations)
                 .OrderBy(cp => cp.Codigo)
                 .ToListAsync();
 
         public async Task<CodigoPostal?> GetByIdAsync(int id)
             => await _context.CodigoPostal
                 .Include(cp => cp.Municipio)
-                    .ThenInclude(m => m.Translations)
-                .Include(cp => cp.Municipio)
-                    .ThenInclude(m => m.Provincia)
-                        .ThenInclude(p => p.Translations)
+                    .ThenInclude(m => m!.Translations)
+                .Include(cp => cp.Municipio!.Provincia)
+                    .ThenInclude(p => p!.Translations)
                 .FirstOrDefaultAsync(cp => cp.Id == id);
 
         public async Task<CodigoPostal?> GetByCodigoAsync(string codigo, bool includeCanceled = false)
@@ -80,10 +76,9 @@ namespace GoldBusiness.Infrastructure.Repositories
 
             return await query
                 .Include(cp => cp.Municipio)
-                    .ThenInclude(m => m.Translations)
-                .Include(cp => cp.Municipio)
-                    .ThenInclude(m => m.Provincia)
-                        .ThenInclude(p => p.Translations)
+                    .ThenInclude(m => m!.Translations)
+                .Include(cp => cp.Municipio!.Provincia)
+                    .ThenInclude(p => p!.Translations)
                 .FirstOrDefaultAsync();
         }
 
@@ -96,7 +91,8 @@ namespace GoldBusiness.Infrastructure.Repositories
 
         public async Task<IEnumerable<CodigoPostal>> BuscarAsync(string termino, int? municipioId = null)
         {
-            var query = _context.CodigoPostal.AsQueryable();
+            var query = _context.CodigoPostal
+                .Where(cp => !cp.Cancelado);
 
             if (!string.IsNullOrWhiteSpace(termino))
                 query = query.Where(cp => cp.Codigo.Contains(termino));
@@ -105,12 +101,11 @@ namespace GoldBusiness.Infrastructure.Repositories
                 query = query.Where(cp => cp.MunicipioId == municipioId.Value);
 
             return await query
-                .Where(cp => !cp.Cancelado)
                 .Include(cp => cp.Municipio)
-                    .ThenInclude(m => m.Translations)
-                .Include(cp => cp.Municipio)
-                    .ThenInclude(m => m.Provincia)
-                        .ThenInclude(p => p.Translations)
+                    .ThenInclude(m => m!.Translations)
+                .Include(cp => cp.Municipio!.Provincia)
+                    .ThenInclude(p => p!.Translations)
+                .OrderBy(cp => cp.Codigo)
                 .ToListAsync();
         }
 

@@ -19,6 +19,13 @@ namespace GoldBusiness.Application.Services
                 .Select(m => MapToDTO(m, lang))
                 .ToList();
 
+        public async Task<(IEnumerable<MunicipioDTO> Items, int Total)> GetPagedAsync(int page, int pageSize, string termino = null, int? provinciaId = null, string lang = "es")
+        {
+            var (items, total) = await _repo.GetPagedAsync(page, pageSize, termino, provinciaId);
+            var dtos = items.Select(m => MapToDTO(m, lang)).ToList();
+            return (dtos, total);
+        }
+
         public async Task<IEnumerable<MunicipioDTO>> GetByProvinciaIdAsync(int provinciaId, string lang = "es")
             => (await _repo.GetByProvinciaIdAsync(provinciaId))
                 .Select(m => MapToDTO(m, lang))
@@ -37,11 +44,11 @@ namespace GoldBusiness.Application.Services
 
         private static MunicipioDTO MapToDTO(Municipio entity, string lang)
         {
-            var translation = entity.Translations.FirstOrDefault(t => t.Language == lang);
+            var translation = entity.Translations?.FirstOrDefault(t => t.Language == lang);
             var descripcion = translation?.Descripcion ?? entity.Descripcion;
 
-            var provinciaTranslation = entity.Provincia.Translations.FirstOrDefault(t => t.Language == lang);
-            var provinciaDescripcion = provinciaTranslation?.Descripcion ?? entity.Provincia.Descripcion;
+            var provinciaTranslation = entity.Provincia?.Translations?.FirstOrDefault(t => t.Language == lang);
+            var provinciaDescripcion = provinciaTranslation?.Descripcion ?? entity.Provincia?.Descripcion ?? string.Empty;
 
             return new MunicipioDTO
             {
@@ -49,7 +56,7 @@ namespace GoldBusiness.Application.Services
                 Codigo = entity.Codigo,
                 Descripcion = descripcion,
                 ProvinciaId = entity.ProvinciaId,
-                ProvinciaCodigo = entity.Provincia.Codigo,
+                ProvinciaCodigo = entity.Provincia?.Codigo ?? string.Empty,
                 ProvinciaDescripcion = provinciaDescripcion
             };
         }

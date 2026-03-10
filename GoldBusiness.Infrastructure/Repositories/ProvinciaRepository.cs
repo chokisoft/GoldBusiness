@@ -18,16 +18,42 @@ namespace GoldBusiness.Infrastructure.Repositories
             => await _context.Provincia
                 .Where(p => !p.Cancelado)
                 .Include(p => p.Pais)
-                    .ThenInclude(pais => pais.Translations)
+                    .ThenInclude(pais => pais!.Translations)
                 .Include(p => p.Translations)
                 .OrderBy(p => p.Codigo)
                 .ToListAsync();
+
+        public async Task<(IEnumerable<Provincia> Items, int Total)> GetPagedAsync(int page, int pageSize, string? termino = null, int? paisId = null)
+        {
+            var query = _context.Provincia
+                .AsNoTracking()
+                .Where(p => !p.Cancelado);
+
+            if (!string.IsNullOrWhiteSpace(termino))
+                query = query.Where(p => p.Codigo.Contains(termino) || p.Descripcion.Contains(termino));
+
+            if (paisId.HasValue)
+                query = query.Where(p => p.PaisId == paisId.Value);
+
+            var total = await query.CountAsync();
+
+            var items = await query
+                .Include(p => p.Pais)
+                    .ThenInclude(pais => pais!.Translations)
+                .Include(p => p.Translations)
+                .OrderBy(p => p.Codigo)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, total);
+        }
 
         public async Task<IEnumerable<Provincia>> GetByPaisIdAsync(int paisId)
             => await _context.Provincia
                 .Where(p => p.PaisId == paisId && !p.Cancelado)
                 .Include(p => p.Pais)
-                    .ThenInclude(pais => pais.Translations)
+                    .ThenInclude(pais => pais!.Translations)
                 .Include(p => p.Translations)
                 .OrderBy(p => p.Descripcion)
                 .ToListAsync();
@@ -35,7 +61,7 @@ namespace GoldBusiness.Infrastructure.Repositories
         public async Task<Provincia?> GetByIdAsync(int id)
             => await _context.Provincia
                 .Include(p => p.Pais)
-                    .ThenInclude(pais => pais.Translations)
+                    .ThenInclude(pais => pais!.Translations)
                 .Include(p => p.Translations)
                 .FirstOrDefaultAsync(p => p.Id == id && !p.Cancelado);
 
@@ -49,11 +75,24 @@ namespace GoldBusiness.Infrastructure.Repositories
 
             return await query
                 .Include(p => p.Pais)
-                    .ThenInclude(pais => pais.Translations)
+                    .ThenInclude(pais => pais!.Translations)
                 .Include(p => p.Translations)
                 .OrderBy(p => p.Descripcion)
                 .Take(20)
                 .ToListAsync();
+        }
+
+        public async Task<Provincia> AddAsync(Provincia entity)
+        {
+            _context.Provincia.Add(entity);
+            await _context.SaveChangesAsync();
+            return entity;
+        }
+
+        public async Task UpdateAsync(Provincia entity)
+        {
+            _context.Provincia.Update(entity);
+            await _context.SaveChangesAsync();
         }
     }
 }
