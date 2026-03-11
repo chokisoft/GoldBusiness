@@ -1,45 +1,53 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
 
 export interface UnidadMedidaDTO {
-  codigo?: string;
-  descripcion?: string;
   id?: number;
-
+  codigo: string;
+  descripcion: string;
   cancelado?: boolean;
   creadoPor?: string;
-  fechaHoraCreado?: Date;
+  fechaHoraCreado?: string;
   modificadoPor?: string;
-  fechaHoraModificado?: Date;
+  fechaHoraModificado?: string;
+}
+
+export interface PagedResult<T> {
+  items: T[];
+  total: number;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class UnidadMedidaService {
-  private endpoint = 'unidadMedida';
+  constructor(private api: ApiService) {}
 
-  constructor(private apiService: ApiService) {}
+  getPaged(page: number = 1, pageSize: number = 50, term?: string): Observable<PagedResult<UnidadMedidaDTO>> {
+    let url = `UnidadMedida/paged?page=${page}&pageSize=${pageSize}`;
+    if (term) url += `&term=${encodeURIComponent(term)}`;
+    return this.api.get<PagedResult<UnidadMedidaDTO>>(url);
+  }
 
   getAll(): Observable<UnidadMedidaDTO[]> {
-    return this.apiService.get<UnidadMedidaDTO[]>(this.endpoint);
+    console.warn('⚠️ UnidadMedidaService.getAll() puede ser lento. Considera usar getPaged()');
+    return this.api.get<UnidadMedidaDTO[]>('UnidadMedida');
   }
 
   getById(id: number): Observable<UnidadMedidaDTO> {
-    return this.apiService.get<UnidadMedidaDTO>(`${this.endpoint}/${id}`);
+    return this.api.get<UnidadMedidaDTO>(`UnidadMedida/${id}`);
   }
 
   create(dto: UnidadMedidaDTO): Observable<UnidadMedidaDTO> {
-    return this.apiService.post<UnidadMedidaDTO>(this.endpoint, dto);
+    return this.api.post<UnidadMedidaDTO>('UnidadMedida', dto);
   }
 
-  update(id: number, dto: UnidadMedidaDTO): Observable<void> {
-    return this.apiService.put<void>(`${this.endpoint}/${id}`, dto);
+  update(id: number, dto: UnidadMedidaDTO): Observable<UnidadMedidaDTO> {
+    return this.api.put<UnidadMedidaDTO>(`UnidadMedida/${id}`, dto);
   }
 
   delete(id: number): Observable<void> {
-    return this.apiService.delete<void>(`${this.endpoint}/${id}`);
+    return this.api.delete<void>(`UnidadMedida/${id}`);
   }
 }

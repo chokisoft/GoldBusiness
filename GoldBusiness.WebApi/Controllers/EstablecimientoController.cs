@@ -1,4 +1,5 @@
 ﻿using GoldBusiness.Application.Interfaces;
+using GoldBusiness.Application.Services;
 using GoldBusiness.Domain.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -34,6 +35,19 @@ namespace GoldBusiness.WebApi.Controllers
         {
             var lang = GetCurrentLanguage();
             return Ok(await _service.GetAllAsync(lang));
+        }
+
+        [HttpGet("paged")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> GetPaged(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 50,
+            [FromQuery] string? term = null,
+            [FromQuery] int? negocioId = null)
+        {
+            var lang = GetCurrentLanguage();
+            var (items, total) = await _service.GetPagedAsync(page, pageSize, term, negocioId, lang);
+            return Ok(new { items, total });
         }
 
         /// <summary>

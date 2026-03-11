@@ -17,15 +17,21 @@
     {{ error }}
   </div>
 
-  <div class="card" *ngIf="!loading && !error">
+  <!-- ✅ Tabla siempre visible (no se oculta durante búsquedas) -->
+  <div class="card" *ngIf="!loading">
     <div class="card-header">
       <div class="search-container">
         <input type="text"
                class="form-control search-input"
                [(ngModel)]="searchTerm"
                (input)="onSearch()"
-               [placeholder]="'common.search' | translate" />
-        <span class="search-icon">🔍</span>
+               [placeholder]="'common.search' | translate"
+               [class.searching]="searching" />
+        <span class="search-icon">
+          <!-- ✅ Mostrar spinner solo en el icono durante búsqueda -->
+          <ng-container *ngIf="!searching">🔍</ng-container>
+          <ng-container *ngIf="searching">⏳</ng-container>
+        </span>
       </div>
       <div class="page-size-selector">
         <label>{{ 'common.show' | translate }}:</label>
@@ -85,7 +91,6 @@
       </div>
     </div>
 
-    <!-- ✅ Paginación Estandarizada (estilo Cuenta) -->
     <div class="card-footer" *ngIf="totalPages > 0">
       <div class="pagination-info">
         {{ 'common.showing' | translate }} 
@@ -121,6 +126,7 @@
     </div>
   </div>
 
+  <!-- ✅ Loader solo para carga inicial -->
   <div *ngIf="loading" class="loading-container">
     <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
   </div>

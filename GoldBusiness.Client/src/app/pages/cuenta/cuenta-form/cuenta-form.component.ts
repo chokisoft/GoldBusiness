@@ -107,7 +107,8 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
     this.loadingGrupos = true;
     this.grupoCuentaService.getAll().subscribe({
       next: (data) => {
-        this.gruposCuenta = data.filter(g => g.activo !== false);
+        // ✅ CORREGIDO: Cambiar 'activo' por 'cancelado'
+        this.gruposCuenta = data.filter(g => !g.cancelado);
         this.loadingGrupos = false;
       },
       error: (err: any) => {

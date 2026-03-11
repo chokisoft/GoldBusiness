@@ -14,21 +14,58 @@ namespace GoldBusiness.Infrastructure.Repositories
                 .Include(c => c.Translations)
                 .Include(c => c.SubGrupoCuenta)
                     .ThenInclude(s => s.Translations)
-                .Include(c => c.SubGrupoCuenta)
-                    .ThenInclude(s => s.GrupoCuenta)
-                        .ThenInclude(g => g.Translations)
+                .Include(c => c.SubGrupoCuenta!.GrupoCuenta)
+                    .ThenInclude(g => g.Translations)
                 .OrderBy(c => c.Codigo)
                 .ToListAsync();
+
+        // ✅ AGREGADO: Paginación del servidor con búsqueda en cascada
+        public async Task<(IEnumerable<Cuenta> Items, int Total)> GetPagedAsync(int page, int pageSize, string? termino = null, int? subGrupoCuentaId = null)
+        {
+            var query = _context.Cuenta
+                .AsNoTracking()
+                .Where(c => !c.Cancelado);
+
+            // Búsqueda en Código, Descripción, SubGrupoCuenta y GrupoCuenta
+            if (!string.IsNullOrWhiteSpace(termino))
+            {
+                var lowerTerm = termino.ToLower();
+                query = query.Where(c =>
+                    c.Codigo.ToLower().Contains(lowerTerm) ||
+                    c.Descripcion.ToLower().Contains(lowerTerm) ||
+                    c.SubGrupoCuenta!.Descripcion.ToLower().Contains(lowerTerm) ||
+                    c.SubGrupoCuenta!.GrupoCuenta!.Descripcion.ToLower().Contains(lowerTerm)
+                );
+            }
+
+            // Filtro por SubGrupoCuenta (opcional)
+            if (subGrupoCuentaId.HasValue)
+                query = query.Where(c => c.SubGrupoCuentaId == subGrupoCuentaId.Value);
+
+            var total = await query.CountAsync();
+
+            var items = await query
+                .Include(c => c.Translations)
+                .Include(c => c.SubGrupoCuenta)
+                    .ThenInclude(s => s!.Translations)
+                .Include(c => c.SubGrupoCuenta!.GrupoCuenta)
+                    .ThenInclude(g => g!.Translations)
+                .OrderBy(c => c.Codigo)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, total);
+        }
 
         public async Task<Cuenta?> GetByIdAsync(int id)
             => await _context.Cuenta
                 .Include(c => c.Translations)
-                .Include(c => c.SubGrupoCuenta!) // ✅ AGREGAR !
-                    .ThenInclude(s => s!.Translations) // ✅ AGREGAR !
-                .Include(c => c.SubGrupoCuenta!)
-                    .ThenInclude(s => s!.GrupoCuenta!) // ✅ AGREGAR !
-                        .ThenInclude(g => g!.Translations) // ✅ AGREGAR !
-                .FirstOrDefaultAsync(c => c.Id == id && !c.Cancelado);
+                .Include(c => c.SubGrupoCuenta)
+                    .ThenInclude(s => s.Translations)
+                .Include(c => c.SubGrupoCuenta!.GrupoCuenta)
+                    .ThenInclude(g => g.Translations)
+                .FirstOrDefaultAsync(c => c.Id == id);
 
         public async Task<Cuenta?> GetByCodigoAsync(string codigo, bool includeCanceled = false)
         {
@@ -36,6 +73,8 @@ namespace GoldBusiness.Infrastructure.Repositories
                 .Include(c => c.Translations)
                 .Include(c => c.SubGrupoCuenta)
                     .ThenInclude(s => s.Translations)
+                .Include(c => c.SubGrupoCuenta!.GrupoCuenta)
+                    .ThenInclude(g => g.Translations)
                 .Where(c => c.Codigo == codigo);
 
             if (!includeCanceled)

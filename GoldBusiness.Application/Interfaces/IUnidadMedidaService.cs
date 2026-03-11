@@ -6,6 +6,7 @@ namespace GoldBusiness.Application.Interfaces
     public interface IUnidadMedidaService
     {
         Task<IEnumerable<UnidadMedidaDTO>> GetAllAsync(string lang = "es");
+        Task<(IEnumerable<UnidadMedidaDTO> Items, int Total)> GetPagedAsync(int page, int pageSize, string? termino = null, string lang = "es");
         Task<UnidadMedidaDTO?> GetByIdAsync(int id, string lang = "es");
         Task<UnidadMedidaDTO> CreateAsync(UnidadMedidaDTO dto, string user, string lang = "es");
         Task<UnidadMedidaDTO> UpdateAsync(int id, UnidadMedidaDTO dto, string user, string lang = "es");

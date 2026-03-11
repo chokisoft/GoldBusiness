@@ -17,18 +17,21 @@
     {{ error }}
   </div>
 
-  <div class="card" *ngIf="!loading && !error">
-    <!-- Barra de búsqueda y filtros -->
+  <!-- ✅ CORREGIDO: Solo !loading -->
+  <div class="card" *ngIf="!loading">
     <div class="card-header">
       <div class="search-container">
-        <input 
-          type="text" 
-          class="form-control search-input" 
-          [(ngModel)]="searchTerm"
-          (input)="onSearch()"
-          [placeholder]="'common.search' | translate"
-        />
-        <span class="search-icon">🔍</span>
+        <input type="text"
+               class="form-control search-input"
+               [(ngModel)]="searchTerm"
+               (input)="onSearch()"
+               [placeholder]="'common.search' | translate"
+               [class.searching]="searching" />
+        <!-- ✅ Indicador durante búsqueda -->
+        <span class="search-icon">
+          <ng-container *ngIf="!searching">🔍</ng-container>
+          <ng-container *ngIf="searching">⏳</ng-container>
+        </span>
       </div>
       <div class="page-size-selector">
         <label>{{ 'common.show' | translate }}:</label>
@@ -55,7 +58,8 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let subgrupo of paginatedSubGrupoCuentas">
+            <!-- ✅ CORREGIDO: subGrupoCuentas (línea 58) -->
+            <tr *ngFor="let subgrupo of subGrupoCuentas">
               <td>{{ subgrupo.codigo }}</td>
               <td>
                 <span class="badge badge-secondary">
@@ -88,7 +92,8 @@
                 </div>
               </td>
             </tr>
-            <tr *ngIf="paginatedSubGrupoCuentas.length === 0">
+            <!-- ✅ CORREGIDO: subGrupoCuentas.length (línea 91) -->
+            <tr *ngIf="subGrupoCuentas.length === 0">
               <td colspan="5" class="text-center">
                 {{ searchTerm ? ('common.noResults' | translate) : ('common.noData' | translate) }}
               </td>
@@ -98,14 +103,16 @@
       </div>
     </div>
 
-    <!-- Paginación -->
+    <!-- ✅ Paginación Estandarizada -->
     <div class="card-footer" *ngIf="totalPages > 0">
       <div class="pagination-info">
         {{ 'common.showing' | translate }} 
         {{ (currentPage - 1) * pageSize + 1 }} - 
-        {{ Math.min(currentPage * pageSize, filteredSubGrupoCuentas.length) }} 
+        <!-- ✅ CORREGIDO: totalItems (línea 106) -->
+        {{ Math.min(currentPage * pageSize, totalItems) }} 
         {{ 'common.of' | translate }} 
-        {{ filteredSubGrupoCuentas.length }}
+        <!-- ✅ CORREGIDO: totalItems (línea 108) -->
+        {{ totalItems }}
       </div>
       <div class="pagination">
         <button 

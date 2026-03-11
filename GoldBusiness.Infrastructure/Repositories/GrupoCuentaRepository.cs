@@ -1,4 +1,4 @@
-using GoldBusiness.Domain.Entities;
+﻿using GoldBusiness.Domain.Entities;
 using GoldBusiness.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +16,34 @@ namespace GoldBusiness.Infrastructure.Repositories
                     .ThenInclude(s => s.Translations)
                 .OrderBy(g => g.Codigo)
                 .ToListAsync();
+
+        public async Task<(IEnumerable<GrupoCuenta> Items, int Total)> GetPagedAsync(int page, int pageSize, string? termino = null)
+        {
+            var query = _context.GrupoCuenta
+                .AsNoTracking()
+                .Where(cp => !cp.Cancelado);
+
+            // ✅ CORREGIDO: Búsqueda en múltiples campos
+            if (!string.IsNullOrWhiteSpace(termino))
+            {
+                var lowerTerm = termino.ToLower();
+                query = query.Where(cp =>
+                    cp.Codigo.ToLower().Contains(lowerTerm) ||
+                    cp.Descripcion.ToLower().Contains(lowerTerm)
+                );
+            }
+
+            var total = await query.CountAsync();
+
+            var items = await query
+                .Include(cp => cp.Translations)
+                .OrderBy(cp => cp.Codigo)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, total);
+        }
 
         public async Task<GrupoCuenta?> GetByIdAsync(int id)
             => await _context.GrupoCuenta

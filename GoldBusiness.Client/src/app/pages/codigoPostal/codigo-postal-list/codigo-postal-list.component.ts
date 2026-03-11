@@ -12,22 +12,15 @@ import { LanguageService } from '../../../services/language.service';
 export class CodigoPostalListComponent implements OnInit, OnDestroy {
   codigosPostales: CodigoPostalDTO[] = [];
   loading = false;
+  searching = false; // ✅ NUEVO: Estado separado para búsqueda
   error: string | null = null;
 
-  // Propiedades de búsqueda
   searchTerm: string = '';
-
-  // Propiedades de paginación del SERVIDOR
   currentPage: number = 1;
   pageSize: number = 10;
   totalItems: number = 0;
   totalPages: number = 0;
 
-  // Valores calculados para UI
-  startItem: number = 0;
-  endItem: number = 0;
-
-  // Exponer Math para usarlo en el template
   Math = Math;
 
   private languageSubscription?: Subscription;
@@ -39,47 +32,43 @@ export class CodigoPostalListComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.loadData();
+    this.loadData(true); // Carga inicial
 
     this.languageSubscription = this.languageService.currentLanguage$
       .pipe(skip(1))
       .subscribe(() => {
         console.log('🔄 CodigoPostalList: Idioma cambiado, recargando datos...');
-        this.loadData();
+        this.loadData(true);
       });
   }
 
   ngOnDestroy(): void {
     this.languageSubscription?.unsubscribe();
-    if (this.searchDebounceTimer) {
-      clearTimeout(this.searchDebounceTimer);
-    }
+    if (this.searchDebounceTimer) clearTimeout(this.searchDebounceTimer);
   }
 
-  loadData(): void {
-    this.loading = true;
+  // ✅ MODIFICADO: Parámetro para distinguir carga inicial vs búsqueda
+  loadData(isInitialLoad: boolean = false): void {
+    if (isInitialLoad) {
+      this.loading = true; // Solo mostrar loader en carga inicial
+    } else {
+      this.searching = true; // Indicador sutil para búsquedas
+    }
+    
     this.error = null;
 
-    // Usar paginación del servidor
     const searchTerm = this.searchTerm.trim() || undefined;
-
     this.codigopostalService.getPaged(this.currentPage, this.pageSize, searchTerm)
-      .pipe(finalize(() => this.loading = false))
+      .pipe(finalize(() => {
+        this.loading = false;
+        this.searching = false;
+      }))
       .subscribe({
         next: (response) => {
           console.log('✅ GET /CodigoPostal/paged response:', response);
           this.codigosPostales = response.items;
           this.totalItems = response.total;
           this.totalPages = Math.ceil(this.totalItems / this.pageSize);
-
-          // Calcular valores para la UI
-          if (this.totalItems === 0) {
-            this.startItem = 0;
-            this.endItem = 0;
-          } else {
-            this.startItem = (this.currentPage - 1) * this.pageSize + 1;
-            this.endItem = Math.min(this.currentPage * this.pageSize, this.totalItems);
-          }
         },
         error: (err) => {
           console.error('❌ Error loading CodigoPostal list:', err);
@@ -89,36 +78,32 @@ export class CodigoPostalListComponent implements OnInit, OnDestroy {
   }
 
   onSearch(): void {
-    // Debounce la búsqueda para evitar muchas peticiones
-    if (this.searchDebounceTimer) {
-      clearTimeout(this.searchDebounceTimer);
-    }
-
+    if (this.searchDebounceTimer) clearTimeout(this.searchDebounceTimer);
+    
     this.searchDebounceTimer = setTimeout(() => {
-      // Volver a la primera página al buscar
       this.currentPage = 1;
-      this.loadData();
-    }, 300); // 300ms de debounce
+      this.loadData(false); // ✅ Búsqueda (no muestra loader grande)
+    }, 500); // ✅ Aumentado a 500ms para mejor UX
   }
 
   goToPage(page: number): void {
     if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
-      this.loadData();
+      this.loadData(false);
     }
   }
 
   nextPage(): void {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
-      this.loadData();
+      this.loadData(false);
     }
   }
 
   previousPage(): void {
     if (this.currentPage > 1) {
       this.currentPage--;
-      this.loadData();
+      this.loadData(false);
     }
   }
 
@@ -127,15 +112,10 @@ export class CodigoPostalListComponent implements OnInit, OnDestroy {
     const maxVisiblePages = 5;
     let startPage = Math.max(1, this.currentPage - Math.floor(maxVisiblePages / 2));
     let endPage = Math.min(this.totalPages, startPage + maxVisiblePages - 1);
-
     if (endPage - startPage < maxVisiblePages - 1) {
       startPage = Math.max(1, endPage - maxVisiblePages + 1);
     }
-
-    for (let i = startPage; i <= endPage; i++) {
-      pages.push(i);
-    }
-
+    for (let i = startPage; i <= endPage; i++) pages.push(i);
     return pages;
   }
 
@@ -144,7 +124,7 @@ export class CodigoPostalListComponent implements OnInit, OnDestroy {
     if (!isNaN(parsed) && parsed > 0) this.pageSize = parsed;
     else if (!this.pageSize || this.pageSize <= 0) this.pageSize = 10;
     this.currentPage = 1;
-    this.loadData();
+    this.loadData(false);
   }
 
   delete(id: number, codigo: string): void {
@@ -154,7 +134,7 @@ export class CodigoPostalListComponent implements OnInit, OnDestroy {
           if (this.codigosPostales.length === 1 && this.currentPage > 1) {
             this.currentPage--;
           }
-          this.loadData();
+          this.loadData(false);
         },
         error: (err) => {
           this.error = 'Error al eliminar el código postal';

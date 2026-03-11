@@ -17,16 +17,19 @@
     {{ error }}
   </div>
 
-  <div class="card" *ngIf="!loading && !error">
-    <!-- Barra de búsqueda y filtros -->
+  <div class="card" *ngIf="!loading">
     <div class="card-header">
       <div class="search-container">
         <input type="text"
                class="form-control search-input"
                [(ngModel)]="searchTerm"
                (input)="onSearch()"
-               [placeholder]="'common.search' | translate" />
-        <span class="search-icon">🔍</span>
+               [placeholder]="'common.search' | translate"
+               [class.searching]="searching" />
+        <span class="search-icon">
+          <ng-container *ngIf="!searching">🔍</ng-container>
+          <ng-container *ngIf="searching">⏳</ng-container>
+        </span>
       </div>
       <div class="page-size-selector">
         <label>{{ 'common.show' | translate }}:</label>
@@ -46,22 +49,22 @@
           <thead>
             <tr>
               <th>{{ 'establecimiento.codigo' | translate }}</th>
-              <th>{{ 'establecimiento.nombre' | translate }}</th>
-              <th>{{ 'establecimiento.localidad' | translate }}</th>
+              <th>{{ 'establecimiento.descripcion' | translate }}</th>
+              <th>{{ 'establecimiento.negocio' | translate }}</th>
               <th class="actions-column">{{ 'common.actions' | translate }}</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let item of paginatedestablecimientos">
+            <tr *ngFor="let item of establecimientos">
               <td>{{ item.codigo }}</td>
               <td>{{ item.descripcion }}</td>
-              <td>{{ item.localidadDescripcion || '-' }}</td>
+              <td>{{ item.negocioDescripcion }}</td>
               <td class="actions-column">
                 <div class="action-buttons">
                   <button class="btn btn-sm btn-info"
                           [routerLink]="[item.id]"
                           [title]="'common.view' | translate">
-                    <span>👁️‍🗨️</span>
+                    <span>👁️</span>
                   </button>
                   <button class="btn btn-sm btn-warning"
                           [routerLink]="['editar', item.id]"
@@ -76,7 +79,7 @@
                 </div>
               </td>
             </tr>
-            <tr *ngIf="paginatedestablecimientos.length === 0">
+            <tr *ngIf="establecimientos.length === 0">
               <td colspan="4" class="text-center">
                 {{ searchTerm ? ('common.noResults' | translate) : ('common.noData' | translate) }}
               </td>
@@ -86,37 +89,37 @@
       </div>
     </div>
 
-    <!-- Paginación -->
     <div class="card-footer" *ngIf="totalPages > 0">
       <div class="pagination-info">
-        {{ 'common.showing' | translate }}
-        {{ filteredestablecimientos.length === 0 ? 0 : startItem }} -
-        {{ endItem }}
-        {{ 'common.of' | translate }}
-        {{ filteredestablecimientos.length }}
+        {{ 'common.showing' | translate }} 
+        {{ (currentPage - 1) * pageSize + 1 }} - 
+        {{ Math.min(currentPage * pageSize, totalItems) }} 
+        {{ 'common.of' | translate }} 
+        {{ totalItems }}
       </div>
       <div class="pagination">
-        <div class="pagination">
-          <button class="btn btn-sm btn-secondary"
-                  (click)="previousPage()"
-                  [disabled]="currentPage === 1">
-            ‹ {{ 'common.previous' | translate }}
-          </button>
+        <button 
+          class="btn btn-sm btn-secondary" 
+          (click)="previousPage()"
+          [disabled]="currentPage === 1">
+          ‹ {{ 'common.previous' | translate }}
+        </button>
+        
+        <button 
+          *ngFor="let page of getPageNumbers()"
+          class="btn btn-sm"
+          [class.btn-primary]="page === currentPage"
+          [class.btn-secondary]="page !== currentPage"
+          (click)="goToPage(page)">
+          {{ page }}
+        </button>
 
-          <button *ngFor="let page of getPageNumbers()"
-                  class="btn btn-sm"
-                  [class.btn-primary]="page === currentPage"
-                  [class.btn-secondary]="page !== currentPage"
-                  (click)="goToPage(page)">
-            {{ page }}
-          </button>
-
-          <button class="btn btn-sm btn-secondary"
-                  (click)="nextPage()"
-                  [disabled]="currentPage === totalPages">
-            {{ 'common.next' | translate }} ›
-          </button>
-        </div>
+        <button 
+          class="btn btn-sm btn-secondary" 
+          (click)="nextPage()"
+          [disabled]="currentPage === totalPages">
+          {{ 'common.next' | translate }} ›
+        </button>
       </div>
     </div>
   </div>

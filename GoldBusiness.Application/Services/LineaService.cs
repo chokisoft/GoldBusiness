@@ -19,6 +19,16 @@ namespace GoldBusiness.Application.Services
             _localizer = localizer;
         }
 
+        public async Task<(IEnumerable<LineaDTO> Items, int Total)> GetPagedAsync(int page, int pageSize, string? termino = null, string lang = "es")
+        {
+            var (items, total) = await _repo.GetPagedAsync(page, pageSize, termino);
+            var dtos = items.Select(l => MapToDTO(l, lang))
+                            .Where(dto => dto is not null)
+                            .Select(dto => dto!)
+                            .ToList();
+            return (dtos, total);
+        }
+
         public async Task<IEnumerable<LineaDTO>> GetAllAsync(string lang = "es")
             => (await _repo.GetAllAsync())
                 .Select(g => MapToDTO(g, lang))

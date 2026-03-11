@@ -14,12 +14,16 @@ namespace GoldBusiness.WebApi.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize(Policy = "ERPAdminOrFullAccess")]
-    public class CuentaController(
-        ICuentaService cuentaService,
-        IStringLocalizer<GoldBusiness.Domain.Resources.ValidationMessages> localizer) : ControllerBase
+    public class CuentaController : BaseEntityController
     {
-        private readonly ICuentaService _cuentaService = cuentaService;
-        private readonly IStringLocalizer<GoldBusiness.Domain.Resources.ValidationMessages> _localizer = localizer;
+        private readonly ICuentaService _service;
+
+        public CuentaController(
+            ICuentaService service,
+            IStringLocalizer<GoldBusiness.Domain.Resources.ValidationMessages> localizer) : base(localizer)
+        {
+            _service = service;
+        }
 
         /// <summary>
         /// Obtiene todas las cuentas contables.
@@ -30,7 +34,20 @@ namespace GoldBusiness.WebApi.Controllers
         public async Task<ActionResult<IEnumerable<CuentaDTO>>> GetCuenta()
         {
             var lang = GetCurrentLanguage();
-            return Ok(await _cuentaService.GetAllAsync(lang));
+            return Ok(await _service.GetAllAsync(lang));
+        }
+
+        [HttpGet("paged")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> GetPaged(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 50,
+            [FromQuery] string? term = null,
+            [FromQuery] int? subGrupoCuentaId = null)
+        {
+            var lang = GetCurrentLanguage();
+            var (items, total) = await _service.GetPagedAsync(page, pageSize, term, subGrupoCuentaId, lang);
+            return Ok(new { items, total });
         }
 
         /// <summary>
@@ -43,7 +60,7 @@ namespace GoldBusiness.WebApi.Controllers
         public async Task<ActionResult<CuentaDTO>> GetById(int id)
         {
             var lang = GetCurrentLanguage();
-            var cuenta = await _cuentaService.GetByIdAsync(id, lang);
+            var cuenta = await _service.GetByIdAsync(id, lang);
 
             if (cuenta == null)
                 return NotFound();
@@ -62,7 +79,7 @@ namespace GoldBusiness.WebApi.Controllers
         {
             var lang = GetCurrentLanguage();
             var usuario = User?.Identity?.Name ?? "system";
-            var result = await _cuentaService.CreateAsync(dto, usuario, lang);
+            var result = await _service.CreateAsync(dto, usuario, lang);
             return CreatedAtAction(nameof(GetCuenta), new { id = result.Id }, result);
         }
 
@@ -78,7 +95,7 @@ namespace GoldBusiness.WebApi.Controllers
         {
             var lang = GetCurrentLanguage();
             var usuario = User?.Identity?.Name ?? "system";
-            var result = await _cuentaService.UpdateAsync(id, dto, usuario, lang);
+            var result = await _service.UpdateAsync(id, dto, usuario, lang);
             return Ok(result);
         }
 
@@ -91,7 +108,7 @@ namespace GoldBusiness.WebApi.Controllers
         public async Task<IActionResult> DeleteCuenta(int id)
         {
             var usuario = User?.Identity?.Name ?? "system";
-            var cuenta = await _cuentaService.SoftDeleteAsync(id, usuario);
+            var cuenta = await _service.SoftDeleteAsync(id, usuario);
             return cuenta == null ? NotFound() : Ok(cuenta);
         }
 
@@ -121,7 +138,7 @@ namespace GoldBusiness.WebApi.Controllers
             }
 
             var usuario = User?.Identity?.Name ?? "system";
-            await _cuentaService.AddOrUpdateTranslationAsync(id, lang, dto.TranslatedText, usuario);
+            await _service.AddOrUpdateTranslationAsync(id, lang, dto.TranslatedText, usuario);
             
             return Ok(new 
             { 
@@ -129,17 +146,6 @@ namespace GoldBusiness.WebApi.Controllers
                 AccountId = id,
                 Language = lang
             });
-        }
-
-        /// <summary>
-        /// Obtiene el idioma actual de la request basado en Accept-Language.
-        /// </summary>
-        /// <returns>Código de idioma (es, en, fr)</returns>
-        private string GetCurrentLanguage()
-        {
-            var currentCulture = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName.ToLowerInvariant();
-            var supportedLanguages = new[] { "es", "en", "fr" };
-            return supportedLanguages.Contains(currentCulture) ? currentCulture : "es";
         }
     }
 }

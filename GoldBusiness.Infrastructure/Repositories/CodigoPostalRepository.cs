@@ -1,4 +1,4 @@
-using GoldBusiness.Domain.Entities;
+﻿using GoldBusiness.Domain.Entities;
 using GoldBusiness.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,14 +23,22 @@ namespace GoldBusiness.Infrastructure.Repositories
                 .OrderBy(cp => cp.Codigo)
                 .ToListAsync();
 
-        public async Task<(IEnumerable<CodigoPostal> Items, int Total)> GetPagedAsync(int page, int pageSize, string termino = null, int? municipioId = null)
+        public async Task<(IEnumerable<CodigoPostal> Items, int Total)> GetPagedAsync(int page, int pageSize, string? termino = null, int? municipioId = null)
         {
             var query = _context.CodigoPostal
                 .AsNoTracking()
                 .Where(cp => !cp.Cancelado);
 
+            // ✅ CORREGIDO: Búsqueda en múltiples campos
             if (!string.IsNullOrWhiteSpace(termino))
-                query = query.Where(cp => cp.Codigo.Contains(termino));
+            {
+                var lowerTerm = termino.ToLower();
+                query = query.Where(cp => 
+                    cp.Codigo.ToLower().Contains(lowerTerm) ||
+                    cp.Municipio!.Descripcion.ToLower().Contains(lowerTerm) ||
+                    cp.Municipio!.Provincia!.Descripcion.ToLower().Contains(lowerTerm)
+                );
+            }
 
             if (municipioId.HasValue)
                 query = query.Where(cp => cp.MunicipioId == municipioId.Value);
@@ -94,8 +102,16 @@ namespace GoldBusiness.Infrastructure.Repositories
             var query = _context.CodigoPostal
                 .Where(cp => !cp.Cancelado);
 
+            // ✅ CORREGIDO: También aquí búsqueda en múltiples campos
             if (!string.IsNullOrWhiteSpace(termino))
-                query = query.Where(cp => cp.Codigo.Contains(termino));
+            {
+                var lowerTerm = termino.ToLower();
+                query = query.Where(cp => 
+                    cp.Codigo.ToLower().Contains(lowerTerm) ||
+                    cp.Municipio!.Descripcion.ToLower().Contains(lowerTerm) ||
+                    cp.Municipio!.Provincia!.Descripcion.ToLower().Contains(lowerTerm)
+                );
+            }
 
             if (municipioId.HasValue)
                 query = query.Where(cp => cp.MunicipioId == municipioId.Value);

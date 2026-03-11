@@ -11,20 +11,20 @@ import { LanguageService } from '../../../services/language.service';
 })
 export class LineaListComponent implements OnInit, OnDestroy {
   lineas: LineaDTO[] = [];
-  filteredLineas: LineaDTO[] = [];
-  paginatedLineas: LineaDTO[] = [];
   loading = false;
+  searching = false;
   error: string | null = null;
 
   searchTerm: string = '';
   currentPage: number = 1;
   pageSize: number = 10;
+  totalItems: number = 0;
   totalPages: number = 0;
-  startItem: number = 0;
-  endItem: number = 0;
+
   Math = Math;
 
   private languageSubscription?: Subscription;
+  private searchDebounceTimer?: any;
 
   constructor(
     private lineaService: LineaService,
@@ -32,114 +32,73 @@ export class LineaListComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.loadData();
+    this.loadData(true);
 
     this.languageSubscription = this.languageService.currentLanguage$
       .pipe(skip(1))
       .subscribe(() => {
-        console.log('🔄 LineaList: Idioma cambiado, recargando datos...');
-        this.loadData();
+        console.log('🔄 LineaList: Idioma cambiado, recargando...');
+        this.loadData(true);
       });
   }
 
   ngOnDestroy(): void {
     this.languageSubscription?.unsubscribe();
+    if (this.searchDebounceTimer) clearTimeout(this.searchDebounceTimer);
   }
 
-  loadData(): void {
-    this.loading = true;
+  loadData(isInitialLoad: boolean = false): void {
+    if (isInitialLoad) this.loading = true;
+    else this.searching = true;
+    
     this.error = null;
-
-    Promise.resolve().then(() => {
-      this.lineaService.getAll()
-        .pipe(finalize(() => this.loading = false))
-        .subscribe({
-          next: (data) => {
-            this.lineas = data.sort((a, b) => {
-              const aVal = a.codigo ?? '';
-              const bVal = b.codigo ?? '';
-              return aVal.localeCompare(bVal);
-            });
-            this.filteredLineas = [...this.lineas];
-
-            if (!this.pageSize || this.pageSize <= 0) this.pageSize = 10;
-            const totalItems = this.filteredLineas.length;
-            this.totalPages = totalItems === 0 ? 0 : Math.ceil(totalItems / this.pageSize);
-
-            if (this.totalPages === 0) {
-              this.currentPage = 1;
-            } else {
-              if (this.currentPage < 1) this.currentPage = 1;
-              if (this.currentPage > this.totalPages) this.currentPage = this.totalPages;
-            }
-
-            this.applyPagination();
-          },
-          error: (err) => {
-            this.error = 'Error al cargar lineas';
-            console.error('Error:', err);
-          }
-        });
-    });
+    const searchTerm = this.searchTerm.trim() || undefined;
+    
+    this.lineaService.getPaged(this.currentPage, this.pageSize, searchTerm)
+      .pipe(finalize(() => {
+        this.loading = false;
+        this.searching = false;
+      }))
+      .subscribe({
+        next: (response) => {
+          console.log('✅ GET /Linea/paged response:', response);
+          this.lineas = response.items;
+          this.totalItems = response.total;
+          this.totalPages = Math.ceil(this.totalItems / this.pageSize);
+        },
+        error: (err) => {
+          console.error('❌ Error:', err);
+          this.error = `Error al cargar las líneas: ${err?.message ?? err.statusText}`;
+        }
+      });
   }
 
   onSearch(): void {
-    const term = this.searchTerm.toLowerCase().trim();
-
-    if (!term) this.filteredLineas = [...this.lineas];
-    else {
-      this.filteredLineas = this.lineas.filter(item => item.codigo?.toLowerCase().includes(term) ||
-        item.descripcion?.toLowerCase().includes(term)
-      );
-    }
-
-    this.currentPage = 1;
-    this.applyPagination();
-  }
-
-  applyPagination(): void {
-    if (!this.pageSize || this.pageSize <= 0) this.pageSize = 10;
-
-    const totalItems = this.filteredLineas.length;
-    this.totalPages = totalItems === 0 ? 0 : Math.ceil(totalItems / this.pageSize);
-
-    if (this.totalPages === 0) {
+    if (this.searchDebounceTimer) clearTimeout(this.searchDebounceTimer);
+    this.searchDebounceTimer = setTimeout(() => {
       this.currentPage = 1;
-      this.paginatedLineas = [];
-      this.startItem = 0;
-      this.endItem = 0;
-      return;
-    }
-
-    this.currentPage = Math.min(Math.max(1, this.currentPage), this.totalPages);
-
-    const startIndex = (this.currentPage - 1) * this.pageSize;
-    const endIndex = Math.min(startIndex + this.pageSize, totalItems);
-
-    this.paginatedLineas = this.filteredLineas.slice(startIndex, endIndex);
-
-    this.startItem = totalItems === 0 ? 0 : startIndex + 1;
-    this.endItem = endIndex;
+      this.loadData(false);
+    }, 500);
   }
 
   goToPage(page: number): void {
-    if (page >= 1 && (this.totalPages === 0 || page <= this.totalPages)) {
+    if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
-      this.applyPagination();
+      this.loadData(false);
     }
   }
 
   nextPage(): void {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
-      this.applyPagination();
+      this.loadData(false);
     }
   }
 
   previousPage(): void {
     if (this.currentPage > 1) {
       this.currentPage--;
-      this.applyPagination();
+      this.loadData(false);
     }
   }
 
@@ -148,11 +107,9 @@ export class LineaListComponent implements OnInit, OnDestroy {
     const maxVisiblePages = 5;
     let startPage = Math.max(1, this.currentPage - Math.floor(maxVisiblePages / 2));
     let endPage = Math.min(this.totalPages, startPage + maxVisiblePages - 1);
-
     if (endPage - startPage < maxVisiblePages - 1) {
       startPage = Math.max(1, endPage - maxVisiblePages + 1);
     }
-
     for (let i = startPage; i <= endPage; i++) pages.push(i);
     return pages;
   }
@@ -161,17 +118,21 @@ export class LineaListComponent implements OnInit, OnDestroy {
     const parsed = Number(newSize);
     if (!isNaN(parsed) && parsed > 0) this.pageSize = parsed;
     else if (!this.pageSize || this.pageSize <= 0) this.pageSize = 10;
-
     this.currentPage = 1;
-    this.applyPagination();
+    this.loadData(false);
   }
 
   delete(id: number, descripcion: string): void {
-    if (confirm(`¿Está seguro de eliminar: "${descripcion}"?`)) {
+    if (confirm(`¿Estás seguro de eliminar la línea "${descripcion}"?`)) {
       this.lineaService.delete(id).subscribe({
-        next: () => this.loadData(),
+        next: () => {
+          if (this.lineas.length === 1 && this.currentPage > 1) {
+            this.currentPage--;
+          }
+          this.loadData(false);
+        },
         error: (err) => {
-          this.error = 'Error al eliminar el linea';
+          this.error = 'Error al eliminar la línea';
           console.error('Error:', err);
         }
       });

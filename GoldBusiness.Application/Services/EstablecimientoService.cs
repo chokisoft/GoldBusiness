@@ -27,6 +27,16 @@ namespace GoldBusiness.Application.Services
                 .Select(dto => dto!)
                 .ToList();
 
+        public async Task<(IEnumerable<EstablecimientoDTO> Items, int Total)> GetPagedAsync(int page, int pageSize, string? termino = null, int? negocioId = null, string lang = "es")
+        {
+            var (items, total) = await _repo.GetPagedAsync(page, pageSize, termino, negocioId);
+            var dtos = items.Select(s => MapToDTO(s, lang))
+                            .Where(dto => dto is not null)
+                            .Select(dto => dto!)
+                            .ToList();
+            return (dtos, total);
+        }
+
         public async Task<EstablecimientoDTO?> GetByIdAsync(int id, string lang = "es")
             => MapToDTO(await _repo.GetByIdAsync(id), lang);
 
@@ -133,7 +143,7 @@ namespace GoldBusiness.Application.Services
                 Id = e.Id,
                 Codigo = e.Codigo,
                 NegocioId = e.NegocioId,
-                NegocioDescripcion = e.Negocio?.GetNombreNegocio(lang) ?? string.Empty,
+                NegocioDescripcion = e.Negocio?.GetNombreNegocio(lang) ?? string.Empty,  // ✅ YA CORRECTO
                 Descripcion = e.GetDescripcion(lang),
                 Activo = e.Activo,
                 Cancelado = e.Cancelado,

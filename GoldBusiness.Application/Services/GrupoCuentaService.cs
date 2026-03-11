@@ -27,6 +27,13 @@ namespace GoldBusiness.Application.Services
                 .Select(dto => dto!)
                 .ToList();
 
+        public async Task<(IEnumerable<GrupoCuentaDTO> Items, int Total)> GetPagedAsync(int page, int pageSize, string? termino = null, string lang = "es")
+        {
+            var (items, total) = await _repo.GetPagedAsync(page, pageSize, termino);
+            var dtos = items.Select(cp => MapToDTO(cp, lang)).ToList();
+            return (dtos, total);
+        }
+
         public async Task<GrupoCuentaDTO?> GetByIdAsync(int id, string lang = "es")
             => MapToDTO(await _repo.GetByIdAsync(id), lang);
 

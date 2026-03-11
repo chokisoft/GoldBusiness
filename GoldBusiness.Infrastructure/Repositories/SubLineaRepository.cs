@@ -21,6 +21,39 @@ namespace GoldBusiness.Infrastructure.Repositories
                     .ThenInclude(g => g.Translations)
                 .ToListAsync();
 
+        public async Task<(IEnumerable<SubLinea> Items, int Total)> GetPagedAsync(int page, int pageSize, string? termino = null, int? lineaId = null)
+        {
+            var query = _context.SubLinea
+                .AsNoTracking()
+                .Where(s => !s.Cancelado);
+
+            if (!string.IsNullOrWhiteSpace(termino))
+            {
+                var lowerTerm = termino.ToLower();
+                query = query.Where(s =>
+                    s.Codigo.ToLower().Contains(lowerTerm) ||
+                    s.Descripcion.ToLower().Contains(lowerTerm) ||
+                    s.Linea!.Descripcion.ToLower().Contains(lowerTerm)
+                );
+            }
+
+            if (lineaId.HasValue)
+                query = query.Where(s => s.LineaId == lineaId.Value);
+
+            var total = await query.CountAsync();
+
+            var items = await query
+                .Include(s => s.Translations)
+                .Include(s => s.Linea)
+                    .ThenInclude(l => l!.Translations)
+                .OrderBy(s => s.Codigo)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, total);
+        }
+
         public async Task<SubLinea?> GetByIdAsync(int id)
             => await _context.SubLinea
                 .Include(s => s.Translations)

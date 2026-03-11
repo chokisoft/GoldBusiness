@@ -17,18 +17,21 @@
     {{ error }}
   </div>
 
-  <div class="card" *ngIf="!loading && !error">
-    <!-- Barra de búsqueda y filtros -->
+  <!-- ✅ CORREGIDO: Solo !loading -->
+  <div class="card" *ngIf="!loading">
     <div class="card-header">
       <div class="search-container">
-        <input 
-          type="text" 
-          class="form-control search-input" 
-          [(ngModel)]="searchTerm"
-          (input)="onSearch()"
-          [placeholder]="'common.search' | translate"
-        />
-        <span class="search-icon">🔍</span>
+        <input type="text"
+               class="form-control search-input"
+               [(ngModel)]="searchTerm"
+               (input)="onSearch()"
+               [placeholder]="'common.search' | translate"
+               [class.searching]="searching" />
+        <!-- ✅ Indicador durante búsqueda -->
+        <span class="search-icon">
+          <ng-container *ngIf="!searching">🔍</ng-container>
+          <ng-container *ngIf="searching">⏳</ng-container>
+        </span>
       </div>
       <div class="page-size-selector">
         <label>{{ 'common.show' | translate }}:</label>
@@ -48,18 +51,25 @@
           <thead>
             <tr>
               <th>{{ 'cuenta.codigo' | translate }}</th>
-              <th>{{ 'grupoCuenta.descripcion' | translate }}</th>
-              <th>{{ 'cuenta.subGrupoCuenta' | translate }}</th>
+              <th>{{ 'cuenta.descripcion' | translate }}</th>
+              <th>{{ 'cuenta.subgrupo' | translate }}</th>
+              <th>{{ 'cuenta.grupo' | translate }}</th>
               <th class="actions-column">{{ 'common.actions' | translate }}</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let cuenta of paginatedCuentas">
+            <!-- ✅ CORREGIDO: cuentas directamente -->
+            <tr *ngFor="let cuenta of cuentas">
               <td>{{ cuenta.codigo }}</td>
               <td>{{ cuenta.descripcion }}</td>
               <td>
                 <span class="badge badge-info">
                   {{ cuenta.subGrupoCuentaCodigo }} - {{ cuenta.subGrupoCuentaDescripcion }}
+                </span>
+              </td>
+              <td>
+                <span class="badge badge-secondary">
+                  {{ cuenta.grupoCuentaCodigo }} - {{ cuenta.grupoCuentaDescripcion }}
                 </span>
               </td>
               <td class="actions-column">
@@ -82,8 +92,8 @@
                 </div>
               </td>
             </tr>
-            <tr *ngIf="paginatedCuentas.length === 0">
-              <td colspan="4" class="text-center">
+            <tr *ngIf="cuentas.length === 0">
+              <td colspan="5" class="text-center">
                 {{ searchTerm ? ('common.noResults' | translate) : ('common.noData' | translate) }}
               </td>
             </tr>
@@ -92,14 +102,14 @@
       </div>
     </div>
 
-    <!-- Paginación -->
+    <!-- ✅ Paginación Estandarizada -->
     <div class="card-footer" *ngIf="totalPages > 0">
       <div class="pagination-info">
         {{ 'common.showing' | translate }} 
         {{ (currentPage - 1) * pageSize + 1 }} - 
-        {{ Math.min(currentPage * pageSize, filteredCuentas.length) }} 
+        {{ Math.min(currentPage * pageSize, totalItems) }} 
         {{ 'common.of' | translate }} 
-        {{ filteredCuentas.length }}
+        {{ totalItems }}
       </div>
       <div class="pagination">
         <button 

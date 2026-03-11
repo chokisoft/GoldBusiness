@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { skip, finalize } from 'rxjs/operators';
-import { SubGrupoCuentaService, SubGrupoCuentaDTO } from '../../../services/subgrupo-cuenta.service';
+import { SubGrupoCuentaService, SubGrupoCuentaDTO } from '../../../services/sub-grupo-cuenta.service';
 import { LanguageService } from '../../../services/language.service';
 
 @Component({
@@ -11,27 +11,20 @@ import { LanguageService } from '../../../services/language.service';
 })
 export class SubGrupoCuentaListComponent implements OnInit, OnDestroy {
   subGrupoCuentas: SubGrupoCuentaDTO[] = [];
-  filteredSubGrupoCuentas: SubGrupoCuentaDTO[] = [];
-  paginatedSubGrupoCuentas: SubGrupoCuentaDTO[] = [];
   loading = false;
+  searching = false;
   error: string | null = null;
 
-  // Propiedades de búsqueda
   searchTerm: string = '';
-
-  // Propiedades de paginación
   currentPage: number = 1;
   pageSize: number = 10;
+  totalItems: number = 0;
   totalPages: number = 0;
 
-  // Valores calculados para UI
-  startItem: number = 0;
-  endItem: number = 0;
-
-  // Exponer Math para usarlo en el template
   Math = Math;
 
   private languageSubscription?: Subscription;
+  private searchDebounceTimer?: any;
 
   constructor(
     private subGrupoCuentaService: SubGrupoCuentaService,
@@ -39,113 +32,73 @@ export class SubGrupoCuentaListComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.loadData();
+    this.loadData(true);
 
     this.languageSubscription = this.languageService.currentLanguage$
       .pipe(skip(1))
       .subscribe(() => {
-        console.log('🔄 SubGrupoCuentaList: Idioma cambiado, recargando datos...');
-        this.loadData();
+        console.log('🔄 SubGrupoCuentaList: Idioma cambiado, recargando...');
+        this.loadData(true);
       });
   }
 
   ngOnDestroy(): void {
     this.languageSubscription?.unsubscribe();
+    if (this.searchDebounceTimer) clearTimeout(this.searchDebounceTimer);
   }
 
-  loadData(): void {
-    this.loading = true;
+  loadData(isInitialLoad: boolean = false): void {
+    if (isInitialLoad) this.loading = true;
+    else this.searching = true;
+    
     this.error = null;
-
-    Promise.resolve().then(() => {
-      this.subGrupoCuentaService.getAll()
-        .pipe(finalize(() => this.loading = false))
-        .subscribe({
-          next: (data) => {
-            this.subGrupoCuentas = data.sort((a, b) => a.codigo.localeCompare(b.codigo));
-            this.filteredSubGrupoCuentas = [...this.subGrupoCuentas];
-
-            if (!this.pageSize || this.pageSize <= 0) this.pageSize = 10;
-            const totalItems = this.filteredSubGrupoCuentas.length;
-            this.totalPages = totalItems === 0 ? 0 : Math.ceil(totalItems / this.pageSize);
-
-            if (this.totalPages === 0) {
-              this.currentPage = 1;
-            } else {
-              if (this.currentPage < 1) this.currentPage = 1;
-              if (this.currentPage > this.totalPages) this.currentPage = this.totalPages;
-            }
-
-            this.applyPagination();
-          },
-          error: (err) => {
-            this.error = 'Error al cargar los subgrupos de cuenta';
-            console.error('Error:', err);
-          }
-        });
-    });
+    const searchTerm = this.searchTerm.trim() || undefined;
+    
+    this.subGrupoCuentaService.getPaged(this.currentPage, this.pageSize, searchTerm)
+      .pipe(finalize(() => {
+        this.loading = false;
+        this.searching = false;
+      }))
+      .subscribe({
+        next: (response) => {
+          console.log('✅ GET /SubGrupoCuenta/paged response:', response);
+          this.subGrupoCuentas = response.items;
+          this.totalItems = response.total;
+          this.totalPages = Math.ceil(this.totalItems / this.pageSize);
+        },
+        error: (err) => {
+          console.error('❌ Error:', err);
+          this.error = `Error al cargar los subgrupos de cuenta: ${err?.message ?? err.statusText}`;
+        }
+      });
   }
 
   onSearch(): void {
-    const term = this.searchTerm.toLowerCase().trim();
-    
-    if (!term) this.filteredSubGrupoCuentas = [...this.subGrupoCuentas];
-    else {
-      this.filteredSubGrupoCuentas = this.subGrupoCuentas.filter(subgrupo =>
-        subgrupo.codigo.toLowerCase().includes(term) ||
-        subgrupo.descripcion.toLowerCase().includes(term) ||
-        subgrupo.grupoCuentaCodigo?.toLowerCase().includes(term) ||
-        subgrupo.grupoCuentaDescripcion?.toLowerCase().includes(term)
-      );
-    }
-    
-    this.currentPage = 1;
-    this.applyPagination();
-  }
-
-  applyPagination(): void {
-    if (!this.pageSize || this.pageSize <= 0) this.pageSize = 10;
-
-    const totalItems = this.filteredSubGrupoCuentas.length;
-    this.totalPages = totalItems === 0 ? 0 : Math.ceil(totalItems / this.pageSize);
-
-    if (this.totalPages === 0) {
+    if (this.searchDebounceTimer) clearTimeout(this.searchDebounceTimer);
+    this.searchDebounceTimer = setTimeout(() => {
       this.currentPage = 1;
-      this.paginatedSubGrupoCuentas = [];
-      this.startItem = 0;
-      this.endItem = 0;
-      return;
-    }
-
-    this.currentPage = Math.min(Math.max(1, this.currentPage), this.totalPages);
-
-    const startIndex = (this.currentPage - 1) * this.pageSize;
-    const endIndex = Math.min(startIndex + this.pageSize, totalItems);
-
-    this.paginatedSubGrupoCuentas = this.filteredSubGrupoCuentas.slice(startIndex, endIndex);
-
-    this.startItem = totalItems === 0 ? 0 : startIndex + 1;
-    this.endItem = endIndex;
+      this.loadData(false);
+    }, 500);
   }
 
   goToPage(page: number): void {
-    if (page >= 1 && (this.totalPages === 0 || page <= this.totalPages)) {
+    if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
-      this.applyPagination();
+      this.loadData(false);
     }
   }
 
   nextPage(): void {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
-      this.applyPagination();
+      this.loadData(false);
     }
   }
 
   previousPage(): void {
     if (this.currentPage > 1) {
       this.currentPage--;
-      this.applyPagination();
+      this.loadData(false);
     }
   }
 
@@ -154,13 +107,10 @@ export class SubGrupoCuentaListComponent implements OnInit, OnDestroy {
     const maxVisiblePages = 5;
     let startPage = Math.max(1, this.currentPage - Math.floor(maxVisiblePages / 2));
     let endPage = Math.min(this.totalPages, startPage + maxVisiblePages - 1);
-
     if (endPage - startPage < maxVisiblePages - 1) {
       startPage = Math.max(1, endPage - maxVisiblePages + 1);
     }
-
     for (let i = startPage; i <= endPage; i++) pages.push(i);
-
     return pages;
   }
 
@@ -168,15 +118,19 @@ export class SubGrupoCuentaListComponent implements OnInit, OnDestroy {
     const parsed = Number(newSize);
     if (!isNaN(parsed) && parsed > 0) this.pageSize = parsed;
     else if (!this.pageSize || this.pageSize <= 0) this.pageSize = 10;
-
     this.currentPage = 1;
-    this.applyPagination();
+    this.loadData(false);
   }
 
   delete(id: number, descripcion: string): void {
-    if (confirm(`¿Está seguro de eliminar el subgrupo de cuenta "${descripcion}"?`)) {
+    if (confirm(`¿Estás seguro de eliminar el subgrupo de cuenta "${descripcion}"?`)) {
       this.subGrupoCuentaService.delete(id).subscribe({
-        next: () => this.loadData(),
+        next: () => {
+          if (this.subGrupoCuentas.length === 1 && this.currentPage > 1) {
+            this.currentPage--;
+          }
+          this.loadData(false);
+        },
         error: (err) => {
           this.error = 'Error al eliminar el subgrupo de cuenta';
           console.error('Error:', err);

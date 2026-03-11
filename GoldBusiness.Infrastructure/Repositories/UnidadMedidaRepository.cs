@@ -20,6 +20,33 @@ namespace GoldBusiness.Infrastructure.Repositories
                 .OrderBy(um => um.Codigo)
                 .ToListAsync();
 
+        public async Task<(IEnumerable<UnidadMedida> Items, int Total)> GetPagedAsync(int page, int pageSize, string? termino = null)
+        {
+            var query = _context.UnidadMedida
+                .AsNoTracking()
+                .Where(u => !u.Cancelado);
+
+            if (!string.IsNullOrWhiteSpace(termino))
+            {
+                var lowerTerm = termino.ToLower();
+                query = query.Where(u =>
+                    u.Codigo.ToLower().Contains(lowerTerm) ||
+                    u.Descripcion.ToLower().Contains(lowerTerm)
+                );
+            }
+
+            var total = await query.CountAsync();
+
+            var items = await query
+                .Include(u => u.Translations)
+                .OrderBy(u => u.Codigo)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, total);
+        }
+
         public async Task<UnidadMedida?> GetByIdAsync(int id)
             => await _context.UnidadMedida
                 .Include(um => um.Translations)

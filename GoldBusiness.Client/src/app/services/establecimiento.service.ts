@@ -6,16 +6,25 @@ export interface EstablecimientoDTO {
   id?: number;
   codigo: string;
   descripcion: string;
+  negocioId: number;  // ✅ AGREGAR
+  negocioCodigo?: string;  // ✅ AGREGAR (SystemConfiguration.CodigoSistema)
+  negocioDescripcion?: string;  // ✅ AGREGAR (SystemConfiguration.NombreNegocio)
+  activo?: boolean;
+  cancelado?: boolean;  // ✅ AGREGAR
   telefono?: string;
   email?: string;
   direccion?: string;
   localidadId?: number;
   localidadDescripcion?: string;
-  activo?: boolean;
-  fechaHoraCreado?: string;
-  fechaHoraModificado?: string;
   creadoPor?: string;
+  fechaHoraCreado?: string;
   modificadoPor?: string;
+  fechaHoraModificado?: string;
+}
+
+export interface PagedResult<T> {
+  items: T[];
+  total: number;
 }
 
 @Injectable({
@@ -24,7 +33,15 @@ export interface EstablecimientoDTO {
 export class EstablecimientoService {
   constructor(private api: ApiService) {}
 
+  getPaged(page: number = 1, pageSize: number = 50, term?: string, negocioId?: number): Observable<PagedResult<EstablecimientoDTO>> {
+    let url = `Establecimiento/paged?page=${page}&pageSize=${pageSize}`;
+    if (term) url += `&term=${encodeURIComponent(term)}`;
+    if (negocioId) url += `&negocioId=${negocioId}`;
+    return this.api.get<PagedResult<EstablecimientoDTO>>(url);
+  }
+
   getAll(): Observable<EstablecimientoDTO[]> {
+    console.warn('⚠️ EstablecimientoService.getAll() puede ser lento. Considera usar getPaged()');
     return this.api.get<EstablecimientoDTO[]>('Establecimiento');
   }
 

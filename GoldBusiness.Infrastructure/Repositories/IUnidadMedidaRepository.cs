@@ -5,6 +5,7 @@ namespace GoldBusiness.Infrastructure.Repositories
     public interface IUnidadMedidaRepository : IBaseRepositoryWithCode<UnidadMedida>
     {
         Task<IEnumerable<UnidadMedida>> GetAllAsync();
+        Task<(IEnumerable<UnidadMedida> Items, int Total)> GetPagedAsync(int page, int pageSize, string? termino = null);
         Task<UnidadMedida?> GetByIdAsync(int id);
         Task<UnidadMedida> AddAsync(UnidadMedida entity);
         Task UpdateAsync(UnidadMedida entity);

@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
 
@@ -8,46 +7,60 @@ export interface CuentaDTO {
   codigo: string;
   descripcion: string;
   subGrupoCuentaId: number;
-  systemConfigurationId: number;
-  
-  // ✅ AGREGAR: Propiedades calculadas del backend
   subGrupoCuentaCodigo?: string;
   subGrupoCuentaDescripcion?: string;
   grupoCuentaCodigo?: string;
   grupoCuentaDescripcion?: string;
-  
+  systemConfigurationId?: number;
   cancelado?: boolean;
   creadoPor?: string;
-  fechaHoraCreado?: Date;
+  fechaHoraCreado?: string;
   modificadoPor?: string;
-  fechaHoraModificado?: Date;
+  fechaHoraModificado?: string;
+}
+
+// ✅ AGREGADO: Interface PagedResult
+export interface PagedResult<T> {
+  items: T[];
+  total: number;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class CuentaService {
-  private endpoint = 'cuenta';
+  constructor(private api: ApiService) {}
 
-  constructor(private apiService: ApiService) {}
+  // ✅ AGREGADO: Paginación del servidor
+  getPaged(page: number = 1, pageSize: number = 50, term?: string, subGrupoCuentaId?: number): Observable<PagedResult<CuentaDTO>> {
+    let url = `Cuenta/paged?page=${page}&pageSize=${pageSize}`;
+    if (term) url += `&term=${encodeURIComponent(term)}`;
+    if (subGrupoCuentaId) url += `&subGrupoCuentaId=${subGrupoCuentaId}`;
+    return this.api.get<PagedResult<CuentaDTO>>(url);
+  }
 
   getAll(): Observable<CuentaDTO[]> {
-    return this.apiService.get<CuentaDTO[]>(this.endpoint);
+    console.warn('⚠️ CuentaService.getAll() puede ser lento. Considera usar getPaged()');
+    return this.api.get<CuentaDTO[]>('Cuenta');
   }
 
   getById(id: number): Observable<CuentaDTO> {
-    return this.apiService.get<CuentaDTO>(`${this.endpoint}/${id}`);
+    return this.api.get<CuentaDTO>(`Cuenta/${id}`);
   }
 
-  create(dto: CuentaDTO): Observable<CuentaDTO> {
-    return this.apiService.post<CuentaDTO>(this.endpoint, dto);
+  getBySubGrupoCuentaId(subGrupoCuentaId: number): Observable<CuentaDTO[]> {
+    return this.api.get<CuentaDTO[]>(`Cuenta/subgrupo/${subGrupoCuentaId}`);
   }
 
-  update(id: number, dto: CuentaDTO): Observable<void> {
-    return this.apiService.put<void>(`${this.endpoint}/${id}`, dto);
+  create(data: CuentaDTO): Observable<CuentaDTO> {
+    return this.api.post<CuentaDTO>('Cuenta', data);
+  }
+
+  update(id: number, data: CuentaDTO): Observable<CuentaDTO> {
+    return this.api.put<CuentaDTO>(`Cuenta/${id}`, data);
   }
 
   delete(id: number): Observable<void> {
-    return this.apiService.delete<void>(`${this.endpoint}/${id}`);
+    return this.api.delete<void>(`Cuenta/${id}`);
   }
 }

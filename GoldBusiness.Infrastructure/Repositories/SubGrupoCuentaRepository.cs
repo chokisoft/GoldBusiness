@@ -17,10 +17,45 @@ namespace GoldBusiness.Infrastructure.Repositories
                 .OrderBy(s => s.Codigo)
                 .ToListAsync();
 
+        public async Task<(IEnumerable<SubGrupoCuenta> Items, int Total)> GetPagedAsync(int page, int pageSize, string? termino = null, int? grupoCuentaId = null)
+        {
+            var query = _context.SubGrupoCuenta
+                .AsNoTracking()
+                .Where(s => !s.Cancelado);
+
+            // Búsqueda en Código, Descripción y GrupoCuenta
+            if (!string.IsNullOrWhiteSpace(termino))
+            {
+                var lowerTerm = termino.ToLower();
+                query = query.Where(s =>
+                    s.Codigo.ToLower().Contains(lowerTerm) ||
+                    s.Descripcion.ToLower().Contains(lowerTerm) ||
+                    s.GrupoCuenta!.Descripcion.ToLower().Contains(lowerTerm)
+                );
+            }
+
+            // Filtro por GrupoCuenta (opcional)
+            if (grupoCuentaId.HasValue)
+                query = query.Where(s => s.GrupoCuentaId == grupoCuentaId.Value);
+
+            var total = await query.CountAsync();
+
+            var items = await query
+                .Include(s => s.Translations)
+                .Include(s => s.GrupoCuenta)
+                    .ThenInclude(g => g!.Translations)
+                .OrderBy(s => s.Codigo)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, total);
+        }
+
         public async Task<SubGrupoCuenta?> GetByIdAsync(int id)
             => await _context.SubGrupoCuenta
                 .Include(s => s.Translations)
-                .Include(s => s.GrupoCuenta) // ✅ DEBE EXISTIR
+                .Include(s => s.GrupoCuenta)
                     .ThenInclude(g => g.Translations)
                 .FirstOrDefaultAsync(s => s.Id == id);
 
@@ -28,7 +63,7 @@ namespace GoldBusiness.Infrastructure.Repositories
         {
             var query = _context.SubGrupoCuenta
                 .Include(s => s.Translations)
-                .Include(s => s.GrupoCuenta)  // ✅ CAMBIO: Cuenta → GrupoCuenta
+                .Include(s => s.GrupoCuenta)
                     .ThenInclude(g => g.Translations)
                 .Where(s => s.Codigo == codigo);
 
@@ -40,13 +75,13 @@ namespace GoldBusiness.Infrastructure.Repositories
 
         public async Task<bool> ExistsByCodigoAsync(string codigo, int? excludeId = null, bool onlyActive = true)
         {
-            var query = _context.SubGrupoCuenta.Where(g => g.Codigo == codigo);
+            var query = _context.SubGrupoCuenta.Where(s => s.Codigo == codigo);
 
             if (onlyActive)
-                query = query.Where(g => !g.Cancelado);
+                query = query.Where(s => !s.Cancelado);
 
             if (excludeId.HasValue)
-                query = query.Where(g => g.Id != excludeId.Value);
+                query = query.Where(s => s.Id != excludeId.Value);
 
             return await query.AnyAsync();
         }
@@ -56,7 +91,6 @@ namespace GoldBusiness.Infrastructure.Repositories
             _context.SubGrupoCuenta.Add(entity);
             await _context.SaveChangesAsync();
 
-            // Cargar navegación a GrupoCuenta y traducciones
             await _context.Entry(entity)
                 .Reference(e => e.GrupoCuenta)
                 .Query()

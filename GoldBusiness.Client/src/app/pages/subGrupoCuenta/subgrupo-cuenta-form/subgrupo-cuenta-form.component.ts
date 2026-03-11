@@ -71,7 +71,8 @@ export class SubGrupoCuentaFormComponent implements OnInit, OnDestroy {
   private reloadOnLanguageChange(): void {
     this.grupoCuentaService.getAll().subscribe({
       next: (data) => {
-        this.gruposCuenta = data.filter(g => g.activo !== false);
+        // ✅ CORREGIDO: Cambiar 'activo' por 'cancelado' (línea 74)
+        this.gruposCuenta = data.filter(g => !g.cancelado);
         if (this.isEditMode && this.subgrupoId) {
           this.loadSubGrupoCuenta();
         }
@@ -87,7 +88,8 @@ export class SubGrupoCuentaFormComponent implements OnInit, OnDestroy {
 
     this.grupoCuentaService.getAll().subscribe({
       next: (data) => {
-        this.gruposCuenta = data.filter(g => g.activo !== false);
+        // ✅ CORREGIDO: Cambiar 'activo' por 'cancelado' (línea 90)
+        this.gruposCuenta = data.filter(g => !g.cancelado);
         this.loadingGrupos = false;
 
         this.setupFormSubscriptions();

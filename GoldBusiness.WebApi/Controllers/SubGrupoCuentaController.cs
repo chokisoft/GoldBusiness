@@ -32,6 +32,19 @@ namespace GoldBusiness.WebApi.Controllers
             return Ok(await _service.GetAllAsync(lang));
         }
 
+        [HttpGet("paged")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> GetPaged(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 50,
+            [FromQuery] string? term = null,
+            [FromQuery] int? grupoCuentaId = null)
+        {
+            var lang = GetCurrentLanguage();
+            var (items, total) = await _service.GetPagedAsync(page, pageSize, term, grupoCuentaId, lang);
+            return Ok(new { items, total });
+        }
+
         /// <summary>
         /// Obtiene un sub grupo de cuenta por ID.
         /// El idioma se detecta automáticamente del header Accept-Language.
