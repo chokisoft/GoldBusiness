@@ -37,6 +37,13 @@ namespace GoldBusiness.Application.Services
             return (dtos, total);
         }
 
+        public async Task<IEnumerable<EstablecimientoDTO>> GetByNegocioIdAsync(int negocioId, string lang = "es")
+            => (await _repo.GetByNegocioIdAsync(negocioId))
+                .Select(l => MapToDTO(l, lang))
+                .Where(dto => dto is not null)
+                .Select(dto => dto!)
+                .ToList();
+
         public async Task<EstablecimientoDTO?> GetByIdAsync(int id, string lang = "es")
             => MapToDTO(await _repo.GetByIdAsync(id), lang);
 

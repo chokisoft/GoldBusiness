@@ -1,5 +1,4 @@
 ﻿using GoldBusiness.Application.Interfaces;
-using GoldBusiness.Application.Services;
 using GoldBusiness.Domain.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -50,6 +49,17 @@ namespace GoldBusiness.WebApi.Controllers
             return Ok(new { items, total });
         }
 
+        /// <summary>
+        /// Obtiene todas las localidades de un establecimiento específico.
+        /// </summary>
+        /// <param name="negocioId">ID del establecimiento</param>
+        /// <returns>Lista de localidades del establecimiento</returns>
+        [HttpGet("negocio/{negocioId}")]
+        public async Task<ActionResult<IEnumerable<EstablecimientoDTO>>> GetByNegocio(int negocioId)
+        {
+            var lang = GetCurrentLanguage();
+            return Ok(await _service.GetByNegocioIdAsync(negocioId, lang));
+        }
         /// <summary>
         /// Obtiene un establecimiento por ID.
         /// El idioma se detecta automáticamente del header Accept-Language.

@@ -29,6 +29,41 @@ namespace GoldBusiness.Infrastructure.Repositories
                     .ThenInclude(c => c.Translations)
                 .ToListAsync();
 
+        public async Task<(IEnumerable<Localidad> Items, int Total)> GetPagedAsync(int page, int pageSize, string? termino = null, int? establecimientoId = null)
+        {
+            var query = _context.Localidad
+                .AsNoTracking()
+                .Where(e => !e.Cancelado);
+
+            // Búsqueda en Código, Descripción y Negocio
+            if (!string.IsNullOrWhiteSpace(termino))
+            {
+                var lowerTerm = termino.ToLower();
+                query = query.Where(e =>
+                    e.Codigo.ToLower().Contains(lowerTerm) ||
+                    e.Descripcion.ToLower().Contains(lowerTerm) ||
+                    e.Establecimiento!.Descripcion.ToLower().Contains(lowerTerm)
+                );
+            }
+
+            // Filtro por Negocio (opcional)
+            if (establecimientoId.HasValue)
+                query = query.Where(e => e.EstablecimientoId == establecimientoId.Value);
+
+            var total = await query.CountAsync();
+
+            var items = await query
+                .Include(e => e.Translations)
+                .Include(e => e.Establecimiento)
+                    .ThenInclude(n => n!.Translations)
+                .OrderBy(e => e.Codigo)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, total);
+        }
+
         public async Task<IEnumerable<Localidad>> GetByEstablecimientoIdAsync(int establecimientoId)
             => await _context.Localidad
                 .Where(l => l.EstablecimientoId == establecimientoId && !l.Cancelado)

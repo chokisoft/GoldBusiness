@@ -34,16 +34,43 @@
             <span class="detail-value">{{ item.codigo }}</span>
           </div>
           <div class="detail-item">
-            <label class="detail-label">{{ 'localidad.nombre' | translate }}:</label>
+            <label class="detail-label">{{ 'localidad.descripcion' | translate }}:</label>
             <span class="detail-value">{{ item.descripcion }}</span>
           </div>
           <div class="detail-item">
-            <label class="detail-label">{{ 'localidad.municipio' | translate }}:</label>
-            <span class="detail-value">{{ item.municipioDescripcion || '-' }}</span>
+            <label class="detail-label">{{ 'localidad.establecimiento' | translate }}:</label>
+            <span class="detail-value">{{ item.establecimientoDescripcion || '-' }}</span>
           </div>
-          <div class="detail-item full-width">
-            <label class="detail-label">{{ 'localidad.descripcion' | translate }}:</label>
-            <span class="detail-value">{{ item.descripcion || '-' }}</span>
+          <div class="detail-item">
+            <label class="detail-label">{{ 'localidad.almacen' | translate }}:</label>
+            <span class="detail-value">{{ item.almacen ? ('common.yes' | translate) : ('common.no' | translate) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cuentas Contables -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="section-title">{{ 'localidad.cuentasContables' | translate }}</h3>
+      </div>
+      <div class="card-body">
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label class="detail-label">{{ 'localidad.cuentaInventario' | translate }}:</label>
+            <span class="detail-value">{{ item.cuentaInventarioDescripcion || '-' }}</span>
+          </div>
+          <div class="detail-item">
+            <label class="detail-label">{{ 'localidad.cuentaCosto' | translate }}:</label>
+            <span class="detail-value">{{ item.cuentaCostoDescripcion || '-' }}</span>
+          </div>
+          <div class="detail-item">
+            <label class="detail-label">{{ 'localidad.cuentaVenta' | translate }}:</label>
+            <span class="detail-value">{{ item.cuentaVentaDescripcion || '-' }}</span>
+          </div>
+          <div class="detail-item">
+            <label class="detail-label">{{ 'localidad.cuentaDevolucion' | translate }}:</label>
+            <span class="detail-value">{{ item.cuentaDevolucionDescripcion || '-' }}</span>
           </div>
         </div>
       </div>
@@ -56,9 +83,17 @@
       </div>
       <div class="card-body">
         <div class="detail-grid">
+          <div class="detail-item" *ngIf="item.creadoPor">
+            <label class="detail-label">{{ 'audit.createdBy' | translate }}:</label>
+            <span class="detail-value">{{ item.creadoPor }}</span>
+          </div>
           <div class="detail-item" *ngIf="item.fechaHoraCreado">
             <label class="detail-label">{{ 'audit.createdAt' | translate }}:</label>
             <span class="detail-value">{{ item.fechaHoraCreado | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+          <div class="detail-item" *ngIf="item.modificadoPor">
+            <label class="detail-label">{{ 'audit.modifiedBy' | translate }}:</label>
+            <span class="detail-value">{{ item.modificadoPor }}</span>
           </div>
           <div class="detail-item" *ngIf="item.fechaHoraModificado">
             <label class="detail-label">{{ 'audit.modifiedAt' | translate }}:</label>

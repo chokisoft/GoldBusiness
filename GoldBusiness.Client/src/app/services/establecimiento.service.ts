@@ -6,16 +6,11 @@ export interface EstablecimientoDTO {
   id?: number;
   codigo: string;
   descripcion: string;
-  negocioId: number;  // ✅ AGREGAR
-  negocioCodigo?: string;  // ✅ AGREGAR (SystemConfiguration.CodigoSistema)
-  negocioDescripcion?: string;  // ✅ AGREGAR (SystemConfiguration.NombreNegocio)
+  negocioId: number;
+  negocioCodigo?: string;
+  negocioDescripcion?: string;
   activo?: boolean;
-  cancelado?: boolean;  // ✅ AGREGAR
-  telefono?: string;
-  email?: string;
-  direccion?: string;
-  localidadId?: number;
-  localidadDescripcion?: string;
+  cancelado?: boolean;
   creadoPor?: string;
   fechaHoraCreado?: string;
   modificadoPor?: string;
@@ -43,6 +38,10 @@ export class EstablecimientoService {
   getAll(): Observable<EstablecimientoDTO[]> {
     console.warn('⚠️ EstablecimientoService.getAll() puede ser lento. Considera usar getPaged()');
     return this.api.get<EstablecimientoDTO[]>('Establecimiento');
+  }
+
+  getByNegocioId(negocioId: number): Observable<EstablecimientoDTO[]> {
+    return this.api.get<EstablecimientoDTO[]>(`Establecimiento/negocio/${negocioId}`);
   }
 
   getById(id: number): Observable<EstablecimientoDTO> {

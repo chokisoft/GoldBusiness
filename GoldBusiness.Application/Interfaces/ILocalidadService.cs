@@ -5,6 +5,7 @@ namespace GoldBusiness.Application.Interfaces
     public interface ILocalidadService
     {
         Task<IEnumerable<LocalidadDTO>> GetAllAsync(string lang = "es");
+        Task<(IEnumerable<LocalidadDTO> Items, int Total)> GetPagedAsync(int page, int pageSize, string? termino = null, int? negocioId = null, string lang = "es");
         Task<IEnumerable<LocalidadDTO>> GetByEstablecimientoIdAsync(int establecimientoId, string lang = "es");
         Task<LocalidadDTO?> GetByIdAsync(int id, string lang = "es");
         Task<LocalidadDTO> CreateAsync(LocalidadDTO dto, string user, string lang = "es");

@@ -5,6 +5,7 @@ namespace GoldBusiness.Infrastructure.Repositories
     public interface ILocalidadRepository : IBaseRepositoryWithCode<Localidad>
     {
         Task<IEnumerable<Localidad>> GetAllAsync();
+        Task<(IEnumerable<Localidad> Items, int Total)> GetPagedAsync(int page, int pageSize, string? termino = null, int? establecimientoId = null);
         Task<IEnumerable<Localidad>> GetByEstablecimientoIdAsync(int establecimientoId);
         Task<Localidad?> GetByIdAsync(int id);
         Task<Localidad> AddAsync(Localidad entity);

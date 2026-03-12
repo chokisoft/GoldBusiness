@@ -56,6 +56,14 @@ namespace GoldBusiness.Infrastructure.Repositories
             return (items, total);
         }
 
+        public async Task<IEnumerable<Establecimiento>> GetByNegocioIdAsync(int negocioId)
+            => await _context.Establecimiento
+                .Where(l => l.NegocioId == negocioId && !l.Cancelado)
+                .Include(l => l.Translations)
+                .Include(l => l.Negocio)
+                    .ThenInclude(e => e.Translations)
+                .ToListAsync();
+
         public async Task<Establecimiento?> GetByIdAsync(int id)
             => await _context.Establecimiento
                 .Include(e => e.Translations)
