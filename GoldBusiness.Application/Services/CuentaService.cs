@@ -13,16 +13,16 @@ namespace GoldBusiness.Application.Services
         private readonly ICuentaRepository _repo = repo;
         private readonly IStringLocalizer<GoldBusiness.Domain.Resources.ValidationMessages> _localizer = localizer;
 
-        public async Task<IEnumerable<CuentaDTO>> GetAllAsync(string lang = "es")
-            => (await _repo.GetAllAsync())
+        public async Task<IEnumerable<CuentaDTO>> GetAllAsync(string lang = "es", IReadOnlyCollection<string>? accessLevels = null)
+            => (await _repo.GetAllAsync(accessLevels))
                 .Select(c => MapToDTO(c, lang))
                 .Where(dto => dto is not null)
                 .Select(dto => dto!)
                 .ToList();
 
-        public async Task<(IEnumerable<CuentaDTO> Items, int Total)> GetPagedAsync(int page, int pageSize, string? termino = null, int? subGrupoCuentaId = null, string lang = "es")
+        public async Task<(IEnumerable<CuentaDTO> Items, int Total)> GetPagedAsync(int page, int pageSize, string? termino = null, int? subGrupoCuentaId = null, string lang = "es", IReadOnlyCollection<string>? accessLevels = null)
         {
-            var (items, total) = await _repo.GetPagedAsync(page, pageSize, termino, subGrupoCuentaId);
+            var (items, total) = await _repo.GetPagedAsync(page, pageSize, termino, subGrupoCuentaId, accessLevels);
             var dtos = items.Select(c => MapToDTO(c, lang))
                             .Where(dto => dto is not null)
                             .Select(dto => dto!)
@@ -30,12 +30,17 @@ namespace GoldBusiness.Application.Services
             return (dtos, total);
         }
 
-        public async Task<CuentaDTO?> GetByIdAsync(int id, string lang = "es")
-            => MapToDTO(await _repo.GetByIdAsync(id), lang);
+        public async Task<CuentaDTO?> GetByIdAsync(int id, string lang = "es", IReadOnlyCollection<string>? accessLevels = null)
+            => MapToDTO(await _repo.GetByIdAsync(id, accessLevels), lang);
 
-        public async Task<CuentaDTO> CreateAsync(CuentaDTO dto, string user, string lang = "es")
+        public async Task<CuentaDTO> CreateAsync(CuentaDTO dto, string user, string lang = "es", IReadOnlyCollection<string>? accessLevels = null)
         {
             var creador = user ?? "system";
+
+            if (!HasAccessToCodigo(dto.Codigo, accessLevels))
+            {
+                throw new UnauthorizedAccessException("No tiene permisos para crear registros con este código.");
+            }
 
             // Usar el helper genérico
             var (existe, estaCancelado, existingEntity) = await CodigoValidationHelper
@@ -71,10 +76,15 @@ namespace GoldBusiness.Application.Services
             return MapToDTO(entity, lang)!;
         }
 
-        public async Task<CuentaDTO> UpdateAsync(int id, CuentaDTO dto, string user, string lang = "es")
+        public async Task<CuentaDTO> UpdateAsync(int id, CuentaDTO dto, string user, string lang = "es", IReadOnlyCollection<string>? accessLevels = null)
         {
-            var entity = await _repo.GetByIdAsync(id);
+            var entity = await _repo.GetByIdAsync(id, accessLevels);
             if (entity == null) throw new KeyNotFoundException();
+
+            if (!HasAccessToCodigo(dto.Codigo, accessLevels))
+            {
+                throw new UnauthorizedAccessException("No tiene permisos para actualizar registros con este código.");
+            }
 
             // Si el código cambió, validar
             if (entity.Codigo != dto.Codigo)
@@ -111,9 +121,9 @@ namespace GoldBusiness.Application.Services
             return MapToDTO(entity, lang)!;
         }
 
-        public async Task<CuentaDTO?> SoftDeleteAsync(int id, string user)
+        public async Task<CuentaDTO?> SoftDeleteAsync(int id, string user, IReadOnlyCollection<string>? accessLevels = null)
         {
-            var entity = await _repo.GetByIdAsync(id);
+            var entity = await _repo.GetByIdAsync(id, accessLevels);
             if (entity == null) return null;
 
             entity.SoftDelete(user);
@@ -154,6 +164,28 @@ namespace GoldBusiness.Application.Services
                 ModificadoPor = c.ModificadoPor,
                 FechaHoraModificado = c.FechaHoraModificado
             };
+        }
+
+        private static bool HasAccessToCodigo(string codigo, IReadOnlyCollection<string>? accessLevels)
+        {
+            if (accessLevels == null || accessLevels.Count == 0)
+            {
+                return false;
+            }
+
+            var normalizedCode = (codigo ?? string.Empty).Trim().ToUpperInvariant();
+            var normalizedAccess = accessLevels
+                .Select(x => x?.Trim().ToUpperInvariant())
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .Distinct()
+                .ToList();
+
+            if (normalizedAccess.Contains("*"))
+            {
+                return true;
+            }
+
+            return normalizedAccess.Any(prefix => normalizedCode.StartsWith(prefix!));
         }
     }
 }

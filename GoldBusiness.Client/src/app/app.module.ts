@@ -102,6 +102,9 @@ import { ConceptoAjusteListComponent } from './pages/conceptoAjuste/concepto-aju
 import { ConceptoAjusteFormComponent } from './pages/conceptoAjuste/concepto-ajuste-form/concepto-ajuste-form.component';
 import { ConceptoAjusteDetailComponent } from './pages/conceptoAjuste/concepto-ajuste-detail/concepto-ajuste-detail.component';
 import { LoaderComponent } from './components/loader/loader.component';
+import { UsuarioListComponent } from './pages/usuario/usuario-list/usuario-list.component';
+import { UsuarioFormComponent } from './pages/usuario/usuario-form/usuario-form.component';
+import { UsuarioDetailComponent } from './pages/usuario/usuario-detail/usuario-detail.component';
 
 @NgModule({
   declarations: [
@@ -186,7 +189,10 @@ import { LoaderComponent } from './components/loader/loader.component';
     TransaccionListComponent,
     ConceptoAjusteListComponent,
     ConceptoAjusteFormComponent,
-    ConceptoAjusteDetailComponent
+    ConceptoAjusteDetailComponent,
+    UsuarioListComponent,
+    UsuarioFormComponent,
+    UsuarioDetailComponent
   ],
   imports: [
     BrowserModule,

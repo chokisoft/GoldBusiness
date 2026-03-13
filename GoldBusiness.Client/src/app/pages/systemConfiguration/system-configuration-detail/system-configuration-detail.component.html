@@ -135,7 +135,7 @@
         <h3 class="section-title">🖼️ {{ 'systemConfig.imagen' | translate }}</h3>
         
         <!-- ✅ Mostrar imagen si existe y no falló -->
-        <div *ngIf="config?.imagen && !logoError" class="logo-container">
+        <div *ngIf="config.imagen && !logoError" class="logo-container">
           <img [src]="getLogoUrl()"
                [alt]="config.nombreNegocio"
                class="company-logo-detail"
@@ -143,7 +143,7 @@
         </div>
         
         <!-- ✅ Mostrar placeholder si no hay imagen o falló al cargar -->
-        <div *ngIf="!config?.imagen || logoError" class="logo-placeholder">
+        <div *ngIf="!config.imagen || logoError" class="logo-placeholder">
           <div class="placeholder-content">
             <span class="placeholder-icon">🖼️</span>
             <p class="placeholder-text">{{ 'systemConfig.noLogo' | translate }}</p>

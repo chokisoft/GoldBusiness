@@ -40,9 +40,9 @@ export class TranslationService {
       'fr': 'Système de Gestion d\'Entreprise'
     },
     'login.username': {
-      'es': 'Usuario',
-      'en': 'Username',
-      'fr': 'Nom d\'utilisateur'
+      'es': 'Usuario o correo',
+      'en': 'Username or email',
+      'fr': 'Nom d\'utilisateur ou email'
     },
     'login.password': {
       'es': 'Contraseña',
@@ -50,9 +50,9 @@ export class TranslationService {
       'fr': 'Mot de passe'
     },
     'login.usernamePlaceholder': {
-      'es': 'Ingrese su usuario',
-      'en': 'Enter your username',
-      'fr': 'Entrez votre nom d\'utilisateur'
+      'es': 'Ingrese su usuario o correo',
+      'en': 'Enter your username or email',
+      'fr': 'Entrez votre nom d\'utilisateur ou email'
     },
     'login.passwordPlaceholder': {
       'es': 'Ingrese su contraseña',
@@ -73,6 +73,11 @@ export class TranslationService {
       'es': '¿Olvidó su contraseña?',
       'en': 'Forgot your password?',
       'fr': 'Mot de passe oublié?'
+    },
+    'login.googleSignIn': {
+      'es': 'Entrar con Google',
+      'en': 'Sign in with Google',
+      'fr': 'Se connecter avec Google'
     },
     'login.showPassword': {
       'es': 'Mostrar contraseña',
@@ -328,6 +333,36 @@ export class TranslationService {
       'en': 'Client Details',
       'fr': 'Détails du Client'
     },
+    'clientes.mainInfo': {
+      'es': 'Información Principal',
+      'en': 'Main Information',
+      'fr': 'Informations Principales'
+    },
+    'clientes.codigo': {
+      'es': 'Código',
+      'en': 'Code',
+      'fr': 'Code'
+    },
+    'clientes.nombre': {
+      'es': 'Nombre',
+      'en': 'Name',
+      'fr': 'Nom'
+    },
+    'clientes.telefono': {
+      'es': 'Teléfono',
+      'en': 'Phone',
+      'fr': 'Téléphone'
+    },
+    'clientes.email': {
+      'es': 'Email',
+      'en': 'Email',
+      'fr': 'Email'
+    },
+    'clientes.direccion': {
+      'es': 'Dirección',
+      'en': 'Address',
+      'fr': 'Adresse'
+    },
 
     // ═══════════════════════════════════════════════════════════
     // 🏢 ORGANIZACIÓN
@@ -482,6 +517,56 @@ export class TranslationService {
       'es': 'Información Principal',
       'en': 'Main Information',
       'fr': 'Informations Principales'
+    },
+    'localidad.establecimiento': {
+      'es': 'Establecimiento',
+      'en': 'Establishment',
+      'fr': 'Établissement'
+    },
+    'localidad.almacen': {
+      'es': 'Almacén',
+      'en': 'Warehouse',
+      'fr': 'Entrepôt'
+    },
+    'localidad.cuentasContables': {
+      'es': 'Cuentas Contables',
+      'en': 'Accounting Accounts',
+      'fr': 'Comptes Comptables'
+    },
+    'localidad.cuentasContablesSubtitle': {
+      'es': 'Configuración de cuentas para inventario, costos, ventas y devoluciones.',
+      'en': 'Account settings for inventory, costs, sales, and returns.',
+      'fr': 'Configuration des comptes pour les stocks, coûts, ventes et retours.'
+    },
+    'localidad.cuentasInventarioCosto': {
+      'es': 'Inventario y Costo',
+      'en': 'Inventory and Cost',
+      'fr': 'Stock et Coût'
+    },
+    'localidad.cuentasVentaDevolucion': {
+      'es': 'Venta y Devolución',
+      'en': 'Sales and Returns',
+      'fr': 'Vente et Retour'
+    },
+    'localidad.cuentaInventario': {
+      'es': 'Cuenta de Inventario',
+      'en': 'Inventory Account',
+      'fr': 'Compte de Stock'
+    },
+    'localidad.cuentaCosto': {
+      'es': 'Cuenta de Costo',
+      'en': 'Cost Account',
+      'fr': 'Compte de Coût'
+    },
+    'localidad.cuentaVenta': {
+      'es': 'Cuenta de Venta',
+      'en': 'Sales Account',
+      'fr': 'Compte de Vente'
+    },
+    'localidad.cuentaDevolucion': {
+      'es': 'Cuenta de Devolución',
+      'en': 'Returns Account',
+      'fr': 'Compte de Retour'
     },
     'localidad.codigo': {
       'es': 'Código',

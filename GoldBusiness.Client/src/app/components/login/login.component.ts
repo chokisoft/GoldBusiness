@@ -5,6 +5,7 @@ import { AuthService } from '../../services/auth.service';
 import { TranslationService } from '../../services/translation.service';
 import { LanguageService } from '../../services/language.service';
 import { Subscription } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -17,6 +18,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   errorMessage: string | null = null;
   returnUrl: string = '/dashboard'; // ← CAMBIADO de '/' a '/dashboard'
   showPassword = false;
+  googleAuthEnabled = environment.googleAuthEnabled;
 
   private languageSubscription?: Subscription;
 
@@ -33,6 +35,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     submit: '',
     loading: '',
     forgotPassword: '',
+    googleSignIn: '',
     showPassword: '',
     hidePassword: '',
     footer: '',
@@ -61,6 +64,10 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    if (this.handleGoogleCallbackResult()) {
+      return;
+    }
+
     // ✅ NUEVO: Si ya está autenticado, redirigir
     if (this.authService.isAuthenticated()) {
       console.log('✅ Usuario ya autenticado, redirigiendo al dashboard...');
@@ -109,6 +116,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       submit: this.translationService.translate('login.submit'),
       loading: this.translationService.translate('login.loading'),
       forgotPassword: this.translationService.translate('login.forgotPassword'),
+      googleSignIn: this.translationService.translate('login.googleSignIn'),
       showPassword: this.translationService.translate('login.showPassword'),
       hidePassword: this.translationService.translate('login.hidePassword'),
       footer: this.translationService.translate('login.footer'),
@@ -152,5 +160,49 @@ export class LoginComponent implements OnInit, OnDestroy {
    */
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
+  }
+
+  loginWithGoogle(): void {
+    this.authService.startGoogleLogin(this.returnUrl);
+  }
+
+  private handleGoogleCallbackResult(): boolean {
+    const hash = window.location.hash?.startsWith('#')
+      ? window.location.hash.substring(1)
+      : '';
+
+    if (!hash) {
+      return false;
+    }
+
+    const params = new URLSearchParams(hash);
+    const error = params.get('error');
+
+    if (error) {
+      this.errorMessage = `Error de autenticación Google: ${error}`;
+      window.history.replaceState({}, document.title, window.location.pathname + window.location.search);
+      return true;
+    }
+
+    const token = params.get('token') ?? '';
+    const refreshToken = params.get('refreshToken') ?? '';
+    const expiresAt = params.get('expiresAt') ?? '';
+
+    if (!token || !refreshToken || !expiresAt) {
+      return false;
+    }
+
+    const callbackReturnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
+    const completed = this.authService.completeExternalLogin({ token, refreshToken, expiresAt });
+
+    window.history.replaceState({}, document.title, window.location.pathname + window.location.search);
+
+    if (completed) {
+      this.router.navigate([callbackReturnUrl]);
+      return true;
+    }
+
+    this.errorMessage = 'No se pudo completar el inicio de sesión con Google.';
+    return true;
   }
 }

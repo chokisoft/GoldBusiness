@@ -28,11 +28,11 @@
       📊 {{ 'common.information' | translate }}
     </div>
     <div class="card-body">
-      <!-- Información Principal -->
       <div class="info-section">
         <h3 class="section-title">
           🔑 {{ 'establecimiento.mainInfo' | translate }}
         </h3>
+
         <div class="info-grid">
           <div class="info-item">
             <span class="info-label">{{ 'establecimiento.codigo' | translate }}</span>
@@ -45,35 +45,6 @@
           <div class="info-item">
             <span class="info-label">{{ 'establecimiento.negocio' | translate }}</span>
             <span class="info-value">{{ item.negocioDescripcion || '-' }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'establecimiento.activo' | translate }}</span>
-            <span class="info-value">{{ item.activo ? ('common.yes' | translate) : ('common.no' | translate) }}</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Información de Auditoría -->
-      <div class="info-section" *ngIf="item.fechaHoraCreado || item.fechaHoraModificado">
-        <h3 class="section-title">
-          📋 {{ 'audit.title' | translate }}
-        </h3>
-        <div class="info-grid">
-          <div class="info-item" *ngIf="item.creadoPor">
-            <span class="info-label">{{ 'audit.createdBy' | translate }}</span>
-            <span class="info-value">{{ item.creadoPor }}</span>
-          </div>
-          <div class="info-item" *ngIf="item.fechaHoraCreado">
-            <span class="info-label">{{ 'audit.createdAt' | translate }}</span>
-            <span class="info-value">{{ item.fechaHoraCreado | date:'dd/MM/yyyy HH:mm' }}</span>
-          </div>
-          <div class="info-item" *ngIf="item.modificadoPor">
-            <span class="info-label">{{ 'audit.modifiedBy' | translate }}</span>
-            <span class="info-value">{{ item.modificadoPor }}</span>
-          </div>
-          <div class="info-item" *ngIf="item.fechaHoraModificado">
-            <span class="info-label">{{ 'audit.modifiedAt' | translate }}</span>
-            <span class="info-value">{{ item.fechaHoraModificado | date:'dd/MM/yyyy HH:mm' }}</span>
           </div>
         </div>
       </div>

@@ -1,17 +1,19 @@
 <div class="page-container">
   <div class="page-header">
     <div class="header-content">
-      <h1 class="page-title">📍 {{ 'localidad.detailTitle' | translate }}</h1>
+        <h1 class="page-title">
+        📍 {{ 'localidad.detailTitle' | translate }}
+      </h1>
       <p class="page-subtitle">{{ 'localidad.detailSubtitle' | translate }}</p>
     </div>
     <div class="header-actions">
-      <button class="btn btn-secondary" (click)="goBack()">
-        <span class="btn-icon">⬅️</span>
-        {{ 'common.back' | translate }}
-      </button>
       <button class="btn btn-warning" [routerLink]="['../editar', item?.id]">
         <span class="btn-icon">✏️</span>
         {{ 'common.edit' | translate }}
+      </button>
+      <button class="btn btn-secondary" (click)="goBack()">
+        <span class="btn-icon">↩️</span>
+        {{ 'common.back' | translate }}
       </button>
     </div>
   </div>
@@ -21,83 +23,68 @@
     {{ error }}
   </div>
 
-  <div *ngIf="!loading && item">
-    <!-- Información Principal -->
-    <div class="card">
-      <div class="card-header">
-        <h3 class="section-title">{{ 'localidad.mainInfo' | translate }}</h3>
+  <div class="card" *ngIf="!loading && item">
+    <div class="card-header">
+      📊 {{ 'common.information' | translate }}
       </div>
       <div class="card-body">
-        <div class="detail-grid">
-          <div class="detail-item">
-            <label class="detail-label">{{ 'localidad.codigo' | translate }}:</label>
-            <span class="detail-value">{{ item.codigo }}</span>
+        <div class="info-section">
+        <h3 class="section-title">
+          🔑 {{ 'localidad.mainInfo' | translate }}
+        </h3>
+
+        <div class="info-grid info-grid-main">
+          <div class="info-item">
+            <span class="info-label">{{ 'localidad.codigo' | translate }}</span>
+            <span class="info-value-large">{{ item.codigo }}</span>
           </div>
-          <div class="detail-item">
-            <label class="detail-label">{{ 'localidad.descripcion' | translate }}:</label>
-            <span class="detail-value">{{ item.descripcion }}</span>
+          <div class="info-item">
+            <span class="info-label">{{ 'localidad.descripcion' | translate }}</span>
+            <span class="info-value">{{ item.descripcion }}</span>
           </div>
-          <div class="detail-item">
-            <label class="detail-label">{{ 'localidad.establecimiento' | translate }}:</label>
-            <span class="detail-value">{{ item.establecimientoDescripcion || '-' }}</span>
+          <div class="info-item">
+            <span class="info-label">{{ 'localidad.establecimiento' | translate }}</span>
+            <span class="info-value">{{ item.establecimientoDescripcion || '-' }}</span>
           </div>
-          <div class="detail-item">
-            <label class="detail-label">{{ 'localidad.almacen' | translate }}:</label>
-            <span class="detail-value">{{ item.almacen ? ('common.yes' | translate) : ('common.no' | translate) }}</span>
+          <div class="info-item">
+            <span class="info-label">{{ 'localidad.almacen' | translate }}</span>
+            <span class="badge badge-success" *ngIf="item.almacen">
+              <span class="badge-icon">💰</span>
+              Sí
+            </span>
+            <span class="badge badge-info" *ngIf="!item.almacen">
+              <span class="badge-icon">💵</span>
+              No
+            </span>
           </div>
         </div>
-      </div>
-    </div>
+        <!-- Cuentas Contables -->
+        <div class="cuentas-section cuentas-section-box">
+          <h3 class="cuentas-section-title">💰 {{ 'localidad.cuentasContables' | translate }}</h3>
+          <p class="cuentas-subtitle">{{ 'localidad.cuentasContablesSubtitle' | translate }}</p>
 
-    <!-- Cuentas Contables -->
-    <div class="card">
-      <div class="card-header">
-        <h3 class="section-title">{{ 'localidad.cuentasContables' | translate }}</h3>
-      </div>
-      <div class="card-body">
-        <div class="detail-grid">
-          <div class="detail-item">
-            <label class="detail-label">{{ 'localidad.cuentaInventario' | translate }}:</label>
-            <span class="detail-value">{{ item.cuentaInventarioDescripcion || '-' }}</span>
-          </div>
-          <div class="detail-item">
-            <label class="detail-label">{{ 'localidad.cuentaCosto' | translate }}:</label>
-            <span class="detail-value">{{ item.cuentaCostoDescripcion || '-' }}</span>
-          </div>
-          <div class="detail-item">
-            <label class="detail-label">{{ 'localidad.cuentaVenta' | translate }}:</label>
-            <span class="detail-value">{{ item.cuentaVentaDescripcion || '-' }}</span>
-          </div>
-          <div class="detail-item">
-            <label class="detail-label">{{ 'localidad.cuentaDevolucion' | translate }}:</label>
-            <span class="detail-value">{{ item.cuentaDevolucionDescripcion || '-' }}</span>
-          </div>
-        </div>
-      </div>
-    </div>
+          <div class="form-group-cuentas">
+            <div class="accounts-row">
+              <div class="form-group">
+                <label class="form-label">{{ 'localidad.cuentaInventario' | translate }}</label>
+                <div class="form-value">{{ item.cuentaInventarioDescripcion || '-' }}</div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">{{ 'localidad.cuentaCosto' | translate }}</label>
+                <div class="form-value">{{ item.cuentaCostoDescripcion || '-' }}</div>
+              </div>
+            </div>
 
-    <!-- Información de Auditoría -->
-    <div class="card" *ngIf="item.fechaHoraCreado || item.fechaHoraModificado">
-      <div class="card-header">
-        <h3 class="section-title">{{ 'audit.title' | translate }}</h3>
-      </div>
-      <div class="card-body">
-        <div class="detail-grid">
-          <div class="detail-item" *ngIf="item.creadoPor">
-            <label class="detail-label">{{ 'audit.createdBy' | translate }}:</label>
-            <span class="detail-value">{{ item.creadoPor }}</span>
-          </div>
-          <div class="detail-item" *ngIf="item.fechaHoraCreado">
-            <label class="detail-label">{{ 'audit.createdAt' | translate }}:</label>
-            <span class="detail-value">{{ item.fechaHoraCreado | date:'dd/MM/yyyy HH:mm' }}</span>
-          </div>
-          <div class="detail-item" *ngIf="item.modificadoPor">
-            <label class="detail-label">{{ 'audit.modifiedBy' | translate }}:</label>
-            <span class="detail-value">{{ item.modificadoPor }}</span>
-          </div>
-          <div class="detail-item" *ngIf="item.fechaHoraModificado">
-            <label class="detail-label">{{ 'audit.modifiedAt' | translate }}:</label>
-            <span class="detail-value">{{ item.fechaHoraModificado | date:'dd/MM/yyyy HH:mm' }}</span>
+            <div class="accounts-row">
+              <div class="form-group">
+                <label class="form-label">{{ 'localidad.cuentaVenta' | translate }}</label>
+                <div class="form-value">{{ item.cuentaVentaDescripcion || '-' }}</div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">{{ 'localidad.cuentaDevolucion' | translate }}</label>
+                <div class="form-value">{{ item.cuentaDevolucionDescripcion || '-' }}</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -15,18 +15,14 @@
     {{ error }}
   </div>
 
-  <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
-    <!-- Información Principal -->
+  <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" class="form-container" *ngIf="!loading">
     <div class="card">
-      <div class="card-header">
-        <h3 class="section-title">{{ 'establecimiento.mainInfo' | translate }}</h3>
-      </div>
+      <div class="card-header">{{ 'establecimiento.mainInfo' | translate }}</div>
       <div class="card-body">
         <div class="form-row">
-          <!-- Código -->
           <div class="form-group">
-            <label for="codigo">
-              {{ 'establecimiento.codigo' | translate }} <span class="required">*</span>
+            <label for="codigo" class="form-label">
+              {{ 'establecimiento.codigo' | translate }} *
             </label>
             <input type="text"
                    id="codigo"
@@ -40,51 +36,26 @@
             </div>
           </div>
 
-          <!-- Nombre -->
           <div class="form-group">
-            <label for="nombre">
-              {{ 'establecimiento.nombre' | translate }} <span class="required">*</span>
+            <label for="descripcion" class="form-label">
+              {{ 'establecimiento.descripcion' | translate }} *
             </label>
             <input type="text"
-                   id="nombre"
-                   formControlName="nombre"
+                   id="descripcion"
+                   formControlName="descripcion"
                    class="form-control"
-                   [class.is-invalid]="itemForm.get('nombre')?.invalid && itemForm.get('nombre')?.touched"
-                   [placeholder]="'establecimiento.nombrePlaceholder' | translate"
+                   [class.is-invalid]="itemForm.get('descripcion')?.invalid && itemForm.get('descripcion')?.touched"
+                   [placeholder]="'establecimiento.descripcionPlaceholder' | translate"
                    maxlength="100" />
-            <div class="invalid-feedback" *ngIf="itemForm.get('nombre')?.hasError('required') && itemForm.get('nombre')?.touched">
+            <div class="invalid-feedback" *ngIf="itemForm.get('descripcion')?.hasError('required') && itemForm.get('descripcion')?.touched">
               {{ 'validation.required' | translate }}
             </div>
           </div>
         </div>
 
         <div class="form-row">
-          <!-- Descripción -->
           <div class="form-group">
-            <label for="descripcion">
-              {{ 'establecimiento.descripcion' | translate }}
-            </label>
-            <textarea id="descripcion"
-                      formControlName="descripcion"
-                      class="form-control"
-                      rows="3"
-                      [placeholder]="'establecimiento.descripcionPlaceholder' | translate"
-                      maxlength="500"></textarea>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Información de Contacto -->
-    <div class="card">
-      <div class="card-header">
-        <h3 class="section-title">{{ 'establecimiento.infoContacto' | translate }}</h3>
-      </div>
-      <div class="card-body">
-        <div class="form-row">
-          <!-- Teléfono -->
-          <div class="form-group">
-            <label for="telefono">
+            <label for="telefono" class="form-label">
               {{ 'establecimiento.telefono' | translate }}
             </label>
             <input type="text"
@@ -95,9 +66,8 @@
                    maxlength="20" />
           </div>
 
-          <!-- Email -->
           <div class="form-group">
-            <label for="email">
+            <label for="email" class="form-label">
               {{ 'establecimiento.email' | translate }}
             </label>
             <input type="email"
@@ -115,16 +85,12 @@
       </div>
     </div>
 
-    <!-- Información de Ubicación -->
     <div class="card">
-      <div class="card-header">
-        <h3 class="section-title">{{ 'establecimiento.infoUbicacion' | translate }}</h3>
-      </div>
+      <div class="card-header">{{ 'establecimiento.infoUbicacion' | translate }}</div>
       <div class="card-body">
         <div class="form-row">
-          <!-- Dirección -->
           <div class="form-group">
-            <label for="direccion">
+            <label for="direccion" class="form-label">
               {{ 'establecimiento.direccion' | translate }}
             </label>
             <input type="text"
@@ -135,9 +101,8 @@
                    maxlength="200" />
           </div>
 
-          <!-- Localidad -->
           <div class="form-group">
-            <label for="localidadId">
+            <label for="localidadId" class="form-label">
               {{ 'establecimiento.localidad' | translate }}
             </label>
             <select id="localidadId"
@@ -158,9 +123,7 @@
             <span class="btn-icon">❌</span>
             {{ 'common.cancel' | translate }}
           </button>
-          <button type="submit"
-                  class="btn btn-primary"
-                  [disabled]="itemForm.invalid || saving">
+          <button type="submit" class="btn btn-primary" [disabled]="itemForm.invalid || saving">
             <span class="btn-icon">💾</span>
             {{ saving ? ('common.saving' | translate) : ('common.save' | translate) }}
           </button>

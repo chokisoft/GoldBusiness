@@ -14,7 +14,7 @@
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
       <div class="form-group">
         <label for="codigo" class="form-label">
-          {{ 'transaccion.codigo' | translate }}
+          {{ 'transaccion.codigo' | translate }} *
         </label>
         <input type="text" id="codigo" formControlName="codigo" class="form-control"
                [class.is-invalid]="form.get('codigo')?.invalid && form.get('codigo')?.touched" />
@@ -25,7 +25,7 @@
 
       <div class="form-group">
         <label for="descripcion" class="form-label">
-          {{ 'transaccion.descripcion' | translate }}
+          {{ 'transaccion.descripcion' | translate }} *
         </label>
         <input type="text" id="descripcion" formControlName="descripcion" class="form-control"
                [class.is-invalid]="form.get('descripcion')?.invalid && form.get('descripcion')?.touched" />

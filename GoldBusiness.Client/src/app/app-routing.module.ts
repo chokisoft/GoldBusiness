@@ -138,6 +138,9 @@ import { ProductoDetailComponent } from './pages/producto/producto-detail/produc
 import { SystemConfigurationListComponent } from './pages/systemConfiguration/system-configuration-list/system-configuration-list.component';
 import { SystemConfigurationFormComponent } from './pages/systemConfiguration/system-configuration-form/system-configuration-form.component';
 import { SystemConfigurationDetailComponent } from './pages/systemConfiguration/system-configuration-detail/system-configuration-detail.component';
+import { UsuarioListComponent } from './pages/usuario/usuario-list/usuario-list.component';
+import { UsuarioFormComponent } from './pages/usuario/usuario-form/usuario-form.component';
+import { UsuarioDetailComponent } from './pages/usuario/usuario-detail/usuario-detail.component';
 
 const routes: Routes = [
   // Rutas públicas
@@ -358,10 +361,15 @@ const routes: Routes = [
               { path: ':id', component: SystemConfigurationDetailComponent }
             ]
           },
-          // Usuarios (placeholder)
+          // Usuarios
           {
             path: 'usuarios',
-            component: TestConnectionComponent
+            children: [
+              { path: '', component: UsuarioListComponent },
+              { path: 'nuevo', component: UsuarioFormComponent },
+              { path: 'editar/:id', component: UsuarioFormComponent },
+              { path: ':id', component: UsuarioDetailComponent }
+            ]
           },
           // Prueba de Conexión
           {

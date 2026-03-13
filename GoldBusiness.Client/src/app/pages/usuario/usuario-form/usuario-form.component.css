@@ -1,0 +1,41 @@
+@import "../../shared-styles/style-form.css";
+
+.roles-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.role-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.inline-option {
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.permissions-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.provider-hint {
+  margin-top: -0.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.provider-hint small {
+  color: #556070;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .roles-grid,
+  .permissions-grid {
+    grid-template-columns: 1fr;
+  }
+}

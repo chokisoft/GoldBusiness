@@ -42,11 +42,18 @@ namespace GoldBusiness.Application.Services
             try
             {
                 // 1. Validar usuario
-                var user = await _userManager.FindByNameAsync(login.Username);
+                var loginIdentifier = login.Username?.Trim() ?? string.Empty;
+                var user = await _userManager.FindByNameAsync(loginIdentifier);
+
+                if (user == null)
+                {
+                    user = await _userManager.FindByEmailAsync(loginIdentifier);
+                }
+
                 if (user == null || !user.IsActive)
                 {
                     _logger.LogWarning("Intento de login fallido para usuario: {Username} desde IP: {IpAddress}", 
-                        login.Username, login.IpAddress);
+                        loginIdentifier, login.IpAddress);
                     
                     return new AuthResponseDTO
                     {
@@ -61,7 +68,7 @@ namespace GoldBusiness.Application.Services
                 if (!validPassword)
                 {
                     _logger.LogWarning("Contraseña incorrecta para usuario: {Username} desde IP: {IpAddress}", 
-                        login.Username, login.IpAddress);
+                        loginIdentifier, login.IpAddress);
                     
                     await _userManager.AccessFailedAsync(user); // Incrementa intentos fallidos
                     
@@ -76,7 +83,7 @@ namespace GoldBusiness.Application.Services
                 // 3. Verificar si la cuenta está bloqueada
                 if (await _userManager.IsLockedOutAsync(user))
                 {
-                    _logger.LogWarning("Intento de login en cuenta bloqueada: {Username}", login.Username);
+                    _logger.LogWarning("Intento de login en cuenta bloqueada: {Username}", loginIdentifier);
                     
                     return new AuthResponseDTO
                     {
@@ -100,13 +107,10 @@ namespace GoldBusiness.Application.Services
                     login.UserAgent);
 
                 // 7. Obtener información del usuario
-                var roles = await _userManager.GetRolesAsync(user);
-                var userClaims = await _userManager.GetClaimsAsync(user);
-                var fullNameClaim = userClaims.FirstOrDefault(c => c.Type == "fullName");
-                var fullName = fullNameClaim?.Value ?? user.UserName ?? "";
+                var userInfo = await BuildUserInfoAsync(user);
 
                 _logger.LogInformation("Login exitoso para usuario: {Username} desde IP: {IpAddress}", 
-                    login.Username, login.IpAddress);
+                    loginIdentifier, login.IpAddress);
 
                 // 8. Construir respuesta
                 return new AuthResponseDTO
@@ -118,19 +122,62 @@ namespace GoldBusiness.Application.Services
                         Token = accessToken,
                         RefreshToken = refreshToken,
                         ExpiresAt = expiresAt.ToString("o"),
-                        User = new UserInfoDTO
-                        {
-                            UserName = user.UserName ?? "",
-                            Email = user.Email ?? "",
-                            FullName = fullName,
-                            Roles = roles.ToList()
-                        }
+                        User = userInfo
                     }
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error durante autenticación para usuario: {Username}", login.Username);
+                _logger.LogError(ex, "Error durante autenticación para usuario: {Username}", login.Username?.Trim());
+                throw;
+            }
+        }
+
+        public async Task<AuthResponseDTO?> AuthenticateExternalUserAsync(string userId, string? ipAddress, string? userAgent)
+        {
+            try
+            {
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null || !user.IsActive)
+                {
+                    _logger.LogWarning("Login externo fallido para userId: {UserId} desde IP: {IpAddress}", userId, ipAddress);
+                    return new AuthResponseDTO
+                    {
+                        Succeeded = false,
+                        Message = "Usuario no autorizado para acceso externo",
+                        Data = null
+                    };
+                }
+
+                await RevokeOldUserTokensAsync(user.Id, ipAddress);
+
+                var (accessToken, expiresAt) = await GenerateAccessTokenAsync(user);
+                var refreshToken = await GenerateAndStoreRefreshTokenAsync(
+                    user.Id,
+                    ipAddress,
+                    userAgent);
+
+                var userInfo = await BuildUserInfoAsync(user);
+
+                _logger.LogInformation("Login externo exitoso para usuario: {Username} desde IP: {IpAddress}",
+                    user.UserName, ipAddress);
+
+                return new AuthResponseDTO
+                {
+                    Succeeded = true,
+                    Message = "Autenticación externa exitosa",
+                    Data = new AuthDataDTO
+                    {
+                        Token = accessToken,
+                        RefreshToken = refreshToken,
+                        ExpiresAt = expiresAt.ToString("o"),
+                        User = userInfo
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error durante autenticación externa para userId: {UserId}", userId);
                 throw;
             }
         }
@@ -163,10 +210,7 @@ namespace GoldBusiness.Application.Services
                     storedToken.Token); // Guardar token anterior
 
                 // 4. Obtener información del usuario
-                var roles = await _userManager.GetRolesAsync(user);
-                var userClaims = await _userManager.GetClaimsAsync(user);
-                var fullNameClaim = userClaims.FirstOrDefault(c => c.Type == "fullName");
-                var fullName = fullNameClaim?.Value ?? user.UserName ?? "";
+                var userInfo = await BuildUserInfoAsync(user);
 
                 _logger.LogInformation("Refresh token exitoso para usuario: {UserId} desde IP: {IpAddress}", 
                     user.Id, ipAddress);
@@ -180,13 +224,7 @@ namespace GoldBusiness.Application.Services
                         Token = accessToken,
                         RefreshToken = newRefreshToken,
                         ExpiresAt = expiresAt.ToString("o"),
-                        User = new UserInfoDTO
-                        {
-                            UserName = user.UserName ?? "",
-                            Email = user.Email ?? "",
-                            FullName = fullName,
-                            Roles = roles.ToList()
-                        }
+                        User = userInfo
                     }
                 };
             }
@@ -354,6 +392,57 @@ namespace GoldBusiness.Application.Services
             {
                 await RevokeTokenInternalAsync(token, ipAddress, "Límite de sesiones excedido");
             }
+        }
+
+        private async Task<UserInfoDTO> BuildUserInfoAsync(ApplicationUser user)
+        {
+            var roles = await _userManager.GetRolesAsync(user);
+            var userClaims = await _userManager.GetClaimsAsync(user);
+
+            var roleClaims = new List<Claim>();
+            foreach (var roleName in roles)
+            {
+                var roleObj = await _roleManager.FindByNameAsync(roleName);
+                if (roleObj != null)
+                {
+                    roleClaims.AddRange(await _roleManager.GetClaimsAsync(roleObj));
+                }
+            }
+
+            var allClaims = userClaims.Concat(roleClaims).ToList();
+            var fullName = allClaims.FirstOrDefault(c => c.Type == "fullName")?.Value ?? user.UserName ?? string.Empty;
+            var permissions = allClaims
+                .Where(c => c.Type == "permission")
+                .Select(c => c.Value)
+                .Where(v => !string.IsNullOrWhiteSpace(v))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            var accessLevels = allClaims
+                .Where(c => c.Type == "accessLevel")
+                .Select(c => c.Value)
+                .Where(v => !string.IsNullOrWhiteSpace(v))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            if (accessLevels.Count == 0)
+            {
+                accessLevels.Add("*");
+            }
+
+            var authProvider = allClaims
+                .FirstOrDefault(c => c.Type == "authProvider")?.Value;
+
+            return new UserInfoDTO
+            {
+                UserName = user.UserName ?? string.Empty,
+                Email = user.Email ?? string.Empty,
+                FullName = fullName,
+                Roles = roles.ToList(),
+                Permissions = permissions,
+                AccessLevels = accessLevels,
+                AuthProvider = string.IsNullOrWhiteSpace(authProvider) ? "Local" : authProvider
+            };
         }
 
         #endregion

@@ -1,0 +1,149 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">👤 {{ isEditMode ? 'Editar Usuario' : 'Nuevo Usuario' }}</h1>
+      <p class="page-subtitle">Datos de acceso y permisos</p>
+    </div>
+  </div>
+
+  <div class="alert alert-error" *ngIf="error">
+    <span class="alert-icon">⚠️</span>
+    {{ error }}
+  </div>
+
+  <div class="card">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container" *ngIf="!loading">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="userName">Nombre de usuario *</label>
+          <label class="role-option inline-option">
+            <input type="checkbox" formControlName="useEmailAsUsername" />
+            <span>Usar email como nombre de usuario</span>
+          </label>
+          <input id="userName" type="text" class="form-control" formControlName="userName"
+                 [class.is-invalid]="form.get('userName')?.invalid && form.get('userName')?.touched" maxlength="50" />
+          <div class="invalid-feedback" *ngIf="form.get('userName')?.hasError('required') && form.get('userName')?.touched">
+            {{ 'validation.required' | translate }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="fullName">Nombre completo *</label>
+          <input id="fullName" type="text" class="form-control" formControlName="fullName"
+                 [class.is-invalid]="form.get('fullName')?.invalid && form.get('fullName')?.touched" maxlength="120" />
+          <div class="invalid-feedback" *ngIf="form.get('fullName')?.hasError('required') && form.get('fullName')?.touched">
+            {{ 'validation.required' | translate }}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="email">Email *</label>
+          <input id="email" type="email" class="form-control" formControlName="email"
+                 [class.is-invalid]="form.get('email')?.invalid && form.get('email')?.touched" maxlength="120" />
+          <div class="invalid-feedback" *ngIf="form.get('email')?.hasError('required') && form.get('email')?.touched">
+            {{ 'validation.required' | translate }}
+          </div>
+          <div class="invalid-feedback" *ngIf="form.get('email')?.hasError('email') && form.get('email')?.touched">
+            {{ 'validation.email' | translate }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="authProvider">Proveedor de autenticación *</label>
+          <select id="authProvider" class="form-control" formControlName="authProvider">
+            <option value="Local">Local</option>
+            <option value="Google">Google</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="isActive">Estado</label>
+          <select id="isActive" class="form-control" formControlName="isActive">
+            <option [ngValue]="true">Activo</option>
+            <option [ngValue]="false">Inactivo</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row" *ngIf="isLocalProvider; else googlePasswordInfo">
+        <div class="form-group">
+          <label class="form-label" for="password">{{ isEditMode ? 'Nueva contraseña' : 'Contraseña' }}{{ isEditMode ? '' : ' *' }}</label>
+          <input id="password" type="password" class="form-control" formControlName="password"
+                 [class.is-invalid]="(form.get('password')?.invalid && form.get('password')?.touched) || (form.errors?.['passwordMismatch'] && form.get('confirmPassword')?.touched)" />
+          <div class="invalid-feedback" *ngIf="form.get('password')?.hasError('required') && form.get('password')?.touched">
+            {{ 'validation.required' | translate }}
+          </div>
+          <div class="invalid-feedback" *ngIf="form.get('password')?.hasError('minlength') && form.get('password')?.touched">
+            Mínimo 8 caracteres
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="confirmPassword">Confirmar contraseña{{ isEditMode ? '' : ' *' }}</label>
+          <input id="confirmPassword" type="password" class="form-control" formControlName="confirmPassword"
+                 [class.is-invalid]="form.errors?.['passwordMismatch'] && form.get('confirmPassword')?.touched" />
+          <div class="invalid-feedback" *ngIf="form.errors?.['passwordMismatch'] && form.get('confirmPassword')?.touched">
+            Las contraseñas no coinciden
+          </div>
+        </div>
+      </div>
+
+      <ng-template #googlePasswordInfo>
+        <div class="form-group provider-hint">
+          <small>Para usuarios Google no es necesario definir contraseña al crearlo.</small>
+        </div>
+      </ng-template>
+
+      <div class="form-group">
+        <label class="form-label">Roles *</label>
+        <div class="roles-grid">
+          <label class="role-option" *ngFor="let role of availableRoles">
+            <input type="checkbox" [checked]="hasRole(role)" (change)="onRoleChange(role, $any($event.target).checked)" />
+            <span>{{ role }}</span>
+          </label>
+        </div>
+        <div class="invalid-feedback" style="display:block" *ngIf="form.get('roles')?.invalid && form.get('roles')?.touched">
+          Seleccione al menos un rol
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Permisos ERP *</label>
+          <div class="roles-grid permissions-grid">
+            <label class="role-option" *ngFor="let permission of availablePermissions">
+              <input type="checkbox" [checked]="hasPermission(permission)" (change)="onPermissionChange(permission, $any($event.target).checked)" />
+              <span>{{ permission }}</span>
+            </label>
+          </div>
+          <div class="invalid-feedback" style="display:block" *ngIf="form.get('permissions')?.invalid && form.get('permissions')?.touched">
+            Seleccione al menos un permiso ERP
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="accessLevelsText">Niveles de acceso (claim accessLevel)</label>
+          <input id="accessLevelsText" type="text" class="form-control" formControlName="accessLevelsText"
+                 placeholder="*, CHK, CHK001" />
+          <small>Prefijos separados por coma.</small>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="onCancel()" [disabled]="saving">
+          {{ 'common.cancel' | translate }}
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="saving || form.invalid">
+          <span *ngIf="!saving">{{ 'common.save' | translate }}</span>
+          <span *ngIf="saving">{{ 'common.saving' | translate }}</span>
+        </button>
+      </div>
+    </form>
+
+    <div *ngIf="loading" class="loading-container">
+      <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
+    </div>
+  </div>
+</div>

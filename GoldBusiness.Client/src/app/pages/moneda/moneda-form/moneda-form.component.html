@@ -15,18 +15,16 @@
     {{ error }}
   </div>
 
-  <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
+  <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" class="form-container" *ngIf="!loading">
     <!-- Información Principal -->
     <div class="card">
-      <div class="card-header">
-        <h3 class="section-title">{{ 'moneda.mainInfo' | translate }}</h3>
-      </div>
+      <div class="card-header">{{ 'moneda.mainInfo' | translate }}</div>
       <div class="card-body">
         <div class="form-row">
           <!-- Código -->
           <div class="form-group">
-            <label for="codigo">
-              {{ 'moneda.codigo' | translate }} <span class="required">*</span>
+            <label for="codigo" class="form-label">
+              {{ 'moneda.codigo' | translate }} *
             </label>
             <input type="text"
                    id="codigo"
@@ -40,19 +38,18 @@
             </div>
           </div>
 
-          <!-- Nombre -->
           <div class="form-group">
-            <label for="nombre">
-              {{ 'moneda.nombre' | translate }} <span class="required">*</span>
+            <label for="descripcion" class="form-label">
+              {{ 'moneda.descripcion' | translate }} *
             </label>
             <input type="text"
-                   id="nombre"
-                   formControlName="nombre"
+                   id="descripcion"
+                   formControlName="descripcion"
                    class="form-control"
-                   [class.is-invalid]="itemForm.get('nombre')?.invalid && itemForm.get('nombre')?.touched"
-                   [placeholder]="'moneda.nombrePlaceholder' | translate"
+                   [class.is-invalid]="itemForm.get('descripcion')?.invalid && itemForm.get('descripcion')?.touched"
+                   [placeholder]="'moneda.descripcionPlaceholder' | translate"
                    maxlength="100" />
-            <div class="invalid-feedback" *ngIf="itemForm.get('nombre')?.hasError('required') && itemForm.get('nombre')?.touched">
+            <div class="invalid-feedback" *ngIf="itemForm.get('descripcion')?.hasError('required') && itemForm.get('descripcion')?.touched">
               {{ 'validation.required' | translate }}
             </div>
           </div>
@@ -61,7 +58,7 @@
         <div class="form-row">
           <!-- Símbolo -->
           <div class="form-group">
-            <label for="simbolo">
+            <label for="simbolo" class="form-label">
               {{ 'moneda.simbolo' | translate }}
             </label>
             <input type="text"
@@ -72,32 +69,8 @@
                    maxlength="10" />
           </div>
 
-          <!-- Descripción -->
           <div class="form-group">
-            <label for="descripcion">
-              {{ 'moneda.descripcion' | translate }}
-            </label>
-            <input type="text"
-                   id="descripcion"
-                   formControlName="descripcion"
-                   class="form-control"
-                   [placeholder]="'moneda.descripcionPlaceholder' | translate"
-                   maxlength="500" />
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Información de Tasa de Cambio -->
-    <div class="card">
-      <div class="card-header">
-        <h3 class="section-title">{{ 'moneda.infoTasaCambio' | translate }}</h3>
-      </div>
-      <div class="card-body">
-        <div class="form-row">
-          <!-- Tasa de Cambio -->
-          <div class="form-group">
-            <label for="cambio">
+            <label for="cambio" class="form-label">
               {{ 'moneda.cambio' | translate }}
             </label>
             <input type="number"
@@ -110,7 +83,10 @@
           </div>
         </div>
       </div>
+    </div>
 
+    <div class="card">
+      <div class="card-header">{{ 'common.actions' | translate }}</div>
       <div class="card-footer">
         <div class="button-group">
           <button type="button" class="btn btn-secondary" (click)="onCancel()">

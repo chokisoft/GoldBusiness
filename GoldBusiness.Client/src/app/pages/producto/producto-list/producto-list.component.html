@@ -1,1 +1,107 @@
-<p>producto-list works!</p>
+<div class="page-container">
+	<div class="page-header">
+		<div class="header-content">
+			<h1 class="page-title">📦 {{ 'producto.title' | translate }}</h1>
+			<p class="page-subtitle">{{ 'producto.subtitle' | translate }}</p>
+		</div>
+		<div class="header-actions">
+			<button class="btn btn-primary" [routerLink]="['nuevo']">
+				<span class="btn-icon">➕</span>
+				{{ 'common.new' | translate }}
+			</button>
+		</div>
+	</div>
+
+	<div class="alert alert-error" *ngIf="error">
+		<span class="alert-icon">⚠️</span>
+		{{ error }}
+	</div>
+
+	<div class="card" *ngIf="!loading">
+		<div class="card-header">
+			<div class="search-container">
+				<input type="text"
+							 class="form-control search-input"
+							 [(ngModel)]="searchTerm"
+							 (input)="onSearch()"
+							 [placeholder]="'common.search' | translate"
+							 [class.searching]="searching" />
+				<span class="search-icon">
+					<ng-container *ngIf="!searching">🔍</ng-container>
+					<ng-container *ngIf="searching">⏳</ng-container>
+				</span>
+			</div>
+			<div class="page-size-selector">
+				<label>{{ 'common.show' | translate }}:</label>
+				<select [(ngModel)]="pageSize" (ngModelChange)="onPageSizeChange($event)" class="form-control">
+					<option [value]="5">5</option>
+					<option [value]="10">10</option>
+					<option [value]="25">25</option>
+					<option [value]="50">50</option>
+					<option [value]="100">100</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="card-body">
+			<div class="table-responsive">
+				<table class="data-table">
+					<thead>
+						<tr>
+							<th>{{ 'producto.codigo' | translate }}</th>
+							<th>{{ 'producto.nombre' | translate }}</th>
+							<th>{{ 'producto.precio' | translate }}</th>
+							<th>{{ 'producto.stock' | translate }}</th>
+							<th class="actions-column">{{ 'common.actions' | translate }}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr *ngFor="let item of productos">
+							<td>{{ item.codigo }}</td>
+							<td>{{ item.nombre }}</td>
+							<td>{{ (item.precio ?? 0) | number:'1.2-2' }}</td>
+							<td>{{ item.stock ?? 0 }}</td>
+							<td class="actions-column">
+								<div class="action-buttons">
+									<button class="btn btn-sm btn-info" [routerLink]="[item.id]" [title]="'common.view' | translate"><span>👁️</span></button>
+									<button class="btn btn-sm btn-warning" [routerLink]="['editar', item.id]" [title]="'common.edit' | translate"><span>✏️</span></button>
+									<button class="btn btn-sm btn-danger" (click)="delete(item.id!, item.nombre)" [title]="'common.delete' | translate"><span>🗑️</span></button>
+								</div>
+							</td>
+						</tr>
+						<tr *ngIf="productos.length === 0">
+							<td colspan="5" class="text-center">
+								{{ searchTerm ? ('common.noResults' | translate) : ('common.noData' | translate) }}
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<div class="card-footer" *ngIf="totalPages > 0">
+			<div class="pagination-info">
+				{{ 'common.showing' | translate }}
+				{{ (currentPage - 1) * pageSize + 1 }} -
+				{{ Math.min(currentPage * pageSize, totalItems) }}
+				{{ 'common.of' | translate }}
+				{{ totalItems }}
+			</div>
+			<div class="pagination">
+				<button class="btn btn-sm btn-secondary" (click)="previousPage()" [disabled]="currentPage === 1">‹ {{ 'common.previous' | translate }}</button>
+				<button *ngFor="let page of getPageNumbers()"
+								class="btn btn-sm"
+								[class.btn-primary]="page === currentPage"
+								[class.btn-secondary]="page !== currentPage"
+								(click)="goToPage(page)">
+					{{ page }}
+				</button>
+				<button class="btn btn-sm btn-secondary" (click)="nextPage()" [disabled]="currentPage === totalPages">{{ 'common.next' | translate }} ›</button>
+			</div>
+		</div>
+	</div>
+
+	<div *ngIf="loading" class="loading-container">
+		<app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
+	</div>
+</div>

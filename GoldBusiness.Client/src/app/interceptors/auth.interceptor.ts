@@ -61,7 +61,12 @@ export class AuthInterceptor implements HttpInterceptor {
    * Verificar si el endpoint es público (no requiere autenticación)
    */
   private isPublicEndpoint(url: string): boolean {
-    const publicEndpoints = ['/auth/login', '/auth/refresh', '/auth/register'];
+    const publicEndpoints = [
+      '/auth/login',
+      '/auth/refresh',
+      '/auth/google',
+      '/auth/external'
+    ];
     return publicEndpoints.some(endpoint => url.includes(endpoint));
   }
 

@@ -6,6 +6,7 @@ using GoldBusiness.Infrastructure.Context;
 using GoldBusiness.Infrastructure.Repositories;
 using GoldBusiness.WebApi.Middleware;
 using GoldBusiness.WebApi.Swagger;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -182,7 +183,10 @@ if (jwtKey.Length < 32)
     throw new InvalidOperationException("⚠️ JWT Key must be at least 32 characters long for security.");
 }
 
-builder.Services.AddAuthentication(options =>
+var googleClientId = builder.Configuration["Authentication:Google:ClientId"];
+var googleClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+
+var authenticationBuilder = builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -248,6 +252,18 @@ builder.Services.AddAuthentication(options =>
         }
     };
 });
+
+if (!string.IsNullOrWhiteSpace(googleClientId) && !string.IsNullOrWhiteSpace(googleClientSecret))
+{
+    authenticationBuilder.AddGoogle("Google", options =>
+    {
+        options.ClientId = googleClientId;
+        options.ClientSecret = googleClientSecret;
+        options.CallbackPath = "/signin-google";
+        options.SignInScheme = IdentityConstants.ExternalScheme;
+        options.SaveTokens = true;
+    });
+}
 
 // ============================================
 // 🛡️ AUTORIZACIÓN (POLICIES)

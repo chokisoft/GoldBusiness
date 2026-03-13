@@ -34,24 +34,17 @@
         </h3>
         <div class="info-grid">
           <div class="info-item">
-            <span class="info-label">{{ 'sub-linea.id' | translate }}</span>
-            <span class="info-value">{{ subLinea.id }}</span>
-          </div>
-          <div class="info-item">
             <span class="info-label">{{ 'sub-linea.codigo' | translate }}</span>
-            <span class="info-value">{{ subLinea.codigo }}</span>
+            <span class="info-value-large">{{ subLinea.codigo }}</span>
           </div>
           <div class="info-item">
             <span class="info-label">{{ 'sub-linea.descripcion' | translate }}</span>
             <span class="info-value">{{ subLinea.descripcion }}</span>
           </div>
           <div class="info-item">
-            <span class="info-label">{{ 'sub-linea.lineaId' | translate }}</span>
-            <span class="info-value">{{ subLinea.lineaId }}</span>
-          </div>
-          <div class="info-item">
             <span class="info-label">{{ 'sub-linea.linea' | translate }}</span>
-            <span class="info-value">{{ subLinea.lineaDescripcion }}</span>
+            <span class="badge badge-info" *ngIf="subLinea.lineaDescripcion">{{ subLinea.lineaDescripcion }}</span>
+            <span class="info-value" *ngIf="!subLinea.lineaDescripcion">-</span>
           </div>
         </div>
       </div>

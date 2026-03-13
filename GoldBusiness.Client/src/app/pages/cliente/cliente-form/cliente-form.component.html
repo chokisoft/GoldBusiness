@@ -1,1 +1,86 @@
-<p>cliente-form works!</p>
+<div class="page-container">
+	<div class="page-header">
+		<div class="header-content">
+			<h1 class="page-title">
+				{{ isEditMode ? ('clientes.editTitle' | translate) : ('clientes.newTitle' | translate) }}
+			</h1>
+		</div>
+	</div>
+
+	<div class="alert alert-error" *ngIf="error">
+		<span class="alert-icon">⚠️</span>
+		{{ error }}
+	</div>
+
+	<div class="card">
+		<form [formGroup]="itemForm" (ngSubmit)="onSubmit()" class="form-container" *ngIf="!loading">
+			<div class="form-row">
+				<div class="form-group">
+					<label for="codigo" class="form-label">{{ 'clientes.codigo' | translate }} *</label>
+					<input type="text"
+								 id="codigo"
+								 formControlName="codigo"
+								 class="form-control"
+								 [class.is-invalid]="itemForm.get('codigo')?.invalid && itemForm.get('codigo')?.touched"
+								 maxlength="20" />
+					<div class="invalid-feedback" *ngIf="itemForm.get('codigo')?.hasError('required') && itemForm.get('codigo')?.touched">
+						{{ 'validation.required' | translate }}
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="nombre" class="form-label">{{ 'clientes.nombre' | translate }} *</label>
+					<input type="text"
+								 id="nombre"
+								 formControlName="nombre"
+								 class="form-control"
+								 [class.is-invalid]="itemForm.get('nombre')?.invalid && itemForm.get('nombre')?.touched"
+								 maxlength="120" />
+					<div class="invalid-feedback" *ngIf="itemForm.get('nombre')?.hasError('required') && itemForm.get('nombre')?.touched">
+						{{ 'validation.required' | translate }}
+					</div>
+				</div>
+			</div>
+
+			<div class="form-row">
+				<div class="form-group">
+					<label for="telefono" class="form-label">{{ 'clientes.telefono' | translate }}</label>
+					<input type="text" id="telefono" formControlName="telefono" class="form-control" maxlength="20" />
+				</div>
+				<div class="form-group">
+					<label for="email" class="form-label">{{ 'clientes.email' | translate }}</label>
+					<input type="email"
+								 id="email"
+								 formControlName="email"
+								 class="form-control"
+								 [class.is-invalid]="itemForm.get('email')?.invalid && itemForm.get('email')?.touched"
+								 maxlength="100" />
+					<div class="invalid-feedback" *ngIf="itemForm.get('email')?.hasError('email')">
+						{{ 'validation.email' | translate }}
+					</div>
+				</div>
+			</div>
+
+			<div class="form-row">
+				<div class="form-group form-group-full">
+					<label for="direccion" class="form-label">{{ 'clientes.direccion' | translate }}</label>
+					<input type="text" id="direccion" formControlName="direccion" class="form-control" maxlength="200" />
+				</div>
+			</div>
+
+			<div class="form-actions">
+				<button type="button" class="btn btn-secondary" (click)="onCancel()" [disabled]="saving">
+					❌ {{ 'common.cancel' | translate }}
+				</button>
+				<button type="submit" class="btn btn-primary" [disabled]="saving || itemForm.invalid">
+					<span *ngIf="!saving">💾 {{ 'common.save' | translate }}</span>
+					<span *ngIf="saving">⏳ {{ 'common.saving' | translate }}</span>
+				</button>
+			</div>
+		</form>
+	</div>
+
+	<div *ngIf="loading" class="loading-container">
+		<app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
+	</div>
+</div>

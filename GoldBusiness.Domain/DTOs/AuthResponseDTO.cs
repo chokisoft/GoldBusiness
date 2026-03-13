@@ -73,5 +73,20 @@
         /// Roles asignados al usuario.
         /// </summary>
         public List<string> Roles { get; set; } = new List<string>();
+
+        /// <summary>
+        /// Permisos efectivos del usuario (claims tipo permission).
+        /// </summary>
+        public List<string> Permissions { get; set; } = new List<string>();
+
+        /// <summary>
+        /// Niveles de acceso por prefijo de código (claims tipo accessLevel).
+        /// </summary>
+        public List<string> AccessLevels { get; set; } = new List<string>();
+
+        /// <summary>
+        /// Proveedor de autenticación configurado para el usuario (Local/Google).
+        /// </summary>
+        public string AuthProvider { get; set; } = "Local";
     }
 }

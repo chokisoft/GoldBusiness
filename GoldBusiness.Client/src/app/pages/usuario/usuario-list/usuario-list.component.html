@@ -1,0 +1,110 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">👥 {{ 'sidebar.usuarios' | translate }}</h1>
+      <p class="page-subtitle">Administración de usuarios del sistema</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-primary" (click)="addNew()">
+        <span class="btn-icon">➕</span>
+        {{ 'common.new' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <div class="alert alert-error" *ngIf="error">
+    <span class="alert-icon">⚠️</span>
+    {{ error }}
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="search-container">
+        <div class="search-input-wrapper">
+          <span class="search-icon">🔍</span>
+          <input type="text"
+                 [(ngModel)]="searchTerm"
+                 (input)="onSearch()"
+                 class="form-control search-input"
+                 placeholder="Buscar por usuario, nombre o correo..." />
+        </div>
+
+        <div class="page-size-selector">
+          <label>{{ 'common.show' | translate }}</label>
+          <select [(ngModel)]="pageSize" (change)="onPageSizeChange()" class="form-control page-size-select">
+            <option [ngValue]="5">5</option>
+            <option [ngValue]="10">10</option>
+            <option [ngValue]="20">20</option>
+            <option [ngValue]="50">50</option>
+          </select>
+        </div>
+      </div>
+
+      <div *ngIf="loading || searching" class="loading-container">
+        <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
+      </div>
+
+      <div class="table-responsive" *ngIf="!loading && !searching">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Usuario</th>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Rol(es)</th>
+              <th>Estado</th>
+              <th>{{ 'common.actions' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of items">
+              <td><span class="info-value-large">{{ item.userName }}</span></td>
+              <td>{{ item.fullName }}</td>
+              <td>{{ item.email }}</td>
+              <td>{{ item.roles.join(', ') || '-' }}</td>
+              <td>
+                <span class="badge" [ngClass]="item.isActive ? 'badge-success' : 'badge-danger'">
+                  {{ item.isActive ? 'Activo' : 'Inactivo' }}
+                </span>
+              </td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn btn-info btn-sm" (click)="viewDetail(item.id)">{{ 'common.view' | translate }}</button>
+                  <button class="btn btn-warning btn-sm" (click)="edit(item.id)">{{ 'common.edit' | translate }}</button>
+                  <button class="btn btn-danger btn-sm" (click)="delete(item.id, item.userName)">{{ 'common.delete' | translate }}</button>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="items.length === 0">
+              <td colspan="6" class="empty-state">{{ 'common.noData' | translate }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card-footer" *ngIf="!loading && !searching && totalPages > 0">
+      <div class="pagination-info">
+        {{ 'common.showing' | translate }} {{ ((currentPage - 1) * pageSize) + 1 }} -
+        {{ Math.min(currentPage * pageSize, totalItems) }} {{ 'common.of' | translate }} {{ totalItems }}
+      </div>
+
+      <div class="pagination">
+        <button class="btn btn-secondary btn-sm" (click)="previousPage()" [disabled]="currentPage === 1">
+          {{ 'common.previous' | translate }}
+        </button>
+
+        <button *ngFor="let p of getPageNumbers()"
+                class="btn btn-sm"
+                [ngClass]="p === currentPage ? 'btn-primary' : 'btn-secondary'"
+                (click)="goToPage(p)">
+          {{ p }}
+        </button>
+
+        <button class="btn btn-secondary btn-sm" (click)="nextPage()" [disabled]="currentPage === totalPages">
+          {{ 'common.next' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

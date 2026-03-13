@@ -35,9 +35,9 @@ export class ConceptoAjusteFormComponent implements OnInit, OnDestroy {
     private languageService: LanguageService
   ) {
     this.form = this.fb.group({
-      id: ['', [Validators.required]],
-      codigo: [''],
-      descripcion: [''],
+      id: [null],
+      codigo: ['', [Validators.required, Validators.maxLength(10)]],
+      descripcion: ['', [Validators.required, Validators.maxLength(256)]],
       cuentaId: ['', [Validators.required]],
       cuenta: ['', [Validators.required]],
     });

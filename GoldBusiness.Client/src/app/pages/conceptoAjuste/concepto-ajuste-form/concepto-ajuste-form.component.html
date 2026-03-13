@@ -14,7 +14,7 @@
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
       <div class="form-group">
         <label for="codigo" class="form-label">
-          {{ 'concepto-ajuste.codigo' | translate }}
+          {{ 'concepto-ajuste.codigo' | translate }} *
         </label>
         <input type="text" id="codigo" formControlName="codigo" class="form-control"
                [class.is-invalid]="form.get('codigo')?.invalid && form.get('codigo')?.touched" />
@@ -25,7 +25,7 @@
 
       <div class="form-group">
         <label for="descripcion" class="form-label">
-          {{ 'concepto-ajuste.descripcion' | translate }}
+          {{ 'concepto-ajuste.descripcion' | translate }} *
         </label>
         <input type="text" id="descripcion" formControlName="descripcion" class="form-control"
                [class.is-invalid]="form.get('descripcion')?.invalid && form.get('descripcion')?.touched" />
@@ -36,8 +36,8 @@
 
       <div class="form-group">
         <label for="cuentaId" class="form-label">
-          {{ 'concepto-ajuste.cuentaId' | translate }}
- *        </label>
+          {{ 'concepto-ajuste.cuentaId' | translate }} *
+        </label>
         <select id="cuentaId" formControlName="cuentaId" class="form-control"
                 [class.is-invalid]="form.get('cuentaId')?.invalid && form.get('cuentaId')?.touched"
                 [disabled]="loadingCuentas">
@@ -53,8 +53,8 @@
 
       <div class="form-group">
         <label for="cuenta" class="form-label">
-          {{ 'concepto-ajuste.cuenta' | translate }}
- *        </label>
+          {{ 'concepto-ajuste.cuenta' | translate }} *
+        </label>
         <input type="text" id="cuenta" formControlName="cuenta" class="form-control"
                [class.is-invalid]="form.get('cuenta')?.invalid && form.get('cuenta')?.touched" />
         <div class="invalid-feedback" *ngIf="form.get('cuenta')?.invalid && form.get('cuenta')?.touched">

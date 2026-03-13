@@ -88,6 +88,14 @@
           </span>
         </button>
 
+        <button *ngIf="googleAuthEnabled"
+                type="button"
+                class="btn-login btn-google"
+                (click)="loginWithGoogle()"
+                [disabled]="isLoading">
+          <span>🟢 {{ translations.googleSignIn }}</span>
+        </button>
+
         <!-- Links -->
         <div class="login-footer">
           <a href="#" class="link">{{ translations.forgotPassword }}</a>

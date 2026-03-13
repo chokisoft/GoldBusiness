@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocalidadService, LocalidadDTO } from '../../../services/localidad.service';
-import { MunicipioService, MunicipioDTO } from '../../../services/municipio.service';
+import { EstablecimientoService, EstablecimientoDTO } from '../../../services/establecimiento.service';
 
 @Component({
   selector: 'app-localidad-form',
@@ -17,24 +17,25 @@ export class LocalidadFormComponent implements OnInit {
   saving = false;
   error: string | null = null;
   
-  municipios: MunicipioDTO[] = [];
+  establecimientos: EstablecimientoDTO[] = [];
 
   constructor(
     private fb: FormBuilder,
     private localidadService: LocalidadService,
-    private municipioService: MunicipioService,
+    private establecimientoService: EstablecimientoService,
     private router: Router,
     private route: ActivatedRoute
   ) {
     this.itemForm = this.fb.group({
-      municipioId: ['', Validators.required],
+      establecimientoId: ['', Validators.required],
       codigo: ['', [Validators.required, Validators.maxLength(10)]],
-      descripcion: ['', [Validators.required, Validators.maxLength(100)]] // ✅ descripcion
+      descripcion: ['', [Validators.required, Validators.maxLength(100)]], // ✅ descripcion
+      almacen: [false]
     });
   }
 
   ngOnInit(): void {
-    this.loadMunicipios();
+    this.loadEstablecimientos();
     
     this.route.params.subscribe(params => {
       if (params['id']) {
@@ -45,14 +46,14 @@ export class LocalidadFormComponent implements OnInit {
     });
   }
 
-  loadMunicipios(): void {
-    this.municipioService.getAll().subscribe({
-      next: (municipios) => {
-        this.municipios = municipios;
+  loadEstablecimientos(): void {
+    this.establecimientoService.getAll().subscribe({
+      next: (establecimientos) => {
+        this.establecimientos = establecimientos;
       },
       error: (error) => {
-        console.error('Error loading municipios:', error);
-        this.error = 'Error al cargar los municipios';
+        console.error('Error loading establecimientos:', error);
+        this.error = 'Error al cargar los establecimientos';
       }
     });
   }

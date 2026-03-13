@@ -1,1 +1,62 @@
-<p>proveedor-detail works!</p>
+<div class="page-container">
+	<div class="page-header">
+		<div class="header-content">
+			<h1 class="page-title">🏭 {{ 'proveedores.detailTitle' | translate }}</h1>
+			<p class="page-subtitle">{{ 'common.information' | translate }}</p>
+		</div>
+		<div class="header-actions">
+			<button class="btn btn-warning" [routerLink]="['../editar', item?.id]">
+				<span class="btn-icon">✏️</span>
+				{{ 'common.edit' | translate }}
+			</button>
+			<button class="btn btn-secondary" (click)="goBack()">
+				<span class="btn-icon">↩️</span>
+				{{ 'common.back' | translate }}
+			</button>
+		</div>
+	</div>
+
+	<div class="alert alert-error" *ngIf="error">
+		<span class="alert-icon">⚠️</span>
+		{{ error }}
+	</div>
+
+	<div class="card" *ngIf="!loading && item">
+		<div class="card-header">📊 {{ 'common.information' | translate }}</div>
+		<div class="card-body">
+			<div class="info-section">
+				<h3 class="section-title">🔑 {{ 'common.information' | translate }}</h3>
+				<div class="info-grid">
+					<div class="info-item">
+						<span class="info-label">{{ 'proveedores.codigo' | translate }}</span>
+						<span class="info-value-large">{{ item.codigo }}</span>
+					</div>
+					<div class="info-item">
+						<span class="info-label">{{ 'proveedores.nombre' | translate }}</span>
+						<span class="info-value">{{ item.nombre }}</span>
+					</div>
+					<div class="info-item">
+						<span class="info-label">{{ 'proveedores.rfc' | translate }}</span>
+						<span class="info-value">{{ item.rfc || '-' }}</span>
+					</div>
+					<div class="info-item">
+						<span class="info-label">{{ 'proveedores.telefono' | translate }}</span>
+						<span class="info-value">{{ item.telefono || '-' }}</span>
+					</div>
+					<div class="info-item">
+						<span class="info-label">{{ 'proveedores.email' | translate }}</span>
+						<span class="info-value">{{ item.email || '-' }}</span>
+					</div>
+					<div class="info-item info-item-full">
+						<span class="info-label">{{ 'proveedores.direccion' | translate }}</span>
+						<span class="info-value">{{ item.direccion || '-' }}</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div *ngIf="loading" class="loading-container">
+		<app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
+	</div>
+</div>

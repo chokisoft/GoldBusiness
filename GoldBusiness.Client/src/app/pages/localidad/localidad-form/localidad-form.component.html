@@ -14,17 +14,17 @@
     <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" class="form-container" *ngIf="!loading">
       <div class="form-row">
         <div class="form-group">
-          <label for="municipioId" class="form-label">{{ 'localidad.municipio' | translate }} *</label>
-          <select id="municipioId"
-                  formControlName="municipioId"
+          <label for="establecimientoId" class="form-label">{{ 'localidad.establecimiento' | translate }} *</label>
+          <select id="establecimientoId"
+                  formControlName="establecimientoId"
                   class="form-control"
-                  [class.is-invalid]="itemForm.get('municipioId')?.invalid && itemForm.get('municipioId')?.touched">
+                  [class.is-invalid]="itemForm.get('establecimientoId')?.invalid && itemForm.get('establecimientoId')?.touched">
             <option value="">{{ 'common.select' | translate }}</option>
-            <option *ngFor="let municipio of municipios" [value]="municipio.id">
-              {{ municipio.descripcion }}
+            <option *ngFor="let establecimiento of establecimientos" [value]="establecimiento.id">
+              {{ establecimiento.descripcion }}
             </option>
           </select>
-          <div class="invalid-feedback" *ngIf="itemForm.get('municipioId')?.hasError('required') && itemForm.get('municipioId')?.touched">
+          <div class="invalid-feedback" *ngIf="itemForm.get('establecimientoId')?.hasError('required') && itemForm.get('establecimientoId')?.touched">
             {{ 'validation.required' | translate }}
           </div>
         </div>
@@ -46,27 +46,25 @@
 
       <div class="form-row">
         <div class="form-group">
-          <label for="nombre" class="form-label">{{ 'localidad.nombre' | translate }} *</label>
-          <input type="text"
-                 id="nombre"
-                 formControlName="nombre"
-                 class="form-control"
-                 [class.is-invalid]="itemForm.get('nombre')?.invalid && itemForm.get('nombre')?.touched"
-                 [placeholder]="'localidad.nombrePlaceholder' | translate"
-                 maxlength="100" />
-          <div class="invalid-feedback" *ngIf="itemForm.get('nombre')?.hasError('required') && itemForm.get('nombre')?.touched">
-            {{ 'validation.required' | translate }}
-          </div>
+          <label class="checkbox-label">
+            <input type="checkbox" id="almacen" formControlName="almacen" class="form-checkbox" />
+            <span>{{ 'localidad.almacen' | translate }}</span>
+          </label>
+          <small class="form-text">No {{ 'common.ifNotChecked' | translate }}</small>
         </div>
 
         <div class="form-group">
-          <label for="descripcion" class="form-label">{{ 'localidad.descripcion' | translate }}</label>
-          <textarea id="descripcion"
-                    formControlName="descripcion"
-                    class="form-control"
-                    rows="3"
-                    [placeholder]="'localidad.descripcionPlaceholder' | translate"
-                    maxlength="500"></textarea>
+          <label for="descripcion" class="form-label">{{ 'localidad.descripcion' | translate }} *</label>
+          <input type="text"
+                 id="descripcion"
+                 formControlName="descripcion"
+                 class="form-control"
+                 [class.is-invalid]="itemForm.get('descripcion')?.invalid && itemForm.get('descripcion')?.touched"
+                 [placeholder]="'localidad.descripcionPlaceholder' | translate"
+                 maxlength="100" />
+          <div class="invalid-feedback" *ngIf="itemForm.get('descripcion')?.hasError('required') && itemForm.get('descripcion')?.touched">
+            {{ 'validation.required' | translate }}
+          </div>
         </div>
       </div>
 

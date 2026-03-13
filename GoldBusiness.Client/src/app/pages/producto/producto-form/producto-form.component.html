@@ -1,1 +1,82 @@
-<p>producto-form works!</p>
+<div class="page-container">
+	<div class="page-header">
+		<div class="header-content">
+			<h1 class="page-title">
+				{{ isEditMode ? ('producto.editTitle' | translate) : ('producto.newTitle' | translate) }}
+			</h1>
+		</div>
+	</div>
+
+	<div class="alert alert-error" *ngIf="error">
+		<span class="alert-icon">⚠️</span>
+		{{ error }}
+	</div>
+
+	<div class="card">
+		<form [formGroup]="itemForm" (ngSubmit)="onSubmit()" class="form-container" *ngIf="!loading">
+			<div class="form-row">
+				<div class="form-group">
+					<label for="codigo" class="form-label">{{ 'producto.codigo' | translate }} *</label>
+					<input type="text" id="codigo" formControlName="codigo" class="form-control"
+								 [class.is-invalid]="itemForm.get('codigo')?.invalid && itemForm.get('codigo')?.touched" maxlength="20" />
+					<div class="invalid-feedback" *ngIf="itemForm.get('codigo')?.hasError('required') && itemForm.get('codigo')?.touched">{{ 'validation.required' | translate }}</div>
+				</div>
+				<div class="form-group">
+					<label for="nombre" class="form-label">{{ 'producto.nombre' | translate }} *</label>
+					<input type="text" id="nombre" formControlName="nombre" class="form-control"
+								 [class.is-invalid]="itemForm.get('nombre')?.invalid && itemForm.get('nombre')?.touched" maxlength="120" />
+					<div class="invalid-feedback" *ngIf="itemForm.get('nombre')?.hasError('required') && itemForm.get('nombre')?.touched">{{ 'validation.required' | translate }}</div>
+				</div>
+			</div>
+
+			<div class="form-row">
+				<div class="form-group form-group-full">
+					<label for="descripcion" class="form-label">{{ 'producto.descripcion' | translate }}</label>
+					<input type="text" id="descripcion" formControlName="descripcion" class="form-control" maxlength="200" />
+				</div>
+			</div>
+
+			<div class="form-row-three">
+				<div class="form-group">
+					<label for="precio" class="form-label">{{ 'producto.precio' | translate }}</label>
+					<input type="number" id="precio" formControlName="precio" class="form-control" min="0" step="0.01" />
+				</div>
+				<div class="form-group">
+					<label for="costo" class="form-label">{{ 'producto.costo' | translate }}</label>
+					<input type="number" id="costo" formControlName="costo" class="form-control" min="0" step="0.01" />
+				</div>
+				<div class="form-group">
+					<label for="stock" class="form-label">{{ 'producto.stock' | translate }}</label>
+					<input type="number" id="stock" formControlName="stock" class="form-control" min="0" step="1" />
+				</div>
+			</div>
+
+			<div class="form-row-three">
+				<div class="form-group">
+					<label for="unidadMedida" class="form-label">{{ 'producto.unidadMedida' | translate }}</label>
+					<input type="text" id="unidadMedida" formControlName="unidadMedida" class="form-control" maxlength="50" />
+				</div>
+				<div class="form-group">
+					<label for="linea" class="form-label">{{ 'producto.linea' | translate }}</label>
+					<input type="text" id="linea" formControlName="linea" class="form-control" maxlength="50" />
+				</div>
+				<div class="form-group">
+					<label for="sublinea" class="form-label">{{ 'producto.sublinea' | translate }}</label>
+					<input type="text" id="sublinea" formControlName="sublinea" class="form-control" maxlength="50" />
+				</div>
+			</div>
+
+			<div class="form-actions">
+				<button type="button" class="btn btn-secondary" (click)="onCancel()" [disabled]="saving">❌ {{ 'common.cancel' | translate }}</button>
+				<button type="submit" class="btn btn-primary" [disabled]="saving || itemForm.invalid">
+					<span *ngIf="!saving">💾 {{ 'common.save' | translate }}</span>
+					<span *ngIf="saving">⏳ {{ 'common.saving' | translate }}</span>
+				</button>
+			</div>
+		</form>
+	</div>
+
+	<div *ngIf="loading" class="loading-container">
+		<app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
+	</div>
+</div>

@@ -8,9 +8,8 @@ namespace GoldBusiness.Infrastructure.Repositories
     {
         private readonly ApplicationDbContext _context = context;
 
-        public async Task<IEnumerable<Cuenta>> GetAllAsync()
-            => await _context.Cuenta
-                .Where(c => !c.Cancelado)
+        public async Task<IEnumerable<Cuenta>> GetAllAsync(IReadOnlyCollection<string>? accessLevels = null)
+            => await ApplyAccessLevelFilter(_context.Cuenta.Where(c => !c.Cancelado), accessLevels)
                 .Include(c => c.Translations)
                 .Include(c => c.SubGrupoCuenta)
                     .ThenInclude(s => s.Translations)
@@ -20,11 +19,11 @@ namespace GoldBusiness.Infrastructure.Repositories
                 .ToListAsync();
 
         // ✅ AGREGADO: Paginación del servidor con búsqueda en cascada
-        public async Task<(IEnumerable<Cuenta> Items, int Total)> GetPagedAsync(int page, int pageSize, string? termino = null, int? subGrupoCuentaId = null)
+        public async Task<(IEnumerable<Cuenta> Items, int Total)> GetPagedAsync(int page, int pageSize, string? termino = null, int? subGrupoCuentaId = null, IReadOnlyCollection<string>? accessLevels = null)
         {
-            var query = _context.Cuenta
+            var query = ApplyAccessLevelFilter(_context.Cuenta
                 .AsNoTracking()
-                .Where(c => !c.Cancelado);
+                .Where(c => !c.Cancelado), accessLevels);
 
             // Búsqueda en Código, Descripción, SubGrupoCuenta y GrupoCuenta
             if (!string.IsNullOrWhiteSpace(termino))
@@ -58,8 +57,8 @@ namespace GoldBusiness.Infrastructure.Repositories
             return (items, total);
         }
 
-        public async Task<Cuenta?> GetByIdAsync(int id)
-            => await _context.Cuenta
+        public async Task<Cuenta?> GetByIdAsync(int id, IReadOnlyCollection<string>? accessLevels = null)
+            => await ApplyAccessLevelFilter(_context.Cuenta, accessLevels)
                 .Include(c => c.Translations)
                 .Include(c => c.SubGrupoCuenta)
                     .ThenInclude(s => s.Translations)
@@ -130,6 +129,40 @@ namespace GoldBusiness.Infrastructure.Repositories
             await _context.Entry(entity)
                 .Collection(e => e.Translations)
                 .LoadAsync();
+        }
+
+        private static IQueryable<Cuenta> ApplyAccessLevelFilter(IQueryable<Cuenta> query, IReadOnlyCollection<string>? accessLevels)
+        {
+            if (accessLevels == null || accessLevels.Count == 0)
+            {
+                return query.Where(_ => false);
+            }
+
+            var normalized = accessLevels
+                .Select(level => level?.Trim().ToUpperInvariant())
+                .Where(level => !string.IsNullOrWhiteSpace(level))
+                .Distinct()
+                .ToList();
+
+            if (normalized.Count == 0)
+            {
+                return query.Where(_ => false);
+            }
+
+            if (normalized.Contains("*"))
+            {
+                return query;
+            }
+
+            IQueryable<Cuenta> filteredQuery = query.Where(_ => false);
+
+            foreach (var prefix in normalized)
+            {
+                var safePrefix = prefix!;
+                filteredQuery = filteredQuery.Concat(query.Where(c => c.Codigo.ToUpper().StartsWith(safePrefix)));
+            }
+
+            return filteredQuery.Distinct();
         }
     }
 }

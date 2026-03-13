@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { Observable, BehaviorSubject, tap, catchError, of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
+import { environment } from '../../environments/environment';
 
 export interface LoginRequest {
   username: string;
@@ -20,6 +21,9 @@ export interface LoginResponse {
       email: string;
       fullName: string;
       roles: string[];
+      permissions: string[];
+      accessLevels: string[];
+      authProvider: 'Local' | 'Google';
     };
   };
 }
@@ -29,6 +33,15 @@ export interface CurrentUser {
   email: string;
   fullName: string;
   roles: string[];
+  permissions: string[];
+  accessLevels: string[];
+  authProvider: 'Local' | 'Google';
+}
+
+export interface ExternalLoginPayload {
+  token: string;
+  refreshToken: string;
+  expiresAt: string;
 }
 
 /**
@@ -265,6 +278,46 @@ export class AuthService {
   }
 
   /**
+   * Iniciar autenticación con Google (flujo externo)
+   */
+  startGoogleLogin(returnUrl: string = '/dashboard'): void {
+    const callbackUrl = `${window.location.origin}/login?returnUrl=${encodeURIComponent(returnUrl)}`;
+    const endpoint = `${environment.apiUrl}/${environment.googleAuthEndpoint}`;
+    const url = `${endpoint}?returnUrl=${encodeURIComponent(callbackUrl)}`;
+
+    window.location.href = url;
+  }
+
+  completeExternalLogin(payload: ExternalLoginPayload): boolean {
+    if (!payload?.token || !payload?.refreshToken || !payload?.expiresAt) {
+      return false;
+    }
+
+    const userFromToken = this.extractUserFromJwt(payload.token);
+    if (!userFromToken) {
+      return false;
+    }
+
+    this.storeAuthData({
+      token: payload.token,
+      refreshToken: payload.refreshToken,
+      expiresAt: payload.expiresAt,
+      user: userFromToken
+    });
+
+    const sessionId = this.generateSessionId();
+    sessionStorage.setItem(this.SESSION_KEY, sessionId);
+    sessionStorage.setItem('open_tabs_count', '1');
+    localStorage.setItem(this.BROWSER_OPEN_FLAG, 'true');
+
+    this.updateLastActivity();
+    this.resetInactivityTimer();
+    this.authChannel?.postMessage({ type: 'login' });
+
+    return true;
+  }
+
+  /**
    * Renovar token
    */
   refreshToken(): Observable<LoginResponse> {
@@ -422,18 +475,94 @@ export class AuthService {
     return roles.every(role => user.roles.includes(role));
   }
 
+  hasPermission(permission: string): boolean {
+    const user = this.getCurrentUser();
+    return user?.permissions?.includes(permission) || false;
+  }
+
+  hasAnyAccessLevel(levels: string[]): boolean {
+    const user = this.getCurrentUser();
+    if (!user || !Array.isArray(user.accessLevels)) return false;
+    return levels.some(level => user.accessLevels.includes(level));
+  }
+
+  canAccessCode(code: string): boolean {
+    const user = this.getCurrentUser();
+    if (!user || !Array.isArray(user.accessLevels) || user.accessLevels.length === 0) return false;
+
+    if (user.accessLevels.includes('*')) return true;
+
+    const safeCode = (code || '').toUpperCase();
+    return user.accessLevels.some(prefix => safeCode.startsWith((prefix || '').toUpperCase()));
+  }
+
   /**
    * Almacenar datos de autenticación
    */
   private storeAuthData(data: any): void {
+    const safeUser: CurrentUser = {
+      userName: data?.user?.userName ?? '',
+      email: data?.user?.email ?? '',
+      fullName: data?.user?.fullName ?? '',
+      roles: Array.isArray(data?.user?.roles) ? data.user.roles : [],
+      permissions: Array.isArray(data?.user?.permissions) ? data.user.permissions : [],
+      accessLevels: Array.isArray(data?.user?.accessLevels) && data.user.accessLevels.length > 0
+        ? data.user.accessLevels
+        : ['*'],
+      authProvider: data?.user?.authProvider === 'Google' ? 'Google' : 'Local'
+    };
+
     localStorage.setItem('authToken', data.token);
     localStorage.setItem('refreshToken', data.refreshToken);
     localStorage.setItem('expiresAt', data.expiresAt);
-    localStorage.setItem('currentUser', JSON.stringify(data.user));
-    this.currentUserSubject.next(data.user);
+    localStorage.setItem('currentUser', JSON.stringify(safeUser));
+    this.currentUserSubject.next(safeUser);
 
     console.log('💾 Datos guardados');
     console.log('⏰ Expira:', data.expiresAt);
+  }
+
+  private extractUserFromJwt(token: string): CurrentUser | null {
+    try {
+      const parts = token.split('.');
+      if (parts.length < 2) return null;
+
+      const payloadRaw = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+      const payloadJson = decodeURIComponent(
+        atob(payloadRaw)
+          .split('')
+          .map((c) => `%${(`00${c.charCodeAt(0).toString(16)}`).slice(-2)}`)
+          .join('')
+      );
+
+      const payload = JSON.parse(payloadJson) as Record<string, any>;
+      const normalizeArray = (value: unknown): string[] => {
+        if (Array.isArray(value)) return value.filter(v => typeof v === 'string') as string[];
+        if (typeof value === 'string' && value.trim()) return [value.trim()];
+        return [];
+      };
+
+      const userName = (payload['unique_name'] ?? payload['name'] ?? '').toString();
+      const email = (payload['email'] ?? '').toString();
+      const fullName = (payload['fullName'] ?? userName).toString();
+
+      const roles = normalizeArray(payload['role']).concat(normalizeArray(payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']));
+      const permissions = normalizeArray(payload['permission']);
+      const accessLevelsRaw = normalizeArray(payload['accessLevel']);
+      const authProvider = (payload['authProvider'] === 'Google' ? 'Google' : 'Local') as 'Local' | 'Google';
+
+      return {
+        userName,
+        email,
+        fullName,
+        roles: Array.from(new Set(roles)),
+        permissions: Array.from(new Set(permissions)),
+        accessLevels: accessLevelsRaw.length > 0 ? Array.from(new Set(accessLevelsRaw)) : ['*'],
+        authProvider
+      };
+    } catch {
+      return null;
+    }
   }
 
   /**
@@ -455,13 +584,22 @@ export class AuthService {
       }
 
       if (userStr) {
-        const user = JSON.parse(userStr);
+        const user = JSON.parse(userStr) as Partial<CurrentUser>;
+        const safeUser: CurrentUser = {
+          userName: user.userName ?? '',
+          email: user.email ?? '',
+          fullName: user.fullName ?? '',
+          roles: Array.isArray(user.roles) ? user.roles : [],
+          permissions: Array.isArray(user.permissions) ? user.permissions : [],
+          accessLevels: Array.isArray(user.accessLevels) && user.accessLevels.length > 0 ? user.accessLevels : ['*'],
+          authProvider: user.authProvider === 'Google' ? 'Google' : 'Local'
+        };
 
         if (!this.isTokenExpired()) {
-          this.currentUserSubject.next(user);
+          this.currentUserSubject.next(safeUser);
           this.resetInactivityTimer();
           this.updateLastActivity();
-          console.log('📦 Usuario restaurado:', user.userName);
+          console.log('📦 Usuario restaurado:', safeUser.userName);
         } else {
           console.log('⏰ Token expirado');
           this.clearAuthData();

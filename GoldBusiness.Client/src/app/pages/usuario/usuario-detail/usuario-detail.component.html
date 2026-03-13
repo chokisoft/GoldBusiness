@@ -1,0 +1,72 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">👤 Detalle de Usuario</h1>
+      <p class="page-subtitle">Información y permisos</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-warning" [routerLink]="['../editar', item?.id]">
+        <span class="btn-icon">✏️</span>
+        {{ 'common.edit' | translate }}
+      </button>
+      <button class="btn btn-secondary" (click)="goBack()">
+        <span class="btn-icon">↩️</span>
+        {{ 'common.back' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <div class="alert alert-error" *ngIf="error">
+    <span class="alert-icon">⚠️</span>
+    {{ error }}
+  </div>
+
+  <div class="card" *ngIf="!loading && item">
+    <div class="card-header">📊 {{ 'common.information' | translate }}</div>
+    <div class="card-body">
+      <div class="info-section">
+        <h3 class="section-title">🔑 Información Principal</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Usuario</span>
+            <span class="info-value-large">{{ item.userName }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Nombre</span>
+            <span class="info-value">{{ item.fullName }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Email</span>
+            <span class="info-value">{{ item.email }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Estado</span>
+            <span class="badge" [ngClass]="item.isActive ? 'badge-success' : 'badge-danger'">
+              {{ item.isActive ? 'Activo' : 'Inactivo' }}
+            </span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Proveedor</span>
+            <span class="info-value">{{ item.authProvider || 'Local' }}</span>
+          </div>
+          <div class="info-item info-item-full">
+            <span class="info-label">Roles</span>
+            <span class="info-value">{{ item.roles.join(', ') || '-' }}</span>
+          </div>
+          <div class="info-item info-item-full">
+            <span class="info-label">Permisos</span>
+            <span class="info-value">{{ item.permissions.join(', ') || '-' }}</span>
+          </div>
+          <div class="info-item info-item-full">
+            <span class="info-label">Niveles de acceso</span>
+            <span class="info-value">{{ item.accessLevels.join(', ') || '-' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading-container">
+    <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
+  </div>
+</div>
