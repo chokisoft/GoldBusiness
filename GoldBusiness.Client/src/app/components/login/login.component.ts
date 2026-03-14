@@ -64,18 +64,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (this.handleGoogleCallbackResult()) {
-      return;
-    }
-
-    // ✅ NUEVO: Si ya está autenticado, redirigir
-    if (this.authService.isAuthenticated()) {
-      console.log('✅ Usuario ya autenticado, redirigiendo al dashboard...');
-      this.router.navigate(['/dashboard']);
-      return;
-    }
-
-    // Crear el formulario con validaciones
+    // ✅ SIEMPRE crear el formulario primero (incluso si hay errores)
     this.loginForm = this.formBuilder.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
       password: ['', [Validators.required, Validators.minLength(8)]]
@@ -93,6 +82,18 @@ export class LoginComponent implements OnInit, OnDestroy {
       console.log('🔄 Idioma cambiado, recargando traducciones...');
       this.loadTranslations();
     });
+
+    // ✅ Procesar callback de Google DESPUÉS de inicializar todo
+    if (this.handleGoogleCallbackResult()) {
+      return;
+    }
+
+    // ✅ Si ya está autenticado, redirigir
+    if (this.authService.isAuthenticated()) {
+      console.log('✅ Usuario ya autenticado, redirigiendo al dashboard...');
+      this.router.navigate(['/dashboard']);
+      return;
+    }
   }
 
   ngOnDestroy(): void {
@@ -179,30 +180,22 @@ export class LoginComponent implements OnInit, OnDestroy {
     const error = params.get('error');
 
     if (error) {
-      // ✅ NUEVO: Mensajes amigables y traducidos por tipo de error
+      // ✅ NUEVO: Mensajes amigables y traducidos
       const errorMessages: { [key: string]: string } = {
-        'google_user_not_found': this.translationService.translate('login.errorGoogleUserNotFound') ||
-          'Usuario no encontrado. Contacte al administrador para crear su cuenta.',
-        'google_provider_not_allowed': this.translationService.translate('login.errorGoogleProviderNotAllowed') ||
-          'Su cuenta no está configurada para Google. Use usuario y contraseña.',
-        'google_user_inactive': this.translationService.translate('login.errorGoogleUserInactive') ||
-          'Su cuenta está inactiva. Contacte al administrador.',
-        'google_email_not_found': this.translationService.translate('login.errorGoogleEmailNotFound') ||
-          'No se pudo obtener el email de Google.',
-        'google_token_failed': this.translationService.translate('login.errorGoogleTokenFailed') ||
-          'Error al generar token de autenticación.',
-        'google_remote_failure': this.translationService.translate('login.errorGoogleRemoteFailure') ||
-          'Error de comunicación con Google.',
-        'google_internal_error': this.translationService.translate('login.errorGoogleInternalError') ||
-          'Error interno del servidor.',
-        'google_user_creation_failed': this.translationService.translate('login.errorGoogleUserCreationFailed') ||
-          'Error al crear el usuario. Contacte al administrador.'
+        'google_user_not_found': this.translationService.translate('login.errorGoogleUserNotFound'),
+        'google_provider_not_allowed': this.translationService.translate('login.errorGoogleProviderNotAllowed'),
+        'google_user_inactive': this.translationService.translate('login.errorGoogleUserInactive'),
+        'google_email_not_found': this.translationService.translate('login.errorGoogleEmailNotFound'),
+        'google_token_failed': this.translationService.translate('login.errorGoogleTokenFailed'),
+        'google_remote_failure': this.translationService.translate('login.errorGoogleRemoteFailure'),
+        'google_internal_error': this.translationService.translate('login.errorGoogleInternalError'),
+        'google_user_creation_failed': this.translationService.translate('login.errorGoogleUserCreationFailed')
       };
 
       this.errorMessage = errorMessages[error] ||
-        `${this.translationService.translate('login.errorGoogleGeneric') || 'Error de autenticación Google'}: ${error}`;
+        `${this.translationService.translate('login.errorGoogleGeneric')}: ${error}`;
 
-      console.error('❌ Error en Google OAuth:', error);
+      console.error('❌ Error en Google OAuth:', error, '→', this.errorMessage);
 
       // Limpiar el hash de la URL
       window.history.replaceState({}, document.title, window.location.pathname + window.location.search);
@@ -229,8 +222,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       return true;
     }
 
-    this.errorMessage = this.translationService.translate('login.errorGoogleCompleteLogin') ||
-      'No se pudo completar el inicio de sesión con Google.';
+    this.errorMessage = this.translationService.translate('login.errorGoogleCompleteLogin');
     return true;
   }
 }
