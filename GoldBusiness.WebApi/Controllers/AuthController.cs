@@ -109,9 +109,9 @@ namespace GoldBusiness.WebApi.Controllers
         }
 
         /// <summary>
-        /// Callback de Google OAuth (ruta absoluta para coincidir con CallbackPath en Program.cs)
+        /// Callback de Google OAuth (ruta absoluta que coincide con CallbackPath en Program.cs)
         /// </summary>
-        [HttpGet("/signin-google")]
+        [HttpGet("/api/auth/google/callback")]  // ✅ Cambiado de /signin-google
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status302Found)]
         public async Task<IActionResult> GoogleCallback()
@@ -126,7 +126,7 @@ namespace GoldBusiness.WebApi.Controllers
                 return Redirect(BuildErrorReturnUrl(defaultReturnUrl, "google_auth_failed"));
             }
 
-            // Recuperar el returnUrl de las propiedades
+            // ✅ Recuperar el returnUrl de las propiedades (con inicialización segura)
             string? returnUrl = null;
             authResult.Properties?.Items.TryGetValue("returnUrl", out returnUrl);
             var safeReturnUrl = ResolveReturnUrl(returnUrl);
