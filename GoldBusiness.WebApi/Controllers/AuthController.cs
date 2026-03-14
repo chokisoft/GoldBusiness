@@ -111,30 +111,36 @@ namespace GoldBusiness.WebApi.Controllers
         /// <summary>
         /// Callback de Google OAuth (ruta absoluta que coincide con CallbackPath en Program.cs)
         /// </summary>
-        [HttpGet("/api/auth/google/callback")]
+        [HttpGet("/signin-google")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status302Found)]
         public async Task<IActionResult> GoogleCallback()
         {
+            _logger.LogWarning("🚨 GoogleCallback METHOD EJECUTADO - Inicio"); // ⬅️ NUEVO
             _logger.LogInformation("📥 Google callback recibido - Request Path: {Path}", Request.Path);
             _logger.LogInformation("📥 Query String: {QueryString}", Request.QueryString);
             _logger.LogInformation("📥 Cookies recibidas: {Cookies}",
                 string.Join(", ", Request.Cookies.Keys));
 
             var authResult = await HttpContext.AuthenticateAsync(IdentityConstants.ExternalScheme);
-            
+
             _logger.LogInformation("🔍 AuthResult Succeeded: {Succeeded}", authResult.Succeeded);
-            _logger.LogInformation("🔍 AuthResult Principal: {HasPrincipal}", authResult.Principal != null);
+
+            if (authResult.Failure != null)
+            {
+                _logger.LogError(authResult.Failure, "❌ AuthResult Failure: {Message}",
+                    authResult.Failure.Message);
+            }
 
             if (!authResult.Succeeded || authResult.Principal == null)
             {
-                _logger.LogWarning("❌ Google authentication failed - AuthResult: {@AuthResult}", new 
-                { 
-                    Succeeded = authResult.Succeeded, 
+                _logger.LogWarning("❌ Google authentication failed - AuthResult: {@AuthResult}", new
+                {
+                    Succeeded = authResult.Succeeded,
                     HasPrincipal = authResult.Principal != null,
                     FailureMessage = authResult.Failure?.Message
                 });
-                
+
                 var defaultReturnUrl = ResolveReturnUrl(null);
                 var errorUrl = BuildErrorReturnUrl(defaultReturnUrl, "google_auth_failed");
                 _logger.LogWarning("🔀 Redirigiendo a: {ErrorUrl}", errorUrl);

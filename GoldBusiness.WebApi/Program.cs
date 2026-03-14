@@ -286,7 +286,7 @@ if (!string.IsNullOrWhiteSpace(googleClientId) && !string.IsNullOrWhiteSpace(goo
     {
         options.ClientId = googleClientId;
         options.ClientSecret = googleClientSecret;
-        options.CallbackPath = "/api/auth/google/callback";
+        options.CallbackPath = "/signin-google"; // ⬅️ Volver a la ruta por defecto
         options.SignInScheme = IdentityConstants.ExternalScheme;
         options.SaveTokens = true;
 
