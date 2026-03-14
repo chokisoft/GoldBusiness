@@ -99,6 +99,57 @@ export class TranslationService {
       'en': '\u00A9 {0} - Chokisoft Technology Solutions',
       'fr': '\u00A9 {0} - Chokisoft Solutions Technologiques'
     },
+    // ✅ NUEVO: Errores de Google OAuth
+    'login.errorGoogleUserNotFound': {
+      'es': '❌ Usuario no encontrado. Debe ser creado previamente por un administrador.',
+      'en': '❌ User not found. Must be created by an administrator first.',
+      'fr': '❌ Utilisateur introuvable. Doit être créé par un administrateur d\'abord.'
+    },
+    'login.errorGoogleProviderNotAllowed': {
+      'es': '❌ Su cuenta no está configurada para Google. Use usuario y contraseña.',
+      'en': '❌ Your account is not configured for Google. Use username and password.',
+      'fr': '❌ Votre compte n\'est pas configuré pour Google. Utilisez nom d\'utilisateur et mot de passe.'
+    },
+    'login.errorGoogleUserInactive': {
+      'es': '❌ Su cuenta está inactiva. Contacte al administrador.',
+      'en': '❌ Your account is inactive. Contact the administrator.',
+      'fr': '❌ Votre compte est inactif. Contactez l\'administrateur.'
+    },
+    'login.errorGoogleEmailNotFound': {
+      'es': '❌ No se pudo obtener el email desde Google.',
+      'en': '❌ Could not retrieve email from Google.',
+      'fr': '❌ Impossible de récupérer l\'email depuis Google.'
+    },
+    'login.errorGoogleTokenFailed': {
+      'es': '❌ Error al generar token de autenticación.',
+      'en': '❌ Error generating authentication token.',
+      'fr': '❌ Erreur lors de la génération du jeton d\'authentification.'
+    },
+    'login.errorGoogleRemoteFailure': {
+      'es': '❌ Error de comunicación con Google. Intente nuevamente.',
+      'en': '❌ Google communication error. Please try again.',
+      'fr': '❌ Erreur de communication avec Google. Veuillez réessayer.'
+    },
+    'login.errorGoogleInternalError': {
+      'es': '❌ Error interno del servidor. Contacte al soporte técnico.',
+      'en': '❌ Internal server error. Contact technical support.',
+      'fr': '❌ Erreur interne du serveur. Contactez le support technique.'
+    },
+    'login.errorGoogleUserCreationFailed': {
+      'es': '❌ Error al crear el usuario. Contacte al administrador.',
+      'en': '❌ Error creating user. Contact the administrator.',
+      'fr': '❌ Erreur lors de la création de l\'utilisateur. Contactez l\'administrateur.'
+    },
+    'login.errorGoogleGeneric': {
+      'es': '❌ Error de autenticación con Google',
+      'en': '❌ Google authentication error',
+      'fr': '❌ Erreur d\'authentification Google'
+    },
+    'login.errorGoogleCompleteLogin': {
+      'es': '❌ No se pudo completar el inicio de sesión con Google.',
+      'en': '❌ Could not complete Google sign-in.',
+      'fr': '❌ Impossible de terminer la connexion Google.'
+    },
     // ═══════════════════════════════════════════════════════════
     // 🧪 TEST CONNECTION
     // ═══════════════════════════════════════════════════════════

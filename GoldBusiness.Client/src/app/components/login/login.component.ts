@@ -179,8 +179,34 @@ export class LoginComponent implements OnInit, OnDestroy {
     const error = params.get('error');
 
     if (error) {
-      this.errorMessage = `Error de autenticación Google: ${error}`;
+      // ✅ NUEVO: Mensajes amigables y traducidos por tipo de error
+      const errorMessages: { [key: string]: string } = {
+        'google_user_not_found': this.translationService.translate('login.errorGoogleUserNotFound') ||
+          'Usuario no encontrado. Contacte al administrador para crear su cuenta.',
+        'google_provider_not_allowed': this.translationService.translate('login.errorGoogleProviderNotAllowed') ||
+          'Su cuenta no está configurada para Google. Use usuario y contraseña.',
+        'google_user_inactive': this.translationService.translate('login.errorGoogleUserInactive') ||
+          'Su cuenta está inactiva. Contacte al administrador.',
+        'google_email_not_found': this.translationService.translate('login.errorGoogleEmailNotFound') ||
+          'No se pudo obtener el email de Google.',
+        'google_token_failed': this.translationService.translate('login.errorGoogleTokenFailed') ||
+          'Error al generar token de autenticación.',
+        'google_remote_failure': this.translationService.translate('login.errorGoogleRemoteFailure') ||
+          'Error de comunicación con Google.',
+        'google_internal_error': this.translationService.translate('login.errorGoogleInternalError') ||
+          'Error interno del servidor.',
+        'google_user_creation_failed': this.translationService.translate('login.errorGoogleUserCreationFailed') ||
+          'Error al crear el usuario. Contacte al administrador.'
+      };
+
+      this.errorMessage = errorMessages[error] ||
+        `${this.translationService.translate('login.errorGoogleGeneric') || 'Error de autenticación Google'}: ${error}`;
+
+      console.error('❌ Error en Google OAuth:', error);
+
+      // Limpiar el hash de la URL
       window.history.replaceState({}, document.title, window.location.pathname + window.location.search);
+
       return true;
     }
 
@@ -198,11 +224,13 @@ export class LoginComponent implements OnInit, OnDestroy {
     window.history.replaceState({}, document.title, window.location.pathname + window.location.search);
 
     if (completed) {
+      console.log('✅ Login con Google exitoso, redirigiendo a:', callbackReturnUrl);
       this.router.navigate([callbackReturnUrl]);
       return true;
     }
 
-    this.errorMessage = 'No se pudo completar el inicio de sesión con Google.';
+    this.errorMessage = this.translationService.translate('login.errorGoogleCompleteLogin') ||
+      'No se pudo completar el inicio de sesión con Google.';
     return true;
   }
 }
