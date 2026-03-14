@@ -5,7 +5,7 @@ import { AuthService } from '../../services/auth.service';
 import { TranslationService } from '../../services/translation.service';
 import { LanguageService } from '../../services/language.service';
 import { Subscription } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-login',
