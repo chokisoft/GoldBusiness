@@ -259,13 +259,34 @@ if (!string.IsNullOrWhiteSpace(googleClientId) && !string.IsNullOrWhiteSpace(goo
     {
         options.ClientId = googleClientId;
         options.ClientSecret = googleClientSecret;
-        options.CallbackPath = "/api/auth/google/callback"; // ✅ Cambiado
+        options.CallbackPath = "/api/auth/google/callback";
         options.SignInScheme = IdentityConstants.ExternalScheme;
         options.SaveTokens = true;
 
-        // ✅ AGREGAR: Configuración adicional para producción
+        // ✅ Configuración de cookies para compatibilidad cross-site
         options.CorrelationCookie.SameSite = SameSiteMode.Lax;
         options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.Always;
+
+        // ✅ AGREGAR: Eventos para debugging
+        options.Events.OnCreatingTicket = context =>
+        {
+            var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
+            logger.LogInformation("✅ Google ticket creado para usuario: {Email}",
+                context.Principal?.FindFirst(ClaimTypes.Email)?.Value);
+            return Task.CompletedTask;
+        };
+
+        options.Events.OnRemoteFailure = context =>
+        {
+            var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
+            logger.LogError(context.Failure, "❌ Error en autenticación Google");
+
+            // Redirigir al frontend con error
+            var errorUrl = "https://goldbusinessstorage.z19.web.core.windows.net/login#error=google_remote_failure";
+            context.Response.Redirect(errorUrl);
+            context.HandleResponse();
+            return Task.CompletedTask;
+        };
     });
 }
 

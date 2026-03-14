@@ -111,25 +111,40 @@ namespace GoldBusiness.WebApi.Controllers
         /// <summary>
         /// Callback de Google OAuth (ruta absoluta que coincide con CallbackPath en Program.cs)
         /// </summary>
-        [HttpGet("/api/auth/google/callback")]  // ✅ Cambiado de /signin-google
+        [HttpGet("/api/auth/google/callback")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status302Found)]
         public async Task<IActionResult> GoogleCallback()
         {
-            _logger.LogInformation("📥 Google callback recibido");
+            _logger.LogInformation("📥 Google callback recibido - Request Path: {Path}", Request.Path);
+            _logger.LogInformation("📥 Query String: {QueryString}", Request.QueryString);
 
             var authResult = await HttpContext.AuthenticateAsync(IdentityConstants.ExternalScheme);
+            
+            _logger.LogInformation("🔍 AuthResult Succeeded: {Succeeded}", authResult.Succeeded);
+            _logger.LogInformation("🔍 AuthResult Principal: {HasPrincipal}", authResult.Principal != null);
+
             if (!authResult.Succeeded || authResult.Principal == null)
             {
-                _logger.LogWarning("❌ Google authentication failed");
+                _logger.LogWarning("❌ Google authentication failed - AuthResult: {@AuthResult}", new 
+                { 
+                    Succeeded = authResult.Succeeded, 
+                    HasPrincipal = authResult.Principal != null,
+                    FailureMessage = authResult.Failure?.Message
+                });
+                
                 var defaultReturnUrl = ResolveReturnUrl(null);
-                return Redirect(BuildErrorReturnUrl(defaultReturnUrl, "google_auth_failed"));
+                var errorUrl = BuildErrorReturnUrl(defaultReturnUrl, "google_auth_failed");
+                _logger.LogWarning("🔀 Redirigiendo a: {ErrorUrl}", errorUrl);
+                return Redirect(errorUrl);
             }
 
             // ✅ Recuperar el returnUrl de las propiedades (con inicialización segura)
             string? returnUrl = null;
             authResult.Properties?.Items.TryGetValue("returnUrl", out returnUrl);
             var safeReturnUrl = ResolveReturnUrl(returnUrl);
+            
+            _logger.LogInformation("🔀 ReturnUrl recuperado: {ReturnUrl}", safeReturnUrl);
 
             var email = authResult.Principal.FindFirstValue(ClaimTypes.Email)?.Trim();
             if (string.IsNullOrWhiteSpace(email))
@@ -139,6 +154,8 @@ namespace GoldBusiness.WebApi.Controllers
                 return Redirect(BuildErrorReturnUrl(safeReturnUrl, "google_email_not_found"));
             }
 
+            _logger.LogInformation("👤 Buscando usuario con email: {Email}", email);
+
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
             {
@@ -147,11 +164,17 @@ namespace GoldBusiness.WebApi.Controllers
                 return Redirect(BuildErrorReturnUrl(safeReturnUrl, "google_user_not_found"));
             }
 
+            _logger.LogInformation("✅ Usuario encontrado: {UserId}", user.Id);
+
             var userClaims = await _userManager.GetClaimsAsync(user);
             var authProvider = userClaims.FirstOrDefault(c => c.Type == "authProvider")?.Value ?? "Local";
+            
+            _logger.LogInformation("🔐 AuthProvider del usuario: {AuthProvider}", authProvider);
+
             if (!string.Equals(authProvider, "Google", StringComparison.OrdinalIgnoreCase))
             {
-                _logger.LogWarning("❌ Usuario {Email} no está configurado para autenticación Google", email);
+                _logger.LogWarning("❌ Usuario {Email} no está configurado para autenticación Google (Provider: {AuthProvider})", 
+                    email, authProvider);
                 await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
                 return Redirect(BuildErrorReturnUrl(safeReturnUrl, "google_provider_not_allowed"));
             }
@@ -165,12 +188,15 @@ namespace GoldBusiness.WebApi.Controllers
 
                 if (!hasGoogleLogin)
                 {
+                    _logger.LogInformation("🔗 Vinculando login de Google para {Email}", email);
+                    
                     var addLoginResult = await _userManager.AddLoginAsync(user,
                         new UserLoginInfo(GoogleDefaults.AuthenticationScheme, providerKey, GoogleDefaults.AuthenticationScheme));
 
                     if (!addLoginResult.Succeeded)
                     {
-                        _logger.LogError("❌ Error al vincular login de Google para {Email}", email);
+                        _logger.LogError("❌ Error al vincular login de Google para {Email}: {Errors}", 
+                            email, string.Join(", ", addLoginResult.Errors.Select(e => e.Description)));
                         await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
                         return Redirect(BuildErrorReturnUrl(safeReturnUrl, "google_link_failed"));
                     }
@@ -181,6 +207,8 @@ namespace GoldBusiness.WebApi.Controllers
 
             user.EmailConfirmed = true;
             await _userManager.UpdateAsync(user);
+
+            _logger.LogInformation("🎫 Generando token JWT para {Email}", email);
 
             var result = await _authService.AuthenticateExternalUserAsync(
                 user.Id,
@@ -198,6 +226,9 @@ namespace GoldBusiness.WebApi.Controllers
             _logger.LogInformation("✅ Login de Google exitoso para {Email}", email);
 
             var redirectUrl = BuildSuccessReturnUrl(safeReturnUrl, result.Data.Token, result.Data.RefreshToken, result.Data.ExpiresAt);
+            
+            _logger.LogInformation("🔀 Redirigiendo a: {RedirectUrl}", redirectUrl);
+
             return Redirect(redirectUrl);
         }
 
@@ -682,11 +713,15 @@ namespace GoldBusiness.WebApi.Controllers
                 && Uri.TryCreate(returnUrl, UriKind.Absolute, out var parsed)
                 && (parsed.Scheme == Uri.UriSchemeHttp || parsed.Scheme == Uri.UriSchemeHttps))
             {
+                _logger.LogInformation("✅ ReturnUrl válido: {ReturnUrl}", returnUrl);
                 return parsed.ToString();
             }
 
-            return _configuration["Authentication:Google:DefaultReturnUrl"]
+            var defaultUrl = _configuration["Authentication:Google:DefaultReturnUrl"]
                 ?? "https://goldbusinessstorage.z19.web.core.windows.net/login?returnUrl=%2Fdashboard";
+
+            _logger.LogInformation("⚠️ Usando ReturnUrl por defecto: {DefaultUrl}", defaultUrl);
+            return defaultUrl;
         }
 
         private static string BuildSuccessReturnUrl(string baseReturnUrl, string token, string refreshToken, string expiresAt)
