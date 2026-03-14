@@ -286,26 +286,134 @@ if (!string.IsNullOrWhiteSpace(googleClientId) && !string.IsNullOrWhiteSpace(goo
     {
         options.ClientId = googleClientId;
         options.ClientSecret = googleClientSecret;
-        options.CallbackPath = "/signin-google"; // ⬅️ Volver a la ruta por defecto
+        options.CallbackPath = "/signin-google";
         options.SignInScheme = IdentityConstants.ExternalScheme;
         options.SaveTokens = true;
 
         // ✅ Configuración de cookies para compatibilidad cross-site y móvil
-        options.CorrelationCookie.SameSite = SameSiteMode.None; // ⬅️ Cambiado de Lax a None
+        options.CorrelationCookie.SameSite = SameSiteMode.None;
         options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.Always;
         options.CorrelationCookie.HttpOnly = true;
-        options.CorrelationCookie.IsEssential = true; // ⬅️ NUEVO
-
-        // ❌ REMOVIDO: StateCookie no está disponible en GoogleOptions
-        // La configuración del state se maneja internamente
+        options.CorrelationCookie.IsEssential = true;
 
         // ✅ AGREGAR: Eventos para debugging
-        options.Events.OnCreatingTicket = context =>
+        options.Events.OnCreatingTicket = async context =>
         {
             var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
             logger.LogInformation("✅ Google ticket creado para usuario: {Email}",
                 context.Principal?.FindFirst(ClaimTypes.Email)?.Value);
-            return Task.CompletedTask;
+        };
+
+        // ✅ NUEVO: Manejar el ticket recibido y redirigir al frontend
+        options.Events.OnTicketReceived = async context =>
+        {
+            var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
+            var userManager = context.HttpContext.RequestServices.GetRequiredService<UserManager<ApplicationUser>>();
+            var authService = context.HttpContext.RequestServices.GetRequiredService<IAuthService>();
+            var configuration = context.HttpContext.RequestServices.GetRequiredService<IConfiguration>();
+
+            logger.LogInformation("🎫 OnTicketReceived - Procesando autenticación Google");
+
+            try
+            {
+                // Obtener returnUrl de las propiedades
+                string? returnUrl = null;
+                context.Properties?.Items.TryGetValue("returnUrl", out returnUrl);
+
+                var safeReturnUrl = !string.IsNullOrWhiteSpace(returnUrl) &&
+                    Uri.TryCreate(returnUrl, UriKind.Absolute, out var parsed) &&
+                    (parsed.Scheme == Uri.UriSchemeHttp || parsed.Scheme == Uri.UriSchemeHttps)
+                    ? returnUrl
+                    : configuration["Authentication:Google:DefaultReturnUrl"]
+                      ?? "https://goldbusinessstorage.z19.web.core.windows.net/login?returnUrl=%2Fdashboard";
+
+                var email = context.Principal?.FindFirst(ClaimTypes.Email)?.Value?.Trim();
+
+                if (string.IsNullOrWhiteSpace(email))
+                {
+                    logger.LogWarning("❌ Email no encontrado en ticket de Google");
+                    context.Response.Redirect($"{safeReturnUrl}#error=google_email_not_found");
+                    context.HandleResponse();
+                    return;
+                }
+
+                logger.LogInformation("👤 Procesando usuario: {Email}", email);
+
+                var user = await userManager.FindByEmailAsync(email);
+                if (user == null)
+                {
+                    logger.LogWarning("❌ Usuario no encontrado: {Email}", email);
+                    context.Response.Redirect($"{safeReturnUrl}#error=google_user_not_found");
+                    context.HandleResponse();
+                    return;
+                }
+
+                // Verificar que el usuario esté configurado para Google
+                var userClaims = await userManager.GetClaimsAsync(user);
+                var authProvider = userClaims.FirstOrDefault(c => c.Type == "authProvider")?.Value ?? "Local";
+
+                if (!string.Equals(authProvider, "Google", StringComparison.OrdinalIgnoreCase))
+                {
+                    logger.LogWarning("❌ Usuario {Email} no configurado para Google (Provider: {Provider})",
+                        email, authProvider);
+                    context.Response.Redirect($"{safeReturnUrl}#error=google_provider_not_allowed");
+                    context.HandleResponse();
+                    return;
+                }
+
+                // Vincular login de Google si no existe
+                var providerKey = context.Principal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (!string.IsNullOrWhiteSpace(providerKey))
+                {
+                    var logins = await userManager.GetLoginsAsync(user);
+                    if (!logins.Any(l => l.LoginProvider.Equals(GoogleDefaults.AuthenticationScheme,
+                        StringComparison.OrdinalIgnoreCase)))
+                    {
+                        await userManager.AddLoginAsync(user,
+                            new UserLoginInfo(GoogleDefaults.AuthenticationScheme, providerKey,
+                                GoogleDefaults.AuthenticationScheme));
+                        logger.LogInformation("✅ Login de Google vinculado para {Email}", email);
+                    }
+                }
+
+                user.EmailConfirmed = true;
+                await userManager.UpdateAsync(user);
+
+                // Generar JWT
+                var ipAddress = context.HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
+                var userAgent = context.HttpContext.Request.Headers["User-Agent"].ToString();
+
+                var result = await authService.AuthenticateExternalUserAsync(user.Id, ipAddress, userAgent);
+
+                if (result?.Succeeded != true || result.Data == null)
+                {
+                    logger.LogError("❌ Error generando token JWT para {Email}", email);
+                    context.Response.Redirect($"{safeReturnUrl}#error=google_token_failed");
+                    context.HandleResponse();
+                    return;
+                }
+
+                logger.LogInformation("✅ Login exitoso para {Email}", email);
+
+                // Construir URL de retorno con tokens
+                var redirectUrl = $"{safeReturnUrl}#" +
+                    $"token={Uri.EscapeDataString(result.Data.Token)}&" +
+                    $"refreshToken={Uri.EscapeDataString(result.Data.RefreshToken)}&" +
+                    $"expiresAt={Uri.EscapeDataString(result.Data.ExpiresAt)}";
+
+                logger.LogInformation("🔀 Redirigiendo a: {Url}", safeReturnUrl);
+
+                context.Response.Redirect(redirectUrl);
+                context.HandleResponse();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "❌ Error en OnTicketReceived");
+                var defaultUrl = configuration["Authentication:Google:DefaultReturnUrl"]
+                    ?? "https://goldbusinessstorage.z19.web.core.windows.net/login";
+                context.Response.Redirect($"{defaultUrl}#error=google_internal_error");
+                context.HandleResponse();
+            }
         };
 
         options.Events.OnRemoteFailure = context =>
@@ -313,7 +421,6 @@ if (!string.IsNullOrWhiteSpace(googleClientId) && !string.IsNullOrWhiteSpace(goo
             var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
             logger.LogError(context.Failure, "❌ Error en autenticación Google");
 
-            // Redirigir al frontend con error
             var errorUrl = "https://goldbusinessstorage.z19.web.core.windows.net/login#error=google_remote_failure";
             context.Response.Redirect(errorUrl);
             context.HandleResponse();
