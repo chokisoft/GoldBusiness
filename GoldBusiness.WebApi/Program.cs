@@ -259,9 +259,13 @@ if (!string.IsNullOrWhiteSpace(googleClientId) && !string.IsNullOrWhiteSpace(goo
     {
         options.ClientId = googleClientId;
         options.ClientSecret = googleClientSecret;
-        options.CallbackPath = "/signin-google";
+        options.CallbackPath = "/api/auth/google/callback"; // ✅ Cambiado
         options.SignInScheme = IdentityConstants.ExternalScheme;
         options.SaveTokens = true;
+
+        // ✅ AGREGAR: Configuración adicional para producción
+        options.CorrelationCookie.SameSite = SameSiteMode.Lax;
+        options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.Always;
     });
 }
 

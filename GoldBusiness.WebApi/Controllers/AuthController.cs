@@ -13,7 +13,6 @@ namespace GoldBusiness.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [AllowAnonymous]
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
@@ -41,7 +40,7 @@ namespace GoldBusiness.WebApi.Controllers
         /// </summary>
         [HttpPost("login")]
         [AllowAnonymous]
-        [EnableRateLimiting("auth")] // Limitar a 5 intentos por minuto
+        [EnableRateLimiting("auth")]
         [ProducesResponseType(typeof(AuthResponseDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
@@ -59,7 +58,6 @@ namespace GoldBusiness.WebApi.Controllers
                     });
                 }
 
-                // Agregar metadata de seguridad
                 login.IpAddress = GetClientIpAddress();
                 login.UserAgent = Request.Headers["User-Agent"].ToString();
 
@@ -70,7 +68,6 @@ namespace GoldBusiness.WebApi.Controllers
                     return BadRequest(result);
                 }
 
-                // Opcional: Configurar cookie HttpOnly para refresh token (más seguro)
                 SetRefreshTokenCookie(result.Data!.RefreshToken);
 
                 return Ok(result);
@@ -87,6 +84,9 @@ namespace GoldBusiness.WebApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Iniciar autenticación con Google
+        /// </summary>
         [HttpGet("google/login")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status302Found)]
@@ -96,30 +96,45 @@ namespace GoldBusiness.WebApi.Controllers
 
             var properties = new AuthenticationProperties
             {
-                RedirectUri = Url.Action(nameof(GoogleCallback), new { returnUrl = safeReturnUrl })
+                // ✅ NO especificamos RedirectUri - se usará el CallbackPath de Program.cs automáticamente
+                Items =
+                {
+                    ["returnUrl"] = safeReturnUrl
+                }
             };
 
-            properties.Items["returnUrl"] = safeReturnUrl;
+            _logger.LogInformation("🔐 Iniciando flujo de Google OAuth. ReturnUrl: {ReturnUrl}", safeReturnUrl);
 
             return Challenge(properties, GoogleDefaults.AuthenticationScheme);
         }
 
-        [HttpGet("google/callback")]
+        /// <summary>
+        /// Callback de Google OAuth (ruta absoluta para coincidir con CallbackPath en Program.cs)
+        /// </summary>
+        [HttpGet("/signin-google")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status302Found)]
-        public async Task<IActionResult> GoogleCallback([FromQuery] string? returnUrl = null)
+        public async Task<IActionResult> GoogleCallback()
         {
-            var safeReturnUrl = ResolveReturnUrl(returnUrl);
+            _logger.LogInformation("📥 Google callback recibido");
 
             var authResult = await HttpContext.AuthenticateAsync(IdentityConstants.ExternalScheme);
             if (!authResult.Succeeded || authResult.Principal == null)
             {
-                return Redirect(BuildErrorReturnUrl(safeReturnUrl, "google_auth_failed"));
+                _logger.LogWarning("❌ Google authentication failed");
+                var defaultReturnUrl = ResolveReturnUrl(null);
+                return Redirect(BuildErrorReturnUrl(defaultReturnUrl, "google_auth_failed"));
             }
+
+            // Recuperar el returnUrl de las propiedades
+            string? returnUrl = null;
+            authResult.Properties?.Items.TryGetValue("returnUrl", out returnUrl);
+            var safeReturnUrl = ResolveReturnUrl(returnUrl);
 
             var email = authResult.Principal.FindFirstValue(ClaimTypes.Email)?.Trim();
             if (string.IsNullOrWhiteSpace(email))
             {
+                _logger.LogWarning("❌ Email no encontrado en claims de Google");
                 await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
                 return Redirect(BuildErrorReturnUrl(safeReturnUrl, "google_email_not_found"));
             }
@@ -127,6 +142,7 @@ namespace GoldBusiness.WebApi.Controllers
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
             {
+                _logger.LogWarning("❌ Usuario no encontrado para email: {Email}", email);
                 await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
                 return Redirect(BuildErrorReturnUrl(safeReturnUrl, "google_user_not_found"));
             }
@@ -135,6 +151,7 @@ namespace GoldBusiness.WebApi.Controllers
             var authProvider = userClaims.FirstOrDefault(c => c.Type == "authProvider")?.Value ?? "Local";
             if (!string.Equals(authProvider, "Google", StringComparison.OrdinalIgnoreCase))
             {
+                _logger.LogWarning("❌ Usuario {Email} no está configurado para autenticación Google", email);
                 await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
                 return Redirect(BuildErrorReturnUrl(safeReturnUrl, "google_provider_not_allowed"));
             }
@@ -153,9 +170,12 @@ namespace GoldBusiness.WebApi.Controllers
 
                     if (!addLoginResult.Succeeded)
                     {
+                        _logger.LogError("❌ Error al vincular login de Google para {Email}", email);
                         await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
                         return Redirect(BuildErrorReturnUrl(safeReturnUrl, "google_link_failed"));
                     }
+
+                    _logger.LogInformation("✅ Login de Google vinculado exitosamente para {Email}", email);
                 }
             }
 
@@ -171,8 +191,11 @@ namespace GoldBusiness.WebApi.Controllers
 
             if (result?.Succeeded != true || result.Data == null)
             {
+                _logger.LogError("❌ Error al generar token JWT para usuario {Email}", email);
                 return Redirect(BuildErrorReturnUrl(safeReturnUrl, "google_token_failed"));
             }
+
+            _logger.LogInformation("✅ Login de Google exitoso para {Email}", email);
 
             var redirectUrl = BuildSuccessReturnUrl(safeReturnUrl, result.Data.Token, result.Data.RefreshToken, result.Data.ExpiresAt);
             return Redirect(redirectUrl);
@@ -190,7 +213,6 @@ namespace GoldBusiness.WebApi.Controllers
         {
             try
             {
-                // Intentar obtener token de cookie si no viene en body
                 var refreshToken = request.RefreshToken ?? Request.Cookies["refreshToken"];
 
                 if (string.IsNullOrEmpty(refreshToken))
@@ -208,7 +230,6 @@ namespace GoldBusiness.WebApi.Controllers
                     return Unauthorized(new { message = "Refresh token inválido o expirado" });
                 }
 
-                // Actualizar cookie
                 SetRefreshTokenCookie(result.Data!.RefreshToken);
 
                 return Ok(result);
@@ -246,7 +267,6 @@ namespace GoldBusiness.WebApi.Controllers
                     return BadRequest(new { message = "Token inválido o ya revocado" });
                 }
 
-                // Limpiar cookie
                 Response.Cookies.Delete("refreshToken");
 
                 return Ok(new { message = "Token revocado exitosamente" });
@@ -269,7 +289,7 @@ namespace GoldBusiness.WebApi.Controllers
             try
             {
                 var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-                
+
                 if (string.IsNullOrEmpty(userId))
                 {
                     return Unauthorized(new { message = "Usuario no autenticado" });
@@ -666,7 +686,7 @@ namespace GoldBusiness.WebApi.Controllers
             }
 
             return _configuration["Authentication:Google:DefaultReturnUrl"]
-                ?? "https://127.0.0.1:53576/login?returnUrl=%2Fdashboard";
+                ?? "https://goldbusinessstorage.z19.web.core.windows.net/login?returnUrl=%2Fdashboard";
         }
 
         private static string BuildSuccessReturnUrl(string baseReturnUrl, string token, string refreshToken, string expiresAt)
@@ -686,9 +706,8 @@ namespace GoldBusiness.WebApi.Controllers
 
         private string GetClientIpAddress()
         {
-            // Obtener IP real considerando proxies/load balancers
             var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
-            
+
             if (Request.Headers.ContainsKey("X-Forwarded-For"))
             {
                 ipAddress = Request.Headers["X-Forwarded-For"].ToString().Split(',').FirstOrDefault();
@@ -705,9 +724,9 @@ namespace GoldBusiness.WebApi.Controllers
         {
             var cookieOptions = new CookieOptions
             {
-                HttpOnly = true,  // No accesible desde JavaScript
-                Secure = true,    // Solo HTTPS
-                SameSite = SameSiteMode.Strict, // Protección CSRF
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Lax, // ✅ Cambiado de Strict a Lax para Google OAuth
                 Expires = DateTime.UtcNow.AddDays(7)
             };
 
