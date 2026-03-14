@@ -340,25 +340,60 @@ if (!string.IsNullOrWhiteSpace(googleClientId) && !string.IsNullOrWhiteSpace(goo
                 logger.LogInformation("👤 Procesando usuario: {Email}", email);
 
                 var user = await userManager.FindByEmailAsync(email);
+
+                // ✅ NUEVO: Crear usuario automáticamente si no existe
                 if (user == null)
                 {
-                    logger.LogWarning("❌ Usuario no encontrado: {Email}", email);
-                    context.Response.Redirect($"{safeReturnUrl}#error=google_user_not_found");
-                    context.HandleResponse();
-                    return;
+                    logger.LogInformation("🆕 Creando nuevo usuario con Google: {Email}", email);
+
+                    var name = context.Principal?.FindFirst(ClaimTypes.Name)?.Value ?? email.Split('@')[0];
+                    var roleManager = context.HttpContext.RequestServices.GetRequiredService<RoleManager<IdentityRole>>();
+
+                    user = new ApplicationUser
+                    {
+                        UserName = email.Split('@')[0],
+                        Email = email,
+                        EmailConfirmed = true,
+                        IsActive = true
+                    };
+
+                    var createResult = await userManager.CreateAsync(user);
+                    if (!createResult.Succeeded)
+                    {
+                        logger.LogError("❌ Error creando usuario: {Errors}",
+                            string.Join(", ", createResult.Errors.Select(e => e.Description)));
+                        context.Response.Redirect($"{safeReturnUrl}#error=google_user_creation_failed");
+                        context.HandleResponse();
+                        return;
+                    }
+
+                    // Asignar rol y claims por defecto
+                    if (await roleManager.RoleExistsAsync("CONTADOR"))
+                    {
+                        await userManager.AddToRoleAsync(user, "CONTADOR");
+                    }
+
+                    await userManager.AddClaimAsync(user, new Claim("fullName", name));
+                    await userManager.AddClaimAsync(user, new Claim("authProvider", "Google"));
+                    await userManager.AddClaimAsync(user, new Claim("permission", "ERP:AccountingAccess"));
+                    await userManager.AddClaimAsync(user, new Claim("accessLevel", "*"));
+
+                    logger.LogInformation("✅ Usuario creado exitosamente: {Email}", email);
                 }
-
-                // Verificar que el usuario esté configurado para Google
-                var userClaims = await userManager.GetClaimsAsync(user);
-                var authProvider = userClaims.FirstOrDefault(c => c.Type == "authProvider")?.Value ?? "Local";
-
-                if (!string.Equals(authProvider, "Google", StringComparison.OrdinalIgnoreCase))
+                else
                 {
-                    logger.LogWarning("❌ Usuario {Email} no configurado para Google (Provider: {Provider})",
-                        email, authProvider);
-                    context.Response.Redirect($"{safeReturnUrl}#error=google_provider_not_allowed");
-                    context.HandleResponse();
-                    return;
+                    // Usuario ya existe, verificar que esté configurado para Google
+                    var userClaims = await userManager.GetClaimsAsync(user);
+                    var authProvider = userClaims.FirstOrDefault(c => c.Type == "authProvider")?.Value ?? "Local";
+
+                    if (!string.Equals(authProvider, "Google", StringComparison.OrdinalIgnoreCase))
+                    {
+                        logger.LogWarning("❌ Usuario {Email} no configurado para Google (Provider: {Provider})",
+                            email, authProvider);
+                        context.Response.Redirect($"{safeReturnUrl}#error=google_provider_not_allowed");
+                        context.HandleResponse();
+                        return;
+                    }
                 }
 
                 // Vincular login de Google si no existe

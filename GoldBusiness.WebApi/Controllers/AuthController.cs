@@ -349,7 +349,7 @@ namespace GoldBusiness.WebApi.Controllers
         }
 
         [HttpGet("users/paged")]
-        [Authorize(Policy = "ERPAdminAccess")]
+        [Authorize(Policy = "ERPAdminOrFullAccess")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetUsersPaged(
             [FromQuery] int page = 1,
@@ -405,7 +405,7 @@ namespace GoldBusiness.WebApi.Controllers
         }
 
         [HttpGet("users/roles")]
-        [Authorize(Policy = "ERPAdminAccess")]
+        [Authorize(Policy = "ERPAdminOrFullAccess")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult GetAvailableRoles()
         {
@@ -419,7 +419,7 @@ namespace GoldBusiness.WebApi.Controllers
         }
 
         [HttpGet("users/permissions")]
-        [Authorize(Policy = "ERPAdminAccess")]
+        [Authorize(Policy = "ERPAdminOrFullAccess")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult GetAvailablePermissions()
         {
@@ -435,7 +435,7 @@ namespace GoldBusiness.WebApi.Controllers
         }
 
         [HttpPost("users")]
-        [Authorize(Policy = "ERPAdminAccess")]
+        [Authorize(Policy = "ERPAdminOrFullAccess")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateUser([FromBody] UserAdminUpsertDTO dto)
@@ -492,7 +492,7 @@ namespace GoldBusiness.WebApi.Controllers
         }
 
         [HttpPut("users/{id}")]
-        [Authorize(Policy = "ERPAdminAccess")]
+        [Authorize(Policy = "ERPAdminOrFullAccess")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -553,7 +553,7 @@ namespace GoldBusiness.WebApi.Controllers
         }
 
         [HttpDelete("users/{id}")]
-        [Authorize(Policy = "ERPAdminAccess")]
+        [Authorize(Policy = "ERPAdminOrFullAccess")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteUser(string id)
