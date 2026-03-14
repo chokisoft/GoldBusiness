@@ -118,6 +118,8 @@ namespace GoldBusiness.WebApi.Controllers
         {
             _logger.LogInformation("📥 Google callback recibido - Request Path: {Path}", Request.Path);
             _logger.LogInformation("📥 Query String: {QueryString}", Request.QueryString);
+            _logger.LogInformation("📥 Cookies recibidas: {Cookies}",
+                string.Join(", ", Request.Cookies.Keys));
 
             var authResult = await HttpContext.AuthenticateAsync(IdentityConstants.ExternalScheme);
             

@@ -52,6 +52,33 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.SameSite = SameSiteMode.None; // ⬅️ NUEVO
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.HttpOnly = true;
+
+    options.Events.OnRedirectToLogin = context =>
+    {
+        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+        return Task.CompletedTask;
+    };
+    options.Events.OnRedirectToAccessDenied = context =>
+    {
+        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+        return Task.CompletedTask;
+    };
+});
+
+// ✅ NUEVO: Configurar cookies del ExternalScheme
+builder.Services.ConfigureExternalCookie(options =>
+{
+    options.Cookie.SameSite = SameSiteMode.None;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 // ============================================
 // 🌍 LOCALIZACIÓN (MULTIIDIOMA)
 // ============================================
@@ -263,9 +290,14 @@ if (!string.IsNullOrWhiteSpace(googleClientId) && !string.IsNullOrWhiteSpace(goo
         options.SignInScheme = IdentityConstants.ExternalScheme;
         options.SaveTokens = true;
 
-        // ✅ Configuración de cookies para compatibilidad cross-site
-        options.CorrelationCookie.SameSite = SameSiteMode.Lax;
+        // ✅ Configuración de cookies para compatibilidad cross-site y móvil
+        options.CorrelationCookie.SameSite = SameSiteMode.None; // ⬅️ Cambiado de Lax a None
         options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.Always;
+        options.CorrelationCookie.HttpOnly = true;
+        options.CorrelationCookie.IsEssential = true; // ⬅️ NUEVO
+
+        // ❌ REMOVIDO: StateCookie no está disponible en GoogleOptions
+        // La configuración del state se maneja internamente
 
         // ✅ AGREGAR: Eventos para debugging
         options.Events.OnCreatingTicket = context =>
