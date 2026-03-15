@@ -44,18 +44,18 @@
           <div class="info-item">
             <span class="info-label">{{ 'cuenta.subGrupoCuenta' | translate }}</span>
             <span class="badge badge-info" *ngIf="cuenta.subGrupoCuentaCodigo">
-              {{ cuenta.subGrupoCuentaCodigo }} - {{ cuenta.subGrupoCuentaDescripcion }}
+              {{ cuenta.subGrupoCuentaDescripcion }}
+            </span>
+          </div>
+          <div class="info-item" *ngIf="cuenta.grupoCuentaCodigo">
+            <span class="info-label">{{ 'cuenta.grupoCuenta' | translate }}</span>
+            <span class="badge badge-secondary">
+              {{ cuenta.grupoCuentaDescripcion }}
             </span>
           </div>
           <div class="info-item info-item-full">
             <span class="info-label">{{ 'cuenta.descripcion' | translate }}</span>
             <span class="info-value">{{ cuenta.descripcion }}</span>
-          </div>
-          <div class="info-item" *ngIf="cuenta.grupoCuentaCodigo">
-            <span class="info-label">{{ 'cuenta.grupoCuenta' | translate }}</span>
-            <span class="badge badge-secondary">
-              {{ cuenta.grupoCuentaCodigo }} - {{ cuenta.grupoCuentaDescripcion }}
-            </span>
           </div>
         </div>
       </div>

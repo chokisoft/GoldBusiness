@@ -52,8 +52,8 @@
             <tr>
               <th>{{ 'cuenta.codigo' | translate }}</th>
               <th>{{ 'cuenta.descripcion' | translate }}</th>
-              <th>{{ 'cuenta.subgrupo' | translate }}</th>
-              <th>{{ 'cuenta.grupo' | translate }}</th>
+              <th>{{ 'cuenta.subGrupoCuenta' | translate }}</th>
+              <th>{{ 'cuenta.grupoCuenta' | translate }}</th>
               <th class="actions-column">{{ 'common.actions' | translate }}</th>
             </tr>
           </thead>
@@ -64,12 +64,12 @@
               <td>{{ cuenta.descripcion }}</td>
               <td>
                 <span class="badge badge-info">
-                  {{ cuenta.subGrupoCuentaCodigo }} - {{ cuenta.subGrupoCuentaDescripcion }}
+                  {{ cuenta.subGrupoCuentaDescripcion }}
                 </span>
               </td>
               <td>
                 <span class="badge badge-secondary">
-                  {{ cuenta.grupoCuentaCodigo }} - {{ cuenta.grupoCuentaDescripcion }}
+                  {{ cuenta.grupoCuentaDescripcion }}
                 </span>
               </td>
               <td class="actions-column">

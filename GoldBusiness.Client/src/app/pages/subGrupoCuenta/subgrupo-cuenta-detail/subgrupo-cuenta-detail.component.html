@@ -44,12 +44,8 @@
           <div class="info-item">
             <span class="info-label">{{ 'subGrupoCuenta.grupoCuenta' | translate }}</span>
             <span class="badge badge-info" *ngIf="subgrupo.grupoCuentaCodigo">
-              {{ subgrupo.grupoCuentaCodigo }} - {{ subgrupo.grupoCuentaDescripcion }}
+              {{ subgrupo.grupoCuentaDescripcion }}
             </span>
-          </div>
-          <div class="info-item info-item-full">
-            <span class="info-label">{{ 'subGrupoCuenta.descripcion' | translate }}</span>
-            <span class="info-value">{{ subgrupo.descripcion }}</span>
           </div>
           <div class="info-item">
             <span class="info-label">{{ 'subGrupoCuenta.tipo' | translate }}</span>
@@ -61,6 +57,10 @@
               <span class="badge-icon">💵</span>
               {{ 'subGrupoCuenta.acreedora' | translate }}
             </span>
+          </div>
+          <div class="info-item info-item-full">
+            <span class="info-label">{{ 'subGrupoCuenta.descripcion' | translate }}</span>
+            <span class="info-value">{{ subgrupo.descripcion }}</span>
           </div>
         </div>
       </div>

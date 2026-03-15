@@ -51,8 +51,8 @@
           <thead>
             <tr>
               <th>{{ 'subGrupoCuenta.codigo' | translate }}</th>
-              <th>{{ 'grupoCuenta.descripcion' | translate }}</th>
               <th>{{ 'subGrupoCuenta.descripcion' | translate }}</th>
+              <th>{{ 'subGrupoCuenta.grupoCuenta' | translate }}</th>
               <th>{{ 'subGrupoCuenta.tipo' | translate }}</th>
               <th class="actions-column">{{ 'common.actions' | translate }}</th>
             </tr>
@@ -61,12 +61,12 @@
             <!-- ✅ CORREGIDO: subGrupoCuentas (línea 58) -->
             <tr *ngFor="let subgrupo of subGrupoCuentas">
               <td>{{ subgrupo.codigo }}</td>
+              <td>{{ subgrupo.descripcion }}</td>
               <td>
                 <span class="badge badge-secondary">
-                  {{ subgrupo.grupoCuentaCodigo }} - {{ subgrupo.grupoCuentaDescripcion }}
+                  {{ subgrupo.grupoCuentaDescripcion }}
                 </span>
               </td>
-              <td>{{ subgrupo.descripcion }}</td>
               <td>
                 <span class="badge" [class.badge-success]="subgrupo.deudora" [class.badge-warning]="!subgrupo.deudora">
                   {{ subgrupo.deudora ? ('subGrupoCuenta.deudora' | translate) : ('subGrupoCuenta.acreedora' | translate) }}

@@ -13,7 +13,7 @@
   <div class="card">
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
       <!-- GrupoCuenta selector (igual que SubGrupoCuenta) -->
-      <div class="form-group">
+      <div class="form-group grupo-cuenta-group">
         <label for="grupoCuentaId" class="form-label">{{ 'subGrupoCuenta.grupoCuenta' | translate }} *</label>
         <select id="grupoCuentaId"
                 formControlName="grupoCuentaId"
@@ -33,7 +33,7 @@
 
       <!-- Fila con 3 columnas: SubGrupo, Código usuario y Código completo (estilo SubGrupoCuenta) -->
       <div class="form-row-three">
-        <div class="form-group">
+        <div class="form-group subgrupo-cuenta-group">
           <label for="subGrupoCuentaId" class="form-label">{{ 'cuenta.subGrupoCuenta' | translate }} *</label>
           <select id="subGrupoCuentaId"
                   formControlName="subGrupoCuentaId"
@@ -69,7 +69,7 @@
           <small class="form-text text-muted" *ngIf="selectedSubGrupoCodigo">{{ 'subGrupoCuenta.prefijoSeleccionado' | translate }}: {{ selectedSubGrupoCodigo }}</small>
         </div>
 
-        <div class="form-group">
+        <div class="form-group codigo-completo-group">
           <label for="codigo" class="form-label">{{ 'subGrupoCuenta.codigoCompleto' | translate }}</label>
           <input type="text"
                  id="codigo"

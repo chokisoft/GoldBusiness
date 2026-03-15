@@ -1,1 +1,31 @@
 ﻿@import "../../shared-styles/style-form.css";
+
+/* ─── Cuenta-specific override ───────────────────────────────────────────────
+   The shared form-row-three was designed for subGrupoCuenta where the first
+   (wide) column is a plain input. Here col-1 is a SELECT and cols 2 & 3 are
+   both code fields whose labels need more room so they never wrap and cause
+   vertical misalignment between the three inputs.
+   1.5fr : 1fr : 1fr keeps SubGrupoCuenta wider while giving each code column
+   ~28 % of the row — well above the width needed by "Código (3 dígitos) *".
+   Component-scoped by Angular's view encapsulation → no other view affected.
+──────────────────────────────────────────────────────────────────────────── */
+.form-row-three {
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr);
+}
+
+@media (min-width: 993px) {
+  .form-row-three > .codigo-completo-group {
+    margin-top: -1.2rem;
+  }
+}
+
+.grupo-cuenta-group select.form-control,
+.subgrupo-cuenta-group select.form-control {
+  padding-right: 2.25rem;
+}
+
+@media (max-width: 992px) {
+  .form-row-three > .codigo-completo-group {
+    margin-top: 0;
+  }
+}
