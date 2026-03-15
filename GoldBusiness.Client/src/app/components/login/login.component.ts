@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -6,6 +6,39 @@ import { TranslationService } from '../../services/translation.service';
 import { LanguageService } from '../../services/language.service';
 import { Subscription } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
+
+interface LoginTranslations {
+  title: string;
+  subtitle: string;
+  formTitle: string;
+  formSubtitle: string;
+  username: string;
+  password: string;
+  usernamePlaceholder: string;
+  passwordPlaceholder: string;
+  submit: string;
+  loading: string;
+  forgotPassword: string;
+  googleSignIn: string;
+  showPassword: string;
+  hidePassword: string;
+  footer: string;
+  usernameRequired: string;
+  usernameMinLength: string;
+  passwordRequired: string;
+  passwordMinLength: string;
+}
+
+const GOOGLE_ERROR_KEYS: Record<string, string> = {
+  'google_user_not_found': 'login.errorGoogleUserNotFound',
+  'google_provider_not_allowed': 'login.errorGoogleProviderNotAllowed',
+  'google_user_inactive': 'login.errorGoogleUserInactive',
+  'google_email_not_found': 'login.errorGoogleEmailNotFound',
+  'google_token_failed': 'login.errorGoogleTokenFailed',
+  'google_remote_failure': 'login.errorGoogleRemoteFailure',
+  'google_internal_error': 'login.errorGoogleInternalError',
+  'google_user_creation_failed': 'login.errorGoogleUserCreationFailed'
+} as const;
 
 @Component({
   selector: 'app-login',
@@ -16,83 +49,45 @@ export class LoginComponent implements OnInit, OnDestroy {
   loginForm!: FormGroup;
   isLoading = false;
   errorMessage: string | null = null;
-  returnUrl: string = '/dashboard'; // ← CAMBIADO de '/' a '/dashboard'
-  showPassword = false;
-  googleAuthEnabled = environment.googleAuthEnabled;
+  returnUrl: string = '/dashboard';
+  showPassword: boolean = false; // Inicializado explícitamente
+  readonly googleAuthEnabled = environment.googleAuthEnabled;
 
   private languageSubscription?: Subscription;
 
-  // Traducciones dinámicas
-  translations = {
-    title: '',
-    subtitle: '',
-    formTitle: '',      // << nuevo
-    formSubtitle: '',   // << nuevo
-    username: '',
-    password: '',
-    usernamePlaceholder: '',
-    passwordPlaceholder: '',
-    submit: '',
-    loading: '',
-    forgotPassword: '',
-    googleSignIn: '',
-    showPassword: '',
-    hidePassword: '',
-    footer: '',
-    usernameRequired: '',
-    usernameMinLength: '',
-    passwordRequired: '',
-    passwordMinLength: ''
-  };
+  translations: LoginTranslations = this.getEmptyTranslations();
 
   constructor(
-    private formBuilder: FormBuilder,
-    private authService: AuthService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private translationService: TranslationService,
-    private languageService: LanguageService
+    private readonly formBuilder: FormBuilder,
+    private readonly authService: AuthService,
+    private readonly router: Router,
+    private readonly route: ActivatedRoute,
+    private readonly translationService: TranslationService,
+    private readonly languageService: LanguageService,
+    private readonly cdr: ChangeDetectorRef // ← Añadido para forzar detección
   ) {
     console.log('🌍 Login iniciado con idioma:', this.languageService.getCurrentLanguage());
   }
 
-  /**
-   * Helper para acceder a los controles del formulario fácilmente en el template
-   */
   get f() {
     return this.loginForm.controls;
   }
 
   ngOnInit(): void {
-    // ✅ SIEMPRE crear el formulario primero (incluso si hay errores)
-    this.loginForm = this.formBuilder.group({
-      username: ['', [Validators.required, Validators.minLength(3)]],
-      password: ['', [Validators.required, Validators.minLength(8)]]
-    });
-
-    // Obtener la URL de retorno (o dashboard por defecto)
+    this.initializeForm();
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
     console.log('📍 URL de retorno configurada:', this.returnUrl);
 
-    // Cargar traducciones iniciales
     this.loadTranslations();
+    this.subscribeToLanguageChanges();
 
-    // Suscribirse a cambios de idioma
-    this.languageSubscription = this.translationService.translations$.subscribe(() => {
-      console.log('🔄 Idioma cambiado, recargando traducciones...');
-      this.loadTranslations();
-    });
-
-    // ✅ Procesar callback de Google DESPUÉS de inicializar todo
     if (this.handleGoogleCallbackResult()) {
       return;
     }
 
-    // ✅ Si ya está autenticado, redirigir
     if (this.authService.isAuthenticated()) {
       console.log('✅ Usuario ya autenticado, redirigiendo al dashboard...');
       this.router.navigate(['/dashboard']);
-      return;
     }
   }
 
@@ -101,15 +96,19 @@ export class LoginComponent implements OnInit, OnDestroy {
     console.log('🧹 LoginComponent destruido, suscripciones canceladas');
   }
 
-  /**
-   * Cargar todas las traducciones del componente
-   */
+  private initializeForm(): void {
+    this.loginForm = this.formBuilder.group({
+      username: ['', [Validators.required, Validators.minLength(3)]],
+      password: ['', [Validators.required, Validators.minLength(8)]]
+    });
+  }
+
   private loadTranslations(): void {
     this.translations = {
       title: this.translationService.translate('login.title'),
       subtitle: this.translationService.translate('login.subtitle'),
-      formTitle: this.translationService.translate('login.formTitle'),       // << nuevo
-      formSubtitle: this.translationService.translate('login.formSubtitle'), // << nuevo
+      formTitle: this.translationService.translate('login.formTitle'),
+      formSubtitle: this.translationService.translate('login.formSubtitle'),
       username: this.translationService.translate('login.username'),
       password: this.translationService.translate('login.password'),
       usernamePlaceholder: this.translationService.translate('login.usernamePlaceholder'),
@@ -128,9 +127,37 @@ export class LoginComponent implements OnInit, OnDestroy {
     };
   }
 
-  /**
-   * Manejar el envío del formulario de login
-   */
+  private subscribeToLanguageChanges(): void {
+    this.languageSubscription = this.translationService.translations$.subscribe(() => {
+      console.log('🔄 Idioma cambiado, recargando traducciones...');
+      this.loadTranslations();
+    });
+  }
+
+  private getEmptyTranslations(): LoginTranslations {
+    return {
+      title: '',
+      subtitle: '',
+      formTitle: '',
+      formSubtitle: '',
+      username: '',
+      password: '',
+      usernamePlaceholder: '',
+      passwordPlaceholder: '',
+      submit: '',
+      loading: '',
+      forgotPassword: '',
+      googleSignIn: '',
+      showPassword: '',
+      hidePassword: '',
+      footer: '',
+      usernameRequired: '',
+      usernameMinLength: '',
+      passwordRequired: '',
+      passwordMinLength: ''
+    };
+  }
+
   onSubmit(): void {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
@@ -142,11 +169,10 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     const { username, password } = this.loginForm.value;
 
-    // Login con redirección al dashboard
     this.authService.login({ username, password }).subscribe({
       next: () => {
         console.log('✅ Login exitoso, redirigiendo a:', this.returnUrl);
-        this.router.navigate([this.returnUrl]); // Esto ahora redirige a /dashboard por defecto
+        this.router.navigate([this.returnUrl]);
       },
       error: (err) => {
         console.error('❌ Error en login:', err);
@@ -157,10 +183,12 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Alternar visibilidad de la contraseña
+   * Toggle de visibilidad de contraseña con detección forzada
    */
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
+    console.log('👁️ Toggle password visibility:', this.showPassword);
+    this.cdr.detectChanges(); // Forzar detección de cambios
   }
 
   loginWithGoogle(): void {
@@ -168,9 +196,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   private handleGoogleCallbackResult(): boolean {
-    const hash = window.location.hash?.startsWith('#')
-      ? window.location.hash.substring(1)
-      : '';
+    const hash = this.getHashParams();
 
     if (!hash) {
       return false;
@@ -180,29 +206,32 @@ export class LoginComponent implements OnInit, OnDestroy {
     const error = params.get('error');
 
     if (error) {
-      // ✅ NUEVO: Mensajes amigables y traducidos
-      const errorMessages: { [key: string]: string } = {
-        'google_user_not_found': this.translationService.translate('login.errorGoogleUserNotFound'),
-        'google_provider_not_allowed': this.translationService.translate('login.errorGoogleProviderNotAllowed'),
-        'google_user_inactive': this.translationService.translate('login.errorGoogleUserInactive'),
-        'google_email_not_found': this.translationService.translate('login.errorGoogleEmailNotFound'),
-        'google_token_failed': this.translationService.translate('login.errorGoogleTokenFailed'),
-        'google_remote_failure': this.translationService.translate('login.errorGoogleRemoteFailure'),
-        'google_internal_error': this.translationService.translate('login.errorGoogleInternalError'),
-        'google_user_creation_failed': this.translationService.translate('login.errorGoogleUserCreationFailed')
-      };
-
-      this.errorMessage = errorMessages[error] ||
-        `${this.translationService.translate('login.errorGoogleGeneric')}: ${error}`;
-
-      console.error('❌ Error en Google OAuth:', error, '→', this.errorMessage);
-
-      // Limpiar el hash de la URL
-      window.history.replaceState({}, document.title, window.location.pathname + window.location.search);
-
+      this.handleGoogleError(error);
+      this.cleanUrlHash();
       return true;
     }
 
+    return this.processGoogleTokens(params);
+  }
+
+  private getHashParams(): string | null {
+    const hash = window.location.hash;
+    return hash?.startsWith('#') ? hash.substring(1) : null;
+  }
+
+  private handleGoogleError(error: string): void {
+    const translationKey = GOOGLE_ERROR_KEYS[error];
+
+    if (translationKey) {
+      this.errorMessage = this.translationService.translate(translationKey);
+    } else {
+      this.errorMessage = this.translationService.translate('login.errorGoogleGeneric');
+    }
+
+    console.error('❌ Error en Google OAuth:', error, '→', this.errorMessage);
+  }
+
+  private processGoogleTokens(params: URLSearchParams): boolean {
     const token = params.get('token') ?? '';
     const refreshToken = params.get('refreshToken') ?? '';
     const expiresAt = params.get('expiresAt') ?? '';
@@ -214,7 +243,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     const callbackReturnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
     const completed = this.authService.completeExternalLogin({ token, refreshToken, expiresAt });
 
-    window.history.replaceState({}, document.title, window.location.pathname + window.location.search);
+    this.cleanUrlHash();
 
     if (completed) {
       console.log('✅ Login con Google exitoso, redirigiendo a:', callbackReturnUrl);
@@ -224,5 +253,9 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     this.errorMessage = this.translationService.translate('login.errorGoogleCompleteLogin');
     return true;
+  }
+
+  private cleanUrlHash(): void {
+    window.history.replaceState({}, document.title, window.location.pathname + window.location.search);
   }
 }
