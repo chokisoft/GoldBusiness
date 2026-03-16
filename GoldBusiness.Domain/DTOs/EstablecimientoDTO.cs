@@ -48,6 +48,38 @@ namespace GoldBusiness.Domain.DTOs
 
         public string NegocioDescripcion { get; set; } = string.Empty;
 
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Direccion),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
+        [StringLength(256,
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.DireccionLongitud)
+        )]
+        public string? Direccion { get; set; }
+
+        [Display(
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Telefono),
+            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
+        )]
+        [StringLength(50,
+            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
+            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.TelefonoLongitud)
+        )]
+        public string? Telefono { get; set; }
+
+        public int? PaisId { get; set; }
+        public string? PaisDescripcion { get; set; }
+
+        public int? ProvinciaId { get; set; }
+        public string? ProvinciaDescripcion { get; set; }
+
+        public int? MunicipioId { get; set; }
+        public string? MunicipioDescripcion { get; set; }
+
+        public int? CodigoPostalId { get; set; }
+        public string? CodigoPostalCodigo { get; set; }
+
         public bool Activo { get; set; }
         public bool Cancelado { get; set; }
 

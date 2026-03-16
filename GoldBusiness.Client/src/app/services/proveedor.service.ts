@@ -1,140 +1,89 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
-import { ApiService } from './api.service';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
-export interface ProveedorDTO {
-  id?: number;
+export interface Proveedor {
+  id: number;
   codigo: string;
-  nombre: string;
-  rfc?: string;
-  telefono?: string;
-  email?: string;
+  descripcion: string;
+  nif?: string;
+  iban?: string;
+  bicoSwift?: string;
+  iva: number;
   direccion?: string;
-  cancelado?: boolean;
-  creadoPor?: string;
-  fechaHoraCreado?: string;
+  paisId?: number;
+  paisDescripcion?: string;
+  provinciaId?: number;
+  provinciaDescripcion?: string;
+  municipioId?: number;
+  municipioDescripcion?: string;
+  codigoPostalId?: number;
+  codigoPostalCodigo?: string;
+  web?: string;
+  email1?: string;
+  email2?: string;
+  telefono1?: string;
+  telefono2?: string;
+  fax1?: string;
+  fax2?: string;
+  cancelado: boolean;
+  creadoPor: string;
+  fechaHoraCreado: Date;
   modificadoPor?: string;
-  fechaHoraModificado?: string;
-}
-
-export interface PagedResult<T> {
-  items: T[];
-  total: number;
+  fechaHoraModificado?: Date;
+  cantidadProductos?: number;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProveedorService {
-  private readonly endpoint = 'Proveedor';
-  private readonly storageKey = 'gb_proveedores';
+  private apiUrl = `${environment.apiUrl}/proveedor`;
 
-  constructor(private api: ApiService) {}
+  constructor(private http: HttpClient) { }
 
-  getPaged(page: number = 1, pageSize: number = 50, term?: string): Observable<PagedResult<ProveedorDTO>> {
-    let url = `${this.endpoint}/paged?page=${page}&pageSize=${pageSize}`;
-    if (term) url += `&term=${encodeURIComponent(term)}`;
-
-    return this.api.get<PagedResult<ProveedorDTO>>(url).pipe(
-      catchError(() => of(this.getLocalPaged(page, pageSize, term)))
-    );
+  getAll(lang: string = 'es'): Observable<Proveedor[]> {
+    return this.http.get<Proveedor[]>(this.apiUrl, {
+      params: { lang }
+    });
   }
 
-  getAll(): Observable<ProveedorDTO[]> {
-    return this.api.get<ProveedorDTO[]>(this.endpoint).pipe(
-      catchError(() => of(this.getLocalItems()))
-    );
+  getById(id: number, lang: string = 'es'): Observable<Proveedor> {
+    return this.http.get<Proveedor>(`${this.apiUrl}/${id}`, {
+      params: { lang }
+    });
   }
 
-  getById(id: number): Observable<ProveedorDTO> {
-    return this.api.get<ProveedorDTO>(`${this.endpoint}/${id}`).pipe(
-      catchError(() => {
-        const item = this.getLocalItems().find(x => x.id === id);
-        return item ? of(item) : throwError(() => new Error('Proveedor no encontrado'));
-      })
-    );
+  create(proveedor: Proveedor, lang: string = 'es'): Observable<Proveedor> {
+    return this.http.post<Proveedor>(this.apiUrl, proveedor, {
+      params: { lang }
+    });
   }
 
-  create(dto: ProveedorDTO): Observable<ProveedorDTO> {
-    return this.api.post<ProveedorDTO>(this.endpoint, dto).pipe(
-      catchError(() => {
-        const items = this.getLocalItems();
-        const id = this.getNextId(items);
-        const item: ProveedorDTO = { ...dto, id };
-        items.push(item);
-        this.setLocalItems(items);
-        return of(item);
-      })
-    );
-  }
-
-  update(id: number, dto: ProveedorDTO): Observable<ProveedorDTO> {
-    return this.api.put<ProveedorDTO>(`${this.endpoint}/${id}`, dto).pipe(
-      catchError(() => {
-        const items = this.getLocalItems();
-        const index = items.findIndex(x => x.id === id);
-        if (index === -1) {
-          return throwError(() => new Error('Proveedor no encontrado'));
-        }
-        items[index] = { ...items[index], ...dto, id };
-        this.setLocalItems(items);
-        return of(items[index]);
-      })
-    );
+  update(id: number, proveedor: Proveedor, lang: string = 'es'): Observable<Proveedor> {
+    return this.http.put<Proveedor>(`${this.apiUrl}/${id}`, proveedor, {
+      params: { lang }
+    });
   }
 
   delete(id: number): Observable<void> {
-    return this.api.delete<void>(`${this.endpoint}/${id}`).pipe(
-      catchError(() => {
-        const items = this.getLocalItems().filter(x => x.id !== id);
-        this.setLocalItems(items);
-        return of(void 0);
-      })
-    );
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
-  private getLocalPaged(page: number, pageSize: number, term?: string): PagedResult<ProveedorDTO> {
-    const filtered = this.filterByTerm(this.getLocalItems(), term);
-    const start = (page - 1) * pageSize;
-    return {
-      items: filtered.slice(start, start + pageSize),
-      total: filtered.length
-    };
+  addOrUpdateTranslation(id: number, lang: string, descripcion: string): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/${id}/translation`, null, {
+      params: { lang, descripcion }
+    });
   }
 
-  private filterByTerm(items: ProveedorDTO[], term?: string): ProveedorDTO[] {
-    const text = (term || '').trim().toLowerCase();
-    if (!text) return items;
+  getPaged(page: number, pageSize: number, search?: string, lang: string = 'es'): Observable<{ items: Proveedor[]; total: number }> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('pageSize', pageSize.toString())
+      .set('lang', lang);
+    if (search) params = params.set('search', search);
 
-    return items.filter(item =>
-      [item.codigo, item.nombre, item.rfc, item.telefono, item.email, item.direccion]
-        .some(value => (value ?? '').toString().toLowerCase().includes(text))
-    );
-  }
-
-  private getLocalItems(): ProveedorDTO[] {
-    try {
-      if (typeof localStorage === 'undefined') return [];
-      const raw = localStorage.getItem(this.storageKey);
-      if (!raw) return [];
-      const parsed = JSON.parse(raw);
-      return Array.isArray(parsed) ? parsed : [];
-    } catch {
-      return [];
-    }
-  }
-
-  private setLocalItems(items: ProveedorDTO[]): void {
-    try {
-      if (typeof localStorage === 'undefined') return;
-      localStorage.setItem(this.storageKey, JSON.stringify(items));
-    } catch {
-      // ignore
-    }
-  }
-
-  private getNextId(items: ProveedorDTO[]): number {
-    return items.length > 0 ? Math.max(...items.map(x => x.id || 0)) + 1 : 1;
+    return this.http.get<{ items: Proveedor[]; total: number }>(`${this.apiUrl}/paged`, { params });
   }
 }

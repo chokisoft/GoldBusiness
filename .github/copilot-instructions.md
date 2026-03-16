@@ -23,6 +23,10 @@
 - Usa una UI de cascada consistente en los formularios de Plan Cuenta: muestra 'Prefijo seleccionado' solo cuando exista un prefijo, desactiva la entrada de código de usuario cuando no se seleccione un prefijo, y coincide con el diseño/comportamiento del formulario de SubGrupoCuenta.
 - Alinear verticalmente el checkbox 'Deudora' en formularios del Plan de Cuenta y en SubGrupoCuenta para que quede centrado con respecto a los inputs en .form-row-three.
 
+## Project-Specific Rules
+- Los endpoints deben ser paginados: Cliente y Proveedor deben implementar `GetPagedAsync`; los repositorios deben exponer `Query()`. Se requiere un DTO `PagedResult<T>`; los servicios del frontend deben tener `getPaged` y evitar faltas de importación de modelos.
+- El tipo de modelo Cliente está definido dentro de 'cliente.service.ts' (no 'cliente.model.ts'). No asumas un archivo separado cliente.model.ts; actualiza las importaciones para consumir la interfaz desde el archivo del servicio o crea un archivo de modelo adecuado si se prefiere.
+
 ## Code Style
 - Usa reglas de formato específicas.
 - Sigue las convenciones de nomenclatura.
@@ -30,3 +34,4 @@
 ## Memory
 -  Prefiere respuestas en español (es).
 - Alinear verticalmente el checkbox 'Deudora' en SubGrupoCuenta: centrar el bloque de checkbox con respecto a los inputs en .form-row-three (alineación vertical preferida).
+- No asumas que existen archivos de modelo TypeScript para Cliente; el proyecto define la interfaz Cliente dentro de 'cliente.service.ts'. Las recomendaciones futuras deben respetar eso y evitar sugerir 'cliente.model.ts' a menos que se solicite.

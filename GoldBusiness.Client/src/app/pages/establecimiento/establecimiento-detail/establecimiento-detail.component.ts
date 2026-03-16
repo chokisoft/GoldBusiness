@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { EstablecimientoService, EstablecimientoDTO } from '../../../services/establecimiento.service';
+import { Establecimiento, EstablecimientoService } from '../../../services/establecimiento.service';
 
 @Component({
   selector: 'app-establecimiento-detail',
@@ -9,7 +9,7 @@ import { EstablecimientoService, EstablecimientoDTO } from '../../../services/es
   styleUrls: ['./establecimiento-detail.component.css']
 })
 export class EstablecimientoDetailComponent implements OnInit {
-  item?: EstablecimientoDTO;
+  item?: Establecimiento;
   loading = false;
   error: string | null = null;
 

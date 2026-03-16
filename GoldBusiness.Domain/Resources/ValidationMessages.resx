@@ -536,4 +536,13 @@
 	<data name="UnidadMedidaCodigoFormato" xml:space="preserve">
   <value>El código debe ser alfanumérico de 3 caracteres (Ejemplo: UND, KG, LTS)</value>
 </data>
+	<data name="Field_Telefono" xml:space="preserve">
+  <value>Teléfono</value>
+</data>
+	<data name="TelefonoLongitud" xml:space="preserve">
+  <value>El teléfono no puede exceder {1} caracteres.</value>
+</data>
+	<data name="TelefonoFormatoInvalido" xml:space="preserve">
+  <value>El teléfono no tiene un formato válido.</value>
+</data>
 </root>

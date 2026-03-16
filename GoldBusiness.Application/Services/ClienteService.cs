@@ -4,18 +4,23 @@ using GoldBusiness.Domain.DTOs;
 using GoldBusiness.Domain.Entities;
 using GoldBusiness.Infrastructure.Repositories;
 using Microsoft.Extensions.Localization;
+using Microsoft.EntityFrameworkCore;
 
 namespace GoldBusiness.Application.Services
 {
     public class ClienteService : IClienteService
     {
         private readonly IClienteRepository _repo;
+        private readonly IPaisRepository _paisRepo;
         private readonly IStringLocalizer<GoldBusiness.Domain.Resources.ValidationMessages> _localizer;
 
-        public ClienteService(IClienteRepository repo,
+        public ClienteService(
+            IClienteRepository repo,
+            IPaisRepository paisRepo,
             IStringLocalizer<GoldBusiness.Domain.Resources.ValidationMessages> localizer)
         {
             _repo = repo;
+            _paisRepo = paisRepo;
             _localizer = localizer;
         }
 
@@ -33,7 +38,6 @@ namespace GoldBusiness.Application.Services
         {
             var creador = user ?? "system";
 
-            // Usar el helper genérico
             var (existe, estaCancelado, existingEntity) = await CodigoValidationHelper
                 .ValidateCodigoForCreateAsync(_repo, dto.Codigo);
 
@@ -41,7 +45,6 @@ namespace GoldBusiness.Application.Services
             {
                 if (estaCancelado && existingEntity != null)
                 {
-                    // Reactivar el registro existente
                     existingEntity.Reactivar(dto.Descripcion, creador);
                     existingEntity.AddOrUpdateTranslation(lang, dto.Descripcion, creador);
                     await _repo.UpdateAsync(existingEntity);
@@ -50,14 +53,19 @@ namespace GoldBusiness.Application.Services
                 }
                 else
                 {
-                    // Lanzar error con mensaje genérico
                     var errorMessage = CodigoValidationHelper.GetDuplicateCodeErrorMessage(
                         _localizer, dto.Codigo, false);
                     throw new InvalidOperationException(errorMessage);
                 }
             }
 
-            // No existe, crear nuevo registro
+            // Obtener país si existe para validar teléfonos
+            Pais? pais = null;
+            if (dto.PaisId.HasValue)
+            {
+                pais = await _paisRepo.GetByIdAsync(dto.PaisId.Value);
+            }
+
             var entity = new Cliente(
                 dto.Codigo,
                 dto.Descripcion,
@@ -66,9 +74,10 @@ namespace GoldBusiness.Application.Services
                 dto.BicoSwift,
                 dto.Iva,
                 dto.Direccion,
-                dto.Municipio,
-                dto.Provincia,
-                dto.CodPostal,
+                dto.PaisId,
+                dto.ProvinciaId,
+                dto.MunicipioId,
+                dto.CodigoPostalId,
                 dto.Web,
                 dto.Email1,
                 dto.Email2,
@@ -92,28 +101,39 @@ namespace GoldBusiness.Application.Services
 
             var entity = await _repo.GetByIdAsync(id);
             if (entity == null)
-                throw new KeyNotFoundException($"SystemConfiguration con ID {id} no encontrada");
+                throw new KeyNotFoundException($"Cliente con ID {id} no encontrado");
 
-            // Actualizar todas las propiedades
-            entity.SetDescripcion(dto.Descripcion);
-            entity.SetNif(dto.Nif ?? string.Empty);
-            entity.SetIban(dto.Iban ?? string.Empty);
-            entity.SetBicoSwift(dto.BicoSwift ?? string.Empty);
-            entity.SetIva(dto.Iva);
-            entity.SetDireccion(dto.Direccion ?? string.Empty);
-            entity.SetMunicipio(dto.Municipio ?? string.Empty);
-            entity.SetProvincia(dto.Provincia ?? string.Empty);
-            entity.SetCodPostal(dto.CodPostal ?? string.Empty);
-            entity.SetWeb(dto.Web ?? string.Empty);
-            entity.SetEmails(dto.Email1 ?? string.Empty, dto.Email2 ?? string.Empty);
-            entity.SetTelefonos(dto.Telefono1 ?? string.Empty, dto.Telefono2 ?? string.Empty);
-            entity.SetFaxes(dto.Fax1 ?? string.Empty, dto.Fax2 ?? string.Empty);
+            // Obtener país si existe para validar teléfonos
+            Pais? pais = null;
+            if (dto.PaisId.HasValue)
+            {
+                pais = await _paisRepo.GetByIdAsync(dto.PaisId.Value);
+            }
+
+            // Actualizar usando el método de dominio
+            entity.Actualizar(
+                dto.Descripcion,
+                dto.Nif,
+                dto.Iban,
+                dto.BicoSwift,
+                dto.Iva,
+                dto.Direccion,
+                dto.PaisId,
+                dto.ProvinciaId,
+                dto.MunicipioId,
+                dto.CodigoPostalId,
+                dto.Web,
+                dto.Email1,
+                dto.Email2,
+                dto.Telefono1,
+                dto.Telefono2,
+                dto.Fax1,
+                dto.Fax2,
+                pais,
+                modificador);
 
             // Actualizar traducción
             entity.AddOrUpdateTranslation(lang, dto.Descripcion, modificador);
-
-            // Actualizar auditoría
-            entity.ActualizarAuditoria(modificador);
 
             await _repo.UpdateAsync(entity);
             return MapToDTO(entity, lang)!;
@@ -142,6 +162,17 @@ namespace GoldBusiness.Application.Services
             await _repo.UpdateAsync(entity);
         }
 
+        // Paginación: delega al repositorio y convierte a DTOs
+        public async Task<(IEnumerable<ClienteDTO> Items, int Total)> GetPagedAsync(int page, int pageSize, string? search, string lang = "es")
+        {
+            if (page < 1) page = 1;
+            if (pageSize < 1) pageSize = 10;
+
+            var (items, total) = await _repo.GetPagedAsync(page, pageSize, search);
+            var dtos = items.Select(c => MapToDTO(c, lang)!).ToList();
+            return (dtos, total);
+        }
+
         private static ClienteDTO? MapToDTO(Cliente? g, string lang)
         {
             if (g == null) return null;
@@ -156,9 +187,14 @@ namespace GoldBusiness.Application.Services
                 BicoSwift = g.BicoSwift,
                 Iva = g.Iva,
                 Direccion = g.Direccion,
-                Municipio = g.Municipio,
-                Provincia = g.Provincia,
-                CodPostal = g.CodPostal,
+                PaisId = g.PaisId,
+                PaisDescripcion = g.Pais?.GetDescripcion(lang),
+                ProvinciaId = g.ProvinciaId,
+                ProvinciaDescripcion = g.Provincia?.GetDescripcion(lang),
+                MunicipioId = g.MunicipioId,
+                MunicipioDescripcion = g.Municipio?.GetDescripcion(lang),
+                CodigoPostalId = g.CodigoPostalId,
+                CodigoPostalCodigo = g.CodigoPostal?.Codigo,
                 Web = g.Web,
                 Email1 = g.Email1,
                 Email2 = g.Email2,

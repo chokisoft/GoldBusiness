@@ -10,13 +10,16 @@ namespace GoldBusiness.Application.Services
     public class EstablecimientoService : IEstablecimientoService
     {
         private readonly IEstablecimientoRepository _repo;
+        private readonly IPaisRepository _paisRepo;
         private readonly IStringLocalizer<GoldBusiness.Domain.Resources.ValidationMessages> _localizer;
 
         public EstablecimientoService(
             IEstablecimientoRepository repo,
+            IPaisRepository paisRepo,
             IStringLocalizer<GoldBusiness.Domain.Resources.ValidationMessages> localizer)
         {
             _repo = repo;
+            _paisRepo = paisRepo;
             _localizer = localizer;
         }
 
@@ -72,7 +75,24 @@ namespace GoldBusiness.Application.Services
                 }
             }
 
-            var entity = new Establecimiento(dto.Codigo, dto.Descripcion, dto.NegocioId, creador);
+            // Obtener país si existe para validar teléfono
+            Pais? pais = null;
+            if (dto.PaisId.HasValue)
+            {
+                pais = await _paisRepo.GetByIdAsync(dto.PaisId.Value);
+            }
+
+            var entity = new Establecimiento(
+                dto.Codigo,
+                dto.Descripcion,
+                dto.NegocioId,
+                dto.Direccion,
+                dto.Telefono,
+                dto.PaisId,
+                dto.ProvinciaId,
+                dto.MunicipioId,
+                dto.CodigoPostalId,
+                creador);
 
             await _repo.AddAsync(entity);
 
@@ -109,7 +129,23 @@ namespace GoldBusiness.Application.Services
                 entity.SetCodigo(dto.Codigo);
             }
 
-            entity.Update(dto.Descripcion, user);
+            // Obtener país si existe para validar teléfono
+            Pais? pais = null;
+            if (dto.PaisId.HasValue)
+            {
+                pais = await _paisRepo.GetByIdAsync(dto.PaisId.Value);
+            }
+
+            entity.Actualizar(
+                dto.Descripcion,
+                dto.Direccion,
+                dto.Telefono,
+                dto.PaisId,
+                dto.ProvinciaId,
+                dto.MunicipioId,
+                dto.CodigoPostalId,
+                pais,
+                user);
 
             entity.AddOrUpdateTranslation(lang, dto.Descripcion, user ?? "system");
 
@@ -150,8 +186,18 @@ namespace GoldBusiness.Application.Services
                 Id = e.Id,
                 Codigo = e.Codigo,
                 NegocioId = e.NegocioId,
-                NegocioDescripcion = e.Negocio?.GetNombreNegocio(lang) ?? string.Empty,  // ✅ YA CORRECTO
+                NegocioDescripcion = e.Negocio?.GetNombreNegocio(lang) ?? string.Empty,
                 Descripcion = e.GetDescripcion(lang),
+                Direccion = e.Direccion,
+                Telefono = e.Telefono,
+                PaisId = e.PaisId,
+                PaisDescripcion = e.Pais?.GetDescripcion(lang),
+                ProvinciaId = e.ProvinciaId,
+                ProvinciaDescripcion = e.Provincia?.GetDescripcion(lang),
+                MunicipioId = e.MunicipioId,
+                MunicipioDescripcion = e.Municipio?.GetDescripcion(lang),
+                CodigoPostalId = e.CodigoPostalId,
+                CodigoPostalCodigo = e.CodigoPostal?.Codigo,
                 Activo = e.Activo,
                 Cancelado = e.Cancelado,
                 CreadoPor = e.CreadoPor,

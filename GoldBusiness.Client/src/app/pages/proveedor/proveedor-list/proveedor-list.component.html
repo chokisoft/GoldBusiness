@@ -45,38 +45,34 @@
 
 		<div class="card-body">
 			<div class="table-responsive">
-				<table class="data-table">
-					<thead>
-						<tr>
-							<th>{{ 'proveedores.codigo' | translate }}</th>
-							<th>{{ 'proveedores.nombre' | translate }}</th>
-							<th>{{ 'proveedores.rfc' | translate }}</th>
-							<th>{{ 'proveedores.telefono' | translate }}</th>
-							<th>{{ 'proveedores.email' | translate }}</th>
-							<th class="actions-column">{{ 'common.actions' | translate }}</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr *ngFor="let item of proveedores">
-							<td>{{ item.codigo }}</td>
-							<td>{{ item.nombre }}</td>
-							<td>{{ item.rfc || '-' }}</td>
-							<td>{{ item.telefono || '-' }}</td>
-							<td>{{ item.email || '-' }}</td>
-							<td class="actions-column">
-								<div class="action-buttons">
-									<button class="btn btn-sm btn-info" [routerLink]="[item.id]" [title]="'common.view' | translate"><span>👁️</span></button>
-									<button class="btn btn-sm btn-warning" [routerLink]="['editar', item.id]" [title]="'common.edit' | translate"><span>✏️</span></button>
-									<button class="btn btn-sm btn-danger" (click)="delete(item.id!, item.nombre)" [title]="'common.delete' | translate"><span>🗑️</span></button>
-								</div>
-							</td>
-						</tr>
-						<tr *ngIf="proveedores.length === 0">
+				<table class="table">
+				  <thead>
+				    <tr>
+				      <th>Código</th>
+				      <th>Nombre / Descripción</th>
+				      <th>NIF</th>
+				      <th>Teléfono</th>
+				      <th>Email</th>
+				      <th>Acciones</th>
+				    </tr>
+				  </thead>
+				  <tbody>
+				    <tr *ngFor="let item of proveedores">
+				      <td>{{ item.codigo }}</td>
+				      <td>{{ item.descripcion }}</td>
+				      <td>{{ item.nif || '-' }}</td>
+				      <td>{{ item.telefono1 || '-' }}</td>
+				      <td>{{ item.email1 || '-' }}</td>
+				      <td>
+				        <button (click)="delete(item.id, item.descripcion)">Eliminar</button>
+				      </td>
+				    </tr>
+				    <tr *ngIf="proveedores.length === 0">
 							<td colspan="6" class="text-center">
 								{{ searchTerm ? ('common.noResults' | translate) : ('common.noData' | translate) }}
 							</td>
 						</tr>
-					</tbody>
+				  </tbody>
 				</table>
 			</div>
 		</div>

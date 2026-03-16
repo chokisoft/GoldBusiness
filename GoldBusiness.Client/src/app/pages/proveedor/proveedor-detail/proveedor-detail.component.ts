@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-import { ProveedorDTO, ProveedorService } from '../../../services/proveedor.service';
+import { Proveedor, ProveedorService } from '../../../services/proveedor.service';
 
 @Component({
   selector: 'app-proveedor-detail',
@@ -9,7 +9,7 @@ import { ProveedorDTO, ProveedorService } from '../../../services/proveedor.serv
   styleUrl: './proveedor-detail.component.css'
 })
 export class ProveedorDetailComponent implements OnInit {
-  item?: ProveedorDTO;
+  item?: Proveedor;
   loading = false;
   error: string | null = null;
 

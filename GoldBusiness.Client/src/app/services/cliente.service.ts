@@ -1,139 +1,88 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
-import { ApiService } from './api.service';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
-export interface ClienteDTO {
-  id?: number;
+export interface Cliente {
+  id: number;
   codigo: string;
-  nombre: string;
-  telefono?: string;
-  email?: string;
+  descripcion: string;
+  nif?: string;
+  iban?: string;
+  bicoSwift?: string;
+  iva: number;
   direccion?: string;
-  cancelado?: boolean;
-  creadoPor?: string;
-  fechaHoraCreado?: string;
+  paisId?: number;
+  paisDescripcion?: string;
+  provinciaId?: number;
+  provinciaDescripcion?: string;
+  municipioId?: number;
+  municipioDescripcion?: string;
+  codigoPostalId?: number;
+  codigoPostalCodigo?: string;
+  web?: string;
+  email1?: string;
+  email2?: string;
+  telefono1?: string;
+  telefono2?: string;
+  fax1?: string;
+  fax2?: string;
+  cancelado: boolean;
+  creadoPor: string;
+  fechaHoraCreado: Date;
   modificadoPor?: string;
-  fechaHoraModificado?: string;
-}
-
-export interface PagedResult<T> {
-  items: T[];
-  total: number;
+  fechaHoraModificado?: Date;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class ClienteService {
-  private readonly endpoint = 'Cliente';
-  private readonly storageKey = 'gb_clientes';
+  private apiUrl = `${environment.apiUrl}/cliente`;
 
-  constructor(private api: ApiService) {}
+  constructor(private http: HttpClient) { }
 
-  getPaged(page: number = 1, pageSize: number = 50, term?: string): Observable<PagedResult<ClienteDTO>> {
-    let url = `${this.endpoint}/paged?page=${page}&pageSize=${pageSize}`;
-    if (term) url += `&term=${encodeURIComponent(term)}`;
-
-    return this.api.get<PagedResult<ClienteDTO>>(url).pipe(
-      catchError(() => of(this.getLocalPaged(page, pageSize, term)))
-    );
+  getAll(lang: string = 'es'): Observable<Cliente[]> {
+    return this.http.get<Cliente[]>(this.apiUrl, {
+      params: { lang }
+    });
   }
 
-  getAll(): Observable<ClienteDTO[]> {
-    return this.api.get<ClienteDTO[]>(this.endpoint).pipe(
-      catchError(() => of(this.getLocalItems()))
-    );
+  getById(id: number, lang: string = 'es'): Observable<Cliente> {
+    return this.http.get<Cliente>(`${this.apiUrl}/${id}`, {
+      params: { lang }
+    });
   }
 
-  getById(id: number): Observable<ClienteDTO> {
-    return this.api.get<ClienteDTO>(`${this.endpoint}/${id}`).pipe(
-      catchError(() => {
-        const item = this.getLocalItems().find(x => x.id === id);
-        return item ? of(item) : throwError(() => new Error('Cliente no encontrado'));
-      })
-    );
+  create(cliente: Cliente, lang: string = 'es'): Observable<Cliente> {
+    return this.http.post<Cliente>(this.apiUrl, cliente, {
+      params: { lang }
+    });
   }
 
-  create(dto: ClienteDTO): Observable<ClienteDTO> {
-    return this.api.post<ClienteDTO>(this.endpoint, dto).pipe(
-      catchError(() => {
-        const items = this.getLocalItems();
-        const id = this.getNextId(items);
-        const item: ClienteDTO = { ...dto, id };
-        items.push(item);
-        this.setLocalItems(items);
-        return of(item);
-      })
-    );
-  }
-
-  update(id: number, dto: ClienteDTO): Observable<ClienteDTO> {
-    return this.api.put<ClienteDTO>(`${this.endpoint}/${id}`, dto).pipe(
-      catchError(() => {
-        const items = this.getLocalItems();
-        const index = items.findIndex(x => x.id === id);
-        if (index === -1) {
-          return throwError(() => new Error('Cliente no encontrado'));
-        }
-        items[index] = { ...items[index], ...dto, id };
-        this.setLocalItems(items);
-        return of(items[index]);
-      })
-    );
+  update(id: number, cliente: Cliente, lang: string = 'es'): Observable<Cliente> {
+    return this.http.put<Cliente>(`${this.apiUrl}/${id}`, cliente, {
+      params: { lang }
+    });
   }
 
   delete(id: number): Observable<void> {
-    return this.api.delete<void>(`${this.endpoint}/${id}`).pipe(
-      catchError(() => {
-        const items = this.getLocalItems().filter(x => x.id !== id);
-        this.setLocalItems(items);
-        return of(void 0);
-      })
-    );
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
-  private getLocalPaged(page: number, pageSize: number, term?: string): PagedResult<ClienteDTO> {
-    const filtered = this.filterByTerm(this.getLocalItems(), term);
-    const start = (page - 1) * pageSize;
-    return {
-      items: filtered.slice(start, start + pageSize),
-      total: filtered.length
-    };
+  addOrUpdateTranslation(id: number, lang: string, descripcion: string): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/${id}/translation`, null, {
+      params: { lang, descripcion }
+    });
   }
 
-  private filterByTerm(items: ClienteDTO[], term?: string): ClienteDTO[] {
-    const text = (term || '').trim().toLowerCase();
-    if (!text) return items;
+  getPaged(page: number, pageSize: number, search?: string, lang: string = 'es'): Observable<{ items: Cliente[]; total: number }> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('pageSize', pageSize.toString())
+      .set('lang', lang);
+    if (search) params = params.set('search', search);
 
-    return items.filter(item =>
-      [item.codigo, item.nombre, item.telefono, item.email, item.direccion]
-        .some(value => (value ?? '').toString().toLowerCase().includes(text))
-    );
-  }
-
-  private getLocalItems(): ClienteDTO[] {
-    try {
-      if (typeof localStorage === 'undefined') return [];
-      const raw = localStorage.getItem(this.storageKey);
-      if (!raw) return [];
-      const parsed = JSON.parse(raw);
-      return Array.isArray(parsed) ? parsed : [];
-    } catch {
-      return [];
-    }
-  }
-
-  private setLocalItems(items: ClienteDTO[]): void {
-    try {
-      if (typeof localStorage === 'undefined') return;
-      localStorage.setItem(this.storageKey, JSON.stringify(items));
-    } catch {
-      // ignore
-    }
-  }
-
-  private getNextId(items: ClienteDTO[]): number {
-    return items.length > 0 ? Math.max(...items.map(x => x.id || 0)) + 1 : 1;
+    return this.http.get<{ items: Cliente[]; total: number }>(`${this.apiUrl}/paged`, { params });
   }
 }

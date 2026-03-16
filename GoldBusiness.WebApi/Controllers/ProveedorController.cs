@@ -8,26 +8,19 @@ using System.Globalization;
 namespace GoldBusiness.WebApi.Controllers
 {
     /// <summary>
-    /// Controlador para gestión de Proveedores.
-    /// Gestiona información de clientes, proveedores y terceros del negocio.
+    /// Controlador para gestiï¿½n de Proveedores.
+    /// Gestiona informaciï¿½n de clientes, proveedores y terceros del negocio.
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
     [Authorize(Policy = "ERPAdminOrFullAccess")]
-    public class ProveedorController : BaseEntityController
+    public class ProveedorController(IProveedorService service, IStringLocalizer<GoldBusiness.Domain.Resources.ValidationMessages> localizer) : BaseEntityController(localizer)
     {
-        private readonly IProveedorService _service;
-
-        public ProveedorController(
-            IProveedorService service,
-            IStringLocalizer<GoldBusiness.Domain.Resources.ValidationMessages> localizer) : base(localizer)
-        {
-            _service = service;
-        }
+        private readonly IProveedorService _service = service;
 
         /// <summary>
         /// Obtiene todos los Proveedores.
-        /// El idioma se detecta automáticamente del header Accept-Language.
+        /// El idioma se detecta automï¿½ticamente del header Accept-Language.
         /// </summary>
         /// <returns>Lista de Proveedores localizados</returns>
         [HttpGet]
@@ -39,7 +32,7 @@ namespace GoldBusiness.WebApi.Controllers
 
         /// <summary>
         /// Obtiene un Proveedor por ID.
-        /// El idioma se detecta automáticamente del header Accept-Language.
+        /// El idioma se detecta automï¿½ticamente del header Accept-Language.
         /// </summary>
         /// <param name="id">ID del Proveedor</param>
         /// <returns>Proveedor localizado</returns>
@@ -53,7 +46,7 @@ namespace GoldBusiness.WebApi.Controllers
 
         /// <summary>
         /// Crea un nuevo Proveedor.
-        /// El idioma se detecta automáticamente del header Accept-Language.
+        /// El idioma se detecta automï¿½ticamente del header Accept-Language.
         /// </summary>
         /// <param name="dto">Datos del nuevo Proveedor</param>
         /// <returns>Proveedor creado</returns>
@@ -82,7 +75,7 @@ namespace GoldBusiness.WebApi.Controllers
 
         /// <summary>
         /// Actualiza un Proveedor existente.
-        /// El idioma se detecta automáticamente del header Accept-Language.
+        /// El idioma se detecta automï¿½ticamente del header Accept-Language.
         /// </summary>
         /// <param name="id">ID del Proveedor a actualizar</param>
         /// <param name="dto">Datos actualizados del Proveedor</param>
@@ -110,11 +103,11 @@ namespace GoldBusiness.WebApi.Controllers
         }
 
         /// <summary>
-        /// Agrega o actualiza una traducción para un Proveedor.
+        /// Agrega o actualiza una traducciï¿½n para un Proveedor.
         /// </summary>
         /// <param name="id">ID del Proveedor</param>
-        /// <param name="dto">Datos de la traducción (idioma y texto)</param>
-        /// <returns>Resultado de la operación</returns>
+        /// <param name="dto">Datos de la traducciï¿½n (idioma y texto)</param>
+        /// <returns>Resultado de la operaciï¿½n</returns>
         [HttpPost("{id}/translations")]
         public async Task<IActionResult> AddOrUpdateTranslation(int id, [FromBody] TranslationInputDTO dto)
         {

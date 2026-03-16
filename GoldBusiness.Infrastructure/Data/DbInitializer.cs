@@ -795,7 +795,7 @@ namespace GoldBusiness.Infrastructure.Data
 
             var establecimiento = new[]
             {
-                new Establecimiento("CHK001", "DESARROLLO DE SOFTWARE", 1, "system"),
+                new Establecimiento("CHK001", "DESARROLLO DE SOFTWARE", 1, "CALLE 172 #17830 E/ 180 Y 182, REPARTO 1ERO DE MAYO", "+5355152424", 28, 420, 11093, 198950, "system"),
             };
 
             context.Establecimiento.AddRange(establecimiento);

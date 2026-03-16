@@ -1,7 +1,7 @@
 ﻿using GoldBusiness.Domain.Exceptions;
 using GoldBusiness.Domain.Translation;
 using GoldBusiness.Domain.Helpers;
-using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace GoldBusiness.Domain.Entities
 {
@@ -19,17 +19,24 @@ namespace GoldBusiness.Domain.Entities
         public string BicoSwift { get; private set; } = string.Empty;
         public decimal Iva { get; private set; }
         public string Direccion { get; private set; } = string.Empty;
-        public string Municipio { get; private set; } = string.Empty;
-        public string Provincia { get; private set; } = string.Empty;
-        public string CodPostal { get; private set; } = string.Empty;
+        public string Telefono1 { get; private set; } = string.Empty;
+        public string Telefono2 { get; private set; } = string.Empty;
+        public int? PaisId { get; private set; }
+        public int? ProvinciaId { get; private set; }
+        public int? MunicipioId { get; private set; }
+        public int? CodigoPostalId { get; private set; }
         public string Web { get; private set; } = string.Empty;
         public string Email1 { get; private set; } = string.Empty;
         public string Email2 { get; private set; } = string.Empty;
-        public string Telefono1 { get; private set; } = string.Empty;
-        public string Telefono2 { get; private set; } = string.Empty;
         public string Fax1 { get; private set; } = string.Empty;
         public string Fax2 { get; private set; } = string.Empty;
         public bool Cancelado { get; private set; }
+
+        // Propiedades de navegación
+        public Pais? Pais { get; private set; }
+        public Provincia? Provincia { get; private set; }
+        public Municipio? Municipio { get; private set; }
+        public CodigoPostal? CodigoPostal { get; private set; }
 
         // Colecciones de navegación (read-only)
         public IReadOnlyCollection<ClienteTranslation> Translations => _translations;
@@ -48,9 +55,10 @@ namespace GoldBusiness.Domain.Entities
             string? bicoSwift,
             decimal iva,
             string? direccion,
-            string? municipio,
-            string? provincia,
-            string? codPostal,
+            int? paisId,
+            int? provinciaId,
+            int? municipioId,
+            int? codigoPostalId,
             string? web,
             string? email1,
             string? email2,
@@ -67,19 +75,16 @@ namespace GoldBusiness.Domain.Entities
             SetBicoSwift(bicoSwift ?? string.Empty);
             SetIva(iva);
             SetDireccion(direccion ?? string.Empty);
-            SetMunicipio(municipio ?? string.Empty);
-            SetProvincia(provincia ?? string.Empty);
-            SetCodPostal(codPostal ?? string.Empty);
+            PaisId = paisId;
+            ProvinciaId = provinciaId;
+            MunicipioId = municipioId;
+            CodigoPostalId = codigoPostalId;
             SetWeb(web ?? string.Empty);
-            SetEmails(email1 ?? string.Empty);
-            SetEmails(email2 ?? string.Empty);
-            SetTelefonos(telefono1 ?? string.Empty);
-            SetTelefonos(telefono2 ?? string.Empty);
-            SetFaxes(fax1 ?? string.Empty);
-            SetFaxes(fax2 ?? string.Empty);
+            SetEmails(email1 ?? string.Empty, email2 ?? string.Empty);
+            SetTelefonos(telefono1 ?? string.Empty, telefono2 ?? string.Empty, null);
+            SetFaxes(fax1 ?? string.Empty, fax2 ?? string.Empty);
             EstablecerCreador(creadoPor);
             Cancelado = false;
-            Iva = 0;
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -145,28 +150,12 @@ namespace GoldBusiness.Domain.Entities
             Direccion = direccion?.Trim() ?? string.Empty;
         }
 
-        public void SetMunicipio(string municipio)
+        public void SetUbicacion(int? paisId, int? provinciaId, int? municipioId, int? codigoPostalId)
         {
-            if (!string.IsNullOrWhiteSpace(municipio) && municipio.Length > 50)
-                throw new DomainException("El municipio no puede exceder 50 caracteres.");
-
-            Municipio = municipio?.Trim() ?? string.Empty;
-        }
-
-        public void SetProvincia(string provincia)
-        {
-            if (!string.IsNullOrWhiteSpace(provincia) && provincia.Length > 50)
-                throw new DomainException("La provincia no puede exceder 50 caracteres.");
-
-            Provincia = provincia?.Trim() ?? string.Empty;
-        }
-
-        public void SetCodPostal(string codPostal)
-        {
-            if (!string.IsNullOrWhiteSpace(codPostal) && codPostal.Length > 5)
-                throw new DomainException("El código postal no puede exceder 5 caracteres.");
-
-            CodPostal = codPostal?.Trim() ?? string.Empty;
+            PaisId = paisId;
+            ProvinciaId = provinciaId;
+            MunicipioId = municipioId;
+            CodigoPostalId = codigoPostalId;
         }
 
         public void SetWeb(string web)
@@ -193,7 +182,7 @@ namespace GoldBusiness.Domain.Entities
                 if (email1.Length > 256)
                     throw new DomainException("El email 1 no puede exceder 256 caracteres.");
 
-                if (!System.Text.RegularExpressions.Regex.IsMatch(email1, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+                if (!Regex.IsMatch(email1, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
                     throw new DomainException("El email 1 no es válido.");
             }
 
@@ -202,7 +191,7 @@ namespace GoldBusiness.Domain.Entities
                 if (email2.Length > 256)
                     throw new DomainException("El email 2 no puede exceder 256 caracteres.");
 
-                if (!System.Text.RegularExpressions.Regex.IsMatch(email2, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+                if (!Regex.IsMatch(email2, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
                     throw new DomainException("El email 2 no es válido.");
             }
 
@@ -210,14 +199,14 @@ namespace GoldBusiness.Domain.Entities
             Email2 = email2?.Trim() ?? string.Empty;
         }
 
-        public void SetTelefonos(string telefono1, string telefono2 = "")
+        public void SetTelefonos(string telefono1, string telefono2, Pais? pais)
         {
             if (!string.IsNullOrWhiteSpace(telefono1))
             {
                 if (telefono1.Length > 50)
                     throw new DomainException("El teléfono 1 no puede exceder 50 caracteres.");
 
-                ValidarFormatoTelefono(telefono1, "teléfono 1");
+                ValidarTelefonoConPais(telefono1, "teléfono 1", pais);
             }
 
             if (!string.IsNullOrWhiteSpace(telefono2))
@@ -225,37 +214,21 @@ namespace GoldBusiness.Domain.Entities
                 if (telefono2.Length > 50)
                     throw new DomainException("El teléfono 2 no puede exceder 50 caracteres.");
 
-                ValidarFormatoTelefono(telefono2, "teléfono 2");
+                ValidarTelefonoConPais(telefono2, "teléfono 2", pais);
             }
 
             Telefono1 = telefono1?.Trim() ?? string.Empty;
             Telefono2 = telefono2?.Trim() ?? string.Empty;
         }
 
-        private void ValidarFormatoTelefono(string telefono, string campo)
+        private void ValidarTelefonoConPais(string telefono, string campo, Pais? pais)
         {
-            // Limpiar el teléfono
-            var telefonoLimpio = telefono.TrimStart().StartsWith("+")
-                ? "+" + System.Text.RegularExpressions.Regex.Replace(telefono, @"[^\d]", "")
-                : System.Text.RegularExpressions.Regex.Replace(telefono, @"[^\d]", "");
-
-            // Validar formatos por país
-            var cubaRegex = new System.Text.RegularExpressions.Regex(@"^(?:\+?53)?[2-9]\d{7}$");
-            var espanaRegex = new System.Text.RegularExpressions.Regex(@"^(?:\+?34)?[6-9]\d{8}$");
-            var usaRegex = new System.Text.RegularExpressions.Regex(@"^(?:\+?1)?[2-9]\d{9}$");
-            var franciaRegex = new System.Text.RegularExpressions.Regex(@"^(?:\+?33)?[1-9]\d{8}$");
-
-            var esValido = cubaRegex.IsMatch(telefonoLimpio) ||
-                          espanaRegex.IsMatch(telefonoLimpio) ||
-                          usaRegex.IsMatch(telefonoLimpio) ||
-                          franciaRegex.IsMatch(telefonoLimpio);
-
-            if (!esValido)
+            // Validar formato según país si está disponible
+            if (pais != null && !string.IsNullOrWhiteSpace(pais.RegexTelefono))
             {
-                throw new DomainException(
-                    $"El {campo} no tiene un formato válido. " +
-                    "Formatos aceptados: Cuba (+53 8 dígitos), España (+34 9 dígitos), " +
-                    "EE.UU. (+1 10 dígitos), Francia (+33 10 dígitos).");
+                var regex = new Regex(pais.RegexTelefono);
+                if (!regex.IsMatch(telefono))
+                    throw new DomainException($"El {campo} no cumple con el formato esperado. Ejemplo: {pais.FormatoEjemplo}");
             }
         }
 
@@ -269,6 +242,66 @@ namespace GoldBusiness.Domain.Entities
 
             Fax1 = fax1?.Trim() ?? string.Empty;
             Fax2 = fax2?.Trim() ?? string.Empty;
+        }
+
+        public void Actualizar(
+            string descripcion,
+            string? nif,
+            string? iban,
+            string? bicoSwift,
+            decimal iva,
+            string? direccion,
+            int? paisId,
+            int? provinciaId,
+            int? municipioId,
+            int? codigoPostalId,
+            string? web,
+            string? email1,
+            string? email2,
+            string? telefono1,
+            string? telefono2,
+            string? fax1,
+            string? fax2,
+            Pais? pais,
+            string modificadoPor)
+        {
+            SetDescripcion(descripcion);
+            SetNif(nif ?? string.Empty);
+            SetIban(iban ?? string.Empty);
+            SetBicoSwift(bicoSwift ?? string.Empty);
+            SetIva(iva);
+            SetDireccion(direccion ?? string.Empty);
+            SetUbicacion(paisId, provinciaId, municipioId, codigoPostalId);
+            SetWeb(web ?? string.Empty);
+            SetEmails(email1 ?? string.Empty, email2 ?? string.Empty);
+            SetTelefonos(telefono1 ?? string.Empty, telefono2 ?? string.Empty, pais);
+            SetFaxes(fax1 ?? string.Empty, fax2 ?? string.Empty);
+            ActualizarAuditoria(modificadoPor);
+        }
+
+        public void Cancelar(string modificadoPor)
+        {
+            Cancelado = true;
+            ActualizarAuditoria(modificadoPor);
+        }
+
+        public void Activar(string modificadoPor)
+        {
+            Cancelado = false;
+            ActualizarAuditoria(modificadoPor);
+        }
+
+        public void SoftDelete(string modificadoPor)
+        {
+            Cancelado = true;
+            ActualizarAuditoria(modificadoPor);
+        }
+
+        public void Reactivar(string descripcion, string modificadoPor)
+        {
+            SetDescripcion(descripcion);
+            Cancelado = false;
+            ActualizarAuditoria(modificadoPor);
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -298,81 +331,11 @@ namespace GoldBusiness.Domain.Entities
             if (match != null && !string.IsNullOrWhiteSpace(match.Descripcion))
                 return match.Descripcion;
 
-            if (!string.IsNullOrWhiteSpace(Descripcion))
-                return Descripcion;
-
             var fallbackMatch = _translations.FirstOrDefault(t => string.Equals(t.Language, fb, StringComparison.OrdinalIgnoreCase));
-            if (fallbackMatch != null) return fallbackMatch.Descripcion;
+            if (fallbackMatch != null && !string.IsNullOrWhiteSpace(fallbackMatch.Descripcion))
+                return fallbackMatch.Descripcion;
 
-            return string.Empty;
-        }
-
-        // ═══════════════════════════════════════════════════════════════
-        // 🔧 MÉTODOS DE ACTUALIZACIÓN Y ESTADO
-        // ═══════════════════════════════════════════════════════════════
-
-        public void Update(
-            string descripcion,
-            string nif,
-            string iban,
-            string bicoSwift,
-            decimal iva,
-            string direccion,
-            string municipio,
-            string provincia,
-            string codPostal,
-            string web,
-            string email1,
-            string email2,
-            string telefono1,
-            string telefono2,
-            string fax1,
-            string fax2,
-            string modificadoPor)
-        {
-            SetDescripcion(descripcion);
-            SetNif(nif);
-            SetIban(iban);
-            SetBicoSwift(bicoSwift);
-            SetIva(iva);
-            SetDireccion(direccion);
-            SetMunicipio(municipio);
-            SetProvincia(provincia);
-            SetCodPostal(codPostal);
-            SetWeb(web);
-            SetEmails(email1, email2);
-            SetTelefonos(telefono1, telefono2);
-            SetFaxes(fax1, fax2);
-            ActualizarAuditoria(modificadoPor);
-        }
-
-        public void SoftDelete(string modificadoPor)
-        {
-            if (Cancelado)
-                throw new DomainException("El cliente ya está cancelado.");
-
-            Cancelado = true;
-            ActualizarAuditoria(modificadoPor);
-        }
-
-        public void Reactivar(string? descripcion, string modificadoPor)
-        {
-            if (!string.IsNullOrWhiteSpace(descripcion))
-            {
-                SetDescripcion(descripcion);
-            }
-
-            Cancelado = false;
-            ActualizarAuditoria(modificadoPor);
-        }
-
-        // ═══════════════════════════════════════════════════════════════
-        // 📊 MÉTODOS DE CONSULTA
-        // ═══════════════════════════════════════════════════════════════
-
-        public string GetCodigoDescripcion()
-        {
-            return $"{Codigo} | {Descripcion}";
+            return Descripcion;
         }
     }
 }

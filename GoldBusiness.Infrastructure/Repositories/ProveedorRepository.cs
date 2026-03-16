@@ -1,6 +1,7 @@
 using GoldBusiness.Domain.Entities;
 using GoldBusiness.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace GoldBusiness.Infrastructure.Repositories
 {
@@ -15,63 +16,97 @@ namespace GoldBusiness.Infrastructure.Repositories
 
         public async Task<IEnumerable<Proveedor>> GetAllAsync()
             => await _context.Proveedor
-                .Where(g => !g.Cancelado)
-                .Include(g => g.Translations)
-                .Include(g => g.CuentasCobrarPagar)
+                .Include(p => p.Pais)
+                .Include(p => p.Provincia)
+                .Include(p => p.Municipio)
+                .Include(p => p.CodigoPostal)
+                .Where(p => !p.Cancelado)
+                .OrderBy(p => p.Codigo)
                 .ToListAsync();
 
         public async Task<Proveedor?> GetByIdAsync(int id)
             => await _context.Proveedor
-                .Include(g => g.Translations)
-                .Include(g => g.CuentasCobrarPagar)
-                .FirstOrDefaultAsync(g => g.Id == id);
+                .Include(p => p.Pais)
+                .Include(p => p.Provincia)
+                .Include(p => p.Municipio)
+                .Include(p => p.CodigoPostal)
+                .FirstOrDefaultAsync(p => p.Id == id);
 
         public async Task<Proveedor?> GetByCodigoAsync(string codigo, bool includeCanceled = false)
+            => await _context.Proveedor
+                .Include(p => p.Pais)
+                .Include(p => p.Provincia)
+                .Include(p => p.Municipio)
+                .Include(p => p.CodigoPostal)
+                .FirstOrDefaultAsync(p => p.Codigo == codigo && (includeCanceled || !p.Cancelado));
+
+        public async Task<bool> ExistsByCodigoAsync(string codigo, int? excludeId = null, bool includeCanceled = false)
         {
             var query = _context.Proveedor
-                .Include(g => g.Translations)
-                .Include(g => g.CuentasCobrarPagar)
-                .Where(g => g.Codigo == codigo);
-
-            if (!includeCanceled)
-                query = query.Where(g => !g.Cancelado);
-
-            return await query.FirstOrDefaultAsync();
-        }
-
-        public async Task<bool> ExistsByCodigoAsync(string codigo, int? excludeId = null, bool onlyActive = true)
-        {
-            var query = _context.Proveedor.Where(g => g.Codigo == codigo);
-
-            if (onlyActive)
-                query = query.Where(g => !g.Cancelado);
+                .Where(p => p.Codigo == codigo && (includeCanceled || !p.Cancelado));
 
             if (excludeId.HasValue)
-                query = query.Where(g => g.Id != excludeId.Value);
+            {
+                query = query.Where(p => p.Id != excludeId.Value);
+            }
 
             return await query.AnyAsync();
         }
 
         public async Task AddAsync(Proveedor entity)
         {
-            _context.Proveedor.Add(entity);
+            await _context.Proveedor.AddAsync(entity);
             await _context.SaveChangesAsync();
-
-            // Cargar traducciones y sublineas (y sus traducciones) para la entidad en memoria
-            await _context.Entry(entity)
-                .Collection(e => e.Translations)
-                .LoadAsync();
         }
 
         public async Task UpdateAsync(Proveedor entity)
         {
             _context.Proveedor.Update(entity);
             await _context.SaveChangesAsync();
+        }
 
-            // Asegurar que las traducciones y sublineas quedan cargadas
-            await _context.Entry(entity)
-                .Collection(e => e.Translations)
-                .LoadAsync();
+        public async Task DeleteAsync(int id)
+        {
+            var entity = await GetByIdAsync(id);
+            if (entity != null)
+            {
+                _context.Proveedor.Remove(entity);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        // Implementación de GetPagedAsync
+        public async Task<(IEnumerable<Proveedor> Items, int Total)> GetPagedAsync(int page, int pageSize, string? search = null)
+        {
+            var query = _context.Proveedor
+                .AsNoTracking()
+                .Include(p => p.Pais)
+                .Include(p => p.Provincia)
+                .Include(p => p.Municipio)
+                .Include(p => p.CodigoPostal)
+                .Where(p => !p.Cancelado);
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var lower = search.ToLower();
+                query = query.Where(p =>
+                    p.Codigo.ToLower().Contains(lower) ||
+                    p.Descripcion.ToLower().Contains(lower) ||
+                    (p.Nif != null && p.Nif.ToLower().Contains(lower)) ||
+                    (p.Email1 != null && p.Email1.ToLower().Contains(lower)) ||
+                    (p.Telefono1 != null && p.Telefono1.ToLower().Contains(lower))
+                );
+            }
+
+            var total = await query.CountAsync();
+
+            var items = await query
+                .OrderBy(p => p.Descripcion)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, total);
         }
     }
 }

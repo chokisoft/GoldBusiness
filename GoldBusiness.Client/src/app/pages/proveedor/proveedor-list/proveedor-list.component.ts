@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { finalize, skip } from 'rxjs/operators';
 import { LanguageService } from '../../../services/language.service';
-import { ProveedorDTO, ProveedorService } from '../../../services/proveedor.service';
+import { Proveedor, ProveedorService } from '../../../services/proveedor.service';
 
 @Component({
   selector: 'app-proveedor-list',
@@ -10,7 +10,7 @@ import { ProveedorDTO, ProveedorService } from '../../../services/proveedor.serv
   styleUrl: './proveedor-list.component.css'
 })
 export class ProveedorListComponent implements OnInit, OnDestroy {
-  proveedores: ProveedorDTO[] = [];
+  proveedores: Proveedor[] = [];
   loading = false;
   searching = false;
   error: string | null = null;

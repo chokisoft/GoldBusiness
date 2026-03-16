@@ -7,10 +7,6 @@ using System.Globalization;
 
 namespace GoldBusiness.WebApi.Controllers
 {
-    /// <summary>
-    /// Controlador para gestión de Clientes.
-    /// Gestiona información de clientes, proveedores y terceros del negocio.
-    /// </summary>
     [ApiController]
     [Route("api/[controller]")]
     [Authorize(Policy = "ERPAdminOrFullAccess")]
@@ -25,11 +21,6 @@ namespace GoldBusiness.WebApi.Controllers
             _service = service;
         }
 
-        /// <summary>
-        /// Obtiene todos los clientes.
-        /// El idioma se detecta automáticamente del header Accept-Language.
-        /// </summary>
-        /// <returns>Lista de clientes localizados</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ClienteDTO>>> Get()
         {
@@ -37,12 +28,6 @@ namespace GoldBusiness.WebApi.Controllers
             return Ok(await _service.GetAllAsync(lang));
         }
 
-        /// <summary>
-        /// Obtiene un cliente por ID.
-        /// El idioma se detecta automáticamente del header Accept-Language.
-        /// </summary>
-        /// <param name="id">ID del cliente</param>
-        /// <returns>Cliente localizado</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<ClienteDTO>> Get(int id)
         {
@@ -51,12 +36,6 @@ namespace GoldBusiness.WebApi.Controllers
             return dto == null ? NotFound() : Ok(dto);
         }
 
-        /// <summary>
-        /// Crea un nuevo cliente.
-        /// El idioma se detecta automáticamente del header Accept-Language.
-        /// </summary>
-        /// <param name="dto">Datos del nuevo cliente</param>
-        /// <returns>Cliente creado</returns>
         [HttpPost]
         public async Task<ActionResult<ClienteDTO>> Post([FromBody] ClienteDTO dto)
         {
@@ -66,7 +45,6 @@ namespace GoldBusiness.WebApi.Controllers
                 var usuario = GetCurrentUser();
                 var result = await _service.CreateAsync(dto, usuario, lang);
 
-                // Detectar si fue reactivado
                 if (WasReactivated(result.FechaHoraCreado, result.FechaHoraModificado))
                 {
                     return CreateReactivatedResponse(result, result.Codigo);
@@ -80,13 +58,6 @@ namespace GoldBusiness.WebApi.Controllers
             }
         }
 
-        /// <summary>
-        /// Actualiza un cliente existente.
-        /// El idioma se detecta automáticamente del header Accept-Language.
-        /// </summary>
-        /// <param name="id">ID del cliente a actualizar</param>
-        /// <param name="dto">Datos actualizados del cliente</param>
-        /// <returns>Cliente actualizado</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] ClienteDTO dto)
         {
@@ -96,11 +67,6 @@ namespace GoldBusiness.WebApi.Controllers
             return Ok(result);
         }
 
-        /// <summary>
-        /// Elimina (soft delete) un cliente.
-        /// </summary>
-        /// <param name="id">ID del cliente a eliminar</param>
-        /// <returns>Cliente eliminado</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -109,12 +75,6 @@ namespace GoldBusiness.WebApi.Controllers
             return dto == null ? NotFound() : Ok(dto);
         }
 
-        /// <summary>
-        /// Agrega o actualiza una traducción para un cliente.
-        /// </summary>
-        /// <param name="id">ID del cliente</param>
-        /// <param name="dto">Datos de la traducción (idioma y texto)</param>
-        /// <returns>Resultado de la operación</returns>
         [HttpPost("{id}/translations")]
         public async Task<IActionResult> AddOrUpdateTranslation(int id, [FromBody] TranslationInputDTO dto)
         {
@@ -143,6 +103,13 @@ namespace GoldBusiness.WebApi.Controllers
                 ClienteId = id,
                 Language = lang
             });
+        }
+
+        [HttpGet("paged")]
+        public async Task<IActionResult> GetPaged(int page = 1, int pageSize = 10, string? search = null, string lang = "es")
+        {
+            var (items, total) = await _service.GetPagedAsync(page, pageSize, search, lang);
+            return Ok(new { items, total, page, pageSize });
         }
     }
 }

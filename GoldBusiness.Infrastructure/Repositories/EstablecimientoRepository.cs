@@ -15,39 +15,45 @@ namespace GoldBusiness.Infrastructure.Repositories
 
         public async Task<IEnumerable<Establecimiento>> GetAllAsync()
             => await _context.Establecimiento
-                .Where(e => !e.Cancelado)
-                .Include(e => e.Translations)
                 .Include(e => e.Negocio)
-                    .ThenInclude(n => n.Translations)
+                .Include(e => e.Pais)
+                .Include(e => e.Provincia)
+                .Include(e => e.Municipio)
+                .Include(e => e.CodigoPostal)
+                .Where(e => !e.Cancelado)
+                .OrderBy(e => e.Codigo)
                 .ToListAsync();
 
-        public async Task<(IEnumerable<Establecimiento> Items, int Total)> GetPagedAsync(int page, int pageSize, string? termino = null, int? negocioId = null)
+        public async Task<(IEnumerable<Establecimiento> Items, int Total)> GetPagedAsync(
+            int page, 
+            int pageSize, 
+            string? termino = null, 
+            int? negocioId = null)
         {
             var query = _context.Establecimiento
-                .AsNoTracking()
-                .Where(e => !e.Cancelado);
+                .Include(e => e.Negocio)
+                .Include(e => e.Pais)
+                .Include(e => e.Provincia)
+                .Include(e => e.Municipio)
+                .Include(e => e.CodigoPostal)
+                .Where(e => !e.Cancelado)
+                .AsQueryable();
 
-            // Búsqueda en Código, Descripción y Negocio
-            if (!string.IsNullOrWhiteSpace(termino))
+            if (negocioId.HasValue)
             {
-                var lowerTerm = termino.ToLower();
-                query = query.Where(e =>
-                    e.Codigo.ToLower().Contains(lowerTerm) ||
-                    e.Descripcion.ToLower().Contains(lowerTerm) ||
-                    e.Negocio!.NombreNegocio.ToLower().Contains(lowerTerm)
-                );
+                query = query.Where(e => e.NegocioId == negocioId.Value);
             }
 
-            // Filtro por Negocio (opcional)
-            if (negocioId.HasValue)
-                query = query.Where(e => e.NegocioId == negocioId.Value);
+            if (!string.IsNullOrWhiteSpace(termino))
+            {
+                var terminoLower = termino.ToLower();
+                query = query.Where(e =>
+                    e.Codigo.ToLower().Contains(terminoLower) ||
+                    e.Descripcion.ToLower().Contains(terminoLower));
+            }
 
             var total = await query.CountAsync();
-
             var items = await query
-                .Include(e => e.Translations)
-                .Include(e => e.Negocio)
-                    .ThenInclude(n => n!.Translations)
                 .OrderBy(e => e.Codigo)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
@@ -58,42 +64,42 @@ namespace GoldBusiness.Infrastructure.Repositories
 
         public async Task<IEnumerable<Establecimiento>> GetByNegocioIdAsync(int negocioId)
             => await _context.Establecimiento
-                .Where(l => l.NegocioId == negocioId && !l.Cancelado)
-                .Include(l => l.Translations)
-                .Include(l => l.Negocio)
-                    .ThenInclude(e => e.Translations)
+                .Include(e => e.Negocio)
+                .Include(e => e.Pais)
+                .Include(e => e.Provincia)
+                .Include(e => e.Municipio)
+                .Include(e => e.CodigoPostal)
+                .Where(e => e.NegocioId == negocioId && !e.Cancelado)
+                .OrderBy(e => e.Codigo)
                 .ToListAsync();
 
         public async Task<Establecimiento?> GetByIdAsync(int id)
             => await _context.Establecimiento
-                .Include(e => e.Translations)
                 .Include(e => e.Negocio)
-                    .ThenInclude(n => n.Translations)
+                .Include(e => e.Pais)
+                .Include(e => e.Provincia)
+                .Include(e => e.Municipio)
+                .Include(e => e.CodigoPostal)
                 .FirstOrDefaultAsync(e => e.Id == id);
 
         public async Task<Establecimiento?> GetByCodigoAsync(string codigo, bool includeCanceled = false)
+            => await _context.Establecimiento
+                .Include(e => e.Negocio)
+                .Include(e => e.Pais)
+                .Include(e => e.Provincia)
+                .Include(e => e.Municipio)
+                .Include(e => e.CodigoPostal)
+                .FirstOrDefaultAsync(e => e.Codigo == codigo && (includeCanceled || !e.Cancelado));
+
+        public async Task<bool> ExistsByCodigoAsync(string codigo, int? excludeId = null, bool includeCanceled = false)
         {
             var query = _context.Establecimiento
-                .Include(e => e.Translations)
-                .Include(e => e.Negocio)
-                    .ThenInclude(n => n.Translations)
-                .Where(e => e.Codigo == codigo);
-
-            if (!includeCanceled)
-                query = query.Where(e => !e.Cancelado);
-
-            return await query.FirstOrDefaultAsync();
-        }
-
-        public async Task<bool> ExistsByCodigoAsync(string codigo, int? excludeId = null, bool onlyActive = true)
-        {
-            var query = _context.Establecimiento.Where(e => e.Codigo == codigo);
-
-            if (onlyActive)
-                query = query.Where(e => !e.Cancelado);
+                .Where(e => e.Codigo == codigo && (includeCanceled || !e.Cancelado));
 
             if (excludeId.HasValue)
+            {
                 query = query.Where(e => e.Id != excludeId.Value);
+            }
 
             return await query.AnyAsync();
         }
@@ -109,6 +115,16 @@ namespace GoldBusiness.Infrastructure.Repositories
         {
             _context.Establecimiento.Update(entity);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var entity = await GetByIdAsync(id);
+            if (entity != null)
+            {
+                _context.Establecimiento.Remove(entity);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { finalize, skip } from 'rxjs/operators';
-import { ClienteDTO, ClienteService } from '../../../services/cliente.service';
+import { Cliente, ClienteService } from '../../../services/cliente.service';
 import { LanguageService } from '../../../services/language.service';
 
 @Component({
@@ -10,7 +10,7 @@ import { LanguageService } from '../../../services/language.service';
   styleUrl: './cliente-list.component.css'
 })
 export class ClienteListComponent implements OnInit, OnDestroy {
-  clientes: ClienteDTO[] = [];
+  clientes: Cliente[] = [];
   loading = false;
   searching = false;
   error: string | null = null;

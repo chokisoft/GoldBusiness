@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ProveedorDTO, ProveedorService } from '../../../services/proveedor.service';
+import { Proveedor, ProveedorService } from '../../../services/proveedor.service';
 
 @Component({
   selector: 'app-proveedor-form',
   templateUrl: './proveedor-form.component.html',
-  styleUrl: './proveedor-form.component.css'
+  styleUrls: ['./proveedor-form.component.css']
 })
 export class ProveedorFormComponent implements OnInit {
   itemForm: FormGroup;
@@ -24,10 +24,10 @@ export class ProveedorFormComponent implements OnInit {
   ) {
     this.itemForm = this.fb.group({
       codigo: ['', [Validators.required, Validators.maxLength(20)]],
-      nombre: ['', [Validators.required, Validators.maxLength(120)]],
-      rfc: ['', Validators.maxLength(30)],
-      telefono: ['', Validators.maxLength(20)],
-      email: ['', [Validators.email, Validators.maxLength(100)]],
+      descripcion: ['', [Validators.required, Validators.maxLength(120)]], // antes: nombre
+      nif: ['', Validators.maxLength(30)], // antes: rfc
+      telefono1: ['', Validators.maxLength(20)], // antes: telefono
+      email1: ['', [Validators.email, Validators.maxLength(100)]], // antes: email
       direccion: ['', Validators.maxLength(200)]
     });
   }
@@ -68,7 +68,7 @@ export class ProveedorFormComponent implements OnInit {
     this.saving = true;
     this.error = null;
 
-    const formData: ProveedorDTO = {
+    const formData: Proveedor = {
       ...this.itemForm.value,
       id: this.itemId
     };
@@ -92,5 +92,4 @@ export class ProveedorFormComponent implements OnInit {
   onCancel(): void {
     this.router.navigate(['/nomencladores/proveedores']);
   }
-
 }

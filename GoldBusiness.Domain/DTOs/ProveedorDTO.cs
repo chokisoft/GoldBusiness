@@ -95,35 +95,18 @@ namespace GoldBusiness.Domain.DTOs
         )]
         public string? Direccion { get; set; }
 
-        [Display(
-            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Municipio),
-            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
-        )]
-        [StringLength(50,
-            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
-            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.MunicipioLongitud)
-        )]
-        public string? Municipio { get; set; }
+        // Relaciones geográficas por ID
+        public int? PaisId { get; set; }
+        public string? PaisDescripcion { get; set; }
 
-        [Display(
-            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Provincia),
-            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
-        )]
-        [StringLength(50,
-            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
-            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.ProvinciaLongitud)
-        )]
-        public string? Provincia { get; set; }
+        public int? ProvinciaId { get; set; }
+        public string? ProvinciaDescripcion { get; set; }
 
-        [Display(
-            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_CodPostal),
-            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
-        )]
-        [StringLength(5,
-            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
-            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.CodPostalLongitud)
-        )]
-        public string? CodPostal { get; set; }
+        public int? MunicipioId { get; set; }
+        public string? MunicipioDescripcion { get; set; }
+
+        public int? CodigoPostalId { get; set; }
+        public string? CodigoPostalCodigo { get; set; }
 
         [Display(
             Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Web),
@@ -171,14 +154,6 @@ namespace GoldBusiness.Domain.DTOs
             Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Telefono1),
             ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
         )]
-        [Phone(
-            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
-            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.TelefonoFormatoInvalido)
-        )]
-        [RegularExpression(@"^\d{4}-\d{4}$",
-            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
-            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.TelefonoFormato)
-        )]
         [StringLength(50,
             ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
             ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.TelefonoLongitud)
@@ -188,14 +163,6 @@ namespace GoldBusiness.Domain.DTOs
         [Display(
             Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Telefono2),
             ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
-        )]
-        [Phone(
-            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
-            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.TelefonoFormatoInvalido)
-        )]
-        [RegularExpression(@"^\d{4}-\d{4}$",
-            ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
-            ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.TelefonoFormato)
         )]
         [StringLength(50,
             ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
@@ -253,9 +220,6 @@ namespace GoldBusiness.Domain.DTOs
         )]
         public DateTime? FechaHoraModificado { get; set; }
 
-        /// <summary>
-        /// Propiedades calculadas.
-        /// </summary>
         [Display(
             Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_CantidadProductos),
             ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)

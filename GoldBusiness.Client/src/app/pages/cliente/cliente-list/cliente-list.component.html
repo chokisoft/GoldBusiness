@@ -58,14 +58,12 @@
 					<tbody>
 						<tr *ngFor="let item of clientes">
 							<td>{{ item.codigo }}</td>
-							<td>{{ item.nombre }}</td>
-							<td>{{ item.telefono || '-' }}</td>
-							<td>{{ item.email || '-' }}</td>
+							<td>{{ item.descripcion }}</td>
+							<td>{{ item.telefono1 || '-' }}</td>
+							<td>{{ item.email1 || '-' }}</td>
 							<td class="actions-column">
 								<div class="action-buttons">
-									<button class="btn btn-sm btn-info" [routerLink]="[item.id]" [title]="'common.view' | translate"><span>👁️</span></button>
-									<button class="btn btn-sm btn-warning" [routerLink]="['editar', item.id]" [title]="'common.edit' | translate"><span>✏️</span></button>
-									<button class="btn btn-sm btn-danger" (click)="delete(item.id!, item.nombre)" [title]="'common.delete' | translate"><span>🗑️</span></button>
+									<button class="btn btn-sm btn-danger" (click)="delete(item.id, item.descripcion)" [title]="'common.delete' | translate"><span>🗑️</span></button>
 								</div>
 							</td>
 						</tr>

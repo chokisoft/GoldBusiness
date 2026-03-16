@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { EstablecimientoService, EstablecimientoDTO } from '../../../services/establecimiento.service';
+import { Establecimiento, EstablecimientoService } from '../../../services/establecimiento.service';
 import { LocalidadService, LocalidadDTO } from '../../../services/localidad.service';
 
 @Component({
@@ -28,7 +28,7 @@ export class EstablecimientoFormComponent implements OnInit {
   ) {
     this.itemForm = this.fb.group({
       codigo: ['', [Validators.required, Validators.maxLength(10)]],
-      descripcion: ['', [Validators.required, Validators.maxLength(100)]], // ✅ descripcion
+      descripcion: ['', [Validators.required, Validators.maxLength(100)]],
       telefono: ['', Validators.maxLength(20)],
       email: ['', [Validators.email, Validators.maxLength(100)]],
       direccion: ['', Validators.maxLength(200)],
@@ -88,7 +88,7 @@ export class EstablecimientoFormComponent implements OnInit {
     this.saving = true;
     this.error = null;
 
-    const formData: EstablecimientoDTO = {
+    const formData: Establecimiento = {
       ...this.itemForm.value,
       id: this.itemId
     };

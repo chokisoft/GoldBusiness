@@ -46,7 +46,7 @@ namespace GoldBusiness.WebApi.Controllers
         {
             var lang = GetCurrentLanguage();
             var (items, total) = await _service.GetPagedAsync(page, pageSize, term, negocioId, lang);
-            return Ok(new { items, total });
+            return Ok(new { items, total, page, pageSize });
         }
 
         /// <summary>

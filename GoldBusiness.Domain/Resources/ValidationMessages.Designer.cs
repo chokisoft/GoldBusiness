@@ -817,6 +817,15 @@ namespace GoldBusiness.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Teléfono.
+        /// </summary>
+        public static string Field_Telefono {
+            get {
+                return ResourceManager.GetString("Field_Telefono", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Teléfono Principal.
         /// </summary>
         public static string Field_Telefono1 {
@@ -1348,7 +1357,7 @@ namespace GoldBusiness.Domain.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to El teléfono no es válido.
+        ///   Looks up a localized string similar to El teléfono no tiene un formato válido..
         /// </summary>
         public static string TelefonoFormatoInvalido {
             get {
@@ -1357,7 +1366,7 @@ namespace GoldBusiness.Domain.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to El teléfono no puede exceder 50 caracteres.
+        ///   Looks up a localized string similar to El teléfono no puede exceder {1} caracteres..
         /// </summary>
         public static string TelefonoLongitud {
             get {

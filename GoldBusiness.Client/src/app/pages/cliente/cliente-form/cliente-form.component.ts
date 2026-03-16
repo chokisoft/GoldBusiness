@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ClienteDTO, ClienteService } from '../../../services/cliente.service';
+import { Cliente, ClienteService } from '../../../services/cliente.service';
 
 @Component({
   selector: 'app-cliente-form',
@@ -68,7 +68,7 @@ export class ClienteFormComponent {
     this.saving = true;
     this.error = null;
 
-    const formData: ClienteDTO = {
+    const formData: Cliente = {
       ...this.itemForm.value,
       id: this.itemId
     };
