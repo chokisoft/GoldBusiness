@@ -1,7 +1,7 @@
 # Copilot Instructions
 
 ## General Guidelines
-- Prefiere respuestas en español.
+- Prefiere respuestas en español (es).
 - Mantén la encapsulación DDD y la lógica de solución existente (usa setters privados y métodos de dominio).
 - Mantén la compatibilidad con EF Core.
 - Al recargar datos de lista, no restablezcas la paginación; preserva currentPage a menos que quede fuera de rango.
@@ -22,16 +22,23 @@
 - Implementa la misma experiencia de generación de código para `Cuenta` como para `SubGrupoCuenta`: usa el dropdown de `SubGrupoCuenta` más un campo de entrada de código de usuario de 3 dígitos para componer el `Cuenta.codigo` de 8 dígitos (prefijo = `subgrupo.codigo` seleccionado (5) + 3 dígitos de usuario).
 - Usa una UI de cascada consistente en los formularios de Plan Cuenta: muestra 'Prefijo seleccionado' solo cuando exista un prefijo, desactiva la entrada de código de usuario cuando no se seleccione un prefijo, y coincide con el diseño/comportamiento del formulario de SubGrupoCuenta.
 - Alinear verticalmente el checkbox 'Deudora' en formularios del Plan de Cuenta y en SubGrupoCuenta para que quede centrado con respecto a los inputs en .form-row-three.
+- Prefiere que los selects en formularios de país/provincia/municipio/código postal permanezcan deshabilitados hasta seleccionar el padre; la cascada se maneja mediante valueChanges y los controles reactivos deben habilitarse/deshabilitarse con control.enable()/control.disable(); usar clases shared-select/shared-disabled y [attr.aria-disabled] para accesibilidad.
+- Al poblar los selects de país/provincia/municipio/código postal, habilita/deshabilita los Angular FormControls aguas abajo usando control.enable()/control.disable() para que los selects aparezcan inactivos hasta que se seleccione el padre.
+- Al cerrar la edición/detalle, navega de regreso a la vista de lista correspondiente (Cliente -> /nomencladores/clientes, Proveedor -> /nomencladores/proveedores, Establecimiento -> /organizacion/establecimientos). Prefiere usar Router.navigate en lugar de Location.back().
 
 ## Project-Specific Rules
 - Los endpoints deben ser paginados: Cliente y Proveedor deben implementar `GetPagedAsync`; los repositorios deben exponer `Query()`. Se requiere un DTO `PagedResult<T>`; los servicios del frontend deben tener `getPaged` y evitar faltas de importación de modelos.
 - El tipo de modelo Cliente está definido dentro de 'cliente.service.ts' (no 'cliente.model.ts'). No asumas un archivo separado cliente.model.ts; actualiza las importaciones para consumir la interfaz desde el archivo del servicio o crea un archivo de modelo adecuado si se prefiere.
+- Prefiere que los componentes usen `*DTO` en lugar de alias sin sufijo; prefiere opción 2 para coherencia.
 
 ## Code Style
 - Usa reglas de formato específicas.
 - Sigue las convenciones de nomenclatura.
 
 ## Memory
--  Prefiere respuestas en español (es).
+- Prefiere respuestas en español (es).
 - Alinear verticalmente el checkbox 'Deudora' en SubGrupoCuenta: centrar el bloque de checkbox con respecto a los inputs en .form-row-three (alineación vertical preferida).
 - No asumas que existen archivos de modelo TypeScript para Cliente; el proyecto define la interfaz Cliente dentro de 'cliente.service.ts'. Las recomendaciones futuras deben respetar eso y evitar sugerir 'cliente.model.ts' a menos que se solicite.
+- Prefiere que los selects en formularios de país/provincia/municipio/codigoPostal permanezcan deshabilitados hasta seleccionar el padre; la cascada se maneja mediante valueChanges y los controles reactivos deben habilitarse/deshabilitarse con control.enable()/control.disable(); usar clases shared-select/shared-disabled y [attr.aria-disabled] para accesibilidad.
+- Al poblar los selects de país/provincia/municipio/código postal, habilita/deshabilita los Angular FormControls aguas abajo usando control.enable()/control.disable() para que los selects aparezcan inactivos hasta que se seleccione el padre.
+- Al cerrar la edición/detalle, navega de regreso a la vista de lista correspondiente (Cliente -> /nomencladores/clientes, Proveedor -> /nomencladores/proveedores, Establecimiento -> /organizacion/establecimientos). Prefiere usar Router.navigate en lugar de Location.back().

@@ -28,6 +28,19 @@ namespace GoldBusiness.WebApi.Controllers
             return Ok(await _service.GetAllAsync(lang));
         }
 
+        [HttpGet("paged")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> GetPaged(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 50,
+            [FromQuery] string? term = null)
+        {
+            var lang = GetCurrentLanguage();
+            var (items, total) = await _service.GetPagedAsync(page, pageSize, term, lang);
+            return Ok(new { items, total });
+        }
+
+
         [HttpGet("{id}")]
         public async Task<ActionResult<ClienteDTO>> Get(int id)
         {
@@ -103,13 +116,6 @@ namespace GoldBusiness.WebApi.Controllers
                 ClienteId = id,
                 Language = lang
             });
-        }
-
-        [HttpGet("paged")]
-        public async Task<IActionResult> GetPaged(int page = 1, int pageSize = 10, string? search = null, string lang = "es")
-        {
-            var (items, total) = await _service.GetPagedAsync(page, pageSize, search, lang);
-            return Ok(new { items, total, page, pageSize });
         }
     }
 }

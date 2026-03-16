@@ -31,6 +31,16 @@ namespace GoldBusiness.Application.Services
                 .Select(dto => dto!)
                 .ToList();
 
+        public async Task<(IEnumerable<ClienteDTO> Items, int Total)> GetPagedAsync(int page, int pageSize, string? termino = null, string lang = "es")
+        {
+            var (items, total) = await _repo.GetPagedAsync(page, pageSize, termino);
+            var dtos = items.Select(l => MapToDTO(l, lang))
+                            .Where(dto => dto is not null)
+                            .Select(dto => dto!)
+                            .ToList();
+            return (dtos, total);
+        }
+
         public async Task<ClienteDTO?> GetByIdAsync(int id, string lang = "es")
             => MapToDTO(await _repo.GetByIdAsync(id), lang);
 
@@ -160,17 +170,6 @@ namespace GoldBusiness.Application.Services
 
             entity.AddOrUpdateTranslation(lang, descripcion, user ?? "system");
             await _repo.UpdateAsync(entity);
-        }
-
-        // Paginación: delega al repositorio y convierte a DTOs
-        public async Task<(IEnumerable<ClienteDTO> Items, int Total)> GetPagedAsync(int page, int pageSize, string? search, string lang = "es")
-        {
-            if (page < 1) page = 1;
-            if (pageSize < 1) pageSize = 10;
-
-            var (items, total) = await _repo.GetPagedAsync(page, pageSize, search);
-            var dtos = items.Select(c => MapToDTO(c, lang)!).ToList();
-            return (dtos, total);
         }
 
         private static ClienteDTO? MapToDTO(Cliente? g, string lang)

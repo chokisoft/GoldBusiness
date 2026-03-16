@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Location } from '@angular/common';
-import { Establecimiento, EstablecimientoService } from '../../../services/establecimiento.service';
+import { ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
+import { EstablecimientoDTO, EstablecimientoService } from '../../../services/establecimiento.service';
 
 @Component({
   selector: 'app-establecimiento-detail',
@@ -9,23 +9,20 @@ import { Establecimiento, EstablecimientoService } from '../../../services/estab
   styleUrls: ['./establecimiento-detail.component.css']
 })
 export class EstablecimientoDetailComponent implements OnInit {
-  item?: Establecimiento;
+  item?: EstablecimientoDTO;
   loading = false;
   error: string | null = null;
 
   constructor(
     private establecimientoService: EstablecimientoService,
     private route: ActivatedRoute,
-    private router: Router,
-    private location: Location
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       const id = +params['id'];
-      if (id) {
-        this.loadItem(id);
-      }
+      if (id) this.loadItem(id);
     });
   }
 
@@ -34,19 +31,19 @@ export class EstablecimientoDetailComponent implements OnInit {
     this.error = null;
 
     this.establecimientoService.getById(id).subscribe({
-      next: (item) => {
+      next: item => {
         this.item = item;
         this.loading = false;
       },
-      error: (error) => {
-        console.error('Error loading establecimiento:', error);
-        this.error = error.message || 'Error al cargar el establecimiento';
+      error: err => {
+        this.error = err.message || 'Error al cargar el establecimiento';
         this.loading = false;
       }
     });
   }
 
   goBack(): void {
-    this.location.back();
+    // Navigate to the correct list route
+    this.router.navigate(['/nomencladores/establecimiento']);
   }
 }

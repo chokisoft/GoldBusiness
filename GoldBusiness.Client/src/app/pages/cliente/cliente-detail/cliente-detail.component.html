@@ -1,87 +1,122 @@
 <div class="page-container">
-	<div class="page-header">
-		<div class="header-content">
-			<h1 class="page-title">👥 {{ 'clientes.detailTitle' | translate }}</h1>
-			<p class="page-subtitle">{{ 'common.information' | translate }}</p>
-		</div>
-		<div class="header-actions">
-			<button class="btn btn-warning" [routerLink]="['../editar', item?.id]">
-				<span class="btn-icon">✏️</span>
-				{{ 'common.edit' | translate }}
-			</button>
-			<button class="btn btn-secondary" (click)="goBack()">
-				<span class="btn-icon">↩️</span>
-				{{ 'common.back' | translate }}
-			</button>
-		</div>
-	</div>
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">👥 {{ 'clientes.detailTitle' | translate }}</h1>
+      <p class="page-subtitle">{{ 'common.information' | translate }}</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-warning" [routerLink]="['../editar', item?.id]">
+        <span class="btn-icon">✏️</span>
+        {{ 'common.edit' | translate }}
+      </button>
+      <button class="btn btn-secondary" (click)="goBack()">
+        <span class="btn-icon">↩️</span>
+        {{ 'common.back' | translate }}
+      </button>
+    </div>
+  </div>
 
-	<div class="alert alert-error" *ngIf="error">
-		<span class="alert-icon">⚠️</span>
-		{{ error }}
-	</div>
+  <div class="alert alert-error" *ngIf="error">
+    <span class="alert-icon">⚠️</span>
+    {{ error }}
+  </div>
 
-	<div class="card" *ngIf="!loading && item">
-		<div class="card-header">📊 {{ 'common.information' | translate }}</div>
-		<div class="card-body">
-			<div class="info-section">
-				<h3 class="section-title">🔑 {{ 'clientes.mainInfo' | translate }}</h3>
-				<div class="info-grid">
-					<div class="info-item">
-						<span class="info-label">{{ 'clientes.codigo' | translate }}</span>
-						<span class="info-value-large">{{ item.codigo }}</span>
-					</div>
-					<div class="info-item">
-						<span class="info-label">{{ 'clientes.nombre' | translate }}</span>
-						<span class="info-value">{{ item.descripcion }}</span>
-					</div>
-					<div class="info-item">
-						<span class="info-label">{{ 'clientes.telefono' | translate }}</span>
-						<span class="info-value">{{ item.telefono1 || '-' }}</span>
-					</div>
-					<div class="info-item">
-						<span class="info-label">{{ 'clientes.email' | translate }}</span>
-						<span class="info-value">{{ item.email1 || '-' }}</span>
-					</div>
-					<div class="info-item info-item-full">
-						<span class="info-label">{{ 'clientes.direccion' | translate }}</span>
-						<span class="info-value">{{ item.direccion || '-' }}</span>
-					</div>
-				</div>
-			</div>
+  <div class="card" *ngIf="!loading && item">
+    <div class="card-header">📊 {{ 'common.information' | translate }}</div>
+    <div class="card-body">
+      <div class="info-section">
+        <h3 class="section-title">🔑 {{ 'clientes.mainInfo' | translate }}</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">{{ 'clientes.codigo' | translate }}</span>
+            <span class="info-value-large">{{ item.codigo }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">{{ 'clientes.descripcion' | translate }}</span>
+            <span class="info-value">{{ item.descripcion }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">{{ 'clientes.nif' | translate }}</span>
+            <span class="info-value">{{ item.nif || '-' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">{{ 'clientes.iva' | translate }}</span>
+            <span class="info-value">{{ item.iva }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">{{ 'clientes.iban' | translate }}</span>
+            <span class="info-value">{{ item.iban || '-' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">{{ 'clientes.bic' | translate }}</span>
+            <span class="info-value">{{ item.bicoSwift || '-' }}</span>
+          </div>
+          <div class="info-item info-item-full">
+            <span class="info-label">{{ 'clientes.direccion' | translate }}</span>
+            <span class="info-value">{{ item.direccion || '-' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">{{ 'clientes.pais' | translate }}</span>
+            <span class="info-value">{{ item.paisDescripcion || '-' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">{{ 'clientes.provincia' | translate }}</span>
+            <span class="info-value">{{ item.provinciaDescripcion || '-' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">{{ 'clientes.municipio' | translate }}</span>
+            <span class="info-value">{{ item.municipioDescripcion || '-' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">{{ 'clientes.codigoPostal' | translate }}</span>
+            <span class="info-value">{{ item.codigoPostalCodigo || '-' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">{{ 'clientes.web' | translate }}</span>
+            <span class="info-value"><a *ngIf="item.web" [href]="item.web" target="_blank">{{ item.web }}</a><span *ngIf="!item.web">-</span></span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">{{ 'clientes.email1' | translate }}</span>
+            <span class="info-value">{{ item.email1 || '-' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">{{ 'clientes.email2' | translate }}</span>
+            <span class="info-value">{{ item.email2 || '-' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">{{ 'clientes.telefono1' | translate }}</span>
+            <span class="info-value">{{ item.telefono1 || '-' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">{{ 'clientes.telefono2' | translate }}</span>
+            <span class="info-value">{{ item.telefono2 || '-' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">{{ 'clientes.fax1' | translate }}</span>
+            <span class="info-value">{{ item.fax1 || '-' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">{{ 'clientes.fax2' | translate }}</span>
+            <span class="info-value">{{ item.fax2 || '-' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">{{ 'common.cancelled' | translate }}</span>
+            <span class="info-value">{{ item.cancelado ? ('common.yes' | translate) : ('common.no' | translate) }}</span>
+          </div>
+          <div class="info-item info-item-full">
+            <span class="info-label">{{ 'common.createdBy' | translate }}</span>
+            <span class="info-value">{{ item.creadoPor }} · {{ item.fechaHoraCreado | date:'short' }}</span>
+          </div>
+          <div class="info-item info-item-full" *ngIf="item.modificadoPor">
+            <span class="info-label">{{ 'common.modifiedBy' | translate }}</span>
+            <span class="info-value">{{ item.modificadoPor }} · {{ item.fechaHoraModificado | date:'short' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-			<div class="cliente-detail" *ngIf="item">
-				<h2>{{ item.descripcion }}</h2>
-
-				<div class="info-row">
-					<label class="info-label">Código:</label>
-					<span class="info-value">{{ item.codigo }}</span>
-				</div>
-
-				<div class="info-row">
-					<label class="info-label">Nombre / Descripción:</label>
-					<span class="info-value">{{ item.descripcion }}</span>
-				</div>
-
-				<div class="info-row">
-					<label class="info-label">Teléfono:</label>
-					<span class="info-value">{{ item.telefono1 || '-' }}</span>
-				</div>
-
-				<div class="info-row">
-					<label class="info-label">Email:</label>
-					<span class="info-value">{{ item.email1 || '-' }}</span>
-				</div>
-
-				<div class="info-row">
-					<label class="info-label">Dirección:</label>
-					<span class="info-value">{{ item.direccion || '-' }}</span>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<div *ngIf="loading" class="loading-container">
-		<app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
-	</div>
+  <div *ngIf="loading" class="loading-container">
+    <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
+  </div>
 </div>

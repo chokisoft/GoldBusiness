@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { ApiService } from './api.service';
 
-export interface Cliente {
+export interface ClienteDTO {
   id: number;
   codigo: string;
   descripcion: string;
@@ -34,55 +33,41 @@ export interface Cliente {
   fechaHoraModificado?: Date;
 }
 
+export interface PagedResult<T> {
+  items: T[];
+  total: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class ClienteService {
-  private apiUrl = `${environment.apiUrl}/cliente`;
+  constructor(private api: ApiService) { }
 
-  constructor(private http: HttpClient) { }
-
-  getAll(lang: string = 'es'): Observable<Cliente[]> {
-    return this.http.get<Cliente[]>(this.apiUrl, {
-      params: { lang }
-    });
+  getPaged(page: number = 1, pageSize: number = 50, term?: string): Observable<PagedResult<ClienteDTO>> {
+    let url = `Cliente/paged?page=${page}&pageSize=${pageSize}`;
+    if (term) url += `&term=${encodeURIComponent(term)}`;
+    return this.api.get<PagedResult<ClienteDTO>>(url);
   }
 
-  getById(id: number, lang: string = 'es'): Observable<Cliente> {
-    return this.http.get<Cliente>(`${this.apiUrl}/${id}`, {
-      params: { lang }
-    });
+  getAll(): Observable<ClienteDTO[]> {
+    console.warn('⚠️ ClienteService.getAll() puede ser lento. Considera usar getPaged()');
+    return this.api.get<ClienteDTO[]>('Cliente');
   }
 
-  create(cliente: Cliente, lang: string = 'es'): Observable<Cliente> {
-    return this.http.post<Cliente>(this.apiUrl, cliente, {
-      params: { lang }
-    });
+  getById(id: number): Observable<ClienteDTO> {
+    return this.api.get<ClienteDTO>(`Cliente/${id}`);
   }
 
-  update(id: number, cliente: Cliente, lang: string = 'es'): Observable<Cliente> {
-    return this.http.put<Cliente>(`${this.apiUrl}/${id}`, cliente, {
-      params: { lang }
-    });
+  create(data: ClienteDTO): Observable<ClienteDTO> {
+    return this.api.post<ClienteDTO>('Cliente', data);
+  }
+
+  update(id: number, data: ClienteDTO): Observable<ClienteDTO> {
+    return this.api.put<ClienteDTO>(`Cliente/${id}`, data);
   }
 
   delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
-  }
-
-  addOrUpdateTranslation(id: number, lang: string, descripcion: string): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/${id}/translation`, null, {
-      params: { lang, descripcion }
-    });
-  }
-
-  getPaged(page: number, pageSize: number, search?: string, lang: string = 'es'): Observable<{ items: Cliente[]; total: number }> {
-    let params = new HttpParams()
-      .set('page', page.toString())
-      .set('pageSize', pageSize.toString())
-      .set('lang', lang);
-    if (search) params = params.set('search', search);
-
-    return this.http.get<{ items: Cliente[]; total: number }>(`${this.apiUrl}/paged`, { params });
+    return this.api.delete<void>(`Cliente/${id}`);
   }
 }

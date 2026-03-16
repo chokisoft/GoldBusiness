@@ -1,9 +1,7 @@
 <div class="page-container">
   <div class="page-header">
     <div class="header-content">
-      <h1 class="page-title">
-        🏛️ {{ 'establecimiento.detailTitle' | translate }}
-      </h1>
+      <h1 class="page-title">🏛️ {{ 'establecimiento.detailTitle' | translate }}</h1>
       <p class="page-subtitle">{{ 'establecimiento.detailSubtitle' | translate }}</p>
     </div>
     <div class="header-actions">
@@ -24,15 +22,10 @@
   </div>
 
   <div class="card" *ngIf="!loading && item">
-    <div class="card-header">
-      📊 {{ 'common.information' | translate }}
-    </div>
+    <div class="card-header">📊 {{ 'common.information' | translate }}</div>
     <div class="card-body">
       <div class="info-section">
-        <h3 class="section-title">
-          🔑 {{ 'establecimiento.mainInfo' | translate }}
-        </h3>
-
+        <h3 class="section-title">🔑 {{ 'establecimiento.mainInfo' | translate }}</h3>
         <div class="info-grid">
           <div class="info-item">
             <span class="info-label">{{ 'establecimiento.codigo' | translate }}</span>
@@ -42,9 +35,49 @@
             <span class="info-label">{{ 'establecimiento.descripcion' | translate }}</span>
             <span class="info-value">{{ item.descripcion }}</span>
           </div>
-          <div class="info-item">
+          <div class="info-item" *ngIf="item.negocioDescripcion">
             <span class="info-label">{{ 'establecimiento.negocio' | translate }}</span>
-            <span class="info-value">{{ item.negocioDescripcion || '-' }}</span>
+            <span class="info-value">{{ item.negocioDescripcion }}</span>
+          </div>
+          <div class="info-item" *ngIf="item.direccion">
+            <span class="info-label">{{ 'establecimiento.direccion' | translate }}</span>
+            <span class="info-value">{{ item.direccion }}</span>
+          </div>
+          <div class="info-item" *ngIf="item.telefono">
+            <span class="info-label">{{ 'establecimiento.telefono' | translate }}</span>
+            <span class="info-value">{{ item.telefono }}</span>
+          </div>
+          <div class="info-item" *ngIf="item.paisDescripcion">
+            <span class="info-label">{{ 'establecimiento.pais' | translate }}</span>
+            <span class="info-value">{{ item.paisDescripcion }}</span>
+          </div>
+          <div class="info-item" *ngIf="item.provinciaDescripcion">
+            <span class="info-label">{{ 'establecimiento.provincia' | translate }}</span>
+            <span class="info-value">{{ item.provinciaDescripcion }}</span>
+          </div>
+          <div class="info-item" *ngIf="item.municipioDescripcion">
+            <span class="info-label">{{ 'establecimiento.municipio' | translate }}</span>
+            <span class="info-value">{{ item.municipioDescripcion }}</span>
+          </div>
+          <div class="info-item" *ngIf="item.codigoPostalCodigo">
+            <span class="info-label">{{ 'establecimiento.codigoPostal' | translate }}</span>
+            <span class="info-value">{{ item.codigoPostalCodigo }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">{{ 'establecimiento.activo' | translate }}</span>
+            <span class="info-value">{{ item.activo ? ('common.yes' | translate) : ('common.no' | translate) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">{{ 'common.cancelled' | translate }}</span>
+            <span class="info-value">{{ item.cancelado ? ('common.yes' | translate) : ('common.no' | translate) }}</span>
+          </div>
+          <div class="info-item info-item-full">
+            <span class="info-label">{{ 'common.createdBy' | translate }}</span>
+            <span class="info-value">{{ item.creadoPor }} · {{ item.fechaHoraCreado | date:'short' }}</span>
+          </div>
+          <div class="info-item info-item-full" *ngIf="item.modificadoPor">
+            <span class="info-label">{{ 'common.modifiedBy' | translate }}</span>
+            <span class="info-value">{{ item.modificadoPor }} · {{ item.fechaHoraModificado | date:'short' }}</span>
           </div>
         </div>
       </div>

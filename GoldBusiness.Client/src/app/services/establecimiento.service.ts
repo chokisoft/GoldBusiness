@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { ApiService } from './api.service';
 
-export interface Establecimiento {
+export interface EstablecimientoDTO {
   id: number;
   codigo: string;
   descripcion: string;
@@ -30,72 +29,38 @@ export interface Establecimiento {
 export interface PagedResult<T> {
   items: T[];
   total: number;
-  page: number;
-  pageSize: number;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class EstablecimientoService {
-  private apiUrl = `${environment.apiUrl}/establecimiento`;
+  constructor(private api: ApiService) { }
 
-  constructor(private http: HttpClient) { }
-
-  getAll(lang: string = 'es'): Observable<Establecimiento[]> {
-    return this.http.get<Establecimiento[]>(this.apiUrl, {
-      params: { lang }
-    });
+  getPaged(page: number = 1, pageSize: number = 50, term?: string): Observable<PagedResult<EstablecimientoDTO>> {
+    let url = `Establecimiento/paged?page=${page}&pageSize=${pageSize}`;
+    if (term) url += `&term=${encodeURIComponent(term)}`;
+    return this.api.get<PagedResult<EstablecimientoDTO>>(url);
   }
 
-  getPaged(page: number, pageSize: number, termino?: string, negocioId?: number, lang: string = 'es'): Observable<PagedResult<Establecimiento>> {
-    let params = new HttpParams()
-      .set('page', page.toString())
-      .set('pageSize', pageSize.toString())
-      .set('lang', lang);
-
-    if (termino) {
-      // Controller expects 'term'
-      params = params.set('term', termino);
-    }
-    if (negocioId) {
-      params = params.set('negocioId', negocioId.toString());
-    }
-
-    return this.http.get<PagedResult<Establecimiento>>(`${this.apiUrl}/paged`, { params });
+  getAll(): Observable<EstablecimientoDTO[]> {
+    console.warn('⚠️ EstablecimientoService.getAll() puede ser lento. Considera usar getPaged()');
+    return this.api.get<EstablecimientoDTO[]>('Establecimiento');
   }
 
-  getByNegocioId(negocioId: number, lang: string = 'es'): Observable<Establecimiento[]> {
-    return this.http.get<Establecimiento[]>(`${this.apiUrl}/negocio/${negocioId}`, {
-      params: { lang }
-    });
+  getById(id: number): Observable<EstablecimientoDTO> {
+    return this.api.get<EstablecimientoDTO>(`Establecimiento/${id}`);
   }
 
-  getById(id: number, lang: string = 'es'): Observable<Establecimiento> {
-    return this.http.get<Establecimiento>(`${this.apiUrl}/${id}`, {
-      params: { lang }
-    });
+  create(data: EstablecimientoDTO): Observable<EstablecimientoDTO> {
+    return this.api.post<EstablecimientoDTO>('Establecimiento', data);
   }
 
-  create(establecimiento: Establecimiento, lang: string = 'es'): Observable<Establecimiento> {
-    return this.http.post<Establecimiento>(this.apiUrl, establecimiento, {
-      params: { lang }
-    });
-  }
-
-  update(id: number, establecimiento: Establecimiento, lang: string = 'es'): Observable<Establecimiento> {
-    return this.http.put<Establecimiento>(`${this.apiUrl}/${id}`, establecimiento, {
-      params: { lang }
-    });
+  update(id: number, data: EstablecimientoDTO): Observable<EstablecimientoDTO> {
+    return this.api.put<EstablecimientoDTO>(`Establecimiento/${id}`, data);
   }
 
   delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
-  }
-
-  addOrUpdateTranslation(id: number, lang: string, descripcion: string): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/${id}/translation`, null, {
-      params: { lang, descripcion }
-    });
+    return this.api.delete<void>(`Establecimiento/${id}`);
   }
 }

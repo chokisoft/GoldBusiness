@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { ApiService } from './api.service';
 
-export interface Proveedor {
+export interface ProveedorDTO {
   id: number;
   codigo: string;
   descripcion: string;
@@ -35,55 +34,41 @@ export interface Proveedor {
   cantidadProductos?: number;
 }
 
+export interface PagedResult<T> {
+  items: T[];
+  total: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class ProveedorService {
-  private apiUrl = `${environment.apiUrl}/proveedor`;
+  constructor(private api: ApiService) { }
 
-  constructor(private http: HttpClient) { }
-
-  getAll(lang: string = 'es'): Observable<Proveedor[]> {
-    return this.http.get<Proveedor[]>(this.apiUrl, {
-      params: { lang }
-    });
+  getPaged(page: number = 1, pageSize: number = 50, term?: string): Observable<PagedResult<ProveedorDTO>> {
+    let url = `Proveedor/paged?page=${page}&pageSize=${pageSize}`;
+    if (term) url += `&term=${encodeURIComponent(term)}`;
+    return this.api.get<PagedResult<ProveedorDTO>>(url);
   }
 
-  getById(id: number, lang: string = 'es'): Observable<Proveedor> {
-    return this.http.get<Proveedor>(`${this.apiUrl}/${id}`, {
-      params: { lang }
-    });
+  getAll(): Observable<ProveedorDTO[]> {
+    console.warn('⚠️ ProveedorService.getAll() puede ser lento. Considera usar getPaged()');
+    return this.api.get<ProveedorDTO[]>('Proveedor');
   }
 
-  create(proveedor: Proveedor, lang: string = 'es'): Observable<Proveedor> {
-    return this.http.post<Proveedor>(this.apiUrl, proveedor, {
-      params: { lang }
-    });
+  getById(id: number): Observable<ProveedorDTO> {
+    return this.api.get<ProveedorDTO>(`Proveedor/${id}`);
   }
 
-  update(id: number, proveedor: Proveedor, lang: string = 'es'): Observable<Proveedor> {
-    return this.http.put<Proveedor>(`${this.apiUrl}/${id}`, proveedor, {
-      params: { lang }
-    });
+  create(data: ProveedorDTO): Observable<ProveedorDTO> {
+    return this.api.post<ProveedorDTO>('Proveedor', data);
+  }
+
+  update(id: number, data: ProveedorDTO): Observable<ProveedorDTO> {
+    return this.api.put<ProveedorDTO>(`Proveedor/${id}`, data);
   }
 
   delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
-  }
-
-  addOrUpdateTranslation(id: number, lang: string, descripcion: string): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/${id}/translation`, null, {
-      params: { lang, descripcion }
-    });
-  }
-
-  getPaged(page: number, pageSize: number, search?: string, lang: string = 'es'): Observable<{ items: Proveedor[]; total: number }> {
-    let params = new HttpParams()
-      .set('page', page.toString())
-      .set('pageSize', pageSize.toString())
-      .set('lang', lang);
-    if (search) params = params.set('search', search);
-
-    return this.http.get<{ items: Proveedor[]; total: number }>(`${this.apiUrl}/paged`, { params });
+    return this.api.delete<void>(`Proveedor/${id}`);
   }
 }

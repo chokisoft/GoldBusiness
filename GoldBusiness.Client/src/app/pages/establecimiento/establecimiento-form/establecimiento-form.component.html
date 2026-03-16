@@ -2,11 +2,8 @@
   <div class="page-header">
     <div class="header-content">
       <h1 class="page-title">
-        🏛️ {{ isEditMode ? ('establecimiento.editTitle' | translate) : ('establecimiento.newTitle' | translate) }}
-      </h1>
-      <p class="page-subtitle">
         {{ isEditMode ? ('establecimiento.editTitle' | translate) : ('establecimiento.newTitle' | translate) }}
-      </p>
+      </h1>
     </div>
   </div>
 
@@ -15,122 +12,81 @@
     {{ error }}
   </div>
 
-  <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" class="form-container" *ngIf="!loading">
-    <div class="card">
-      <div class="card-header">{{ 'establecimiento.mainInfo' | translate }}</div>
-      <div class="card-body">
-        <div class="form-row">
-          <div class="form-group">
-            <label for="codigo" class="form-label">
-              {{ 'establecimiento.codigo' | translate }} *
-            </label>
-            <input type="text"
-                   id="codigo"
-                   formControlName="codigo"
-                   class="form-control"
-                   [class.is-invalid]="itemForm.get('codigo')?.invalid && itemForm.get('codigo')?.touched"
-                   [placeholder]="'establecimiento.codigoPlaceholder' | translate"
-                   maxlength="10" />
-            <div class="invalid-feedback" *ngIf="itemForm.get('codigo')?.hasError('required') && itemForm.get('codigo')?.touched">
-              {{ 'validation.required' | translate }}
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="descripcion" class="form-label">
-              {{ 'establecimiento.descripcion' | translate }} *
-            </label>
-            <input type="text"
-                   id="descripcion"
-                   formControlName="descripcion"
-                   class="form-control"
-                   [class.is-invalid]="itemForm.get('descripcion')?.invalid && itemForm.get('descripcion')?.touched"
-                   [placeholder]="'establecimiento.descripcionPlaceholder' | translate"
-                   maxlength="100" />
-            <div class="invalid-feedback" *ngIf="itemForm.get('descripcion')?.hasError('required') && itemForm.get('descripcion')?.touched">
-              {{ 'validation.required' | translate }}
-            </div>
-          </div>
+  <div class="card">
+    <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" class="form-container" *ngIf="!loading">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="codigo" class="form-label">{{ 'establecimiento.codigo' | translate }} *</label>
+          <input type="text" id="codigo" formControlName="codigo" class="form-control" maxlength="6" />
         </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label for="telefono" class="form-label">
-              {{ 'establecimiento.telefono' | translate }}
-            </label>
-            <input type="text"
-                   id="telefono"
-                   formControlName="telefono"
-                   class="form-control"
-                   [placeholder]="'establecimiento.telefonoPlaceholder' | translate"
-                   maxlength="20" />
-          </div>
-
-          <div class="form-group">
-            <label for="email" class="form-label">
-              {{ 'establecimiento.email' | translate }}
-            </label>
-            <input type="email"
-                   id="email"
-                   formControlName="email"
-                   class="form-control"
-                   [class.is-invalid]="itemForm.get('email')?.invalid && itemForm.get('email')?.touched"
-                   [placeholder]="'establecimiento.emailPlaceholder' | translate"
-                   maxlength="100" />
-            <div class="invalid-feedback" *ngIf="itemForm.get('email')?.hasError('email')">
-              {{ 'validation.email' | translate }}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-header">{{ 'establecimiento.infoUbicacion' | translate }}</div>
-      <div class="card-body">
-        <div class="form-row">
-          <div class="form-group">
-            <label for="direccion" class="form-label">
-              {{ 'establecimiento.direccion' | translate }}
-            </label>
-            <input type="text"
-                   id="direccion"
-                   formControlName="direccion"
-                   class="form-control"
-                   [placeholder]="'establecimiento.direccionPlaceholder' | translate"
-                   maxlength="200" />
-          </div>
-
-          <div class="form-group">
-            <label for="localidadId" class="form-label">
-              {{ 'establecimiento.localidad' | translate }}
-            </label>
-            <select id="localidadId"
-                    formControlName="localidadId"
-                    class="form-control">
-              <option value="">{{ 'common.select' | translate }}</option>
-              <option *ngFor="let localidad of localidades" [value]="localidad.id">
-                {{ localidad.descripcion }}
-              </option>
-            </select>
-          </div>
+        <div class="form-group">
+          <label for="descripcion" class="form-label">{{ 'establecimiento.descripcion' | translate }} *</label>
+          <input type="text" id="descripcion" formControlName="descripcion" class="form-control" maxlength="256" />
         </div>
       </div>
 
-      <div class="card-footer">
-        <div class="button-group">
-          <button type="button" class="btn btn-secondary" (click)="onCancel()">
-            <span class="btn-icon">❌</span>
-            {{ 'common.cancel' | translate }}
-          </button>
-          <button type="submit" class="btn btn-primary" [disabled]="itemForm.invalid || saving">
-            <span class="btn-icon">💾</span>
-            {{ saving ? ('common.saving' | translate) : ('common.save' | translate) }}
-          </button>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="direccion" class="form-label">{{ 'establecimiento.direccion' | translate }}</label>
+          <input type="text" id="direccion" formControlName="direccion" class="form-control" maxlength="256" />
+        </div>
+        <div class="form-group">
+          <label for="telefono" class="form-label">{{ 'establecimiento.telefono' | translate }}</label>
+          <input type="text" id="telefono" formControlName="telefono" class="form-control" maxlength="50" />
         </div>
       </div>
-    </div>
-  </form>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="paisId" class="form-label">{{ 'establecimiento.pais' | translate }}</label>
+          <select id="paisId" formControlName="paisId" class="form-control shared-select"
+                  [class.shared-disabled]="!paises.length" [attr.aria-disabled]="!paises.length">
+            <option [ngValue]="null">{{ 'common.select' | translate }}</option>
+            <option *ngFor="let p of paises" [ngValue]="p.id">{{ p.descripcion }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="provinciaId" class="form-label">{{ 'establecimiento.provincia' | translate }}</label>
+          <select id="provinciaId" formControlName="provinciaId" class="form-control shared-select"
+                  [disabled]="!itemForm.get('paisId')?.value" [class.shared-disabled]="!itemForm.get('paisId')?.value"
+                  [attr.aria-disabled]="!itemForm.get('paisId')?.value">
+            <option [ngValue]="null">{{ 'common.select' | translate }}</option>
+            <option *ngFor="let pr of provincias" [ngValue]="pr.id">{{ pr.descripcion }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="municipioId" class="form-label">{{ 'establecimiento.municipio' | translate }}</label>
+          <select id="municipioId" formControlName="municipioId" class="form-control shared-select"
+                  [disabled]="!itemForm.get('provinciaId')?.value" [class.shared-disabled]="!itemForm.get('provinciaId')?.value"
+                  [attr.aria-disabled]="!itemForm.get('provinciaId')?.value">
+            <option [ngValue]="null">{{ 'common.select' | translate }}</option>
+            <option *ngFor="let m of municipios" [ngValue]="m.id">{{ m.descripcion }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="codigoPostalId" class="form-label">{{ 'establecimiento.codigoPostal' | translate }}</label>
+          <select id="codigoPostalId" formControlName="codigoPostalId" class="form-control shared-select"
+                  [disabled]="!itemForm.get('municipioId')?.value" [class.shared-disabled]="!itemForm.get('municipioId')?.value"
+                  [attr.aria-disabled]="!itemForm.get('municipioId')?.value">
+            <option [ngValue]="null">{{ 'common.select' | translate }}</option>
+            <option *ngFor="let cp of codigosPostales" [ngValue]="cp.id">{{ cp.codigo }}{{ cp.descripcion ? (' - ' + cp.descripcion) : '' }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="onCancel()" [disabled]="saving">❌ {{ 'common.cancel' | translate }}</button>
+        <button type="submit" class="btn btn-primary" [disabled]="saving || itemForm.invalid">
+          <span *ngIf="!saving">💾 {{ 'common.save' | translate }}</span>
+          <span *ngIf="saving">⏳ {{ 'common.saving' | translate }}</span>
+        </button>
+      </div>
+    </form>
+  </div>
 
   <div *ngIf="loading" class="loading-container">
     <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>

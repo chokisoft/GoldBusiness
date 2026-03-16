@@ -1,22 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Location } from '@angular/common';
-import { Proveedor, ProveedorService } from '../../../services/proveedor.service';
+import { Router } from '@angular/router';
+import { ProveedorDTO, ProveedorService } from '../../../services/proveedor.service';
 
 @Component({
   selector: 'app-proveedor-detail',
   templateUrl: './proveedor-detail.component.html',
-  styleUrl: './proveedor-detail.component.css'
+  styleUrls: ['./proveedor-detail.component.css']
 })
 export class ProveedorDetailComponent implements OnInit {
-  item?: Proveedor;
+  item?: ProveedorDTO;
   loading = false;
   error: string | null = null;
 
   constructor(
     private proveedorService: ProveedorService,
     private route: ActivatedRoute,
-    private location: Location
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -31,19 +31,18 @@ export class ProveedorDetailComponent implements OnInit {
     this.error = null;
 
     this.proveedorService.getById(id).subscribe({
-      next: (item) => {
+      next: item => {
         this.item = item;
         this.loading = false;
       },
-      error: (error) => {
-        this.error = error.message || 'Error al cargar el proveedor';
+      error: err => {
+        this.error = err.message || 'Error al cargar el proveedor';
         this.loading = false;
       }
     });
   }
 
   goBack(): void {
-    this.location.back();
+    this.router.navigate(['/nomencladores/proveedores']);
   }
-
 }

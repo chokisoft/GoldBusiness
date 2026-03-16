@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocalidadService, LocalidadDTO } from '../../../services/localidad.service';
-import { Establecimiento, EstablecimientoService } from '../../../services/establecimiento.service';
+import { EstablecimientoDTO, EstablecimientoService } from '../../../services/establecimiento.service';
 
 @Component({
   selector: 'app-localidad-form',
@@ -17,7 +17,7 @@ export class LocalidadFormComponent implements OnInit {
   saving = false;
   error: string | null = null;
   
-  establecimientos: Establecimiento[] = [];
+  establecimientos: EstablecimientoDTO[] = [];
 
   constructor(
     private fb: FormBuilder,

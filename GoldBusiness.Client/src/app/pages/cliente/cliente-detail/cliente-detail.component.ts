@@ -1,22 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Location } from '@angular/common';
-import { Cliente, ClienteService } from '../../../services/cliente.service';
+import { Router } from '@angular/router';
+import { ClienteDTO, ClienteService } from '../../../services/cliente.service';
 
 @Component({
   selector: 'app-cliente-detail',
   templateUrl: './cliente-detail.component.html',
-  styleUrl: './cliente-detail.component.css'
+  styleUrls: ['./cliente-detail.component.css']
 })
-export class ClienteDetailComponent {
-  item?: Cliente;
+export class ClienteDetailComponent implements OnInit {
+  item?: ClienteDTO;
   loading = false;
   error: string | null = null;
 
   constructor(
     private clienteService: ClienteService,
     private route: ActivatedRoute,
-    private location: Location
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -31,19 +31,18 @@ export class ClienteDetailComponent {
     this.error = null;
 
     this.clienteService.getById(id).subscribe({
-      next: (item) => {
+      next: item => {
         this.item = item;
         this.loading = false;
       },
-      error: (error) => {
-        this.error = error.message || 'Error al cargar el cliente';
+      error: err => {
+        this.error = err.message || 'Error al cargar el cliente';
         this.loading = false;
       }
     });
   }
 
   goBack(): void {
-    this.location.back();
+    this.router.navigate(['/nomencladores/clientes']);
   }
-
 }

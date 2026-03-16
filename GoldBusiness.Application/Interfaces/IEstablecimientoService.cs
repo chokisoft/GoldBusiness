@@ -11,6 +11,7 @@ namespace GoldBusiness.Application.Interfaces
         Task<EstablecimientoDTO> CreateAsync(EstablecimientoDTO dto, string user, string lang = "es");
         Task<EstablecimientoDTO> UpdateAsync(int id, EstablecimientoDTO dto, string user, string lang = "es");
         Task<EstablecimientoDTO?> SoftDeleteAsync(int id, string user);
+
         Task AddOrUpdateTranslationAsync(int id, string lang, string descripcion, string user);
     }
 }

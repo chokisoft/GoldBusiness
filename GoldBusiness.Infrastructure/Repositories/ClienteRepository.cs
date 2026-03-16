@@ -20,9 +20,44 @@ namespace GoldBusiness.Infrastructure.Repositories
                 .Include(c => c.Provincia)
                 .Include(c => c.Municipio)
                 .Include(c => c.CodigoPostal)
+                .Include(c => c.Translations)
                 .Where(c => !c.Cancelado)
                 .OrderBy(c => c.Codigo)
                 .ToListAsync();
+
+        public async Task<(IEnumerable<Cliente> Items, int Total)> GetPagedAsync(int page, int pageSize, string? search = null)
+        {
+            var query = _context.Cliente
+                .AsNoTracking()
+                .Include(c => c.Pais)
+                .Include(c => c.Provincia)
+                .Include(c => c.Municipio)
+                .Include(c => c.CodigoPostal)
+                .Include(c => c.Translations)
+                .Where(c => !c.Cancelado);
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var lower = search.ToLower();
+                query = query.Where(c =>
+                    c.Codigo.ToLower().Contains(lower) ||
+                    c.Descripcion.ToLower().Contains(lower) ||
+                    (c.Nif != null && c.Nif.ToLower().Contains(lower)) ||
+                    (c.Email1 != null && c.Email1.ToLower().Contains(lower)) ||
+                    (c.Telefono1 != null && c.Telefono1.ToLower().Contains(lower))
+                );
+            }
+
+            var total = await query.CountAsync();
+
+            var items = await query
+                .OrderBy(c => c.Descripcion)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, total);
+        }
 
         public async Task<Cliente?> GetByIdAsync(int id)
             => await _context.Cliente
@@ -30,6 +65,7 @@ namespace GoldBusiness.Infrastructure.Repositories
                 .Include(c => c.Provincia)
                 .Include(c => c.Municipio)
                 .Include(c => c.CodigoPostal)
+                .Include(c => c.Translations)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
         public async Task<Cliente?> GetByCodigoAsync(string codigo, bool includeCanceled = false)
@@ -38,6 +74,7 @@ namespace GoldBusiness.Infrastructure.Repositories
                 .Include(c => c.Provincia)
                 .Include(c => c.Municipio)
                 .Include(c => c.CodigoPostal)
+                .Include(c => c.Translations)
                 .FirstOrDefaultAsync(c => c.Codigo == codigo && (includeCanceled || !c.Cancelado));
 
         public async Task<bool> ExistsByCodigoAsync(string codigo, int? excludeId = null, bool includeCanceled = false)
@@ -73,40 +110,6 @@ namespace GoldBusiness.Infrastructure.Repositories
                 _context.Cliente.Remove(entity);
                 await _context.SaveChangesAsync();
             }
-        }
-
-        // Implementación de GetPagedAsync coherente con CodigoPostalRepository
-        public async Task<(IEnumerable<Cliente> Items, int Total)> GetPagedAsync(int page, int pageSize, string? search = null)
-        {
-            var query = _context.Cliente
-                .AsNoTracking()
-                .Include(c => c.Pais)
-                .Include(c => c.Provincia)
-                .Include(c => c.Municipio)
-                .Include(c => c.CodigoPostal)
-                .Where(c => !c.Cancelado);
-
-            if (!string.IsNullOrWhiteSpace(search))
-            {
-                var lower = search.ToLower();
-                query = query.Where(c =>
-                    c.Codigo.ToLower().Contains(lower) ||
-                    c.Descripcion.ToLower().Contains(lower) ||
-                    (c.Nif != null && c.Nif.ToLower().Contains(lower)) ||
-                    (c.Email1 != null && c.Email1.ToLower().Contains(lower)) ||
-                    (c.Telefono1 != null && c.Telefono1.ToLower().Contains(lower))
-                );
-            }
-
-            var total = await query.CountAsync();
-
-            var items = await query
-                .OrderBy(c => c.Descripcion)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-
-            return (items, total);
         }
     }
 }

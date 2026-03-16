@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { skip, finalize } from 'rxjs/operators';
-import { Establecimiento, EstablecimientoService } from '../../../services/establecimiento.service';
+import { EstablecimientoDTO, EstablecimientoService } from '../../../services/establecimiento.service';
 import { LanguageService } from '../../../services/language.service';
 
 @Component({
@@ -10,7 +10,7 @@ import { LanguageService } from '../../../services/language.service';
   styleUrls: ['./establecimiento-list.component.css']
 })
 export class EstablecimientoListComponent implements OnInit, OnDestroy {
-  establecimientos: Establecimiento[] = [];
+  establecimientos: EstablecimientoDTO[] = [];
   loading = false;
   searching = false;
   error: string | null = null;

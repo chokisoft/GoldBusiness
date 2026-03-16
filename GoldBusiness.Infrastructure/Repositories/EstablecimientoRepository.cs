@@ -20,6 +20,7 @@ namespace GoldBusiness.Infrastructure.Repositories
                 .Include(e => e.Provincia)
                 .Include(e => e.Municipio)
                 .Include(e => e.CodigoPostal)
+                .Include(e => e.Translations)
                 .Where(e => !e.Cancelado)
                 .OrderBy(e => e.Codigo)
                 .ToListAsync();
@@ -36,6 +37,7 @@ namespace GoldBusiness.Infrastructure.Repositories
                 .Include(e => e.Provincia)
                 .Include(e => e.Municipio)
                 .Include(e => e.CodigoPostal)
+                .Include(e => e.Translations)
                 .Where(e => !e.Cancelado)
                 .AsQueryable();
 
@@ -69,6 +71,7 @@ namespace GoldBusiness.Infrastructure.Repositories
                 .Include(e => e.Provincia)
                 .Include(e => e.Municipio)
                 .Include(e => e.CodigoPostal)
+                .Include(e => e.Translations)
                 .Where(e => e.NegocioId == negocioId && !e.Cancelado)
                 .OrderBy(e => e.Codigo)
                 .ToListAsync();
@@ -80,6 +83,7 @@ namespace GoldBusiness.Infrastructure.Repositories
                 .Include(e => e.Provincia)
                 .Include(e => e.Municipio)
                 .Include(e => e.CodigoPostal)
+                .Include(e => e.Translations)
                 .FirstOrDefaultAsync(e => e.Id == id);
 
         public async Task<Establecimiento?> GetByCodigoAsync(string codigo, bool includeCanceled = false)
@@ -89,6 +93,7 @@ namespace GoldBusiness.Infrastructure.Repositories
                 .Include(e => e.Provincia)
                 .Include(e => e.Municipio)
                 .Include(e => e.CodigoPostal)
+                .Include(e => e.Translations)
                 .FirstOrDefaultAsync(e => e.Codigo == codigo && (includeCanceled || !e.Cancelado));
 
         public async Task<bool> ExistsByCodigoAsync(string codigo, int? excludeId = null, bool includeCanceled = false)
