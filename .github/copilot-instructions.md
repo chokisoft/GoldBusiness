@@ -25,11 +25,13 @@
 - Prefiere que los selects en formularios de país/provincia/municipio/código postal permanezcan deshabilitados hasta seleccionar el padre; la cascada se maneja mediante valueChanges y los controles reactivos deben habilitarse/deshabilitarse con control.enable()/control.disable(); usar clases shared-select/shared-disabled y [attr.aria-disabled] para accesibilidad.
 - Al poblar los selects de país/provincia/municipio/código postal, habilita/deshabilita los Angular FormControls aguas abajo usando control.enable()/control.disable() para que los selects aparezcan inactivos hasta que se seleccione el padre.
 - Al cerrar la edición/detalle, navega de regreso a la vista de lista correspondiente (Cliente -> /nomencladores/clientes, Proveedor -> /nomencladores/proveedores, Establecimiento -> /organizacion/establecimientos). Prefiere usar Router.navigate en lugar de Location.back().
+- Prefiere reestructurar vistas de Cliente y Proveedor removiendo campos innecesarios y reutilizar los estilos compartidos existentes sin crear nuevos estilos CSS.
 
 ## Project-Specific Rules
 - Los endpoints deben ser paginados: Cliente y Proveedor deben implementar `GetPagedAsync`; los repositorios deben exponer `Query()`. Se requiere un DTO `PagedResult<T>`; los servicios del frontend deben tener `getPaged` y evitar faltas de importación de modelos.
 - El tipo de modelo Cliente está definido dentro de 'cliente.service.ts' (no 'cliente.model.ts'). No asumas un archivo separado cliente.model.ts; actualiza las importaciones para consumir la interfaz desde el archivo del servicio o crea un archivo de modelo adecuado si se prefiere.
 - Prefiere que los componentes usen `*DTO` en lugar de alias sin sufijo; prefiere opción 2 para coherencia.
+- Prefiere que en formularios Cliente y Proveedor la fila superior tenga anchos concretos: Código ~120px, NIF/RFC ~240px, IVA ~110px; descripción en ancho completo; aplica estas reglas de diseño a .cliente-form-page y .proveedor-form-page en style-form.css y aplicadas solo en desktop (>=992px).
 
 ## Code Style
 - Usa reglas de formato específicas.
@@ -42,3 +44,5 @@
 - Prefiere que los selects en formularios de país/provincia/municipio/codigoPostal permanezcan deshabilitados hasta seleccionar el padre; la cascada se maneja mediante valueChanges y los controles reactivos deben habilitarse/deshabilitarse con control.enable()/control.disable(); usar clases shared-select/shared-disabled y [attr.aria-disabled] para accesibilidad.
 - Al poblar los selects de país/provincia/municipio/código postal, habilita/deshabilita los Angular FormControls aguas abajo usando control.enable()/control.disable() para que los selects aparezcan inactivos hasta que se seleccione el padre.
 - Al cerrar la edición/detalle, navega de regreso a la vista de lista correspondiente (Cliente -> /nomencladores/clientes, Proveedor -> /nomencladores/proveedores, Establecimiento -> /organizacion/establecimientos). Prefiere usar Router.navigate en lugar de Location.back().
+- Prefiere que el input de Código tenga un ancho de ~160px, NIF/RFC ~260px, IVA ~110px; aplica estas reglas de diseño a .cliente-form-page y .proveedor-form-page en shared style-form.css; la descripción debe permanecer a ancho completo debajo.
+- Recuerda que el color del botón toggle móvil debe coincidir con el theme del navbar (usar gradiente del navbar) y los botones toggle deben mantener estilo consistente entre móvil y escritorio.

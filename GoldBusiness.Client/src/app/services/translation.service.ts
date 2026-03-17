@@ -359,6 +359,22 @@ export class TranslationService {
       'en': 'Address',
       'fr': 'Adresse'
     },
+    'proveedores.iva': {
+      'es': 'IVA',
+      'en': 'VAT',
+      'fr': 'TVA'
+    },
+    'proveedores.descripcion': {
+      'es': 'Descripción',
+      'en': 'Description',
+      'fr': 'Description'
+    },
+    'proveedores.codigoPlaceholder': {
+      'es': 'Ingrese código (5 dígitos)',
+      'en': 'Enter code (5 chars)',
+      'fr': 'Entrez le code (5 caractères)'
+    },
+
     'clientes.title': {
       'es': 'Clientes',
       'en': 'Clients',
@@ -413,6 +429,26 @@ export class TranslationService {
       'es': 'Dirección',
       'en': 'Address',
       'fr': 'Adresse'
+    },
+    'clientes.iva': {
+      'es': 'IVA',
+      'en': 'VAT',
+      'fr': 'TVA'
+    },
+    'clientes.descripcion': {
+      'es': 'Descripción',
+      'en': 'Description',
+      'fr': 'Description'
+    },
+    'clientes.nif': {
+      'es': 'NIF',
+      'en': 'NIF',
+      'fr': 'NIF'
+    },
+    'clientes.codigoPlaceholder': {
+      'es': 'Ingrese código (8 dígitos)',
+      'en': 'Enter code (8 chars)',
+      'fr': 'Entrez le code (8 caractères)'
     },
 
     // ═══════════════════════════════════════════════════════════
@@ -533,7 +569,6 @@ export class TranslationService {
       'en': 'Business',
       'fr': 'Entreprise'
     },
-
     'localidad.title': {
       'es': 'Localidades',
       'en': 'Localities',
@@ -2300,7 +2335,21 @@ export class TranslationService {
       'en': 'Invalid value',
       'fr': 'Valeur invalide'
     },
-
+    'validation.ivaRequired': {
+      'es': 'El IVA es obligatorio',
+      'en': 'VAT is required',
+      'fr': 'La TVA est obligatoire'
+    },
+    'validation.ivaInteger': {
+      'es': 'El IVA debe ser un número entero',
+      'en': 'VAT must be an integer',
+      'fr': 'La TVA doit être un entier'
+    },
+    'validation.ivaRange': {
+      'es': 'El IVA debe estar entre 0 y 100',
+      'en': 'VAT must be between 0 and 100',
+      'fr': 'La TVA doit être comprise entre 0 et 100'
+    },
     'error.loading': {
       'es': 'Error al cargar los datos',
       'en': 'Error loading data',

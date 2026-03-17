@@ -637,7 +637,7 @@ namespace GoldBusiness.Domain.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to IVA (%).
+        ///   Looks up a localized string similar to IVA.
         /// </summary>
         public static string Field_Iva {
             get {
@@ -921,6 +921,24 @@ namespace GoldBusiness.Domain.Resources {
         public static string InvalidCredentials {
             get {
                 return ResourceManager.GetString("InvalidCredentials", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El IVA debe ser un número entero entre 0 y 100.
+        /// </summary>
+        public static string IvaFormato {
+            get {
+                return ResourceManager.GetString("IvaFormato", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El IVA es obligatorio.
+        /// </summary>
+        public static string IvaObligatorio {
+            get {
+                return ResourceManager.GetString("IvaObligatorio", resourceCulture);
             }
         }
         

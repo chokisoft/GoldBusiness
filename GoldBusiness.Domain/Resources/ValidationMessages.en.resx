@@ -546,4 +546,18 @@
 	<data name="TelefonoFormatoInvalido" xml:space="preserve">
   <value>The phone does not have a valid format.</value>
 </data>
+	<data name="IvaObligatorio" xml:space="preserve">
+    <value>VAT is required</value>
+  </data>
+	<data name="IvaFormato" xml:space="preserve">
+    <value>VAT must be an integer between 0 and 100</value>
+  </data>
+	<data name="Field_Iva" xml:space="preserve">
+    <value>VAT</value>
+  </data>
+	<data name="IvaObligatorio" xml:space="preserve"><value>VAT is required</value></data>
+	<data name="IvaFormato" xml:space="preserve"><value>VAT must be an integer between 0 and 100</value></data>
+	<data name="Field_Iva" xml:space="preserve"><value>VAT</value></data>
+	<data name="Field_Codigo" xml:space="preserve"><value>Code</value></data>
+	<data name="Field_Descripcion" xml:space="preserve"><value>Description</value></data>
 </root>

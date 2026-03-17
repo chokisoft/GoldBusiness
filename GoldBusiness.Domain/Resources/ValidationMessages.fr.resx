@@ -545,4 +545,18 @@
 	<data name="TelefonoFormatoInvalido" xml:space="preserve">
   <value>Le téléphone n'a pas un format valide.</value>
 </data>
+	<data name="IvaObligatorio" xml:space="preserve">
+    <value>La TVA est obligatoire</value>
+  </data>
+	<data name="IvaFormato" xml:space="preserve">
+    <value>La TVA doit être un entier entre 0 et 100</value>
+  </data>
+	<data name="Field_Iva" xml:space="preserve">
+    <value>TVA</value>
+  </data>
+	<data name="IvaObligatorio" xml:space="preserve"><value>La TVA est obligatoire</value></data>
+	<data name="IvaFormato" xml:space="preserve"><value>La TVA doit être un entier entre 0 et 100</value></data>
+	<data name="Field_Iva" xml:space="preserve"><value>TVA</value></data>
+	<data name="Field_Codigo" xml:space="preserve"><value>Code</value></data>
+	<data name="Field_Descripcion" xml:space="preserve"><value>Description</value></data>
 </root>

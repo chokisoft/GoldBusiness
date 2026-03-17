@@ -46,6 +46,9 @@ namespace GoldBusiness.Domain.DTOs
         )]
         public string Descripcion { get; set; } = string.Empty;
 
+        // SystemConfigurationId: sin validaciones específicas aquí (si necesitas validación, agrégala explícitamente)
+        public int SystemConfigurationId { get; set; } = 1;
+
         [Required(
             ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
             ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.SubGrupoCuentaObligatorio)
@@ -58,8 +61,6 @@ namespace GoldBusiness.Domain.DTOs
             ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
             ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.SubGrupoCuentaSeleccion)
         )]
-
-        public int SystemConfigurationId { get; set; }
         public int SubGrupoCuentaId { get; set; }
 
         [Display(

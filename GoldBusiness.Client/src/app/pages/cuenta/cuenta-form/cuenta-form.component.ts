@@ -110,6 +110,7 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
         // ✅ CORREGIDO: Cambiar 'activo' por 'cancelado'
         this.gruposCuenta = data.filter(g => !g.cancelado);
         this.loadingGrupos = false;
+        this.checkInitialLoad();
       },
       error: (err: any) => {
         console.error('Error loading grupos:', err);
@@ -127,10 +128,7 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
         // Initially no filter until a grupo is selected
         this.filteredSubGrupos = [];
         this.loadingSubGrupos = false;
-
-        if (this.isEditMode && this.cuentaId) {
-          this.loadCuenta();
-        }
+        this.checkInitialLoad();
       },
       error: (err: any) => {
         console.error('Error al cargar subgrupos:', err);
@@ -140,14 +138,21 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
     });
   }
 
+  private checkInitialLoad(): void {
+    // Espera a que ambas colecciones hayan cargado antes de intentar poblar el formulario en modo edición
+    if (this.isEditMode && this.cuentaId && !this.loadingGrupos && !this.loadingSubGrupos) {
+      this.loadCuenta();
+    }
+  }
+
   onGrupoCuentaChange(grupoId: number | null): void {
     if (!grupoId) {
       this.filteredSubGrupos = [];
       // disable the control at FormControl level (UX igual a País->Provincia)
-      this.form.get('subGrupoCuentaId')?.setValue(null);
+      this.form.get('subGrupoCuentaId')?.setValue(null, { emitEvent: false });
       this.form.get('subGrupoCuentaId')?.disable();
       this.form.get('codigoUsuario')?.disable();
-      this.form.get('codigoUsuario')?.setValue('');
+      this.form.get('codigoUsuario')?.setValue('', { emitEvent: false });
       this.selectedSubGrupoCodigo = '';
       this.updateCodigoCompleto();
       return;
@@ -160,7 +165,7 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
     // enable the control so user can select a subgrupo
     this.form.get('subGrupoCuentaId')?.enable();
     this.form.get('codigoUsuario')?.disable();
-    this.form.get('codigoUsuario')?.setValue('');
+    this.form.get('codigoUsuario')?.setValue('', { emitEvent: false });
     this.selectedSubGrupoCodigo = '';
     this.updateCodigoCompleto();
   }
@@ -169,7 +174,7 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
     if (!subGrupoId) {
       this.selectedSubGrupoCodigo = '';
       this.form.get('codigoUsuario')?.disable();
-      this.form.get('codigoUsuario')?.setValue('');
+      this.form.get('codigoUsuario')?.setValue('', { emitEvent: false });
       this.updateCodigoCompleto();
       return;
     }
@@ -180,7 +185,7 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
     if (!subSeleccionado) {
       this.selectedSubGrupoCodigo = '';
       this.form.get('codigoUsuario')?.disable();
-      this.form.get('codigoUsuario')?.setValue('');
+      this.form.get('codigoUsuario')?.setValue('', { emitEvent: false });
       this.updateCodigoCompleto();
       return;
     }
@@ -190,7 +195,7 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
       this.form.get('codigoUsuario')?.enable();
     } else {
       this.form.get('codigoUsuario')?.disable();
-      this.form.get('codigoUsuario')?.setValue('');
+      this.form.get('codigoUsuario')?.setValue('', { emitEvent: false });
     }
 
     this.updateCodigoCompleto();
@@ -214,44 +219,38 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.cuentaService.getById(this.cuentaId).subscribe({
       next: (data) => {
-        // data.codigo is 8 digits: subgrupo (5) + usuario (3)
+        // data.codigo es 8 dígitos: subgrupo (5) + usuario (3)
         const codigoSubGrupo = data.codigo.substring(0, 5);
         const codigoUsuario = data.codigo.substring(5, 8);
 
         const subgrupo = this.allSubGrupos.find(s => s.codigo === codigoSubGrupo);
 
-        // If subgrupo found, we can set its parent grupo and filtered list
+        // Si existe subgrupo, setear grupo y lista filtrada sin disparar eventos
         if (subgrupo) {
-          this.form.patchValue({
-            grupoCuentaId: subgrupo.grupoCuentaId
-          });
-          // apply filter so subgrupo select lists correct items
+          this.form.get('grupoCuentaId')?.setValue(subgrupo.grupoCuentaId, { emitEvent: false });
           this.filteredSubGrupos = this.allSubGrupos.filter(s => Number(s.grupoCuentaId) === Number(subgrupo.grupoCuentaId));
-          // enable subgrupo control to patch value
-          this.form.get('subGrupoCuentaId')?.enable();
+          // enable subgrupo control to patch value (sin emitir cambios)
+          this.form.get('subGrupoCuentaId')?.enable({ emitEvent: false });
+          this.form.get('subGrupoCuentaId')?.setValue(subgrupo.id, { emitEvent: false });
+          this.selectedSubGrupoCodigo = subgrupo.codigo || '';
+        } else {
+          this.form.get('subGrupoCuentaId')?.setValue(null, { emitEvent: false });
+          this.selectedSubGrupoCodigo = '';
         }
 
-        this.form.patchValue({
-          subGrupoCuentaId: subgrupo?.id,
-        });
+        // Setear valores restantes sin emitir eventos para evitar efectos secundarios
+        this.form.get('codigoUsuario')?.setValue(codigoUsuario, { emitEvent: false });
+        this.form.get('descripcion')?.setValue(data.descripcion, { emitEvent: false });
+        this.form.get('systemConfigurationId')?.setValue(data.systemConfigurationId, { emitEvent: false });
+        this.updateCodigoCompleto();
 
-        setTimeout(() => {
-          this.form.patchValue({
-            codigoUsuario: codigoUsuario,
-            descripcion: data.descripcion,
-            systemConfigurationId: data.systemConfigurationId
-          });
-
-          this.selectedSubGrupoCodigo = subgrupo?.codigo || '';
-          this.updateCodigoCompleto();
-
-          if (this.isEditMode) {
-            this.form.get('grupoCuentaId')?.disable();
-            this.form.get('subGrupoCuentaId')?.disable();
-            this.form.get('codigoUsuario')?.disable();
-            this.form.get('codigo')?.disable();
-          }
-        }, 100);
+        // En modo edición inhabilitar controles relevantes (sin emitir eventos)
+        if (this.isEditMode) {
+          this.form.get('grupoCuentaId')?.disable({ emitEvent: false });
+          this.form.get('subGrupoCuentaId')?.disable({ emitEvent: false });
+          this.form.get('codigoUsuario')?.disable({ emitEvent: false });
+          this.form.get('codigo')?.disable({ emitEvent: false });
+        }
 
         this.loading = false;
       },
@@ -265,10 +264,12 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
 
   onSubmit(): void {
     const codigoUsuario = this.form.get('codigoUsuario')?.value;
-    if (this.form.invalid || !this.codigoCompleto || !codigoUsuario || codigoUsuario.length !== 3) {
+    // En modo edición permitimos que codigoUsuario esté deshabilitado (se conserva el valor),
+    // pero igualmente comprobamos que exista el código completo.
+    if (this.form.invalid || !this.codigoCompleto || (!codigoUsuario && !this.isEditMode) || (codigoUsuario && codigoUsuario.length !== 3)) {
       this.form.markAllAsTouched();
 
-      if (!codigoUsuario || codigoUsuario.length !== 3) {
+      if ((!codigoUsuario && !this.isEditMode) || (codigoUsuario && codigoUsuario.length !== 3)) {
         this.form.get('codigoUsuario')?.markAsTouched();
       }
       return;

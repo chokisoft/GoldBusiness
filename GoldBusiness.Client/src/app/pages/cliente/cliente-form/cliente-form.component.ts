@@ -44,7 +44,7 @@ export class ClienteFormComponent implements OnInit, OnDestroy {
       nif: ['', Validators.maxLength(11)],
       iban: ['', Validators.maxLength(27)],
       bicoSwift: ['', Validators.maxLength(11)],
-      iva: [0, [Validators.required]],
+      iva: [0, [Validators.required, Validators.min(0), Validators.max(100), Validators.pattern(/^[0-9]+$/)]],
       direccion: ['', Validators.maxLength(256)],
       paisId: [null],
       provinciaId: [null],

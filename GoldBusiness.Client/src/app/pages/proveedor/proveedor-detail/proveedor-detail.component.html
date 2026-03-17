@@ -25,60 +25,23 @@
     <div class="card-header">📊 {{ 'common.information' | translate }}</div>
     <div class="card-body">
       <div class="info-section">
-        <h3 class="section-title">🔑 {{ 'common.information' | translate }}</h3>
-        <div class="info-grid">
-          <div class="info-item">
-            <span class="info-label">{{ 'proveedores.codigo' | translate }}</span>
-            <span class="info-value-large">{{ item.codigo }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'proveedores.descripcion' | translate }}</span>
-            <span class="info-value">{{ item.descripcion }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'proveedores.nif' | translate }}</span>
-            <span class="info-value">{{ item.nif || '-' }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'proveedores.iva' | translate }}</span>
-            <span class="info-value">{{ item.iva }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'proveedores.iban' | translate }}</span>
-            <span class="info-value">{{ item.iban || '-' }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'proveedores.bic' | translate }}</span>
-            <span class="info-value">{{ item.bicoSwift || '-' }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'proveedores.telefono1' | translate }}</span>
-            <span class="info-value">{{ item.telefono1 || '-' }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'proveedores.telefono2' | translate }}</span>
-            <span class="info-value">{{ item.telefono2 || '-' }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'proveedores.email1' | translate }}</span>
-            <span class="info-value">{{ item.email1 || '-' }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'proveedores.email2' | translate }}</span>
-            <span class="info-value">{{ item.email2 || '-' }}</span>
-          </div>
-          <div class="info-item info-item-full">
-            <span class="info-label">{{ 'proveedores.direccion' | translate }}</span>
-            <span class="info-value">{{ item.direccion || '-' }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'common.createdBy' | translate }}</span>
-            <span class="info-value">{{ item.creadoPor }} · {{ item.fechaHoraCreado | date:'short' }}</span>
-          </div>
-          <div class="info-item" *ngIf="item.modificadoPor">
-            <span class="info-label">{{ 'common.modifiedBy' | translate }}</span>
-            <span class="info-value">{{ item.modificadoPor }} · {{ item.fechaHoraModificado | date:'short' }}</span>
-          </div>
+        <div class="info-row">
+          <strong>{{ 'proveedores.codigo' | translate }}:</strong> {{ item.codigo }}
+        </div>
+        <div class="info-row">
+          <strong>{{ 'proveedores.descripcion' | translate }}:</strong> {{ item.descripcion }}
+        </div>
+        <div class="info-row">
+          <strong>{{ 'proveedores.nif' | translate }}:</strong> {{ item.nif || '-' }}
+        </div>
+        <div class="info-row">
+          <strong>{{ 'proveedores.direccion' | translate }}:</strong> {{ item.direccion || '-' }}
+        </div>
+        <div class="info-row">
+          <strong>{{ 'proveedores.email1' | translate }}:</strong> {{ item.email1 || '-' }}
+        </div>
+        <div class="info-row">
+          <strong>{{ 'proveedores.telefono1' | translate }}:</strong> {{ item.telefono1 || '-' }}
         </div>
       </div>
     </div>

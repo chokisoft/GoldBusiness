@@ -25,92 +25,38 @@
     <div class="card-header">📊 {{ 'common.information' | translate }}</div>
     <div class="card-body">
       <div class="info-section">
-        <h3 class="section-title">🔑 {{ 'clientes.mainInfo' | translate }}</h3>
-        <div class="info-grid">
-          <div class="info-item">
-            <span class="info-label">{{ 'clientes.codigo' | translate }}</span>
-            <span class="info-value-large">{{ item.codigo }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'clientes.descripcion' | translate }}</span>
-            <span class="info-value">{{ item.descripcion }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'clientes.nif' | translate }}</span>
-            <span class="info-value">{{ item.nif || '-' }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'clientes.iva' | translate }}</span>
-            <span class="info-value">{{ item.iva }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'clientes.iban' | translate }}</span>
-            <span class="info-value">{{ item.iban || '-' }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'clientes.bic' | translate }}</span>
-            <span class="info-value">{{ item.bicoSwift || '-' }}</span>
-          </div>
-          <div class="info-item info-item-full">
-            <span class="info-label">{{ 'clientes.direccion' | translate }}</span>
-            <span class="info-value">{{ item.direccion || '-' }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'clientes.pais' | translate }}</span>
-            <span class="info-value">{{ item.paisDescripcion || '-' }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'clientes.provincia' | translate }}</span>
-            <span class="info-value">{{ item.provinciaDescripcion || '-' }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'clientes.municipio' | translate }}</span>
-            <span class="info-value">{{ item.municipioDescripcion || '-' }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'clientes.codigoPostal' | translate }}</span>
-            <span class="info-value">{{ item.codigoPostalCodigo || '-' }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'clientes.web' | translate }}</span>
-            <span class="info-value"><a *ngIf="item.web" [href]="item.web" target="_blank">{{ item.web }}</a><span *ngIf="!item.web">-</span></span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'clientes.email1' | translate }}</span>
-            <span class="info-value">{{ item.email1 || '-' }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'clientes.email2' | translate }}</span>
-            <span class="info-value">{{ item.email2 || '-' }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'clientes.telefono1' | translate }}</span>
-            <span class="info-value">{{ item.telefono1 || '-' }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'clientes.telefono2' | translate }}</span>
-            <span class="info-value">{{ item.telefono2 || '-' }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'clientes.fax1' | translate }}</span>
-            <span class="info-value">{{ item.fax1 || '-' }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'clientes.fax2' | translate }}</span>
-            <span class="info-value">{{ item.fax2 || '-' }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'common.cancelled' | translate }}</span>
-            <span class="info-value">{{ item.cancelado ? ('common.yes' | translate) : ('common.no' | translate) }}</span>
-          </div>
-          <div class="info-item info-item-full">
-            <span class="info-label">{{ 'common.createdBy' | translate }}</span>
-            <span class="info-value">{{ item.creadoPor }} · {{ item.fechaHoraCreado | date:'short' }}</span>
-          </div>
-          <div class="info-item info-item-full" *ngIf="item.modificadoPor">
-            <span class="info-label">{{ 'common.modifiedBy' | translate }}</span>
-            <span class="info-value">{{ item.modificadoPor }} · {{ item.fechaHoraModificado | date:'short' }}</span>
-          </div>
+        <div class="info-row">
+          <strong>{{ 'clientes.codigo' | translate }}:</strong> {{ item.codigo }}
+        </div>
+        <div class="info-row">
+          <strong>{{ 'clientes.descripcion' | translate }}:</strong> {{ item.descripcion }}
+        </div>
+        <div class="info-row">
+          <strong>{{ 'clientes.nif' | translate }}:</strong> {{ item.nif || '-' }}
+        </div>
+        <div class="info-row">
+          <strong>{{ 'clientes.iva' | translate }}:</strong> {{ item.iva }}
+        </div>
+        <div class="info-row">
+          <strong>{{ 'clientes.direccion' | translate }}:</strong> {{ item.direccion || '-' }}
+        </div>
+        <div class="info-row">
+          <strong>{{ 'clientes.pais' | translate }}:</strong> {{ item.paisDescripcion || '-' }}
+        </div>
+        <div class="info-row">
+          <strong>{{ 'clientes.provincia' | translate }}:</strong> {{ item.provinciaDescripcion || '-' }}
+        </div>
+        <div class="info-row">
+          <strong>{{ 'clientes.municipio' | translate }}:</strong> {{ item.municipioDescripcion || '-' }}
+        </div>
+        <div class="info-row">
+          <strong>{{ 'clientes.codigoPostal' | translate }}:</strong> {{ item.codigoPostalCodigo || '-' }}
+        </div>
+        <div class="info-row">
+          <strong>{{ 'clientes.email1' | translate }}:</strong> {{ item.email1 || '-' }}
+        </div>
+        <div class="info-row">
+          <strong>{{ 'clientes.telefono1' | translate }}:</strong> {{ item.telefono1 || '-' }}
         </div>
       </div>
     </div>
