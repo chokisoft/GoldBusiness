@@ -19,9 +19,13 @@
         <div class="form-row">
           <div class="form-group">
             <label for="codigoSistema" class="form-label">{{ 'systemConfig.codigoSistema' | translate }} *</label>
-            <input type="text" id="codigoSistema" formControlName="codigoSistema" class="form-control"
+            <input type="text"
+                   id="codigoSistema"
+                   formControlName="codigoSistema"
+                   class="form-control"
+                   maxlength="3"
                    [class.is-invalid]="form.get('codigoSistema')?.invalid && form.get('codigoSistema')?.touched"
-                   placeholder="Ej: GOLD-ERP-001" />
+                   placeholder="Ej: GOL-ERP-001" />
             <div class="invalid-feedback" *ngIf="form.get('codigoSistema')?.invalid && form.get('codigoSistema')?.touched">
               {{ getErrorMessage('codigoSistema') }}
             </div>
@@ -62,51 +66,55 @@
       <div class="form-section">
         <h3 class="section-title">📞 {{ 'systemConfig.infoContacto' | translate }}</h3>
 
-        <div class="form-group">
-          <label for="direccion" class="form-label">{{ 'systemConfig.direccion' | translate }}</label>
-          <textarea id="direccion" formControlName="direccion" class="form-control" rows="2"
-                    placeholder="Dirección completa del negocio"></textarea>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="direccion" class="form-label">{{ 'systemConfig.direccion' | translate }}</label>
+            <textarea id="direccion" formControlName="direccion" class="form-control" rows="2"
+                      placeholder="Dirección completa del negocio"></textarea>
+          </div>
         </div>
 
         <!-- Selects dependientes: País, Provincia, Municipio, Código Postal -->
         <div class="form-row">
           <div class="form-group">
             <label for="paisId" class="form-label">{{ 'systemConfig.pais' | translate }} *</label>
-            <select id="paisId" formControlName="paisId" class="form-control">
+            <select id="paisId" formControlName="paisId" class="form-control shared-select">
               <option [ngValue]="null">{{ 'common.select' | translate }}</option>
               <option *ngFor="let pais of paises" [ngValue]="pais.id">
-                {{ pais.descripcion || pais.nombre }}
+                {{ pais.descripcion }}
               </option>
             </select>
           </div>
           <div class="form-group">
             <label for="provinciaId" class="form-label">{{ 'systemConfig.provincia' | translate }} *</label>
-            <select id="provinciaId" formControlName="provinciaId" class="form-control"
-                    [disabled]="loadingProvincias || (form.get('provinciaId')?.disabled ?? false)">
+            <select id="provinciaId" formControlName="provinciaId" class="form-control shared-select"
+                    [attr.aria-disabled]="form.get('provinciaId')?.disabled">
               <option [ngValue]="null">{{ 'common.select' | translate }}</option>
               <option *ngFor="let provincia of provincias" [ngValue]="provincia.id">
-                {{ provincia.descripcion || provincia.nombre }}
+                {{ provincia.descripcion }}
               </option>
             </select>
             <small *ngIf="loadingProvincias">⏳ {{ 'common.loading' | translate }}...</small>
           </div>
         </div>
+
         <div class="form-row">
           <div class="form-group">
             <label for="municipioId" class="form-label">{{ 'systemConfig.municipio' | translate }} *</label>
-            <select id="municipioId" formControlName="municipioId" class="form-control"
-                    [disabled]="loadingMunicipios || (form.get('municipioId')?.disabled ?? false)">
+            <select id="municipioId" formControlName="municipioId" class="form-control shared-select"
+                    [attr.aria-disabled]="form.get('municipioId')?.disabled">
               <option [ngValue]="null">{{ 'common.select' | translate }}</option>
               <option *ngFor="let municipio of municipios" [ngValue]="municipio.id">
-                {{ municipio.descripcion || municipio.nombre }}
+                {{ municipio.descripcion }}
               </option>
             </select>
             <small *ngIf="loadingMunicipios">⏳ {{ 'common.loading' | translate }}...</small>
           </div>
+
           <div class="form-group">
             <label for="codigoPostalId" class="form-label">{{ 'systemConfig.codigoPostal' | translate }} *</label>
-            <select id="codigoPostalId" formControlName="codigoPostalId" class="form-control"
-                    [disabled]="loadingCodigosPostales || (form.get('codigoPostalId')?.disabled ?? false)">
+            <select id="codigoPostalId" formControlName="codigoPostalId" class="form-control shared-select"
+                    [attr.aria-disabled]="form.get('codigoPostalId')?.disabled">
               <option [ngValue]="null">{{ 'common.select' | translate }}</option>
               <option *ngFor="let codigo of codigosPostales" [ngValue]="codigo.id">
                 {{ codigo.codigo }}
@@ -129,6 +137,13 @@
           <div class="form-group">
             <label for="telefono" class="form-label">{{ 'systemConfig.telefono' | translate }}</label>
             <input type="tel" id="telefono" formControlName="telefono" class="form-control" placeholder="+1 (555) 123-4567" />
+            <div class="form-text text-muted" *ngIf="selectedPais">
+              {{ selectedPais.formatoEjemplo }} <small>({{ selectedPais.formatoTelefono }})</small>
+            </div>
+            <div class="invalid-feedback" *ngIf="form.get('telefono')?.touched">
+              <div *ngIf="form.get('telefono')?.hasError('telefonoInvalid')">{{ getErrorMessage('telefono') }}</div>
+              <div *ngIf="form.get('telefono')?.hasError('maxlength')">{{ getErrorMessage('telefono') }}</div>
+            </div>
           </div>
         </div>
 
@@ -154,7 +169,6 @@
           </div>
         </div>
 
-        <!-- Input de logo oculto -->
         <div class="form-group" style="margin-top: 0.75rem;">
           <label for="logoFile" class="form-label">{{ 'systemConfig.logoSelectFile' | translate }}</label>
           <input type="file"
@@ -234,3 +248,4 @@
     </form>
   </div>
 </div>
+

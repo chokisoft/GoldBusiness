@@ -81,7 +81,49 @@
 .btn-primary { background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); color:#fff; }
 .btn-secondary { background:#95a5a6; color:#fff; }
 
-.logo-preview-container { display:flex; align-items:center; justify-content:center; width:min(100%,220px); height:120px; border:2px dashed #e9ecef; border-radius:8px; background:#f8f9fa; overflow:hidden; }
+/* Logo preview container - shared for forms */
+.logo-preview-container {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  max-width:220px; /* keeps previous intent but now responsive */
+  height:120px;
+  border:2px dashed #e9ecef;
+  border-radius:8px;
+  background:#f8f9fa;
+  overflow:hidden;
+  box-sizing:border-box;
+}
+
+/* Actual image inside preview */
+.logo-preview {
+  max-width: 100%;
+  max-height: 180px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border: 1px solid #e6e6e6;
+  border-radius: 6px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+  background-color: #fff;
+  display: block;
+}
+
+/* Placeholder when no image */
+.logo-placeholder {
+  width: 100%;
+  max-width: 240px;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  background: #fafafa;
+  border: 1px dashed #ddd;
+  border-radius: 6px;
+  color: #9a9a9a;
+}
 
 /* Scoped compact top-row: Código | NIF/RFC | IVA | Descripción (desktop only) */
 @media (min-width: 992px) {
@@ -147,6 +189,65 @@
   .card { padding:1.25rem; }
   .btn { width:100%; }
 }
+
+/* Shared select styles for cascaded selects */
+.shared-select {
+  width: 100%;
+  padding: 0.65rem;
+  border-radius: 8px;
+  border: 2px solid #e9ecef;
+  background: #fff;
+  color: #2c3e50;
+  box-sizing: border-box;
+  font-size: 1rem;
+}
+
+.shared-select:disabled,
+.shared-select.shared-disabled {
+  background: #f8f9fa;
+  color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.9;
+}
+
+/* Accessibility: keep aria-disabled visible */
+.shared-disabled[aria-disabled="true"] {
+  pointer-events: none;
+}
+
+/* Align checkbox vertically in .form-row-three (eg. 'Deudora') */
+.form-row-three .form-group input[type="checkbox"],
+.form-row-three .form-group .form-check {
+  align-self: center;
+  margin-top: 0;
+}
+
+/* If checkbox wrapped inside label/span, ensure centering */
+.form-row-three .form-group .form-check-label,
+.form-row-three .form-group .checkbox-label {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Small helper for compact top-row variants: keep consistent input widths for codigo/nif/iva
+   Note: existing desktop widths are respected above. If you prefer the 'preferred' widths
+   (codigo ~160px, nif ~260px, iva ~110px) uncomment the block below and adjust as needed. */
+/*
+@media (min-width: 992px) {
+  .cliente-form-page .form-row-three .form-group:first-child .form-control,
+  .proveedor-form-page .form-row-three .form-group:first-child .form-control {
+    max-width: 160px;
+  }
+  .cliente-form-page .form-row-three .form-group:nth-child(2) .form-control,
+  .proveedor-form-page .form-row-three .form-group:nth-child(2) .form-control {
+    max-width: 260px;
+  }
+  .cliente-form-page .form-row-three .form-group:nth-child(3) .form-control,
+  .proveedor-form-page .form-row-three .form-group:nth-child(3) .form-control {
+    max-width: 110px;
+  }
+}
+*/
 
 /* Append this block near other scoped rules in style-form.css (keeps it shared and scoped-safe) */
 

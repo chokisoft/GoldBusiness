@@ -12,7 +12,7 @@ namespace GoldBusiness.Domain.DTOs
 
         [Required(ErrorMessage = "El código del sistema es obligatorio")]
         [Display(Name = "Código Sistema")]
-        [StringLength(50, ErrorMessage = "El código no puede exceder 50 caracteres")]
+        [StringLength(3, ErrorMessage = "El código no puede exceder 3 caracteres")]
         public string CodigoSistema { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "La licencia es obligatoria")]

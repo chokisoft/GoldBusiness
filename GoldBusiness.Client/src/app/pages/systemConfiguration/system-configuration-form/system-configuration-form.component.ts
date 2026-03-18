@@ -1,11 +1,15 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { skip } from 'rxjs/operators';
 import { CuentaService, CuentaDTO } from '../../../services/cuenta.service';
 import { LanguageService } from '../../../services/language.service';
-import { SystemConfigurationService, SystemConfigurationDTO, Pais, Provincia, Municipio, CodigoPostal } from '../../../services/system-configuration.service';
+import { SystemConfigurationService, SystemConfigurationDTO, Pais } from '../../../services/system-configuration.service';
+import { PaisService, PaisDTO } from '../../../services/pais.service';
+import { ProvinciaService, ProvinciaDTO } from '../../../services/provincia.service';
+import { MunicipioService, MunicipioDTO } from '../../../services/municipio.service';
+import { CodigoPostalService, CodigoPostalDTO } from '../../../services/codigo-postal.service';
 
 @Component({
   selector: 'app-system-configuration-form',
@@ -17,6 +21,7 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
   isEditMode = false;
   configId: number | null = null;
   loading = false;
+  saving = false;
   error: string | null = null;
   cuentas: CuentaDTO[] = [];
   loadingCuentas = true;
@@ -24,15 +29,20 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
   selectedLogoFile: File | null = null;
   logoPreviewUrl: string | null = null;
 
+  // Keep Pais type from systemConfiguration service; use DTO types for provinces/municipios/cps
   paises: Pais[] = [];
-  provincias: Provincia[] = [];
-  municipios: Municipio[] = [];
-  codigosPostales: CodigoPostal[] = [];
+  provincias: ProvinciaDTO[] = [];
+  municipios: MunicipioDTO[] = [];
+  codigosPostales: CodigoPostalDTO[] = [];
 
   // Flags de carga para mostrar estado en UI
   loadingProvincias = false;
   loadingMunicipios = false;
   loadingCodigosPostales = false;
+
+  // Phone helper: pais detallado y sub de detalle
+  selectedPais?: PaisDTO;
+  private paisDetailSub?: Subscription;
 
   private languageSubscription?: Subscription;
   private paisSub?: Subscription;
@@ -45,14 +55,17 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
     private cuentaService: CuentaService,
     private router: Router,
     private route: ActivatedRoute,
-    private languageService: LanguageService
+    private languageService: LanguageService,
+    private paisService: PaisService,
+    private provinciaService: ProvinciaService,
+    private municipioService: MunicipioService,
+    private codigoPostalService: CodigoPostalService
   ) {
     this.form = this.fb.group({
-      codigoSistema: ['', [Validators.required, Validators.maxLength(50)]],
+      codigoSistema: ['', [Validators.required, Validators.maxLength(3)]],
       licencia: ['', [Validators.required, Validators.maxLength(100)]],
       nombreNegocio: ['', [Validators.required, Validators.maxLength(256)]],
       direccion: ['', Validators.maxLength(512)],
-      // Controls dependientes se crean deshabilitados por defecto
       paisId: [null, Validators.required],
       provinciaId: [{ value: null, disabled: true }, Validators.required],
       municipioId: [{ value: null, disabled: true }, Validators.required],
@@ -60,8 +73,7 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
       imagen: ['', Validators.maxLength(500)],
       web: ['', Validators.maxLength(256)],
       email: ['', [Validators.email, Validators.maxLength(256)]],
-      telefono: ['', Validators.maxLength(20)],
-      // Cuentas deshabilitadas mientras cargan
+      telefono: ['', Validators.maxLength(50)],
       cuentaPagarId: [{ value: null, disabled: this.loadingCuentas }, Validators.required],
       cuentaCobrarId: [{ value: null, disabled: this.loadingCuentas }, Validators.required],
       caducidad: ['', Validators.required]
@@ -94,10 +106,11 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
     this.paisSub?.unsubscribe();
     this.provinciaSub?.unsubscribe();
     this.municipioSub?.unsubscribe();
+    this.paisDetailSub?.unsubscribe();
   }
 
   private setupFormSubscriptions(): void {
-    const upperFields = ['nombreNegocio', 'direccion'];
+    const upperFields = ['codigoSistema', 'nombreNegocio', 'direccion'];
     upperFields.forEach(field => {
       this.form.get(field)?.valueChanges.subscribe(value => {
         if (value && typeof value === 'string' && value !== value.toUpperCase()) {
@@ -106,27 +119,33 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
       });
     });
 
-    // Cuando cambia el país habilitamos/deshabilitamos y cargamos provincias
-    this.paisSub = this.form.get('paisId')?.valueChanges.subscribe((paisId: number) => {
-      console.debug('paisId changed ->', paisId);
+    this.paisSub = this.form.get('paisId')?.valueChanges.subscribe((paisIdRaw: any) => {
+      const paisId = paisIdRaw ? Number(paisIdRaw) : 0;
       const provControl = this.form.get('provinciaId');
-      // limpiar dependientes
       this.provincias = [];
       this.municipios = [];
       this.codigosPostales = [];
       this.form.patchValue({ provinciaId: null, municipioId: null, codigoPostalId: null }, { emitEvent: false });
 
+      this.paisDetailSub?.unsubscribe();
+      this.selectedPais = undefined;
+      this.applyPhoneValidators(undefined);
+
       if (paisId) {
         provControl?.enable({ emitEvent: false });
         this.loadProvincias(paisId);
+
+        this.paisDetailSub = this.paisService.getById(paisId).subscribe({
+          next: p => this.applyPhoneValidators(p),
+          error: () => this.applyPhoneValidators(undefined)
+        });
       } else {
         provControl?.disable({ emitEvent: false });
       }
     });
 
-    // Cuando cambia la provincia habilitamos/deshabilitamos y cargamos municipios
-    this.provinciaSub = this.form.get('provinciaId')?.valueChanges.subscribe((provinciaId: number) => {
-      console.debug('provinciaId changed ->', provinciaId);
+    this.provinciaSub = this.form.get('provinciaId')?.valueChanges.subscribe((provRaw: any) => {
+      const provinciaId = provRaw ? Number(provRaw) : 0;
       const munControl = this.form.get('municipioId');
       this.municipios = [];
       this.codigosPostales = [];
@@ -140,9 +159,8 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
       }
     });
 
-    // Cuando cambia el municipio habilitamos/deshabilitamos y cargamos códigos postales
-    this.municipioSub = this.form.get('municipioId')?.valueChanges.subscribe((municipioId: number) => {
-      console.debug('municipioId changed ->', municipioId);
+    this.municipioSub = this.form.get('municipioId')?.valueChanges.subscribe((munRaw: any) => {
+      const municipioId = munRaw ? Number(munRaw) : 0;
       const cpControl = this.form.get('codigoPostalId');
       this.codigosPostales = [];
       this.form.patchValue({ codigoPostalId: null }, { emitEvent: false });
@@ -158,19 +176,24 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
 
   loadPaises(): void {
     this.systemConfigurationService.getPaises().subscribe({
-      next: (data) => this.paises = data,
-      error: () => this.error = 'Error al cargar países'
+      next: data => this.paises = data,
+      error: err => {
+        console.error('Error al cargar países', err);
+        this.error = 'Error al cargar países';
+      }
     });
   }
 
   loadProvincias(paisId: number): void {
     this.loadingProvincias = true;
-    this.systemConfigurationService.getProvinciasByPais(paisId).subscribe({
+    this.provinciaService.getByPaisId(paisId).subscribe({
       next: (data) => {
+        // provinciaService returns ProvinciaDTO[]
         this.provincias = data;
         this.loadingProvincias = false;
       },
-      error: () => {
+      error: err => {
+        console.error('Error al cargar provincias', err);
         this.loadingProvincias = false;
         this.error = 'Error al cargar provincias';
       }
@@ -179,12 +202,14 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
 
   loadMunicipios(provinciaId: number): void {
     this.loadingMunicipios = true;
-    this.systemConfigurationService.getMunicipiosByProvincia(provinciaId).subscribe({
+    this.municipioService.getByProvinciaId(provinciaId).subscribe({
       next: (data) => {
+        // municipioService returns MunicipioDTO[]
         this.municipios = data;
         this.loadingMunicipios = false;
       },
-      error: () => {
+      error: err => {
+        console.error('Error al cargar municipios', err);
         this.loadingMunicipios = false;
         this.error = 'Error al cargar municipios';
       }
@@ -193,19 +218,45 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
 
   loadCodigosPostales(municipioId: number): void {
     this.loadingCodigosPostales = true;
-    this.systemConfigurationService.getCodigosPostalesByMunicipio(municipioId).subscribe({
+    this.codigoPostalService.getByMunicipioId(municipioId).subscribe({
       next: (data) => {
+        // codigoPostalService returns CodigoPostalDTO[]
         this.codigosPostales = data;
         this.loadingCodigosPostales = false;
       },
-      error: () => {
+      error: err => {
+        console.error('Error al cargar códigos postales', err);
         this.loadingCodigosPostales = false;
         this.error = 'Error al cargar códigos postales';
       }
     });
   }
 
-  private extractId(eventOrId: Event | number): number {
+  private applyPhoneValidators(pais?: PaisDTO): void {
+    this.selectedPais = pais;
+    const telefono = this.form.get('telefono')!;
+
+    const baseValidators = [Validators.maxLength(50)];
+    if (pais && pais.regexTelefono) {
+      try {
+        const re = new RegExp(pais.regexTelefono);
+        const phonePatternValidator: ValidatorFn = (c: AbstractControl) => {
+          if (!c.value) return null;
+          return re.test(c.value) ? null : { telefonoInvalid: true };
+        };
+        telefono.setValidators([...baseValidators, phonePatternValidator]);
+      } catch {
+        telefono.setValidators(baseValidators);
+        console.warn('Invalid regexTelefono from API for pais', pais?.id);
+      }
+    } else {
+      telefono.setValidators(baseValidators);
+    }
+
+    telefono.updateValueAndValidity({ emitEvent: false });
+  }
+
+  extractId(eventOrId: Event | number): number {
     if (typeof eventOrId === 'number') return eventOrId;
     const target = (eventOrId as Event).target as HTMLSelectElement | null;
     const val = target?.value ?? (eventOrId as any);
@@ -233,7 +284,7 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
     if (!this.configId) return;
     this.loading = true;
     this.systemConfigurationService.getById(this.configId).subscribe({
-      next: (data) => {
+      next: data => {
         const formattedCaducidad = data.caducidad
           ? new Date(data.caducidad).toISOString().substring(0, 10)
           : '';
@@ -252,54 +303,83 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
           caducidad: formattedCaducidad
         }, { emitEvent: false });
 
-        const paisId = data.paisId;
-        const provinciaId = data.provinciaId;
-        const municipioId = data.municipioId;
-        const codigoPostalId = data.codigoPostalId;
+        const paisId = data.paisId ?? 0;
+        const provinciaId = data.provinciaId ?? 0;
+        const municipioId = data.municipioId ?? 0;
+        const codigoPostalId = data.codigoPostalId ?? 0;
 
-        // Cargar dependientes secuencialmente y establecer valores sin disparar eventos
-        if (paisId) {
-          this.systemConfigurationService.getProvinciasByPais(paisId).subscribe({
-            next: (provs) => {
-              this.provincias = provs;
-              this.form.get('provinciaId')?.enable({ emitEvent: false });
-              this.form.patchValue({ paisId: paisId }, { emitEvent: false });
-
-              if (provinciaId) {
-                this.systemConfigurationService.getMunicipiosByProvincia(provinciaId).subscribe({
-                  next: (muns) => {
-                    this.municipios = muns;
-                    this.form.get('municipioId')?.enable({ emitEvent: false });
-                    this.form.patchValue({ provinciaId: provinciaId }, { emitEvent: false });
-
-                    if (municipioId) {
-                      this.systemConfigurationService.getCodigosPostalesByMunicipio(municipioId).subscribe({
-                        next: (cods) => {
-                          this.codigosPostales = cods;
-                          this.form.get('codigoPostalId')?.enable({ emitEvent: false });
-                          this.form.patchValue({ municipioId: municipioId, codigoPostalId: codigoPostalId }, { emitEvent: false });
-                        },
-                        error: () => console.warn('Error cargando códigos postales')
-                      });
-                    }
-                  },
-                  error: () => console.warn('Error cargando municipios')
-                });
-              }
-            },
-            error: () => console.warn('Error cargando provincias')
-          });
+        if (!paisId) {
+          this.applyPhoneValidators(undefined);
+          this.loading = false;
+          return;
         }
+
+        // set paisId first to keep select state consistent
+        this.form.patchValue({ paisId: paisId }, { emitEvent: false });
+
+        this.paisDetailSub?.unsubscribe();
+        this.paisDetailSub = this.paisService.getById(paisId).subscribe({
+          next: p => this.applyPhoneValidators(p),
+          error: () => this.applyPhoneValidators(undefined)
+        });
+
+        // use provinciaService/municipioService/codigoPostalService which return DTO[] types
+        this.provinciaService.getByPaisId(paisId).subscribe({
+          next: provinces => {
+            this.provincias = provinces;
+            this.form.get('provinciaId')?.enable({ emitEvent: false });
+
+            if (!provinciaId) {
+              this.loading = false;
+              return;
+            }
+
+            this.form.patchValue({ provinciaId: provinciaId }, { emitEvent: false });
+
+            this.municipioService.getByProvinciaId(provinciaId).subscribe({
+              next: municipios => {
+                this.municipios = municipios;
+                this.form.get('municipioId')?.enable({ emitEvent: false });
+
+                if (!municipioId) {
+                  this.loading = false;
+                  return;
+                }
+
+                this.form.patchValue({ municipioId: municipioId }, { emitEvent: false });
+
+                this.codigoPostalService.getByMunicipioId(municipioId).subscribe({
+                  next: cps => {
+                    this.codigosPostales = cps;
+                    this.form.get('codigoPostalId')?.enable({ emitEvent: false });
+
+                    if (codigoPostalId) {
+                      this.form.patchValue({ codigoPostalId: codigoPostalId }, { emitEvent: false });
+                    }
+                    this.loading = false;
+                  },
+                  error: () => {
+                    this.loading = false;
+                  }
+                });
+              },
+              error: () => {
+                this.loading = false;
+              }
+            });
+          },
+          error: () => {
+            this.loading = false;
+          }
+        });
 
         if (data.imagen) {
           this.logoPreviewUrl = this.systemConfigurationService.getLogoUrl(data.imagen);
         }
 
         if (this.isEditMode) this.form.get('codigoSistema')?.disable();
-
-        this.loading = false;
       },
-      error: (err: any) => {
+      error: err => {
         this.error = 'Error al cargar configuración';
         this.loading = false;
         console.error('Error cargando configuración:', err);
@@ -348,7 +428,7 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
     if (this.selectedLogoFile) {
       const codigoSistema = this.form.getRawValue().codigoSistema;
       this.systemConfigurationService.uploadLogo(codigoSistema, this.selectedLogoFile).subscribe({
-        next: (result) => {
+        next: result => {
           this.form.get('imagen')?.setValue(result.fileName);
           this.submitForm();
         },
@@ -392,6 +472,7 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
       return `Máximo ${control.errors?.['maxlength'].requiredLength} caracteres`;
     }
     if (control?.hasError('email')) return 'Email no válido';
+    if (control?.hasError('telefonoInvalid')) return 'Teléfono no válido';
     return '';
   }
 }

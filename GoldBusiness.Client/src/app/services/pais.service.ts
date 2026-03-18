@@ -5,7 +5,12 @@ import { ApiService } from './api.service';
 export interface PaisDTO {
   id?: number;
   codigo: string;
+  codigoAlpha2?: string;
+  codigoTelefono?: string;
   descripcion: string;
+  regexTelefono?: string;      // nueva
+  formatoTelefono?: string;    // nueva
+  formatoEjemplo?: string;     // nueva
   activo?: boolean;
   fechaHoraCreado?: string;
   fechaHoraModificado?: string;

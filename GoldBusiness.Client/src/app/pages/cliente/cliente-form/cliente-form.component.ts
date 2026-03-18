@@ -1,7 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subscription, of } from 'rxjs';
+import { switchMap, catchError } from 'rxjs/operators';
 import { ClienteDTO, ClienteService } from '../../../services/cliente.service';
 import { PaisService, PaisDTO } from '../../../services/pais.service';
 import { ProvinciaService, ProvinciaDTO } from '../../../services/provincia.service';
@@ -26,6 +27,8 @@ export class ClienteFormComponent implements OnInit, OnDestroy {
   municipios: MunicipioDTO[] = [];
   codigosPostales: CodigoPostalDTO[] = [];
 
+  selectedPais?: PaisDTO;
+
   private subs: Subscription[] = [];
 
   constructor(
@@ -44,7 +47,7 @@ export class ClienteFormComponent implements OnInit, OnDestroy {
       nif: ['', Validators.maxLength(11)],
       iban: ['', Validators.maxLength(27)],
       bicoSwift: ['', Validators.maxLength(11)],
-      iva: [0, [Validators.required, Validators.min(0), Validators.max(100), Validators.pattern(/^[0-9]+$/)]],
+      iva: [0, [Validators.required, Validators.min(0), Validators.max(99.99), Validators.pattern(/^\d+(\.\d{1,2})?$/)]],
       direccion: ['', Validators.maxLength(256)],
       paisId: [null],
       provinciaId: [null],
@@ -60,7 +63,6 @@ export class ClienteFormComponent implements OnInit, OnDestroy {
       cancelado: [false]
     });
 
-    // Inicialmente deshabilitar controles dependientes
     this.itemForm.get('provinciaId')!.disable();
     this.itemForm.get('municipioId')!.disable();
     this.itemForm.get('codigoPostalId')!.disable();
@@ -70,14 +72,21 @@ export class ClienteFormComponent implements OnInit, OnDestroy {
     this.loadPaises();
 
     this.subs.push(
-      this.itemForm.get('paisId')!.valueChanges.subscribe(v => this.onPaisChange(v))
+      this.itemForm.get('paisId')!.valueChanges.pipe(
+        switchMap(v => {
+          this.onPaisChange(v);
+          if (v) {
+            return this.paisService.getById(+v).pipe(catchError(() => of(null)));
+          }
+          return of(null);
+        })
+      ).subscribe((pais: PaisDTO | null) => {
+        this.applyPhoneValidators(pais || undefined);
+      })
     );
-    this.subs.push(
-      this.itemForm.get('provinciaId')!.valueChanges.subscribe(v => this.onProvinciaChange(v))
-    );
-    this.subs.push(
-      this.itemForm.get('municipioId')!.valueChanges.subscribe(v => this.onMunicipioChange(v))
-    );
+
+    this.subs.push(this.itemForm.get('provinciaId')!.valueChanges.subscribe(v => this.onProvinciaChange(v)));
+    this.subs.push(this.itemForm.get('municipioId')!.valueChanges.subscribe(v => this.onMunicipioChange(v)));
 
     this.route.params.subscribe(params => {
       if (params['id']) {
@@ -104,7 +113,6 @@ export class ClienteFormComponent implements OnInit, OnDestroy {
     this.municipios = [];
     this.codigosPostales = [];
     this.itemForm.patchValue({ provinciaId: null, municipioId: null, codigoPostalId: null }, { emitEvent: false });
-    // deshabilitar hijos hasta que se habilite el control correspondiente
     this.itemForm.get('municipioId')!.disable();
     this.itemForm.get('codigoPostalId')!.disable();
 
@@ -113,7 +121,6 @@ export class ClienteFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // habilitar control provincia antes de poblar la lista
     this.itemForm.get('provinciaId')!.enable();
     this.provinciaService.getByPaisId(paisId).subscribe({
       next: list => this.provincias = list,
@@ -158,7 +165,7 @@ export class ClienteFormComponent implements OnInit, OnDestroy {
   onPaisChange(value: number | null): void {
     const paisId = value ? +value : undefined;
     if (!paisId) {
-      // limpiar y deshabilitar hijos
+      this.selectedPais = undefined;
       this.itemForm.patchValue({ provinciaId: null, municipioId: null, codigoPostalId: null }, { emitEvent: false });
       this.provincias = [];
       this.municipios = [];
@@ -195,6 +202,36 @@ export class ClienteFormComponent implements OnInit, OnDestroy {
     this.loadCodigoPostales(municipioId);
   }
 
+  private applyPhoneValidators(pais?: PaisDTO): void {
+    this.selectedPais = pais;
+
+    const telefono1 = this.itemForm.get('telefono1')!;
+    const telefono2 = this.itemForm.get('telefono2')!;
+    const baseValidators = [Validators.maxLength(50)];
+
+    if (pais && pais.regexTelefono) {
+      try {
+        const re = new RegExp(pais.regexTelefono);
+        const phonePatternValidator: ValidatorFn = (c: AbstractControl) => {
+          if (!c.value) return null;
+          return re.test(c.value) ? null : { telefonoInvalid: true };
+        };
+        telefono1.setValidators([...baseValidators, phonePatternValidator]);
+        telefono2.setValidators([...baseValidators, phonePatternValidator]);
+      } catch {
+        telefono1.setValidators(baseValidators);
+        telefono2.setValidators(baseValidators);
+        console.warn('Invalid regexTelefono from API for pais', pais?.id);
+      }
+    } else {
+      telefono1.setValidators(baseValidators);
+      telefono2.setValidators(baseValidators);
+    }
+
+    telefono1.updateValueAndValidity({ emitEvent: false });
+    telefono2.updateValueAndValidity({ emitEvent: false });
+  }
+
   private loadItem(): void {
     if (!this.itemId) return;
     this.loading = true;
@@ -202,7 +239,6 @@ export class ClienteFormComponent implements OnInit, OnDestroy {
 
     this.clienteService.getById(this.itemId).subscribe({
       next: item => {
-        // Primero parchear los valores no dependientes
         this.itemForm.patchValue({
           codigo: item.codigo,
           descripcion: item.descripcion,
@@ -221,54 +257,59 @@ export class ClienteFormComponent implements OnInit, OnDestroy {
           cancelado: item.cancelado
         }, { emitEvent: false });
 
-        // Paises ya cargados en ngOnInit, ahora cargar cascada en secuencia para mantener selección
         if (item.paisId) {
-          // habilitar provincia y cargar lista
-          this.itemForm.get('provinciaId')!.enable();
+          this.itemForm.patchValue({ paisId: item.paisId }, { emitEvent: false });
+
+          this.paisService.getById(item.paisId).subscribe({
+            next: pais => this.applyPhoneValidators(pais),
+            error: () => this.applyPhoneValidators(undefined)
+          });
+
           this.provinciaService.getByPaisId(item.paisId).subscribe({
             next: provinces => {
               this.provincias = provinces;
-              if (item.provinciaId) {
-                this.itemForm.patchValue({ paisId: item.paisId, provinciaId: item.provinciaId }, { emitEvent: false });
+              this.itemForm.get('provinciaId')!.enable();
 
-                // cargar municipios
-                this.itemForm.get('municipioId')!.enable();
-                this.municipioService.getByProvinciaId(item.provinciaId).subscribe({
-                  next: municipios => {
-                    this.municipios = municipios;
-                    if (item.municipioId) {
-                      this.itemForm.patchValue({ municipioId: item.municipioId }, { emitEvent: false });
+              if (!item.provinciaId) {
+                this.loading = false;
+                return;
+              }
 
-                      // cargar codigos postales
+              this.itemForm.patchValue({ provinciaId: item.provinciaId }, { emitEvent: false });
+
+              this.municipioService.getByProvinciaId(item.provinciaId).subscribe({
+                next: municipios => {
+                  this.municipios = municipios;
+                  this.itemForm.get('municipioId')!.enable();
+
+                  if (!item.municipioId) {
+                    this.loading = false;
+                    return;
+                  }
+
+                  this.itemForm.patchValue({ municipioId: item.municipioId }, { emitEvent: false });
+
+                  this.codigoPostalService.getByMunicipioId(item.municipioId).subscribe({
+                    next: cps => {
+                      this.codigosPostales = cps;
                       this.itemForm.get('codigoPostalId')!.enable();
-                      this.codigoPostalService.getByMunicipioId(item.municipioId).subscribe({
-                        next: cps => {
-                          this.codigosPostales = cps;
-                          if (item.codigoPostalId) {
-                            this.itemForm.patchValue({ codigoPostalId: item.codigoPostalId }, { emitEvent: false });
-                          }
-                          this.loading = false;
-                        },
-                        error: err => {
-                          console.error('Error loading cp', err);
-                          this.loading = false;
-                        }
-                      });
-                    } else {
-                      // no hay municipio seleccionado
+
+                      if (item.codigoPostalId) {
+                        this.itemForm.patchValue({ codigoPostalId: item.codigoPostalId }, { emitEvent: false });
+                      }
+                      this.loading = false;
+                    },
+                    error: err => {
+                      console.error('Error loading cp', err);
                       this.loading = false;
                     }
-                  },
-                  error: err => {
-                    console.error('Error loading municipios', err);
-                    this.loading = false;
-                  }
-                });
-              } else {
-                // no hay provincia seleccionada
-                this.itemForm.patchValue({ paisId: item.paisId }, { emitEvent: false });
-                this.loading = false;
-              }
+                  });
+                },
+                error: err => {
+                  console.error('Error loading municipios', err);
+                  this.loading = false;
+                }
+              });
             },
             error: err => {
               console.error('Error loading provincias', err);
@@ -276,8 +317,7 @@ export class ClienteFormComponent implements OnInit, OnDestroy {
             }
           });
         } else {
-          // sin país seleccionado; simplemente setear paisId si viene
-          if (item.paisId) this.itemForm.patchValue({ paisId: item.paisId }, { emitEvent: false });
+          this.applyPhoneValidators(undefined);
           this.loading = false;
         }
       },

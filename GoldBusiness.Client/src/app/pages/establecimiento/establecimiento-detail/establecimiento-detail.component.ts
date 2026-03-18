@@ -1,49 +1,83 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { EstablecimientoDTO, EstablecimientoService } from '../../../services/establecimiento.service';
+import { PaisService, PaisDTO } from '../../../services/pais.service';
 
 @Component({
   selector: 'app-establecimiento-detail',
   templateUrl: './establecimiento-detail.component.html',
   styleUrls: ['./establecimiento-detail.component.css']
 })
-export class EstablecimientoDetailComponent implements OnInit {
+export class EstablecimientoDetailComponent implements OnInit, OnDestroy {
   item?: EstablecimientoDTO;
   loading = false;
   error: string | null = null;
 
+  selectedPais?: PaisDTO;
+  paisDescripcion?: string;
+  postalCode?: string;
+  private sub?: Subscription;
+  private paisSub?: Subscription;
+
   constructor(
     private establecimientoService: EstablecimientoService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private paisService: PaisService
   ) {}
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
+    this.sub = this.route.params.subscribe(params => {
       const id = +params['id'];
       if (id) this.loadItem(id);
     });
   }
 
+  ngOnDestroy(): void {
+    this.sub?.unsubscribe();
+    this.paisSub?.unsubscribe();
+  }
+
   loadItem(id: number): void {
     this.loading = true;
     this.error = null;
+    this.selectedPais = undefined;
+    this.paisDescripcion = undefined;
+    this.postalCode = undefined;
+    this.paisSub?.unsubscribe();
 
     this.establecimientoService.getById(id).subscribe({
       next: item => {
         this.item = item;
+
+        this.paisDescripcion = (item as any)?.paisDescripcion ?? undefined;
+        this.postalCode = (item as any)?.codigoPostalCodigo ?? (item as any)?.codPostal ?? undefined;
+
+        const paisId = (item as any)?.paisId;
+        if (paisId) {
+          this.paisSub = this.paisService.getById(paisId).subscribe({
+            next: p => {
+              this.selectedPais = p;
+              this.paisDescripcion = p?.descripcion ?? this.paisDescripcion;
+            },
+            error: () => {
+              this.selectedPais = undefined;
+            }
+          });
+        }
+
         this.loading = false;
       },
       error: err => {
-        this.error = err.message || 'Error al cargar el establecimiento';
+        this.error = err?.message || 'Error al cargar el establecimiento';
         this.loading = false;
       }
     });
   }
 
   goBack(): void {
-    // Navigate to the correct list route
     this.router.navigate(['/nomencladores/establecimiento']);
   }
 }

@@ -40,23 +40,30 @@
         <div class="info-row">
           <strong>{{ 'clientes.direccion' | translate }}:</strong> {{ item.direccion || '-' }}
         </div>
+
+        <!-- País y Código Postal en la misma línea -->
         <div class="info-row">
-          <strong>{{ 'clientes.pais' | translate }}:</strong> {{ item.paisDescripcion || '-' }}
+          <strong>{{ 'clientes.pais' | translate }}:</strong>
+          {{ selectedPais?.descripcion || paisDescripcion || item.paisDescripcion || '-' }}
+          &nbsp;&nbsp;&nbsp;
+          <strong>{{ 'clientes.codigoPostal' | translate }}:</strong>
+          {{ postalCode || '-' }}
         </div>
+
         <div class="info-row">
           <strong>{{ 'clientes.provincia' | translate }}:</strong> {{ item.provinciaDescripcion || '-' }}
         </div>
         <div class="info-row">
           <strong>{{ 'clientes.municipio' | translate }}:</strong> {{ item.municipioDescripcion || '-' }}
         </div>
-        <div class="info-row">
-          <strong>{{ 'clientes.codigoPostal' | translate }}:</strong> {{ item.codigoPostalCodigo || '-' }}
-        </div>
+
         <div class="info-row">
           <strong>{{ 'clientes.email1' | translate }}:</strong> {{ item.email1 || '-' }}
         </div>
         <div class="info-row">
-          <strong>{{ 'clientes.telefono1' | translate }}:</strong> {{ item.telefono1 || '-' }}
+          <strong>{{ 'clientes.telefono1' | translate }}:</strong>
+          <span *ngIf="item.telefono1; else noPhone">{{ item.telefono1 | localizedPhone:selectedPais }}</span>
+          <ng-template #noPhone>-</ng-template>
         </div>
       </div>
     </div>

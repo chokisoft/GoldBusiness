@@ -37,11 +37,23 @@
         <div class="info-row">
           <strong>{{ 'proveedores.direccion' | translate }}:</strong> {{ item.direccion || '-' }}
         </div>
+
+        <!-- País y Código Postal -->
+        <div class="info-row">
+          <strong>{{ 'proveedores.pais' | translate }}:</strong>
+          {{ selectedPais?.descripcion || paisDescripcion || item.paisDescripcion || '-' }}
+          &nbsp;&nbsp;&nbsp;
+          <strong>{{ 'proveedores.codigoPostal' | translate }}:</strong>
+          {{ postalCode || '-' }}
+        </div>
+
         <div class="info-row">
           <strong>{{ 'proveedores.email1' | translate }}:</strong> {{ item.email1 || '-' }}
         </div>
         <div class="info-row">
-          <strong>{{ 'proveedores.telefono1' | translate }}:</strong> {{ item.telefono1 || '-' }}
+          <strong>{{ 'proveedores.telefono1' | translate }}:</strong>
+          <span *ngIf="item.telefono1; else noPhone">{{ item.telefono1 | localizedPhone:selectedPais }}</span>
+          <ng-template #noPhone>-</ng-template>
         </div>
       </div>
     </div>

@@ -374,6 +374,31 @@ export class TranslationService {
       'en': 'Enter code (5 chars)',
       'fr': 'Entrez le code (5 caractères)'
     },
+    'proveedores.descripcionPlaceholder': {
+      'es': 'Ej: Nombre del proveedor',
+      'en': 'Ex: Supplier name',
+      'fr': 'Ex: Nom du fournisseur'
+    },
+    'proveedores.direccionPlaceholder': {
+      'es': 'Ej: Calle y número',
+      'en': 'Ex: Street and number',
+      'fr': 'Ex: Rue et numéro'
+    },
+    'proveedores.telefonoPlaceholder': {
+      'es': 'Ej: +34 912 345 678',
+      'en': 'Ex: +34 912 345 678',
+      'fr': 'Ex: +33 1 23 45 67 89'
+    },
+    'proveedores.emailPlaceholder': {
+      'es': 'Ej: proveedor@empresa.com',
+      'en': 'Ex: supplier@company.com',
+      'fr': 'Ex: fournisseur@entreprise.com'
+    },
+    'proveedores.ivaPlaceholder': {
+      'es': 'Ej: 21.00',
+      'en': 'Ex: 21.00',
+      'fr': 'Ex: 21.00'
+    },
 
     'clientes.title': {
       'es': 'Clientes',
@@ -449,6 +474,31 @@ export class TranslationService {
       'es': 'Ingrese código (8 dígitos)',
       'en': 'Enter code (8 chars)',
       'fr': 'Entrez le code (8 caractères)'
+    },
+    'clientes.descripcionPlaceholder': {
+      'es': 'Ej: Nombre del cliente o razón social',
+      'en': 'Ex: Customer name or company',
+      'fr': 'Ex: Nom du client ou raison sociale'
+    },
+    'clientes.direccionPlaceholder': {
+      'es': 'Ej: Calle y número',
+      'en': 'Ex: Street and number',
+      'fr': 'Ex: Rue et numéro'
+    },
+    'clientes.telefonoPlaceholder': {
+      'es': 'Ej: +34 912 345 678',
+      'en': 'Ex: +34 912 345 678',
+      'fr': 'Ex: +33 1 23 45 67 89'
+    },
+    'clientes.emailPlaceholder': {
+      'es': 'Ej: cliente@empresa.com',
+      'en': 'Ex: customer@company.com',
+      'fr': 'Ex: client@entreprise.com'
+    },
+    'clientes.ivaPlaceholder': {
+      'es': 'Ej: 21.00',
+      'en': 'Ex: 21.00',
+      'fr': 'Ex: 21.00'
     },
 
     // ═══════════════════════════════════════════════════════════

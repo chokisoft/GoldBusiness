@@ -9,7 +9,7 @@ namespace GoldBusiness.Infrastructure.Settings.Setting
         public void Configure(EntityTypeBuilder<SystemConfiguration> builder)
         {
              builder.HasKey(e => e.Id);
-            builder.Property(e => e.CodigoSistema).IsRequired().HasMaxLength(50);
+            builder.Property(e => e.CodigoSistema).IsRequired().HasMaxLength(3);
             builder.Property(e => e.Licencia).IsRequired().HasMaxLength(100);
             builder.Property(e => e.NombreNegocio).IsRequired().HasMaxLength(256);
             builder.Property(e => e.Direccion).HasMaxLength(512);

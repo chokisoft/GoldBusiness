@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { skip } from 'rxjs/operators';
 import { SystemConfigurationService, SystemConfigurationDTO } from '../../../services/system-configuration.service';
 import { LanguageService } from '../../../services/language.service';
+import { PaisService, PaisDTO } from '../../../services/pais.service';
 
 @Component({
   selector: 'app-system-configuration-detail',
@@ -16,8 +17,13 @@ export class SystemConfigurationDetailComponent implements OnInit, OnDestroy {
   loading = true;
   error: string | null = null;
   
-  // ✅ Control de error de imagen para evitar bucles
+  // Control de error de imagen para evitar bucles
   logoError = false;
+
+  selectedPais?: PaisDTO;
+  paisDescripcion?: string; // descripción del país (fallback)
+  postalCode?: string;      // <-- nueva propiedad para código postal
+  private paisSub?: Subscription;
 
   private languageSubscription?: Subscription;
 
@@ -25,7 +31,8 @@ export class SystemConfigurationDetailComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private systemConfigurationService: SystemConfigurationService,
-    private languageService: LanguageService
+    private languageService: LanguageService,
+    private paisService: PaisService
   ) {}
 
   ngOnInit(): void {
@@ -48,17 +55,45 @@ export class SystemConfigurationDetailComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.languageSubscription?.unsubscribe();
+    this.paisSub?.unsubscribe();
   }
 
   loadConfiguration(): void {
     if (!this.id) return;
     this.loading = true;
     this.error = null;
-    this.logoError = false; // ✅ Reset del flag al recargar
+    this.logoError = false; // Reset del flag al recargar
+    this.selectedPais = undefined;
+    this.paisDescripcion = undefined;
+    this.postalCode = undefined;
+    this.paisSub?.unsubscribe();
     
     this.systemConfigurationService.getById(this.id).subscribe({
       next: (data: SystemConfigurationDTO) => {
         this.config = data;
+
+        // Si la API devuelve una propiedad paisDescripcion dentro del DTO, úsala como fallback.
+        this.paisDescripcion = (data as any)?.paisDescripcion ?? undefined;
+
+        // Extraer código postal desde propiedades posibles del DTO (compatibilidad)
+        this.postalCode = (data as any)?.codPostal ?? (data as any)?.codigoPostalCodigo ?? undefined;
+
+        // load pais detail if exists, y sobrescribir paisDescripcion con la descripcion real si se encuentra
+        const paisId = (data as any)?.paisId;
+        if (paisId) {
+          this.paisSub = this.paisService.getById(paisId).subscribe({
+            next: p => {
+              this.selectedPais = p;
+              this.paisDescripcion = p?.descripcion ?? this.paisDescripcion;
+            },
+            error: () => {
+              this.selectedPais = undefined;
+              // deja paisDescripcion tal cual (podría venir del DTO)
+            }
+          });
+        } else {
+          this.selectedPais = undefined;
+        }
         this.loading = false;
       },
       error: (err: any) => {
@@ -71,7 +106,7 @@ export class SystemConfigurationDetailComponent implements OnInit, OnDestroy {
 
   /** Devuelve la URL del logo para usar en [src] */
   getLogoUrl(): string | null {
-    // ✅ Si ya hubo error, no devolver nada (mostrar placeholder en HTML)
+    // Si ya hubo error, no devolver nada (mostrar placeholder en HTML)
     if (this.logoError) return null;
     
     if (!this.config?.imagen) return null;
@@ -80,12 +115,10 @@ export class SystemConfigurationDetailComponent implements OnInit, OnDestroy {
   }
 
   goToEdit(): void {
-    // corrected path: use 'negocio' segment that matches app-routing.module.ts
     if (this.id) this.router.navigate(['/configuracion/negocio/editar', this.id]);
   }
 
   goBack(): void {
-    // corrected path: list route is '/configuracion/negocio'
     this.router.navigate(['/configuracion/negocio']);
   }
 
@@ -103,9 +136,9 @@ export class SystemConfigurationDetailComponent implements OnInit, OnDestroy {
     return '✅';
   }
 
-  /** ✅ Se ejecuta una sola vez cuando falla la carga del logo */
+  /** Se ejecuta una sola vez cuando falla la carga del logo */
   onImageError(event: Event): void {
     console.warn('❌ Error al cargar logo, usando placeholder');
-    this.logoError = true; // ✅ Marcar que hubo error para evitar bucle
+    this.logoError = true; // Marcar que hubo error para evitar bucle
   }
 }

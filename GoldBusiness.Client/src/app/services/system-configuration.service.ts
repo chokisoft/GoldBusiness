@@ -4,7 +4,7 @@ import { ApiService } from './api.service';
 
 // Modelos de localización: incluir 'descripcion' que devuelve el backend.
 // Mantener 'nombre' opcional para compatibilidad con otras partes que lo usen.
-export interface Pais { id: number; descripcion?: string; nombre?: string; }
+export interface Pais { id: number; descripcion?: string; nombre?: string; regexTelefono?: string; formatoTelefono?: string; formatoEjemplo?: string; }
 export interface Provincia { id: number; descripcion?: string; nombre?: string; paisId: number; }
 export interface Municipio { id: number; descripcion?: string; nombre?: string; provinciaId: number; }
 export interface CodigoPostal { id: number; codigo: string; municipioId: number; }
