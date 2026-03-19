@@ -19,13 +19,13 @@
         <div class="form-row">
           <div class="form-group">
             <label for="codigoSistema" class="form-label">{{ 'systemConfig.codigoSistema' | translate }} *</label>
-            <input type="text"
+                 <input type="text"
                    id="codigoSistema"
                    formControlName="codigoSistema"
                    class="form-control"
                    maxlength="3"
                    [class.is-invalid]="form.get('codigoSistema')?.invalid && form.get('codigoSistema')?.touched"
-                   placeholder="Ej: GOL-ERP-001" />
+                   placeholder="{{ 'systemConfig.placeholderCodigoSistema' | translate }}" />
             <div class="invalid-feedback" *ngIf="form.get('codigoSistema')?.invalid && form.get('codigoSistema')?.touched">
               {{ getErrorMessage('codigoSistema') }}
             </div>
@@ -33,9 +33,9 @@
 
           <div class="form-group">
             <label for="licencia" class="form-label">{{ 'systemConfig.licencia' | translate }} *</label>
-            <input type="text" id="licencia" formControlName="licencia" class="form-control"
+                 <input type="text" id="licencia" formControlName="licencia" class="form-control"
                    [class.is-invalid]="form.get('licencia')?.invalid && form.get('licencia')?.touched"
-                   placeholder="Código de licencia" />
+                   placeholder="{{ 'systemConfig.placeholderLicencia' | translate }}" />
             <div class="invalid-feedback" *ngIf="form.get('licencia')?.invalid && form.get('licencia')?.touched">
               {{ getErrorMessage('licencia') }}
             </div>
@@ -44,9 +44,9 @@
 
         <div class="form-group">
           <label for="nombreNegocio" class="form-label">{{ 'systemConfig.nombreNegocio' | translate }} *</label>
-          <input type="text" id="nombreNegocio" formControlName="nombreNegocio" class="form-control"
-                 [class.is-invalid]="form.get('nombreNegocio')?.invalid && form.get('nombreNegocio')?.touched"
-                 placeholder="Nombre completo del negocio" />
+             <input type="text" id="nombreNegocio" formControlName="nombreNegocio" class="form-control"
+               [class.is-invalid]="form.get('nombreNegocio')?.invalid && form.get('nombreNegocio')?.touched"
+               placeholder="{{ 'systemConfig.placeholderNombreNegocio' | translate }}" />
           <div class="invalid-feedback" *ngIf="form.get('nombreNegocio')?.invalid && form.get('nombreNegocio')?.touched">
             {{ getErrorMessage('nombreNegocio') }}
           </div>
@@ -70,7 +70,7 @@
           <div class="form-group">
             <label for="direccion" class="form-label">{{ 'systemConfig.direccion' | translate }}</label>
             <textarea id="direccion" formControlName="direccion" class="form-control" rows="2"
-                      placeholder="Dirección completa del negocio"></textarea>
+                      placeholder="{{ 'systemConfig.placeholderDireccion' | translate }}"></textarea>
           </div>
         </div>
 
@@ -84,6 +84,8 @@
                 {{ pais.descripcion }}
               </option>
             </select>
+              <small class="form-text" *ngIf="paises.length === 0">{{ 'systemConfig.noPaisesDisponibles' | translate }}</small>
+              <small class="form-text" *ngIf="!form.get('paisId')?.value">{{ 'systemConfig.selectPaisToSeeProvincias' | translate }}</small>
           </div>
           <div class="form-group">
             <label for="provinciaId" class="form-label">{{ 'systemConfig.provincia' | translate }} *</label>
@@ -94,6 +96,7 @@
                 {{ provincia.descripcion }}
               </option>
             </select>
+              <small class="form-text" *ngIf="!form.get('provinciaId')?.value">{{ 'systemConfig.selectProvinciaToSeeMunicipios' | translate }}</small>
             <small *ngIf="loadingProvincias">⏳ {{ 'common.loading' | translate }}...</small>
           </div>
         </div>
@@ -108,6 +111,7 @@
                 {{ municipio.descripcion }}
               </option>
             </select>
+              <small class="form-text" *ngIf="!form.get('municipioId')?.value">{{ 'systemConfig.selectMunicipioToSeeCodigosPostales' | translate }}</small>
             <small *ngIf="loadingMunicipios">⏳ {{ 'common.loading' | translate }}...</small>
           </div>
 
@@ -183,10 +187,10 @@
           <small class="form-text">{{ 'systemConfig.logoFormatHint' | translate }}</small>
         </div>
 
-        <div *ngIf="form.get('imagen')?.value && !selectedLogoFile" class="current-logo-name">
+        <div *ngIf="form.get('imagen')?.value && !selectedLogoFile" class="current-logo-name" style="display: flex; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
           <span class="file-icon">📎</span>
           <span class="file-name">{{ form.get('imagen')?.value }}</span>
-          <button type="button" class="btn btn-sm btn-danger" (click)="removeLogo()">
+          <button type="button" class="btn btn-sm btn-danger" (click)="removeLogo()" style="margin-left: 0.75rem; min-width: 40px;">
             ✕ {{ 'systemConfig.logoRemove' | translate }}
           </button>
         </div>

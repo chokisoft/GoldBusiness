@@ -24,11 +24,11 @@
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">{{ 'proveedores.nif' | translate }}</label>
-          <input class="form-control" formControlName="nif" maxlength="11" />
+            <input class="form-control" formControlName="nif" maxlength="11" placeholder="{{ 'proveedores.placeholderNif' | translate }}" />
         </div>
         <div class="form-group">
           <label class="form-label">{{ 'proveedores.iva' | translate }}</label>
-          <input class="form-control" formControlName="iva" type="number" />
+            <input class="form-control" formControlName="iva" type="text" inputmode="decimal" pattern="[0-9]+([\.,][0-9]{1,2})?" placeholder="{{ 'proveedores.placeholderIva' | translate }}" autocomplete="off" />
         </div>
       </div>
 
@@ -44,6 +44,8 @@
             <option [ngValue]="null">{{ 'common.select' | translate }}</option>
             <option *ngFor="let p of paises" [ngValue]="p.id">{{ p.descripcion }}</option>
           </select>
+            <small class="form-text" *ngIf="paises.length === 0">{{ 'proveedor.noPaisesDisponibles' | translate }}</small>
+            <small class="form-text" *ngIf="!itemForm.get('paisId')?.value">{{ 'proveedor.selectPaisToSeeProvincias' | translate }}</small>
         </div>
 
         <div class="form-group">
@@ -52,6 +54,7 @@
             <option [ngValue]="null">{{ 'common.select' | translate }}</option>
             <option *ngFor="let prov of provincias" [ngValue]="prov.id">{{ prov.descripcion }}</option>
           </select>
+            <small class="form-text" *ngIf="!itemForm.get('provinciaId')?.value">{{ 'proveedor.selectProvinciaToSeeMunicipios' | translate }}</small>
         </div>
       </div>
 
@@ -62,6 +65,7 @@
             <option [ngValue]="null">{{ 'common.select' | translate }}</option>
             <option *ngFor="let mun of municipios" [ngValue]="mun.id">{{ mun.descripcion }}</option>
           </select>
+            <small class="form-text" *ngIf="!itemForm.get('municipioId')?.value">{{ 'proveedor.selectMunicipioToSeeCodigosPostales' | translate }}</small>
         </div>
 
         <div class="form-group">
@@ -70,6 +74,7 @@
             <option [ngValue]="null">{{ 'common.select' | translate }}</option>
             <option *ngFor="let cp of codigosPostales" [ngValue]="cp.id">{{ cp.codigo }}</option>
           </select>
+            <small class="form-text" *ngIf="!itemForm.get('codigoPostalId')?.value">{{ 'proveedor.selectCodigoPostalHelp' | translate }}</small>
         </div>
       </div>
 

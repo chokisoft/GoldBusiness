@@ -21,7 +21,8 @@
             <span>Usar email como nombre de usuario</span>
           </label>
           <input id="userName" type="text" class="form-control" formControlName="userName"
-                 [class.is-invalid]="form.get('userName')?.invalid && form.get('userName')?.touched" maxlength="50" />
+                 [class.is-invalid]="form.get('userName')?.invalid && form.get('userName')?.touched" maxlength="50"
+                 placeholder="{{ 'usuario.placeholderUserName' | translate }}" />
           <div class="invalid-feedback" *ngIf="form.get('userName')?.hasError('required') && form.get('userName')?.touched">
             {{ 'validation.required' | translate }}
           </div>
@@ -30,7 +31,8 @@
         <div class="form-group">
           <label class="form-label" for="fullName">Nombre completo *</label>
           <input id="fullName" type="text" class="form-control" formControlName="fullName"
-                 [class.is-invalid]="form.get('fullName')?.invalid && form.get('fullName')?.touched" maxlength="120" />
+                 [class.is-invalid]="form.get('fullName')?.invalid && form.get('fullName')?.touched" maxlength="120"
+                 placeholder="{{ 'usuario.placeholderFullName' | translate }}" />
           <div class="invalid-feedback" *ngIf="form.get('fullName')?.hasError('required') && form.get('fullName')?.touched">
             {{ 'validation.required' | translate }}
           </div>
@@ -41,7 +43,8 @@
         <div class="form-group">
           <label class="form-label" for="email">Email *</label>
           <input id="email" type="email" class="form-control" formControlName="email"
-                 [class.is-invalid]="form.get('email')?.invalid && form.get('email')?.touched" maxlength="120" />
+                 [class.is-invalid]="form.get('email')?.invalid && form.get('email')?.touched" maxlength="120"
+                 placeholder="{{ 'usuario.placeholderEmail' | translate }}" />
           <div class="invalid-feedback" *ngIf="form.get('email')?.hasError('required') && form.get('email')?.touched">
             {{ 'validation.required' | translate }}
           </div>
@@ -56,6 +59,7 @@
             <option value="Local">Local</option>
             <option value="Google">Google</option>
           </select>
+          <small class="form-text text-muted">{{ 'usuario.authProviderHelp' | translate }}</small>
         </div>
 
         <div class="form-group">
@@ -64,6 +68,7 @@
             <option [ngValue]="true">Activo</option>
             <option [ngValue]="false">Inactivo</option>
           </select>
+          <small class="form-text text-muted">{{ 'usuario.isActiveHelp' | translate }}</small>
         </div>
       </div>
 

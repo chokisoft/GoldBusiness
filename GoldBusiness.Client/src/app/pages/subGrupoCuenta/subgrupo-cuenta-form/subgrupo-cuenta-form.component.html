@@ -25,6 +25,7 @@
             {{ grupo.codigo }} - {{ grupo.descripcion }}
           </option>
         </select>
+          <small class="form-text" *ngIf="gruposCuenta.length === 0">{{ 'subGrupoCuenta.noGruposDisponibles' | translate }}</small>
         <div class="invalid-feedback" *ngIf="form.get('grupoCuentaId')?.invalid && form.get('grupoCuentaId')?.touched">
           {{ getErrorMessage('grupoCuentaId') }}
         </div>

@@ -25,6 +25,7 @@
             {{ item.codigo }} - {{ item.descripcion }}
           </option>
         </select>
+          <small class="form-text" *ngIf="lineas.length === 0">{{ 'subLinea.noLineasDisponibles' | translate }}</small>
         <small class="form-text" *ngIf="loadingLineas">⏳ {{ 'common.loading' | translate }}...</small>
         <div class="invalid-feedback" *ngIf="form.get('lineaId')?.invalid && form.get('lineaId')?.touched">
           {{ getErrorMessage('lineaId') }}

@@ -739,11 +739,6 @@ export class TranslationService {
       'en': 'Ex: Historic Center',
       'fr': 'Ex: Centre Historique'
     },
-    'localidad.descripcionPlaceholder': {
-      'es': 'Ej: Zona histórica del municipio',
-      'en': 'Ex: Historic area of the municipality',
-      'fr': 'Ex: Zone historique de la municipalité'
-    },
 
     'moneda.title': {
       'es': 'Monedas',
@@ -2054,6 +2049,165 @@ export class TranslationService {
       'en': 'Select a group to see subgroups.',
       'fr': 'Sélectionnez un groupe pour voir les sous-groupes.'
     },
+
+      // Ayudas para selects padre y placeholders
+      'subLinea.noLineasDisponibles': {
+        'es': 'No hay líneas disponibles.',
+        'en': 'No lines available.',
+        'fr': 'Aucune ligne disponible.'
+      },
+      'subGrupoCuenta.noGruposDisponibles': {
+        'es': 'No hay grupos disponibles.',
+        'en': 'No groups available.',
+        'fr': 'Aucun groupe disponible.'
+      },
+      'conceptoAjuste.noCuentasDisponibles': {
+        'es': 'No hay cuentas disponibles.',
+        'en': 'No accounts available.',
+        'fr': 'Aucun compte disponible.'
+      },
+      'proveedores.placeholderNif': {
+        'es': 'Ej: 12345678A',
+        'en': 'Ex: 12345678A',
+        'fr': 'Ex: 12345678A'
+      },
+      'proveedores.placeholderIva': {
+        'es': 'Ej: 21.00',
+        'en': 'Ex: 21.00',
+        'fr': 'Ex: 21.00'
+      },
+      'clientes.placeholderIva': {
+        'es': 'Ej: 21.00',
+        'en': 'Ex: 21.00',
+        'fr': 'Ex: 21.00'
+      },
+
+      // Ayudas para selects dependientes y país
+      'cliente.selectPaisToSeeProvincias': {
+        'es': 'Seleccione un país para ver provincias.',
+        'en': 'Select a country to see provinces.',
+        'fr': 'Sélectionnez un pays pour voir les provinces.'
+      },
+      'cliente.selectProvinciaToSeeMunicipios': {
+        'es': 'Seleccione una provincia para ver municipios.',
+        'en': 'Select a province to see municipalities.',
+        'fr': 'Sélectionnez une province pour voir les municipalités.'
+      },
+      'cliente.selectMunicipioToSeeCodigosPostales': {
+        'es': 'Seleccione un municipio para ver códigos postales.',
+        'en': 'Select a municipality to see postal codes.',
+        'fr': 'Sélectionnez une municipalité pour voir les codes postaux.'
+      },
+      'cliente.noPaisesDisponibles': {
+        'es': 'No hay países disponibles.',
+        'en': 'No countries available.',
+        'fr': 'Aucun pays disponible.'
+      },
+      'proveedor.selectPaisToSeeProvincias': {
+        'es': 'Seleccione un país para ver provincias.',
+        'en': 'Select a country to see provinces.',
+        'fr': 'Sélectionnez un pays pour voir les provinces.'
+      },
+      'proveedor.selectProvinciaToSeeMunicipios': {
+        'es': 'Seleccione una provincia para ver municipios.',
+        'en': 'Select a province to see municipalities.',
+        'fr': 'Sélectionnez une province pour voir les municipalités.'
+      },
+      'proveedor.selectMunicipioToSeeCodigosPostales': {
+        'es': 'Seleccione un municipio para ver códigos postales.',
+        'en': 'Select a municipality to see postal codes.',
+        'fr': 'Sélectionnez une municipalité pour voir les codes postaux.'
+      },
+      'proveedor.selectCodigoPostalHelp': {
+        'es': 'Seleccione un código postal disponible.',
+        'en': 'Select an available postal code.',
+        'fr': 'Sélectionnez un code postal disponible.'
+      },
+      'proveedor.noPaisesDisponibles': {
+        'es': 'No hay países disponibles.',
+        'en': 'No countries available.',
+        'fr': 'Aucun pays disponible.'
+      },
+      'establecimiento.selectPaisToSeeProvincias': {
+        'es': 'Seleccione un país para ver provincias.',
+        'en': 'Select a country to see provinces.',
+        'fr': 'Sélectionnez un pays pour voir les provinces.'
+      },
+      'establecimiento.selectProvinciaToSeeMunicipios': {
+        'es': 'Seleccione una provincia para ver municipios.',
+        'en': 'Select a province to see municipalities.',
+        'fr': 'Sélectionnez une province pour voir les municipalités.'
+      },
+      'establecimiento.selectMunicipioToSeeCodigosPostales': {
+        'es': 'Seleccione un municipio para ver códigos postales.',
+        'en': 'Select a municipality to see postal codes.',
+        'fr': 'Sélectionnez une municipalité pour voir les codes postaux.'
+      },
+      'establecimiento.selectCodigoPostalHelp': {
+        'es': 'Seleccione un código postal disponible.',
+        'en': 'Select an available postal code.',
+        'fr': 'Sélectionnez un code postal disponible.'
+      },
+      'establecimiento.noPaisesDisponibles': {
+        'es': 'No hay países disponibles.',
+        'en': 'No countries available.',
+        'fr': 'Aucun pays disponible.'
+      },
+      'systemConfig.selectPaisToSeeProvincias': {
+        'es': 'Seleccione un país para ver provincias.',
+        'en': 'Select a country to see provinces.',
+        'fr': 'Sélectionnez un pays pour voir les provinces.'
+      },
+      'systemConfig.selectProvinciaToSeeMunicipios': {
+        'es': 'Seleccione una provincia para ver municipios.',
+        'en': 'Select a province to see municipalities.',
+        'fr': 'Sélectionnez une province pour voir les municipalités.'
+      },
+      'systemConfig.selectMunicipioToSeeCodigosPostales': {
+        'es': 'Seleccione un municipio para ver códigos postales.',
+        'en': 'Select a municipality to see postal codes.',
+        'fr': 'Sélectionnez une municipalité pour voir les codes postaux.'
+      },
+      'systemConfig.noPaisesDisponibles': {
+        'es': 'No hay países disponibles.',
+        'en': 'No countries available.',
+        'fr': 'Aucun pays disponible.'
+      },
+      'provincia.selectPaisToSeeProvincias': {
+        'es': 'Seleccione un país para ver provincias.',
+        'en': 'Select a country to see provinces.',
+        'fr': 'Sélectionnez un pays pour voir les provinces.'
+      },
+      'provincia.noPaisesDisponibles': {
+        'es': 'No hay países disponibles.',
+        'en': 'No countries available.',
+        'fr': 'Aucun pays disponible.'
+      },
+      'municipio.selectProvinciaToSeeMunicipios': {
+        'es': 'Seleccione una provincia para ver municipios.',
+        'en': 'Select a province to see municipalities.',
+        'fr': 'Sélectionnez une province pour voir les municipalités.'
+      },
+      'codigoPostal.selectPaisToSeeProvincias': {
+        'es': 'Seleccione un país para ver provincias.',
+        'en': 'Select a country to see provinces.',
+        'fr': 'Sélectionnez un pays pour voir les provinces.'
+      },
+      'codigoPostal.selectProvinciaToSeeMunicipios': {
+        'es': 'Seleccione una provincia para ver municipios.',
+        'en': 'Select a province to see municipalities.',
+        'fr': 'Sélectionnez une province pour voir les municipalités.'
+      },
+      'codigoPostal.selectMunicipioToSeeCodigosPostales': {
+        'es': 'Seleccione un municipio para ver códigos postales.',
+        'en': 'Select a municipality to see postal codes.',
+        'fr': 'Sélectionnez une municipalité pour voir les codes postaux.'
+      },
+      'codigoPostal.noPaisesDisponibles': {
+        'es': 'No hay países disponibles.',
+        'en': 'No countries available.',
+        'fr': 'Aucun pays disponible.'
+      },
     'cuenta.descripcionPlaceholder': {
       'es': 'Ej: Efectivo en Caja, Bancos Moneda Nacional',
       'en': 'Ex: Cash on Hand, National Currency Banks',
@@ -2227,6 +2381,101 @@ export class TranslationService {
     // ═══════════════════════════════════════════════════════════
     // 🖼️ LOGO
     // ═══════════════════════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════
+    // 🏢 ESTABLECIMIENTO
+    // ═══════════════════════════════════════════════════════════
+    'establecimiento.negocioHelp': {
+      'es': 'Seleccione el negocio al que pertenece el establecimiento.',
+      'en': 'Select the business this establishment belongs to.',
+      'fr': 'Sélectionnez l’entreprise à laquelle appartient l’établissement.'
+    },
+    'establecimiento.placeholderCodigo': {
+      'es': 'Ej: EST001',
+      'en': 'Ex: EST001',
+      'fr': 'Ex: EST001'
+    },
+    'establecimiento.placeholderDescripcion': {
+      'es': 'Ej: Sucursal Central',
+      'en': 'Ex: Main Branch',
+      'fr': 'Ex: Succursale Principale'
+    },
+    'establecimiento.placeholderDireccion': {
+      'es': 'Ej: Calle 123, Ciudad',
+      'en': 'Ex: 123 Street, City',
+      'fr': 'Ex: 123 Rue, Ville'
+    },
+    'establecimiento.placeholderTelefono': {
+      'es': 'Ej: +34 912 345 678',
+      'en': 'Ex: +34 912 345 678',
+      'fr': 'Ex: +33 1 23 45 67 89'
+    },
+
+    // ═══════════════════════════════════════════════════════════
+    // 🏢 LOCALIDAD
+    // ═══════════════════════════════════════════════════════════
+    'localidad.establecimientoHelp': {
+      'es': 'Seleccione un establecimiento para ver localidades.',
+      'en': 'Select an establishment to see localities.',
+      'fr': 'Sélectionnez un établissement pour voir les localités.'
+    },
+    'localidad.descripcionPlaceholder': {
+      'es': 'Ej: Zona Industrial',
+      'en': 'Ex: Industrial Area',
+      'fr': 'Ex: Zone Industrielle'
+    },
+
+    // ═══════════════════════════════════════════════════════════
+    // 👤 USUARIO
+    // ═══════════════════════════════════════════════════════════
+    'usuario.placeholderUserName': {
+      'es': 'Ej: jdoe',
+      'en': 'Ex: jdoe',
+      'fr': 'Ex: jdoe'
+    },
+    'usuario.placeholderFullName': {
+      'es': 'Ej: Juan Pérez',
+      'en': 'Ex: John Smith',
+      'fr': 'Ex: Jean Dupont'
+    },
+    'usuario.placeholderEmail': {
+      'es': 'Ej: usuario@empresa.com',
+      'en': 'Ex: user@company.com',
+      'fr': 'Ex: utilisateur@entreprise.com'
+    },
+    'usuario.authProviderHelp': {
+      'es': 'Seleccione el método de autenticación.',
+      'en': 'Select the authentication method.',
+      'fr': 'Sélectionnez la méthode d’authentification.'
+    },
+    'usuario.isActiveHelp': {
+      'es': 'Indica si el usuario está activo o inactivo.',
+      'en': 'Indicates if the user is active or inactive.',
+      'fr': 'Indique si l’utilisateur est actif ou inactif.'
+    },
+
+    // ═══════════════════════════════════════════════════════════
+    // ⚙️ SYSTEM CONFIGURATION
+    // ═══════════════════════════════════════════════════════════
+    'systemConfig.placeholderCodigoSistema': {
+      'es': 'Ej: GOL-ERP-001',
+      'en': 'Ex: GOL-ERP-001',
+      'fr': 'Ex: GOL-ERP-001'
+    },
+    'systemConfig.placeholderLicencia': {
+      'es': 'Código de licencia',
+      'en': 'License code',
+      'fr': 'Code de licence'
+    },
+    'systemConfig.placeholderNombreNegocio': {
+      'es': 'Nombre completo del negocio',
+      'en': 'Full business name',
+      'fr': 'Nom complet de l’entreprise'
+    },
+    'systemConfig.placeholderDireccion': {
+      'es': 'Dirección completa del negocio',
+      'en': 'Full business address',
+      'fr': 'Adresse complète de l’entreprise'
+    },
     'systemConfig.logoUpload': {
       'es': 'Subir Logo',
       'en': 'Upload Logo',

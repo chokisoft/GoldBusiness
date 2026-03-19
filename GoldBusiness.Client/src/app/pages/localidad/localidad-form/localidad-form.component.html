@@ -24,6 +24,7 @@
               {{ establecimiento.descripcion }}
             </option>
           </select>
+          <small class="form-text text-muted">{{ 'localidad.establecimientoHelp' | translate }}</small>
           <div class="invalid-feedback" *ngIf="itemForm.get('establecimientoId')?.hasError('required') && itemForm.get('establecimientoId')?.touched">
             {{ 'validation.required' | translate }}
           </div>
