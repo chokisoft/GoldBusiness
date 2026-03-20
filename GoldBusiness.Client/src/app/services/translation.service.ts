@@ -619,6 +619,36 @@ export class TranslationService {
       'en': 'Business',
       'fr': 'Entreprise'
     },
+    'establecimiento.pais': {
+      'es': 'País',
+      'en': 'Country',
+      'fr': 'Pays'
+    },
+    'establecimiento.provincia': {
+      'es': 'Provincia',
+      'en': 'Province',
+      'fr': 'Province'
+    },
+    'establecimiento.municipio': {
+      'es': 'Municipio',
+      'en': 'Municipality',
+      'fr': 'Municipalité'
+    },
+    'establecimiento.codigoPostal': {
+      'es': 'Código Postal',
+      'en': 'Postal Code',
+      'fr': 'Code Postal'
+    },
+    'establecimiento.activo': {
+      'es': 'Activo',
+      'en': 'Active',
+      'fr': 'Actif'
+    },
+    'establecimiento.activoHelp': {
+      'es': 'Indica si el establecimiento está activo.',
+      'en': 'Indicates if the establishment is active.',
+      'fr': 'Indique si l’établissement est actif.'
+    },
     'localidad.title': {
       'es': 'Localidades',
       'en': 'Localities',
@@ -1628,51 +1658,6 @@ export class TranslationService {
       'en': '{0} days ago',
       'fr': 'il y a {0} jours'
     },
-    'common.retry': {
-      'es': 'Reintentar',
-      'en': 'Retry',
-      'fr': 'Réessayer'
-    },
-    'common.saving': {
-      'es': 'Guardando...',
-      'en': 'Saving...',
-      'fr': 'Enregistrement...'
-    },
-    'common.deleting': {
-      'es': 'Eliminando...',
-      'en': 'Deleting...',
-      'fr': 'Suppression...'
-    },
-    'common.processing': {
-      'es': 'Procesando...',
-      'en': 'Processing...',
-      'fr': 'Traitement...'
-    },
-    'common.select': {
-      'es': 'Seleccione',
-      'en': 'Select',
-      'fr': 'Sélectionner'
-    },
-    'common.loading': {
-      'es': 'Cargando',
-      'en': 'Loading',
-      'fr': 'Chargement'
-    },
-    'common.emailPlaceholder': {
-      'es': 'Ej: ejemplo@empresa.com',
-      'en': 'Ex: example@company.com',
-      'fr': 'Ex: exemple@entreprise.com'
-    },
-    'common.telefonoPlaceholder': {
-      'es': 'Ej: +52 55 1234 5678',
-      'en': 'Ex: +52 55 1234 5678',
-      'fr': 'Ex: +52 55 1234 5678'
-    },
-    'common.webPlaceholder': {
-      'es': 'Ej: www.empresa.com',
-      'en': 'Ex: www.company.com',
-      'fr': 'Ex: www.entreprise.com'
-    },
 
     // ═══════════════════════════════════════════════════════════
     // 📋 COMÚN - Botones y Acciones
@@ -1762,6 +1747,16 @@ export class TranslationService {
       'en': 'Active',
       'fr': 'Actif'
     },
+    'common.yes': {
+      'es': 'Sí',
+      'en': 'Yes',
+      'fr': 'Oui'
+    },
+    'common.no': {
+      'es': 'No',
+      'en': 'No',
+      'fr': 'Non'
+    },
     'common.inactive': {
       'es': 'Inactivo',
       'en': 'Inactive',
@@ -1796,6 +1791,61 @@ export class TranslationService {
       'es': 'No se encontraron resultados',
       'en': 'No results found',
       'fr': 'Aucun résultat trouvé'
+    },
+    'common.retry': {
+      'es': 'Reintentar',
+      'en': 'Retry',
+      'fr': 'Réessayer'
+    },
+    'common.saving': {
+      'es': 'Guardando...',
+      'en': 'Saving...',
+      'fr': 'Enregistrement...'
+    },
+    'common.deleting': {
+      'es': 'Eliminando...',
+      'en': 'Deleting...',
+      'fr': 'Suppression...'
+    },
+    'common.processing': {
+      'es': 'Procesando...',
+      'en': 'Processing...',
+      'fr': 'Traitement...'
+    },
+    'common.select': {
+      'es': 'Seleccione',
+      'en': 'Select',
+      'fr': 'Sélectionner'
+    },
+    'common.loading': {
+      'es': 'Cargando',
+      'en': 'Loading',
+      'fr': 'Chargement'
+    },
+    'common.emailPlaceholder': {
+      'es': 'Ej: ejemplo@empresa.com',
+      'en': 'Ex: example@company.com',
+      'fr': 'Ex: exemple@entreprise.com'
+    },
+    'common.telefonoPlaceholder': {
+      'es': 'Ej: +52 55 1234 5678',
+      'en': 'Ex: +52 55 1234 5678',
+      'fr': 'Ex: +52 55 1234 5678'
+    },
+    'common.webPlaceholder': {
+      'es': 'Ej: www.empresa.com',
+      'en': 'Ex: www.company.com',
+      'fr': 'Ex: www.entreprise.com'
+    },
+    'common.fillRequired': {
+      'es': 'Rellena los campos obligatorios (*)',
+      'en': 'Please complete the required fields (*)',
+      'fr': 'Veuillez remplir les champs obligatoires (*)'
+    },
+    'common.fillRequiredHint': {
+      'es': 'Rellena los campos obligatorios (*) y revisa los textos de ayuda antes de guardar.',
+      'en': 'Complete the required fields (*) and review help texts before saving.',
+      'fr': 'Remplissez les champs obligatoires (*) et vérifiez les textes d’aide avant d’enregistrer.'
     },
 
     // ═══════════════════════════════════════════════════════════
@@ -2388,6 +2438,46 @@ export class TranslationService {
       'es': 'Seleccione el negocio al que pertenece el establecimiento.',
       'en': 'Select the business this establishment belongs to.',
       'fr': 'Sélectionnez l’entreprise à laquelle appartient l’établissement.'
+    },
+    'establecimiento.codigoHelp': {
+      'es': 'Ingrese el código único del establecimiento. Ejemplo: EST001',
+      'en': 'Enter the unique code for the establishment. Example: EST001',
+      'fr': 'Entrez le code unique de l’établissement. Exemple : EST001'
+    },
+    'establecimiento.descripcionHelp': {
+      'es': 'Ingrese una breve descripción del establecimiento.',
+      'en': 'Enter a brief description of the establishment.',
+      'fr': 'Entrez une brève description de l’établissement.'
+    },
+    'establecimiento.direccionHelp': {
+      'es': 'Ingrese la dirección completa del establecimiento.',
+      'en': 'Enter the full address of the establishment.',
+      'fr': 'Entrez l’adresse complète de l’établissement.'
+    },
+    'establecimiento.telefonoHelp': {
+      'es': 'Ingrese el número de teléfono de contacto.',
+      'en': 'Enter the contact phone number.',
+      'fr': 'Entrez le numéro de téléphone de contact.'
+    },
+    'establecimiento.paisHelp': {
+      'es': 'Seleccione un país para ver provincias.',
+      'en': 'Select a country to see provinces.',
+      'fr': 'Sélectionnez un pays pour voir les provinces.'
+    },
+    'establecimiento.provinciaHelp': {
+      'es': 'Seleccione una provincia para ver municipios.',
+      'en': 'Select a province to see municipalities.',
+      'fr': 'Sélectionnez une province pour voir les municipalités.'
+    },
+    'establecimiento.municipioHelp': {
+      'es': 'Seleccione un municipio para ver códigos postales.',
+      'en': 'Select a municipality to see postal codes.',
+      'fr': 'Sélectionnez une municipalité pour voir les codes postaux.'
+    },
+    'establecimiento.codigoPostalHelp': {
+      'es': 'Seleccione un código postal disponible.',
+      'en': 'Select an available postal code.',
+      'fr': 'Sélectionnez un code postal disponible.'
     },
     'establecimiento.placeholderCodigo': {
       'es': 'Ej: EST001',

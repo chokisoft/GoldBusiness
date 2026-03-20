@@ -63,7 +63,11 @@
 
           <div class="info-item">
             <span class="info-label">{{ 'establecimiento.activo' | translate }}</span>
-            <span class="info-value">{{ item.activo ? ('common.yes' | translate) : ('common.no' | translate) }}</span>
+            <span class="info-value">
+              <ng-container *ngIf="item.activo; else inactiveIcon">✅</ng-container>
+              <ng-template #inactiveIcon>🚫</ng-template>
+              {{ item.activo ? ('common.yes' | translate) : ('common.no' | translate) }}
+            </span>
           </div>
         </div>
       </div>

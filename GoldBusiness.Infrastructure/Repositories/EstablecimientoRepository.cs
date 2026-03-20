@@ -87,19 +87,27 @@ namespace GoldBusiness.Infrastructure.Repositories
                 .FirstOrDefaultAsync(e => e.Id == id);
 
         public async Task<Establecimiento?> GetByCodigoAsync(string codigo, bool includeCanceled = false)
-            => await _context.Establecimiento
+        {
+            if (codigo == null) codigo = string.Empty;
+            var codigoUpper = codigo.ToUpper();
+
+            return await _context.Establecimiento
                 .Include(e => e.Negocio)
                 .Include(e => e.Pais)
                 .Include(e => e.Provincia)
                 .Include(e => e.Municipio)
                 .Include(e => e.CodigoPostal)
                 .Include(e => e.Translations)
-                .FirstOrDefaultAsync(e => e.Codigo == codigo && (includeCanceled || !e.Cancelado));
+                .FirstOrDefaultAsync(e => e.Codigo.ToUpper() == codigoUpper && (includeCanceled || !e.Cancelado));
+        }
 
         public async Task<bool> ExistsByCodigoAsync(string codigo, int? excludeId = null, bool includeCanceled = false)
         {
+            if (codigo == null) codigo = string.Empty;
+            var codigoUpper = codigo.ToUpper();
+
             var query = _context.Establecimiento
-                .Where(e => e.Codigo == codigo && (includeCanceled || !e.Cancelado));
+                .Where(e => e.Codigo.ToUpper() == codigoUpper && (includeCanceled || !e.Cancelado));
 
             if (excludeId.HasValue)
             {

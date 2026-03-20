@@ -112,10 +112,18 @@ namespace GoldBusiness.WebApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] EstablecimientoDTO dto)
         {
-            var lang = GetCurrentLanguage();
-            var usuario = GetCurrentUser();
-            var result = await _service.UpdateAsync(id, dto, usuario, lang);
-            return Ok(result);
+            try
+            {
+                var lang = GetCurrentLanguage();
+                var usuario = GetCurrentUser();
+                var result = await _service.UpdateAsync(id, dto, usuario, lang);
+                return Ok(result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                // Manejar validación de código duplicado de forma consistente con POST
+                return HandleDuplicateCodeError(nameof(dto.Codigo), ex.Message);
+            }
         }
 
         /// <summary>

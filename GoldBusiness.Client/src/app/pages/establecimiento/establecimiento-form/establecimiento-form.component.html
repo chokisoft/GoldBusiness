@@ -2,7 +2,8 @@
   <div class="page-header">
     <div class="header-content">
       <h1 class="page-title">{{ isEditMode ? ('establecimiento.editTitle' | translate) : ('establecimiento.newTitle' | translate) }}</h1>
-      <p class="page-subtitle">{{ 'common.fillRequired' | translate }}</p>
+      <!--<p class="page-subtitle">{{ 'common.fillRequired' | translate }}</p>-->
+      <p class="form-text text-muted help-text">{{ 'common.fillRequiredHint' | translate }}</p>
     </div>
   </div>
 
@@ -10,71 +11,170 @@
 
   <div class="card">
     <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" class="form-container">
-      <div class="form-row">
-
+      <div class="form-row-three">
         <div class="form-group">
           <label class="form-label">{{ 'establecimiento.negocio' | translate }} *</label>
-          <select class="form-control shared-select" formControlName="negocioId">
+          <select class="form-control" formControlName="negocioId">
             <option [ngValue]="null">{{ 'common.select' | translate }}</option>
-            <!-- negocios list should be provided in TS if needed -->
+            <option *ngFor="let n of negocios" [ngValue]="n.id">{{ n.nombreNegocio }}</option>
           </select>
           <small class="form-text text-muted">{{ 'establecimiento.negocioHelp' | translate }}</small>
         </div>
-
         <div class="form-group">
           <label class="form-label">{{ 'establecimiento.codigo' | translate }} *</label>
           <input class="form-control" formControlName="codigo" maxlength="6" placeholder="{{ 'establecimiento.placeholderCodigo' | translate }}" />
+          <small class="form-text text-muted">{{ 'establecimiento.codigoHelp' | translate }}</small>
+        </div>
+        <div class="form-group checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" formControlName="activo" class="form-checkbox" />
+            <span>{{ 'establecimiento.activo' | translate }}</span>
+          </label>
+          <small class="form-text text-muted">{{ 'establecimiento.activoHelp' | translate }}</small>
         </div>
       </div>
 
       <div class="form-group">
         <label class="form-label">{{ 'establecimiento.descripcion' | translate }} *</label>
         <input class="form-control" formControlName="descripcion" maxlength="256" placeholder="{{ 'establecimiento.placeholderDescripcion' | translate }}" />
+        <small class="form-text text-muted">{{ 'establecimiento.descripcionHelp' | translate }}</small>
       </div>
 
       <div class="form-group">
         <label class="form-label">{{ 'establecimiento.direccion' | translate }}</label>
         <textarea class="form-control" formControlName="direccion" rows="2" placeholder="{{ 'establecimiento.placeholderDireccion' | translate }}"></textarea>
+        <small class="form-text text-muted">{{ 'establecimiento.direccionHelp' | translate }}</small>
       </div>
+
+      <!--
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">{{ 'establecimiento.pais' | translate }}</label>
+            <select class="form-control" formControlName="paisId" [attr.aria-disabled]="itemForm.get('paisId')?.disabled">
+              <option [ngValue]="null">{{ 'common.select' | translate }}</option>
+              <option *ngFor="let p of paises" [ngValue]="p.id">{{ p.descripcion }}</option>
+            </select>
+            <small class="form-text text-muted">{{ 'establecimiento.paisHelp' | translate }}</small>
+            <small class="form-text" *ngIf="paises.length === 0">{{ 'establecimiento.noPaisesDisponibles' | translate }}</small>
+            <small class="form-text" *ngIf="!itemForm.get('paisId')?.value">{{ 'establecimiento.selectPaisToSeeProvincias' | translate }}</small>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">{{ 'establecimiento.provincia' | translate }}</label>
+            <select class="form-control" formControlName="provinciaId" [attr.aria-disabled]="itemForm.get('provinciaId')?.disabled">
+              <option [ngValue]="null">{{ 'common.select' | translate }}</option>
+              <option *ngFor="let prov of provincias" [ngValue]="prov.id">{{ prov.descripcion }}</option>
+            </select>
+            <small class="form-text text-muted">{{ 'establecimiento.provinciaHelp' | translate }}</small>
+            <small class="form-text" *ngIf="!itemForm.get('provinciaId')?.value">{{ 'establecimiento.selectProvinciaToSeeMunicipios' | translate }}</small>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">{{ 'establecimiento.municipio' | translate }}</label>
+            <select class="form-control" formControlName="municipioId" [attr.aria-disabled]="itemForm.get('municipioId')?.disabled">
+              <option [ngValue]="null">{{ 'common.select' | translate }}</option>
+              <option *ngFor="let mun of municipios" [ngValue]="mun.id">{{ mun.descripcion }}</option>
+            </select>
+            <small class="form-text text-muted">{{ 'establecimiento.municipioHelp' | translate }}</small>
+            <small class="form-text" *ngIf="!itemForm.get('municipioId')?.value">{{ 'establecimiento.selectMunicipioToSeeCodigosPostales' | translate }}</small>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">{{ 'establecimiento.codigoPostal' | translate }}</label>
+            <select class="form-control" formControlName="codigoPostalId" [attr.aria-disabled]="itemForm.get('codigoPostalId')?.disabled">
+              <option [ngValue]="null">{{ 'common.select' | translate }}</option>
+              <option *ngFor="let cp of codigosPostales" [ngValue]="cp.id">{{ cp.codigo }}</option>
+            </select>
+            <small class="form-text text-muted">{{ 'establecimiento.codigoPostalHelp' | translate }}</small>
+            <small class="form-text" *ngIf="!itemForm.get('codigoPostalId')?.value">{{ 'establecimiento.selectCodigoPostalHelp' | translate }}</small>
+          </div>
+        </div>
+
+  -->
 
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">{{ 'establecimiento.pais' | translate }}</label>
-          <select class="form-control shared-select" formControlName="paisId" [attr.aria-disabled]="itemForm.get('paisId')?.disabled">
+          <select class="form-control" formControlName="paisId" [attr.aria-disabled]="itemForm.get('paisId')?.disabled">
             <option [ngValue]="null">{{ 'common.select' | translate }}</option>
             <option *ngFor="let p of paises" [ngValue]="p.id">{{ p.descripcion }}</option>
           </select>
-            <small class="form-text" *ngIf="paises.length === 0">{{ 'establecimiento.noPaisesDisponibles' | translate }}</small>
-            <small class="form-text" *ngIf="!itemForm.get('paisId')?.value">{{ 'establecimiento.selectPaisToSeeProvincias' | translate }}</small>
+
+          <ng-container *ngIf="paises.length === 0; else paisesLoaded">
+            <small class="form-text text-muted">{{ 'establecimiento.noPaisesDisponibles' | translate }}</small>
+          </ng-container>
+          <ng-template #paisesLoaded>
+            <ng-container *ngIf="!itemForm.get('paisId')?.value; else paisHelp">
+              <small class="form-text text-muted">{{ 'establecimiento.selectPaisToSeeProvincias' | translate }}</small>
+            </ng-container>
+            <ng-template #paisHelp>
+              <small class="form-text text-muted">{{ 'establecimiento.paisHelp' | translate }}</small>
+            </ng-template>
+          </ng-template>
         </div>
 
         <div class="form-group">
           <label class="form-label">{{ 'establecimiento.provincia' | translate }}</label>
-          <select class="form-control shared-select" formControlName="provinciaId" [attr.aria-disabled]="itemForm.get('provinciaId')?.disabled">
+          <select class="form-control" formControlName="provinciaId" [attr.aria-disabled]="itemForm.get('provinciaId')?.disabled">
             <option [ngValue]="null">{{ 'common.select' | translate }}</option>
             <option *ngFor="let prov of provincias" [ngValue]="prov.id">{{ prov.descripcion }}</option>
           </select>
-            <small class="form-text" *ngIf="!itemForm.get('provinciaId')?.value">{{ 'establecimiento.selectProvinciaToSeeMunicipios' | translate }}</small>
+
+          <ng-container *ngIf="provincias.length === 0; else provinciasLoaded">
+            <small class="form-text text-muted">{{ 'establecimiento.selectPaisToSeeProvincias' | translate }}</small>
+          </ng-container>
+          <ng-template #provinciasLoaded>
+            <ng-container *ngIf="!itemForm.get('provinciaId')?.value; else provinciaHelp">
+              <small class="form-text text-muted">{{ 'establecimiento.selectProvinciaToSeeMunicipios' | translate }}</small>
+            </ng-container>
+            <ng-template #provinciaHelp>
+              <small class="form-text text-muted">{{ 'establecimiento.provinciaHelp' | translate }}</small>
+            </ng-template>
+          </ng-template>
         </div>
       </div>
 
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">{{ 'establecimiento.municipio' | translate }}</label>
-          <select class="form-control shared-select" formControlName="municipioId" [attr.aria-disabled]="itemForm.get('municipioId')?.disabled">
+          <select class="form-control" formControlName="municipioId" [attr.aria-disabled]="itemForm.get('municipioId')?.disabled">
             <option [ngValue]="null">{{ 'common.select' | translate }}</option>
             <option *ngFor="let mun of municipios" [ngValue]="mun.id">{{ mun.descripcion }}</option>
           </select>
-            <small class="form-text" *ngIf="!itemForm.get('municipioId')?.value">{{ 'establecimiento.selectMunicipioToSeeCodigosPostales' | translate }}</small>
+
+          <ng-container *ngIf="municipios.length === 0; else municipiosLoaded">
+            <small class="form-text text-muted">{{ 'establecimiento.selectProvinciaToSeeMunicipios' | translate }}</small>
+          </ng-container>
+          <ng-template #municipiosLoaded>
+            <ng-container *ngIf="!itemForm.get('municipioId')?.value; else municipioHelp">
+              <small class="form-text text-muted">{{ 'establecimiento.selectMunicipioToSeeCodigosPostales' | translate }}</small>
+            </ng-container>
+            <ng-template #municipioHelp>
+              <small class="form-text text-muted">{{ 'establecimiento.municipioHelp' | translate }}</small>
+            </ng-template>
+          </ng-template>
         </div>
 
         <div class="form-group">
           <label class="form-label">{{ 'establecimiento.codigoPostal' | translate }}</label>
-          <select class="form-control shared-select" formControlName="codigoPostalId" [attr.aria-disabled]="itemForm.get('codigoPostalId')?.disabled">
+          <select class="form-control" formControlName="codigoPostalId" [attr.aria-disabled]="itemForm.get('codigoPostalId')?.disabled">
             <option [ngValue]="null">{{ 'common.select' | translate }}</option>
             <option *ngFor="let cp of codigosPostales" [ngValue]="cp.id">{{ cp.codigo }}</option>
           </select>
-            <small class="form-text" *ngIf="!itemForm.get('codigoPostalId')?.value">{{ 'establecimiento.selectCodigoPostalHelp' | translate }}</small>
+
+          <ng-container *ngIf="codigosPostales.length === 0; else cpsLoaded">
+            <small class="form-text text-muted">{{ 'establecimiento.selectMunicipioToSeeCodigosPostales' | translate }}</small>
+          </ng-container>
+          <ng-template #cpsLoaded>
+            <ng-container *ngIf="!itemForm.get('codigoPostalId')?.value; else cpHelp">
+              <small class="form-text text-muted">{{ 'establecimiento.selectCodigoPostalHelp' | translate }}</small>
+            </ng-container>
+            <ng-template #cpHelp>
+              <small class="form-text text-muted">{{ 'establecimiento.codigoPostalHelp' | translate }}</small>
+            </ng-template>
+          </ng-template>
         </div>
       </div>
 
@@ -82,21 +182,19 @@
         <div class="form-group">
           <label class="form-label">{{ 'establecimiento.telefono' | translate }}</label>
           <input class="form-control" formControlName="telefono" placeholder="{{ 'establecimiento.placeholderTelefono' | translate }}" />
+          <small class="form-text text-muted">{{ 'establecimiento.telefonoHelp' | translate }}</small>
           <div class="form-text" *ngIf="selectedPais">{{ selectedPais.formatoEjemplo }} <small>({{ selectedPais.formatoTelefono }})</small></div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">{{ 'establecimiento.activo' | translate }}</label>
-          <select class="form-control" formControlName="activo">
-            <option [ngValue]="true">{{ 'common.yes' | translate }}</option>
-            <option [ngValue]="false">{{ 'common.no' | translate }}</option>
-          </select>
         </div>
       </div>
 
       <div class="form-actions">
-        <button type="button" class="btn btn-secondary" (click)="onCancel()">{{ 'common.cancel' | translate }}</button>
-        <button type="submit" class="btn btn-primary" [disabled]="loading || saving">{{ saving ? ('common.saving' | translate) : ('common.save' | translate) }}</button>
+        <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="loading">
+          ❌ {{ 'common.cancel' | translate }}
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="loading || form.invalid || loadingSubGrupos || loadingGrupos">
+          <span *ngIf="!loading">💾 {{ 'common.save' | translate }}</span>
+          <span *ngIf="loading">⏳ {{ 'common.saving' | translate }}</span>
+        </button>
       </div>
     </form>
   </div>

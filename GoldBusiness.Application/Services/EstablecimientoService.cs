@@ -107,16 +107,22 @@ namespace GoldBusiness.Application.Services
             var entity = await _repo.GetByIdAsync(id);
             if (entity == null) throw new KeyNotFoundException();
 
-            if (entity.Codigo != dto.Codigo)
-            {
-                var existingWithNewCode = await _repo.GetByCodigoAsync(dto.Codigo, includeCanceled: true);
+            // Normalizar el código entrante: trim y upper para evitar conflictos por espacios o case-sensitivity
+            var incomingCodigo = dto.Codigo?.Trim() ?? string.Empty;
+            var codigoUpper = incomingCodigo.ToUpperInvariant();
 
-                if (existingWithNewCode != null && existingWithNewCode.Id != id)
+            // Solo validar si realmente se intenta cambiar el código (comparación case-insensitive)
+            if (!string.Equals(entity.Codigo, incomingCodigo, StringComparison.OrdinalIgnoreCase))
+            {
+                // Usar helper centralizado que incluye registros cancelados
+                var (existe, estaCancelado, existingId) = await CodigoValidationHelper
+                    .ValidateCodigoForUpdateAsync(_repo, codigoUpper, id);
+
+                if (existe)
                 {
-                    if (existingWithNewCode.Cancelado)
+                    if (estaCancelado && existingId.HasValue)
                     {
-                        var errorMessage = $"Ya existe un registro cancelado con el código '{dto.Codigo}'. " +
-                                         $"Considere reactivar el registro existente (ID: {existingWithNewCode.Id}).";
+                        var errorMessage = CodigoValidationHelper.GetDuplicateCodeErrorMessage(_localizer, dto.Codigo, true, existingId);
                         throw new InvalidOperationException(errorMessage);
                     }
                     else
@@ -126,7 +132,8 @@ namespace GoldBusiness.Application.Services
                     }
                 }
 
-                entity.SetCodigo(dto.Codigo);
+                // Aplicar el nuevo código normalizado
+                entity.SetCodigo(codigoUpper);
             }
 
             // Obtener país si existe para validar teléfono

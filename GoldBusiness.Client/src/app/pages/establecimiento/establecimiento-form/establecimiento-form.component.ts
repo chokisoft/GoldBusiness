@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, of } from 'rxjs';
 import { switchMap, catchError } from 'rxjs/operators';
 import { EstablecimientoService, EstablecimientoDTO } from '../../../services/establecimiento.service';
+import { SystemConfigurationService, SystemConfigurationDTO } from '../../../services/system-configuration.service';
 import { PaisService, PaisDTO } from '../../../services/pais.service';
 import { ProvinciaService, ProvinciaDTO } from '../../../services/provincia.service';
 import { MunicipioService, MunicipioDTO } from '../../../services/municipio.service';
@@ -26,14 +27,22 @@ export class EstablecimientoFormComponent implements OnInit, OnDestroy {
   provincias: ProvinciaDTO[] = [];
   municipios: MunicipioDTO[] = [];
   codigosPostales: CodigoPostalDTO[] = [];
+  negocios: SystemConfigurationDTO[] = [];
 
   selectedPais?: PaisDTO;
+
+  // Small helpers so shared templates that expect these names work unchanged
+  loadingSubGrupos = false;
+  loadingGrupos = false;
+  get form(): FormGroup { return this.itemForm; }
+  cancel(): void { this.onCancel(); }
 
   private subs: Subscription[] = [];
 
   constructor(
     private fb: FormBuilder,
     private establecimientoService: EstablecimientoService,
+    private systemConfigurationService: SystemConfigurationService,
     private paisService: PaisService,
     private provinciaService: ProvinciaService,
     private municipioService: MunicipioService,
@@ -63,6 +72,7 @@ export class EstablecimientoFormComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadPaises();
+    this.loadNegocios();
 
     this.subs.push(
       this.itemForm.get('paisId')!.valueChanges.pipe(
@@ -86,12 +96,22 @@ export class EstablecimientoFormComponent implements OnInit, OnDestroy {
         this.itemId = +params['id'];
         this.isEditMode = true;
         this.loadItem();
+        // Deshabilitar negocioId y codigo en modo edición
+        this.itemForm.get('negocioId')?.disable();
+        this.itemForm.get('codigo')?.disable();
       }
     });
   }
 
   ngOnDestroy(): void {
     this.subs.forEach(s => s.unsubscribe());
+  }
+
+  private loadNegocios(): void {
+    this.systemConfigurationService.getAll().subscribe({
+      next: list => this.negocios = list,
+      error: err => console.error('Error loading negocios (system configurations)', err)
+    });
   }
 
   private loadPaises(): void {
@@ -237,6 +257,18 @@ export class EstablecimientoFormComponent implements OnInit, OnDestroy {
           cancelado: item.cancelado
         }, { emitEvent: false });
 
+        // Si el negocio asociado no está en la lista, cargarlo y añadirlo
+        if (item.negocioId && !this.negocios.find(n => n.id === item.negocioId)) {
+          this.systemConfigurationService.getById(item.negocioId).subscribe({
+            next: n => {
+              if (n && !this.negocios.find(x => x.id === n.id)) {
+                this.negocios = [...this.negocios, n];
+              }
+            },
+            error: err => console.error('Error loading negocio (system configuration)', err)
+          });
+        }
+
         if (item.paisId) {
           this.itemForm.patchValue({ paisId: item.paisId }, { emitEvent: false });
 
@@ -317,8 +349,10 @@ export class EstablecimientoFormComponent implements OnInit, OnDestroy {
     this.saving = true;
     this.error = null;
 
+    // Usar getRawValue() para incluir controles deshabilitados (codigo, negocioId en edición)
+    const raw = this.itemForm.getRawValue();
     const formData: EstablecimientoDTO = {
-      ...this.itemForm.value,
+      ...raw,
       id: this.itemId
     };
 
@@ -329,7 +363,7 @@ export class EstablecimientoFormComponent implements OnInit, OnDestroy {
     request.subscribe({
       next: () => {
         this.saving = false;
-        this.router.navigate(['/nomencladores/establecimientos']);
+        this.router.navigate(['/nomencladores/establecimiento']);
       },
       error: err => {
         this.error = err.message || 'Error al guardar el establecimiento';
@@ -339,6 +373,6 @@ export class EstablecimientoFormComponent implements OnInit, OnDestroy {
   }
 
   onCancel(): void {
-    this.router.navigate(['/nomencladores/establecimientos']);
+    this.router.navigate(['/nomencladores/establecimiento']);
   }
 }

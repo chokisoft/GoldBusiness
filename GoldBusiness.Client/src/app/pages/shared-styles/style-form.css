@@ -1,6 +1,50 @@
+.form-row-three .form-group.checkbox-group {
+  align-items: flex-start !important;
+  padding-left: 0 !important;
+  margin-left: 0 !important;
+}
+.form-row-three .form-group.checkbox-group .checkbox-label {
+  width: auto !important;
+  min-width: 0 !important;
+  justify-content: flex-start !important;
+  text-align: left !important;
+  padding-left: 0 !important;
+  margin-left: 0 !important;
+}
+/* Forzar alineación a la izquierda del checkbox en la última columna de form-row-three */
+.form-row-three .form-group.checkbox-group {
+  align-items: flex-start !important;
+}
+.form-row-three .form-group.checkbox-group .checkbox-label {
+  justify-content: flex-start !important;
+  text-align: left !important;
+}
+/* Ajuste fino: centrar verticalmente el checkbox en filas de 3 columnas (como SubGrupoCuenta y Establecimiento) */
+.form-row-three .form-group.checkbox-group .checkbox-label {
+  height: 48px;
+  display: flex;
+  align-items: center;
+}
+
+.form-row-three .form-group.checkbox-group input[type="checkbox"] {
+  margin-top: 0;
+  margin-bottom: 0;
+  align-self: center;
+}
 @keyframes shared-form-spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Ajustes globales variables */
+:root {
+  /* Ajuste global para desplazar visualmente los checkboxes (px). Ajusta entre 0 y 8 según necesites. */
+  --form-checkbox-offset: 2px;
 }
 
 .page-container {
@@ -10,93 +54,227 @@
   width: 100%;
 }
 
-.page-header { margin-bottom: 2rem; }
-
-.header-content { display:flex; flex-direction:column; gap:0.35rem; }
-
-.page-title { margin:0; font-size:2rem; font-weight:700; color:#2c3e50; }
-.page-subtitle { margin:0; color:#6c757d; font-size:0.95rem; }
-
-.card {
-  background:#fff; border-radius:12px; box-shadow:0 2px 10px rgba(0,0,0,0.05);
-  padding:2.25rem;
+.page-header {
+  margin-bottom: 2rem;
 }
 
-.card-header { padding-bottom:1rem; margin-bottom:1.5rem; border-bottom:1px solid #e9ecef; }
-.card-body,.card-footer { padding:0; }
+.header-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
 
-.form-container { display:flex; flex-direction:column; gap:1.25rem; }
+.page-title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2c3e50;
+}
 
-.section-title, .section-subtitle { margin:0; color:#2c3e50; font-weight:600; }
-.section-title { font-size:1.25rem; }
-.section-subtitle { font-size:1.1rem; padding-bottom:0.75rem; border-bottom:2px solid #e9ecef; }
+.page-subtitle {
+  margin: 0;
+  color: #6c757d;
+  font-size: 0.95rem;
+}
+
+.card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  padding: 2.25rem;
+}
+
+.card-header {
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.card-body, .card-footer {
+  padding: 0;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.section-title, .section-subtitle {
+  margin: 0;
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.section-title {
+  font-size: 1.25rem;
+}
+
+.section-subtitle {
+  font-size: 1.1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #e9ecef;
+}
 
 .form-row, .form-row-two {
-  display:grid;
+  display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap:1.25rem;
-  align-items:start;
+  gap: 1.25rem;
+  align-items: start;
 }
 
 .form-row-three {
-  display:grid;
+  display: grid;
   grid-template-columns: minmax(0, 1.8fr) minmax(0, 0.8fr) minmax(0, 0.8fr);
-  gap:1.25rem;
-  align-items:start;
+  gap: 1.25rem;
+  align-items: start;
 }
 
 .form-row-codigo-descripcion {
-  display:grid;
+  display: grid;
   grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
-  gap:1.25rem;
-  align-items:start;
+  gap: 1.25rem;
+  align-items: start;
 }
 
-.form-group, .form-group-cuentas { display:flex; flex-direction:column; }
-.form-group-full { grid-column: 1 / -1; }
-.form-label { margin-bottom:0.5rem; font-size:0.95rem; font-weight:600; color:#2c3e50; }
+.form-group, .form-group-cuentas {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group-full {
+  grid-column: 1 / -1;
+}
+
+.form-label {
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #2c3e50;
+}
 
 .form-control {
-  width:100%; padding:0.75rem; border:2px solid #e9ecef; border-radius:8px; font-size:1rem; color:#2c3e50;
-  background:#fff; transition:border-color 0.2s ease, box-shadow 0.2s ease; box-sizing:border-box;
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #2c3e50;
+  background: #fff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
 }
 
-.form-control:focus { outline:none; border-color:#667eea; box-shadow:0 0 0 3px rgba(102,126,234,0.12); }
-.form-control.is-invalid { border-color:#e74c3c; }
-.form-control.is-invalid:focus { box-shadow:0 0 0 3px rgba(231,76,60,0.12); }
-.form-control:disabled, .form-control[readonly] { background:#f8f9fa; color:#6c757d; cursor:not-allowed; opacity:0.8; }
+  .form-control:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102,126,234,0.12);
+  }
 
-.invalid-feedback { display:block; margin-top:0.25rem; color:#e74c3c; font-size:0.875rem; }
+  .form-control.is-invalid {
+    border-color: #e74c3c;
+  }
 
-.alert { display:flex; align-items:center; gap:0.75rem; padding:1rem 1.25rem; margin-bottom:1.5rem; border-radius:8px; }
-.alert-error { background:#f8d7da; color:#721c24; border:1px solid #f5c6cb; }
+    .form-control.is-invalid:focus {
+      box-shadow: 0 0 0 3px rgba(231,76,60,0.12);
+    }
 
-.loading-container { display:flex; justify-content:center; align-items:center; min-height:260px; padding:2rem; text-align:center; color:#6c757d; }
+  .form-control:disabled, .form-control[readonly] {
+    background: #f8f9fa;
+    color: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.8;
+  }
 
-.form-actions, .button-group { display:flex; justify-content:flex-end; gap:1rem; flex-wrap:wrap; margin-top:1rem; padding-top:1.5rem; border-top:2px solid #f8f9fa; }
+.invalid-feedback {
+  display: block;
+  margin-top: 0.25rem;
+  color: #e74c3c;
+  font-size: 0.875rem;
+}
 
-.btn { display:inline-flex; align-items:center; justify-content:center; gap:0.5rem; padding:0.75rem 1.5rem; border:none; border-radius:8px; font-size:1rem; font-weight:600; line-height:1.2; cursor:pointer; transition:transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, opacity 0.2s ease; text-decoration:none; }
-.btn:disabled { opacity:0.65; cursor:not-allowed; transform:none; box-shadow:none; }
+.alert {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  border-radius: 8px;
+}
 
-.btn-primary { background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); color:#fff; }
-.btn-secondary { background:#95a5a6; color:#fff; }
+.alert-error {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
 
-/* Logo preview container - shared for forms */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 260px;
+  padding: 2rem;
+  text-align: center;
+  color: #6c757d;
+}
+
+.form-actions, .button-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid #f8f9fa;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, opacity 0.2s ease;
+  text-decoration: none;
+}
+
+  .btn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+.btn-primary {
+  background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+  color: #fff;
+}
+
+.btn-secondary {
+  background: #95a5a6;
+  color: #fff;
+}
+
 .logo-preview-container {
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  width:100%;
-  max-width:220px; /* keeps previous intent but now responsive */
-  height:120px;
-  border:2px dashed #e9ecef;
-  border-radius:8px;
-  background:#f8f9fa;
-  overflow:hidden;
-  box-sizing:border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 220px;
+  height: 120px;
+  border: 2px dashed #e9ecef;
+  border-radius: 8px;
+  background: #f8f9fa;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
-/* Espaciado entre logo y controles (botón eliminar, nombre archivo) */
 .logo-controls {
   display: flex;
   flex-direction: row;
@@ -105,7 +283,6 @@
   margin-top: 0.5rem;
 }
 
-/* Mejorar visibilidad y layout en móvil */
 @media (max-width: 576px) {
   .logo-preview-container {
     max-width: 100%;
@@ -115,6 +292,7 @@
     padding: 0.5rem 0.25rem;
     flex-direction: column;
   }
+
   .logo-preview {
     max-width: 100%;
     max-height: 90px;
@@ -123,11 +301,13 @@
     margin: 0 auto;
     display: block;
   }
+
   .logo-placeholder {
     max-width: 100%;
     height: 90px;
     font-size: 2.5rem;
   }
+
   .logo-controls {
     flex-direction: column;
     gap: 0.5rem;
@@ -135,21 +315,22 @@
     width: 100%;
     align-items: stretch;
   }
-  .logo-controls button,
-  .logo-controls .btn {
-    width: 100%;
-    min-width: 0;
-    font-size: 1rem;
-    padding: 0.5rem 0.75rem;
-  }
-  .logo-controls .file-name {
-    word-break: break-all;
-    font-size: 0.95rem;
-    text-align: center;
-  }
+
+    .logo-controls button,
+    .logo-controls .btn {
+      width: 100%;
+      min-width: 0;
+      font-size: 1rem;
+      padding: 0.5rem 0.75rem;
+    }
+
+    .logo-controls .file-name {
+      word-break: break-all;
+      font-size: 0.95rem;
+      text-align: center;
+    }
 }
 
-/* Actual image inside preview */
 .logo-preview {
   max-width: 100%;
   max-height: 180px;
@@ -163,7 +344,6 @@
   display: block;
 }
 
-/* Placeholder when no image */
 .logo-placeholder {
   width: 100%;
   max-width: 240px;
@@ -178,7 +358,6 @@
   color: #9a9a9a;
 }
 
-/* Scoped compact top-row: Código | NIF/RFC | IVA | Descripción (desktop only) */
 @media (min-width: 992px) {
   .cliente-form-page .form-row-three,
   .proveedor-form-page .form-row-three {
@@ -188,36 +367,36 @@
     align-items: end;
   }
 
-  /* allow shrinking to avoid gaps */
-  .cliente-form-page .form-row-three > .form-group,
-  .proveedor-form-page .form-row-three > .form-group {
-    min-width: 0;
-  }
+    .cliente-form-page .form-row-three > .form-group,
+    .proveedor-form-page .form-row-three > .form-group {
+      min-width: 0;
+    }
 
-  /* column widths */
-  .cliente-form-page .form-row-three .form-group:first-child .form-control,
-  .proveedor-form-page .form-row-three .form-group:first-child .form-control {
-    max-width: 120px; width:100%;
-  }
+    .cliente-form-page .form-row-three .form-group:first-child .form-control,
+    .proveedor-form-page .form-row-three .form-group:first-child .form-control {
+      max-width: 120px;
+      width: 100%;
+    }
 
-  .cliente-form-page .form-row-three .form-group:nth-child(2) .form-control,
-  .proveedor-form-page .form-row-three .form-group:nth-child(2) .form-control {
-    max-width: 240px; width:100%;
-  }
+    .cliente-form-page .form-row-three .form-group:nth-child(2) .form-control,
+    .proveedor-form-page .form-row-three .form-group:nth-child(2) .form-control {
+      max-width: 240px;
+      width: 100%;
+    }
 
-  .cliente-form-page .form-row-three .form-group:nth-child(3) .form-control,
-  .proveedor-form-page .form-row-three .form-group:nth-child(3) .form-control {
-    max-width: 110px; width:100%; text-align:right;
-  }
+    .cliente-form-page .form-row-three .form-group:nth-child(3) .form-control,
+    .proveedor-form-page .form-row-three .form-group:nth-child(3) .form-control {
+      max-width: 110px;
+      width: 100%;
+      text-align: right;
+    }
 
-  /* description (4th) automatically fills remaining space */
-  .cliente-form-page .form-row-three .form-group:nth-child(4) .form-control,
-  .proveedor-form-page .form-row-three .form-group:nth-child(4) .form-control {
-    width:100%;
-  }
+    .cliente-form-page .form-row-three .form-group:nth-child(4) .form-control,
+    .proveedor-form-page .form-row-three .form-group:nth-child(4) .form-control {
+      width: 100%;
+    }
 }
 
-/* Responsive: collapse to single column under desktop */
 @media (max-width: 992px) {
   .form-row,
   .form-row-two,
@@ -226,21 +405,45 @@
     grid-template-columns: 1fr;
   }
 
-  .card { padding: 1.5rem; }
+  .card {
+    padding: 1.5rem;
+  }
 }
 
 @media (max-width: 768px) {
-  .page-container { padding: 0 0.85rem; }
-  .page-title { font-size: 1.7rem; }
-  .form-actions, .button-group { justify-content: stretch; }
-  .form-actions .btn, .button-group .btn { flex:1 1 160px; }
+  .page-container {
+    padding: 0 0.85rem;
+  }
+
+  .page-title {
+    font-size: 1.7rem;
+  }
+
+  .form-actions, .button-group {
+    justify-content: stretch;
+  }
+
+    .form-actions .btn, .button-group .btn {
+      flex: 1 1 160px;
+    }
 }
 
 @media (max-width: 576px) {
-  .page-container { padding: 0 0.75rem; }
-  .page-title { font-size:1.5rem; }
-  .card { padding:1.25rem; }
-  .btn { width:100%; }
+  .page-container {
+    padding: 0 0.75rem;
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+  }
+
+  .card {
+    padding: 1.25rem;
+  }
+
+  .btn {
+    width: 100%;
+  }
 }
 
 /* Shared select styles for cascaded selects */
@@ -255,13 +458,13 @@
   font-size: 1rem;
 }
 
-.shared-select:disabled,
-.shared-select.shared-disabled {
-  background: #f8f9fa;
-  color: #6c757d;
-  cursor: not-allowed;
-  opacity: 0.9;
-}
+  .shared-select:disabled,
+  .shared-select.shared-disabled {
+    background: #f8f9fa;
+    color: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.9;
+  }
 
 /* Accessibility: keep aria-disabled visible */
 .shared-disabled[aria-disabled="true"] {
@@ -282,28 +485,6 @@
   align-items: center;
 }
 
-/* Small helper for compact top-row variants: keep consistent input widths for codigo/nif/iva
-   Note: existing desktop widths are respected above. If you prefer the 'preferred' widths
-   (codigo ~160px, nif ~260px, iva ~110px) uncomment the block below and adjust as needed. */
-/*
-@media (min-width: 992px) {
-  .cliente-form-page .form-row-three .form-group:first-child .form-control,
-  .proveedor-form-page .form-row-three .form-group:first-child .form-control {
-    max-width: 160px;
-  }
-  .cliente-form-page .form-row-three .form-group:nth-child(2) .form-control,
-  .proveedor-form-page .form-row-three .form-group:nth-child(2) .form-control {
-    max-width: 260px;
-  }
-  .cliente-form-page .form-row-three .form-group:nth-child(3) .form-control,
-  .proveedor-form-page .form-row-three .form-group:nth-child(3) .form-control {
-    max-width: 110px;
-  }
-}
-*/
-
-/* Append this block near other scoped rules in style-form.css (keeps it shared and scoped-safe) */
-
 /* Hide number input spinners when .no-spinner is used (Webkit/Chrome, Edge, Safari, Firefox) */
 .no-spinner::-webkit-outer-spin-button,
 .no-spinner::-webkit-inner-spin-button {
@@ -316,10 +497,135 @@
   appearance: textfield;
 }
 
-/* optional: ensure caret and selection look consistent */
-.no-spinner[type="number"] {
-  /* keep numeric keyboard on mobile */
-  -webkit-appearance: textfield;
+  .no-spinner[type="number"] {
+    -webkit-appearance: textfield;
+  }
+
+/* --- Ajustes añadidos para uniformidad de inputs y selects --- */
+
+/* Normalizar altura y centrado vertical de inputs y selects (no aplica a textareas) */
+input.form-control,
+select.form-control,
+select.shared-select,
+input.form-control[type="text"],
+input.form-control[type="number"],
+input.form-control[type="email"],
+input.form-control[type="tel"],
+input.form-control[type="search"] {
+  height: 48px; /* altura consistente */
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  line-height: 1.2;
+  box-sizing: border-box;
+  font-size: 1rem;
 }
 
-/* --- end of appended block --- */
+/* Mantener textareas flexibles y con padding confortable */
+textarea.form-control {
+  padding: 0.75rem;
+  min-height: 120px;
+  height: auto;
+}
+
+/* Mejorar consistencia visual de selects en distintos navegadores:
+   se oculta apariencia nativa y se crea una flecha con gradientes; espacio a la derecha
+   para que el texto no choque con la flecha. */
+select.shared-select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, #2c3e50 50%), linear-gradient(135deg, #2c3e50 50%, transparent 50%), linear-gradient(to right, #fff, #fff);
+  background-position: calc(100% - 18px) calc(50% - 6px), calc(100% - 12px) calc(50% - 6px), 100% 0;
+  background-size: 6px 6px, 6px 6px, 1px 100%;
+  background-repeat: no-repeat;
+  padding-right: 2.25rem; /* espacio para la "flecha" */
+}
+
+/* Ajuste en móviles para no quedar muy altos */
+@media (max-width: 576px) {
+  input.form-control,
+  select.shared-select {
+    height: 44px;
+  }
+}
+
+/* --- fin de ajustes añadidos --- */
+
+/* Compact helper text for form hints (smaller, lighter) */
+.form-text.help-text {
+  font-size: 0.75rem; /* 12px */
+  color: var(--color-text-lighter);
+  line-height: 1.2;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+/* ---- Ajustes para alinear checkboxes con inputs (48px) ---- */
+/* Centrar visualmente la etiqueta del checkbox y mantener altura consistente */
+.form-row .form-group .checkbox-label,
+.form-row-three .form-group .checkbox-label,
+.form-row .form-group .form-check-label,
+.form-row-three .form-group .form-check-label {
+  display: inline-flex;
+  align-items: center;
+  height: 48px; /* coincide con la altura de los inputs */
+  gap: 0.5rem;
+  padding: 0; /* quitar offsets que rompan el centrado */
+  margin: 0;
+}
+
+/* Alinear checkbox verticalmente con el input usando flexbox */
+.form-row .form-group.checkbox-group,
+.form-row-three .form-group.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+
+.form-row .form-group.checkbox-group input[type="checkbox"],
+.form-row-three .form-group.checkbox-group input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  vertical-align: middle;
+  transform: none;
+}
+
+/* Alinear el help-text del checkbox con el de los inputs */
+.form-row .form-group.checkbox-group .form-text.help-text,
+.form-row-three .form-group.checkbox-group .form-text.help-text {
+  margin-top: 0.25rem;
+  align-self: flex-start;
+}
+
+/* Si una columna de formulario se usa sólo para checkbox, usar la clase checkbox-group para centrarla verticalmente */
+.form-row .form-group:last-child,
+.form-row-three .form-group:last-child {
+  padding-top: 0;
+}
+
+/* Responsive: en pantallas pequeñas volver a comportamiento compacto */
+@media (max-width: 992px) {
+  .form-row .form-group .checkbox-label,
+  .form-row-three .form-group .checkbox-label,
+  .form-row .form-group .form-check-label,
+  .form-row-three .form-group .form-check-label {
+    height: auto;
+    padding-top: 0.25rem;
+  }
+
+  .form-row .form-group input[type="checkbox"],
+  .form-row-three .form-group input[type="checkbox"] {
+    margin-top: var(--form-checkbox-offset-mobile, 0);
+  }
+}
+
+:root {
+  /* Ajuste global para desplazar visualmente los checkboxes (px). Ajusta entre 0 y 8 según necesites. */
+  --form-checkbox-offset: 4px;
+  /* Offset específico para móviles, puedes ajustar este valor para pantallas pequeñas */
+  --form-checkbox-offset-mobile: 0px;
+}
