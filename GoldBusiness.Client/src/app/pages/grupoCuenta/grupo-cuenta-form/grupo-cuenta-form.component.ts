@@ -31,8 +31,7 @@ export class GrupoCuentaFormComponent implements OnInit, OnDestroy {
   ) {
     this.form = this.fb.group({
       codigo: ['', [Validators.required, Validators.pattern(/^\d{2}$/), Validators.minLength(2), Validators.maxLength(2)]],
-      descripcion: ['', [Validators.required, Validators.maxLength(256)]],
-      activo: [true]
+      descripcion: ['', [Validators.required, Validators.maxLength(256)]]
     });
   }
 
@@ -74,7 +73,11 @@ export class GrupoCuentaFormComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.grupoCuentaService.getById(this.grupoId).subscribe({
       next: (data) => {
-        this.form.patchValue(data);
+        // patchValue ignorará propiedades extras (como cancelado) — no usamos Activo en esta entidad
+        this.form.patchValue({
+          codigo: data.codigo,
+          descripcion: data.descripcion
+        });
 
         if (this.isEditMode) {
           this.form.get('codigo')?.disable();
@@ -139,10 +142,7 @@ export class GrupoCuentaFormComponent implements OnInit, OnDestroy {
       const maxLength = control.errors?.['maxlength'].requiredLength;
       return this.translate.translate('validation.maxLength', [maxLength]);
     }
-    if (control?.hasError('pattern')) {
-      return this.translate.translate('validation.codigo2Digitos');
-    }
-    if (control?.hasError('minlength')) {
+    if (control?.hasError('pattern') || control?.hasError('minlength')) {
       return this.translate.translate('validation.codigo2Digitos');
     }
     return '';

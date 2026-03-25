@@ -20,8 +20,9 @@
                  formControlName="codigo"
                  class="form-control"
                  [class.is-invalid]="form.get('codigo')?.invalid && form.get('codigo')?.touched"
-                 [placeholder]="'grupoCuenta.codigoPlaceholder' | translate"
+                 [placeholder]="'grupoCuenta.placeholderCodigo' | translate"
                  maxlength="2" />
+          <small class="form-text text-muted">{{ 'grupoCuenta.codigoHelp' | translate }}</small>
           <div class="invalid-feedback" *ngIf="form.get('codigo')?.invalid && form.get('codigo')?.touched">
             {{ getErrorMessage('codigo') }}
           </div>
@@ -34,8 +35,9 @@
                  formControlName="descripcion"
                  class="form-control"
                  [class.is-invalid]="form.get('descripcion')?.invalid && form.get('descripcion')?.touched"
-                 [placeholder]="'grupoCuenta.descripcionPlaceholder' | translate"
+                 [placeholder]="'grupoCuenta.placeholderDescripcion' | translate"
                  maxlength="256" />
+          <small class="form-text text-muted">{{ 'grupoCuenta.descripcionHelp' | translate }}</small>
           <div class="invalid-feedback" *ngIf="form.get('descripcion')?.invalid && form.get('descripcion')?.touched">
             {{ getErrorMessage('descripcion') }}
           </div>

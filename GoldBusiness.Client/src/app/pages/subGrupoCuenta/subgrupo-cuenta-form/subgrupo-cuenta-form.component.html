@@ -13,25 +13,44 @@
   <div class="card">
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
       
-      <!-- ✅ GrupoCuenta -->
       <div class="form-group">
         <label for="grupoCuentaId" class="form-label">{{ 'subGrupoCuenta.grupoCuenta' | translate }} *</label>
         <select id="grupoCuentaId"
                 formControlName="grupoCuentaId"
-                class="form-control"
-                [class.is-invalid]="form.get('grupoCuentaId')?.invalid && form.get('grupoCuentaId')?.touched">
-          <option [value]="null">{{ 'common.select' | translate }}</option>
-          <option *ngFor="let grupo of gruposCuenta" [value]="grupo.id">
+                class="form-control shared-select"
+                [class.is-invalid]="form.get('grupoCuentaId')?.invalid && form.get('grupoCuentaId')?.touched"
+                [attr.aria-disabled]="form.get('grupoCuentaId')?.disabled">
+          <option [ngValue]="null">{{ 'common.select' | translate }}</option>
+          <option *ngFor="let grupo of gruposCuenta" [ngValue]="grupo.id">
             {{ grupo.codigo }} - {{ grupo.descripcion }}
           </option>
         </select>
-          <small class="form-text" *ngIf="gruposCuenta.length === 0">{{ 'subGrupoCuenta.noGruposDisponibles' | translate }}</small>
+
+        <ng-container *ngIf="loadingGrupos; else gruposLoaded">
+          <small class="form-text text-muted">⏳ {{ 'common.loading' | translate }}...</small>
+        </ng-container>
+
+        <ng-template #gruposLoaded>
+          <ng-container *ngIf="gruposCuenta.length === 0; else gruposList">
+            <small class="form-text text-muted">{{ 'subGrupoCuenta.noGruposDisponibles' | translate }}</small>
+          </ng-container>
+
+          <ng-template #gruposList>
+            <ng-container *ngIf="!form.get('grupoCuentaId')?.value; else grupoHelp">
+              <small class="form-text text-muted">{{ 'subGrupoCuenta.selectGrupoHelp' | translate }}</small>
+            </ng-container>
+
+            <ng-template #grupoHelp>
+              <small class="form-text text-muted">{{ 'subGrupoCuenta.subgrupoHelp' | translate }}</small>
+            </ng-template>
+          </ng-template>
+        </ng-template>
+
         <div class="invalid-feedback" *ngIf="form.get('grupoCuentaId')?.invalid && form.get('grupoCuentaId')?.touched">
           {{ getErrorMessage('grupoCuentaId') }}
         </div>
       </div>
 
-      <!-- ✅ CAMBIO: Fila con 3 columnas -->
       <div class="form-row-three">
         <div class="form-group">
           <label for="codigoUsuario" class="form-label">{{ 'subGrupoCuenta.codigoUsuario' | translate }} *</label>
@@ -40,7 +59,7 @@
                  formControlName="codigoUsuario"
                  class="form-control"
                  [class.is-invalid]="form.get('codigoUsuario')?.invalid && form.get('codigoUsuario')?.touched"
-                 [placeholder]="'subGrupoCuenta.codigoUsuarioPlaceholder' | translate"
+                 [placeholder]="'subGrupoCuenta.placeholderCodigoUsuario' | translate"
                  maxlength="3"
                  [disabled]="!selectedGrupoCodigo" />
           <small class="form-text text-muted">{{ 'subGrupoCuenta.codigoUsuarioHelp' | translate }}</small>
@@ -56,7 +75,7 @@
                  [value]="codigoCompleto"
                  class="form-control"
                  readonly
-                 [placeholder]="'subGrupoCuenta.codigoCompletoPlaceholder' | translate" />
+                 [placeholder]="'subGrupoCuenta.placeholderCodigoCompleto' | translate" />
           <small class="form-text text-muted">{{ 'subGrupoCuenta.codigoCompletoHelp' | translate }}</small>
         </div>
 
@@ -65,7 +84,7 @@
             <input type="checkbox" formControlName="deudora" class="form-checkbox" />
             <span>{{ 'subGrupoCuenta.deudora' | translate }}</span>
           </label>
-          <small class="form-text">{{ 'subGrupoCuenta.acreedora' | translate }} {{ 'common.ifNotChecked' | translate }}</small>
+          <small class="form-text text-muted">{{ 'subGrupoCuenta.deudoraHelp' | translate }}</small>
         </div>
       </div>
 
@@ -76,8 +95,9 @@
                formControlName="descripcion"
                class="form-control"
                [class.is-invalid]="form.get('descripcion')?.invalid && form.get('descripcion')?.touched"
-               [placeholder]="'subGrupoCuenta.descripcionPlaceholder' | translate"
+               [placeholder]="'subGrupoCuenta.placeholderDescripcion' | translate"
                maxlength="256" />
+        <small class="form-text text-muted">{{ 'subGrupoCuenta.descripcionHelp' | translate }}</small>
         <div class="invalid-feedback" *ngIf="form.get('descripcion')?.invalid && form.get('descripcion')?.touched">
           {{ getErrorMessage('descripcion') }}
         </div>

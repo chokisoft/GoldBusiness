@@ -11,46 +11,126 @@
   </div>
 
   <div class="card">
-    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
-      <!-- GrupoCuenta selector (igual que SubGrupoCuenta) -->
-      <div class="form-group grupo-cuenta-group">
-        <label for="grupoCuentaId" class="form-label">{{ 'subGrupoCuenta.grupoCuenta' | translate }} *</label>
-        <select id="grupoCuentaId"
-                formControlName="grupoCuentaId"
-                class="form-control"
-                [class.is-invalid]="form.get('grupoCuentaId')?.invalid && form.get('grupoCuentaId')?.touched"
-                [disabled]="loadingGrupos">
-          <option [value]="null">{{ 'common.select' | translate }}</option>
-          <option *ngFor="let grupo of gruposCuenta" [value]="grupo.id">
-            {{ grupo.codigo }} - {{ grupo.descripcion }}
-          </option>
-        </select>
-        <small class="form-text" *ngIf="loadingGrupos">⏳ {{ 'common.loading' | translate }}...</small>
-        <small class="form-text" *ngIf="gruposCuenta.length === 0">{{ 'subGrupoCuenta.noGruposDisponibles' | translate }}</small>
-        <div class="invalid-feedback" *ngIf="form.get('grupoCuentaId')?.invalid && form.get('grupoCuentaId')?.touched">
-          {{ getErrorMessage('grupoCuentaId') }}
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container form-three-centered">
+      <!-- Negocio + Grupo de Cuenta en la misma fila -->
+      <div class="form-row">
+        <!-- Select Negocio / SystemConfiguration -->
+        <div class="form-group">
+          <label for="systemConfigurationId" class="form-label">{{ 'cuenta.negocio' | translate }} *</label>
+          <select id="systemConfigurationId"
+                  formControlName="systemConfigurationId"
+                  class="form-control"
+                  [disabled]="loadingSystemConfigurations">
+            <option [value]="null">{{ 'common.select' | translate }}</option>
+            <option *ngFor="let sc of systemConfigurations" [value]="sc.id">
+              {{ sc.nombreNegocio }}
+            </option>
+          </select>
+
+          <ng-container *ngIf="loadingSystemConfigurations; else scLoaded">
+            <small class="form-text text-muted">⏳ {{ 'common.loading' | translate }}...</small>
+          </ng-container>
+
+          <ng-template #scLoaded>
+            <ng-container *ngIf="systemConfigurations.length === 0; else scList">
+              <small class="form-text text-muted">{{ 'cuenta.noNegociosDisponibles' | translate }}</small>
+            </ng-container>
+
+            <ng-template #scList>
+              <ng-container *ngIf="!form.get('systemConfigurationId')?.value; else negocioHelp">
+                <small class="form-text text-muted">{{ 'cuenta.selectNegocio' | translate }}</small>
+              </ng-container>
+
+              <ng-template #negocioHelp>
+                <small class="form-text text-muted">{{ 'cuenta.negocioHelp' | translate }}</small>
+              </ng-template>
+            </ng-template>
+          </ng-template>
+
+          <div class="invalid-feedback" *ngIf="form.get('systemConfigurationId')?.invalid && form.get('systemConfigurationId')?.touched">
+            {{ getErrorMessage('systemConfigurationId') }}
+          </div>
+        </div>
+
+        <!-- grupoCuenta select -->
+        <div class="form-group grupo-cuenta-group">
+          <label for="grupoCuentaId" class="form-label">{{ 'subGrupoCuenta.grupoCuenta' | translate }} *</label>
+          <select id="grupoCuentaId"
+                  formControlName="grupoCuentaId"
+                  class="form-control"
+                  [class.is-invalid]="form.get('grupoCuentaId')?.invalid && form.get('grupoCuentaId')?.touched"
+                  [disabled]="loadingGrupos">
+            <option [value]="null">{{ 'common.select' | translate }}</option>
+            <option *ngFor="let grupo of gruposCuenta" [value]="grupo.id">
+              {{ grupo.codigo }} - {{ grupo.descripcion }}
+            </option>
+          </select>
+
+          <ng-container *ngIf="loadingGrupos; else gruposLoaded">
+            <small class="form-text text-muted">⏳ {{ 'common.loading' | translate }}...</small>
+          </ng-container>
+
+          <ng-template #gruposLoaded>
+            <ng-container *ngIf="gruposCuenta.length === 0; else gruposList">
+              <small class="form-text text-muted">{{ 'grupoCuenta.noGruposDisponibles' | translate }}</small>
+            </ng-container>
+
+            <ng-template #gruposList>
+              <ng-container *ngIf="!form.get('grupoCuentaId')?.value; else grupoHelp">
+                <small class="form-text text-muted">{{ 'cuenta.selectGrupoToSeeSubgrupos' | translate }}</small>
+              </ng-container>
+
+              <ng-template #grupoHelp>
+                <small class="form-text text-muted">{{ 'grupoCuenta.grupoHelp' | translate }}</small>
+              </ng-template>
+            </ng-template>
+          </ng-template>
+
+          <div class="invalid-feedback" *ngIf="form.get('grupoCuentaId')?.invalid && form.get('grupoCuentaId')?.touched">
+            {{ getErrorMessage('grupoCuentaId') }}
+          </div>
         </div>
       </div>
 
-      <!-- Fila con 3 columnas: SubGrupo, Código usuario y Código completo (estilo SubGrupoCuenta) -->
       <div class="form-row-three">
+        <!-- subGrupo select (reemplazar el bloque existente para subGrupoCuentaId) -->
         <div class="form-group subgrupo-cuenta-group">
           <label for="subGrupoCuentaId" class="form-label">{{ 'cuenta.subGrupoCuenta' | translate }} *</label>
           <select id="subGrupoCuentaId"
                   formControlName="subGrupoCuentaId"
-                  class="form-control"
+                  class="form-control shared-select"
                   [class.is-invalid]="form.get('subGrupoCuentaId')?.invalid && form.get('subGrupoCuentaId')?.touched"
-                  [disabled]="loadingSubGrupos || filteredSubGrupos.length === 0">
+                  [disabled]="loadingSubGrupos || filteredSubGrupos.length === 0"
+                  [attr.aria-disabled]="form.get('subGrupoCuentaId')?.disabled">
             <option [value]="null">{{ 'common.select' | translate }}</option>
             <option *ngFor="let subgrupo of filteredSubGrupos" [value]="subgrupo.id">
               {{ subgrupo.codigo }} - {{ subgrupo.descripcion }}
             </option>
           </select>
-          <small class="form-text" *ngIf="loadingSubGrupos">⏳ {{ 'common.loading' | translate }}...</small>
+
+          <ng-container *ngIf="loadingSubGrupos; else subGruposLoaded">
+            <small class="form-text text-muted">⏳ {{ 'common.loading' | translate }}...</small>
+          </ng-container>
+
+          <ng-template #subGruposLoaded>
+            <ng-container *ngIf="filteredSubGrupos.length === 0; else subGruposList">
+              <small class="form-text text-muted">{{ 'subGrupoCuenta.noGruposDisponibles' | translate }}</small>
+            </ng-container>
+
+            <ng-template #subGruposList>
+              <ng-container *ngIf="!form.get('subGrupoCuentaId')?.value; else subgrupoHelp">
+                <small class="form-text text-muted">{{ 'cuenta.selectGrupoToSeeSubgrupos' | translate }}</small>
+              </ng-container>
+
+              <ng-template #subgrupoHelp>
+                <small class="form-text text-muted">{{ 'subGrupoCuenta.subgrupoHelp' | translate }}</small>
+              </ng-template>
+            </ng-template>
+          </ng-template>
+
           <div class="invalid-feedback" *ngIf="form.get('subGrupoCuentaId')?.invalid && form.get('subGrupoCuentaId')?.touched">
             {{ getErrorMessage('subGrupoCuentaId') }}
           </div>
-          <small class="form-text" *ngIf="!loadingSubGrupos && filteredSubGrupos.length === 0">{{ 'cuenta.selectGrupoToSeeSubgrupos' | translate }}</small>
         </div>
 
         <div class="form-group">
@@ -61,13 +141,12 @@
                  class="form-control"
                  maxlength="3"
                  [class.is-invalid]="form.get('codigoUsuario')?.invalid && form.get('codigoUsuario')?.touched"
-                 [placeholder]="'subGrupoCuenta.codigoUsuarioPlaceholder' | translate"
+                 [placeholder]="'subGrupoCuenta.placeholderCodigoUsuario' | translate"
                  [disabled]="!selectedSubGrupoCodigo" />
           <small class="form-text text-muted">{{ 'subGrupoCuenta.codigoUsuarioHelp' | translate }}</small>
           <div class="invalid-feedback" *ngIf="form.get('codigoUsuario')?.invalid && form.get('codigoUsuario')?.touched">
             {{ getErrorMessage('codigoUsuario') }}
           </div>
-          <small class="form-text text-muted" *ngIf="selectedSubGrupoCodigo">{{ 'subGrupoCuenta.prefijoSeleccionado' | translate }}: {{ selectedSubGrupoCodigo }}</small>
         </div>
 
         <div class="form-group codigo-completo-group">
@@ -77,7 +156,7 @@
                  formControlName="codigo"
                  class="form-control"
                  readonly
-                 [placeholder]="'subGrupoCuenta.codigoCompletoPlaceholder' | translate" />
+                 [placeholder]="'subGrupoCuenta.placeholderCodigoCompleto' | translate" />
           <small class="form-text text-muted">{{ 'subGrupoCuenta.codigoCompletoHelp' | translate }}</small>
         </div>
       </div>
@@ -89,8 +168,9 @@
                formControlName="descripcion"
                class="form-control"
                [class.is-invalid]="form.get('descripcion')?.invalid && form.get('descripcion')?.touched"
-               [placeholder]="'cuenta.descripcionPlaceholder' | translate"
+               [placeholder]="'cuenta.placeholderDescripcion' | translate"
                maxlength="256" />
+        <small class="form-text text-muted">{{ 'cuenta.descripcionHelp' | translate }}</small>
         <div class="invalid-feedback" *ngIf="form.get('descripcion')?.invalid && form.get('descripcion')?.touched">
           {{ getErrorMessage('descripcion') }}
         </div>

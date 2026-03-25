@@ -1,36 +1,27 @@
-.form-row-three .form-group.checkbox-group {
-  align-items: flex-start !important;
-  padding-left: 0 !important;
-  margin-left: 0 !important;
-}
-.form-row-three .form-group.checkbox-group .checkbox-label {
-  width: auto !important;
-  min-width: 0 !important;
-  justify-content: flex-start !important;
-  text-align: left !important;
-  padding-left: 0 !important;
-  margin-left: 0 !important;
-}
+/* Shared styles for forms */
+
 /* Forzar alineación a la izquierda del checkbox en la última columna de form-row-three */
 .form-row-three .form-group.checkbox-group {
   align-items: flex-start !important;
 }
-.form-row-three .form-group.checkbox-group .checkbox-label {
-  justify-content: flex-start !important;
-  text-align: left !important;
-}
-/* Ajuste fino: centrar verticalmente el checkbox en filas de 3 columnas (como SubGrupoCuenta y Establecimiento) */
-.form-row-three .form-group.checkbox-group .checkbox-label {
-  height: 48px;
-  display: flex;
-  align-items: center;
-}
 
-.form-row-three .form-group.checkbox-group input[type="checkbox"] {
-  margin-top: 0;
-  margin-bottom: 0;
-  align-self: center;
-}
+  .form-row-three .form-group.checkbox-group .checkbox-label {
+    justify-content: flex-start !important;
+    text-align: left !important;
+  }
+  /* Ajuste fino: centrar verticalmente el checkbox en filas de 3 columnas (como SubGrupoCuenta y Establecimiento) */
+  .form-row-three .form-group.checkbox-group .checkbox-label {
+    height: 48px;
+    display: flex;
+    align-items: center;
+  }
+
+  .form-row-three .form-group.checkbox-group input[type="checkbox"] {
+    margin-top: 0;
+    margin-bottom: 0;
+    align-self: center;
+  }
+
 @keyframes shared-form-spin {
   0% {
     transform: rotate(0deg);
@@ -341,7 +332,6 @@
   border-radius: 6px;
   box-shadow: 0 1px 6px rgba(0,0,0,0.06);
   background-color: #fff;
-  display: block;
 }
 
 .logo-placeholder {
@@ -493,7 +483,7 @@
 }
 
 .no-spinner {
-  -moz-appearance: textfield; /* Firefox: hide stepper */
+  -moz-appearance: textfield;
   appearance: textfield;
 }
 
@@ -512,7 +502,7 @@ input.form-control[type="number"],
 input.form-control[type="email"],
 input.form-control[type="tel"],
 input.form-control[type="search"] {
-  height: 48px; /* altura consistente */
+  height: 48px;
   padding-top: 0;
   padding-bottom: 0;
   padding-left: 0.75rem;
@@ -529,9 +519,7 @@ textarea.form-control {
   height: auto;
 }
 
-/* Mejorar consistencia visual de selects en distintos navegadores:
-   se oculta apariencia nativa y se crea una flecha con gradientes; espacio a la derecha
-   para que el texto no choque con la flecha. */
+/* Mejorar consistencia visual de selects en distintos navegadores */
 select.shared-select {
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -540,7 +528,7 @@ select.shared-select {
   background-position: calc(100% - 18px) calc(50% - 6px), calc(100% - 12px) calc(50% - 6px), 100% 0;
   background-size: 6px 6px, 6px 6px, 1px 100%;
   background-repeat: no-repeat;
-  padding-right: 2.25rem; /* espacio para la "flecha" */
+  padding-right: 2.25rem;
 }
 
 /* Ajuste en móviles para no quedar muy altos */
@@ -555,7 +543,7 @@ select.shared-select {
 
 /* Compact helper text for form hints (smaller, lighter) */
 .form-text.help-text {
-  font-size: 0.75rem; /* 12px */
+  font-size: 0.75rem;
   color: var(--color-text-lighter);
   line-height: 1.2;
   margin-top: 0.25rem;
@@ -563,20 +551,18 @@ select.shared-select {
 }
 
 /* ---- Ajustes para alinear checkboxes con inputs (48px) ---- */
-/* Centrar visualmente la etiqueta del checkbox y mantener altura consistente */
 .form-row .form-group .checkbox-label,
 .form-row-three .form-group .checkbox-label,
 .form-row .form-group .form-check-label,
 .form-row-three .form-group .form-check-label {
   display: inline-flex;
   align-items: center;
-  height: 48px; /* coincide con la altura de los inputs */
+  height: 48px;
   gap: 0.5rem;
-  padding: 0; /* quitar offsets que rompan el centrado */
+  padding: 0;
   margin: 0;
 }
 
-/* Alinear checkbox verticalmente con el input usando flexbox */
 .form-row .form-group.checkbox-group,
 .form-row-three .form-group.checkbox-group {
   display: flex;
@@ -585,23 +571,21 @@ select.shared-select {
   height: 100%;
 }
 
-.form-row .form-group.checkbox-group input[type="checkbox"],
-.form-row-three .form-group.checkbox-group input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
-  margin: 0;
-  vertical-align: middle;
-  transform: none;
-}
+  .form-row .form-group.checkbox-group input[type="checkbox"],
+  .form-row-three .form-group.checkbox-group input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    vertical-align: middle;
+    transform: none;
+  }
 
-/* Alinear el help-text del checkbox con el de los inputs */
-.form-row .form-group.checkbox-group .form-text.help-text,
-.form-row-three .form-group.checkbox-group .form-text.help-text {
-  margin-top: 0.25rem;
-  align-self: flex-start;
-}
+  .form-row .form-group.checkbox-group .form-text.help-text,
+  .form-row-three .form-group.checkbox-group .form-text.help-text {
+    margin-top: 0.25rem;
+    align-self: flex-start;
+  }
 
-/* Si una columna de formulario se usa sólo para checkbox, usar la clase checkbox-group para centrarla verticalmente */
 .form-row .form-group:last-child,
 .form-row-three .form-group:last-child {
   padding-top: 0;
@@ -624,8 +608,262 @@ select.shared-select {
 }
 
 :root {
-  /* Ajuste global para desplazar visualmente los checkboxes (px). Ajusta entre 0 y 8 según necesites. */
   --form-checkbox-offset: 4px;
-  /* Offset específico para móviles, puedes ajustar este valor para pantallas pequeñas */
   --form-checkbox-offset-mobile: 0px;
+}
+
+/* Opt-in: correcciones finas para alinear verticalmente inputs en filas de 3 columnas */
+.form-three-centered .form-row-three {
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1.25rem;
+  align-items: start;
+  box-sizing: border-box;
+}
+
+  .form-three-centered .form-row-three .form-label {
+    min-height: 28px;
+    display: block;
+    margin-bottom: 0.5rem;
+    line-height: 1.15;
+  }
+
+  .form-three-centered .form-row-three .form-control {
+    min-height: 48px;
+    padding: 0.75rem;
+    box-sizing: border-box;
+  }
+
+  .form-three-centered .form-row-three > .codigo-completo-group {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin-top: 0;
+  }
+
+  .form-three-centered .form-row-three .form-text {
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+    line-height: 1.3;
+  }
+
+@media (max-width: 992px) {
+  .form-three-centered .form-row-three {
+    grid-template-columns: minmax(0, 1.8fr) minmax(0, 0.8fr) minmax(0, 0.8fr);
+    align-items: start;
+  }
+
+    .form-three-centered .form-row-three .form-label {
+      min-height: 0;
+      white-space: normal;
+    }
+}
+
+/* --------------------------------------------------------------------
+   Scoped styles for SystemConfiguration form — Layout optimizado
+   Apply only when the form has class "system-config-form".
+   -------------------------------------------------------------------- */
+
+/* Layout principal de 2 columnas */
+.system-config-form .info-basica-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 2rem;
+  align-items: start;
+  margin-bottom: 0;
+}
+
+/* Columna izquierda */
+.system-config-form .info-basica-column {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Wrapper de la columna derecha para el título fuera de la tarjeta */
+.system-config-form .logo-column-wrapper {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Título fuera del contexto del logo */
+.system-config-form .logo-title-outside {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #2c3e50;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-left: 0.25rem;
+}
+
+/* Tarjeta del logo */
+.system-config-form .logo-column-right {
+  background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+  border-radius: 12px;
+  padding: 1.25rem;
+  border: 1px solid #eef2f6;
+  transition: all 0.2s ease;
+}
+
+  .system-config-form .logo-column-right:hover {
+    border-color: #e2e8f0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  }
+
+  /* Mejoras sutiles para el preview */
+  .system-config-form .logo-column-right .logo-preview-container {
+    transition: all 0.2s ease;
+  }
+
+    .system-config-form .logo-column-right .logo-preview-container:hover {
+      border-color: #667eea;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+    }
+
+  /* Botón de subir archivo */
+  .system-config-form .logo-column-right .btn-file-upload {
+    transition: all 0.2s ease;
+    width: 100%;
+  }
+
+    .system-config-form .logo-column-right .btn-file-upload:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+    }
+
+  /* Información del archivo actual */
+  .system-config-form .logo-column-right .current-logo-name {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .system-config-form .logo-column-right .btn-danger {
+    transition: all 0.2s ease;
+  }
+
+    .system-config-form .logo-column-right .btn-danger:hover {
+      transform: translateY(-1px);
+    }
+
+/* ========== LICENCIA - A TODO LO ANCHO ========== */
+.system-config-form .license-full-width {
+  margin-top: 1rem;
+  width: 100%;
+}
+
+  .system-config-form .license-full-width .form-label {
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #2c3e50;
+  }
+
+  /* Licencia - altura compacta para 2 líneas */
+  .system-config-form .license-full-width textarea#licencia.form-control {
+    width: 100%;
+    min-height: 70px;
+    max-height: 120px;
+    resize: vertical;
+    padding: 0.75rem;
+    box-sizing: border-box;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    font-family: inherit;
+    font-size: 1rem;
+    background: #ffffff;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+  }
+
+    .system-config-form .license-full-width textarea#licencia.form-control:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.12);
+    }
+
+/* ========== DIRECCIÓN - A TODO LO ANCHO ========== */
+.system-config-form .direccion-full-width {
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+  .system-config-form .direccion-full-width .form-label {
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #2c3e50;
+  }
+
+  /* Dirección - altura compacta para 2 líneas */
+  .system-config-form .direccion-full-width textarea#direccion.form-control {
+    width: 100%;
+    min-height: 70px;
+    max-height: 120px;
+    resize: vertical;
+    padding: 0.75rem;
+    box-sizing: border-box;
+    background: #ffffff;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+  }
+
+    .system-config-form .direccion-full-width textarea#direccion.form-control:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.12);
+    }
+
+/* ========== SECCIÓN DE CUENTAS CONTABLES ========== */
+.system-config-form .form-group-cuentas {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+  margin-top: 0.5rem;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 992px) {
+  .system-config-form .info-basica-layout {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .system-config-form .logo-column-wrapper {
+    max-width: 400px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .system-config-form .form-group-cuentas {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .system-config-form .logo-column-right {
+    padding: 1rem;
+  }
+
+    .system-config-form .logo-column-right .current-logo-name {
+      flex-direction: column;
+      align-items: stretch;
+      text-align: center;
+    }
+
+      .system-config-form .logo-column-right .current-logo-name .file-name {
+        white-space: normal;
+        word-break: break-all;
+      }
+
+  .system-config-form .license-full-width textarea#licencia.form-control,
+  .system-config-form .direccion-full-width textarea#direccion.form-control {
+    min-height: 65px;
+  }
 }

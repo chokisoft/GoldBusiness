@@ -500,6 +500,36 @@ export class TranslationService {
       'en': 'Ex: 21.00',
       'fr': 'Ex: 21.00'
     },
+    "clientes.placeholderCodigo": {
+      "es": "Ingrese código (8 dígitos)",
+      "en": "Enter code (8 chars)",
+      "fr": "Entrez le code (8 caractères)"
+    },
+    "clientes.placeholderDescripcion": {
+      "es": "Ej: Nombre del cliente o razón social",
+      "en": "Ex: Customer name or company",
+      "fr": "Ex: Nom du client ou raison sociale"
+    },
+    "clientes.placeholderDireccion": {
+      "es": "Ej: Calle y número",
+      "en": "Ex: Street and number",
+      "fr": "Ex: Rue et numéro"
+    },
+    "clientes.placeholderEmail": {
+      "es": "Ej: cliente@empresa.com",
+      "en": "Ex: customer@company.com",
+      "fr": "Ex: client@entreprise.com"
+    },
+    "clientes.placeholderNif": {
+      "es": "Ej: 12345678A",
+      "en": "Ex: 12345678A",
+      "fr": "Ex: 12345678A"
+    },
+    "clientes.placeholderTelefono": {
+      "es": "Ej: +34 912 345 678",
+      "en": "Ex: +34 912 345 678",
+      "fr": "Ex: +33 1 23 45 67 89"
+    },
 
     // ═══════════════════════════════════════════════════════════
     // 🏢 ORGANIZACIÓN
@@ -1916,6 +1946,36 @@ export class TranslationService {
       'en': 'General Information',
       'fr': 'Informations Générales'
     },
+    "grupoCuenta.codigoHelp": {
+      "es": "Ingrese el código numérico del grupo (2 dígitos).",
+      "en": "Enter the numeric group code (2 digits).",
+      "fr": "Entrez le code numérique du groupe (2 chiffres)."
+    },
+    "grupoCuenta.descripcionHelp": {
+      "es": "Ingrese una breve descripción del grupo de cuenta.",
+      "en": "Enter a brief description of the account group.",
+      "fr": "Entrez une brève description du groupe de comptes."
+    },
+    "grupoCuenta.placeholderCodigo": {
+      "es": "Ej: 01",
+      "en": "Ex: 01",
+      "fr": "Ex: 01"
+    },
+    "grupoCuenta.placeholderDescripcion": {
+      "es": "Ej: Activo, Pasivo, Patrimonio",
+      "en": "Ex: Asset, Liability, Equity",
+      "fr": "Ex: Actif, Passif, Capitaux Propres"
+    },
+    'grupoCuenta.noGruposDisponibles': {
+      'es': 'No hay grupos disponibles.',
+      'en': 'No groups available.',
+      'fr': 'Aucun groupe disponible.'
+    },
+    'grupoCuenta.grupoHelp': {
+      'es': 'Seleccione el grupo principal para la cuenta.',
+      'en': 'Select the top-level group for the account.',
+      'fr': 'Sélectionnez le groupe principal pour le compte.'
+    },
 
     // ═══════════════════════════════════════════════════════════
     // 📂 SUBGRUPO CUENTA
@@ -1959,6 +2019,11 @@ export class TranslationService {
       'es': 'Código',
       'en': 'Code',
       'fr': 'Code'
+    },
+    'subGrupoCuenta.subgrupoHelp': {
+      'es': 'Seleccione el subgrupo aplicable para la cuenta.',
+      'en': 'Select the applicable subgroup for the account.',
+      'fr': 'Sélectionnez le sous-groupe applicable pour le compte.'
     },
     'subGrupoCuenta.grupoCuenta': {
       'es': 'Grupo de Cuenta',
@@ -2035,6 +2100,36 @@ export class TranslationService {
       'en': 'Selected prefix',
       'fr': 'Préfixe sélectionné'
     },
+    "subGrupoCuenta.descripcionHelp": {
+      "es": "Ingrese una breve descripción del subgrupo de cuenta.",
+      "en": "Enter a brief description of the account subgroup.",
+      "fr": "Entrez une brève description du sous-groupe de comptes."
+    },
+    "subGrupoCuenta.deudoraHelp": {
+      "es": "Marque si el subgrupo afecta cuentas deudoras (débitos).",
+      "en": "Check if the subgroup affects debit accounts.",
+      "fr": "Cochez si le sous-groupe affecte les comptes débiteurs."
+    },
+    "subGrupoCuenta.placeholderCodigoCompleto": {
+      "es": "Se generará automáticamente",
+      "en": "Will be generated automatically",
+      "fr": "Sera généré automatiquement"
+    },
+    "subGrupoCuenta.placeholderCodigoUsuario": {
+      "es": "Ej: 001",
+      "en": "Ex: 001",
+      "fr": "Ex: 001"
+    },
+    "subGrupoCuenta.placeholderDescripcion": {
+      "es": "Ej: Activo Circulante, Efectivo y Equivalentes",
+      "en": "Ex: Current Assets, Cash and Equivalents",
+      "fr": "Ex: Actif Circulant, Trésorerie et Équivalents"
+    },
+    "subGrupoCuenta.selectGrupoHelp": {
+      "es": "Seleccione el grupo para generar el prefijo del subgrupo.",
+      "en": "Select the group to generate the subgroup prefix.",
+      "fr": "Sélectionnez le groupe pour générer le préfixe du sous-groupe."
+    },
 
     // ═══════════════════════════════════════════════════════════
     // 📄 CUENTA
@@ -2099,165 +2194,206 @@ export class TranslationService {
       'en': 'Select a group to see subgroups.',
       'fr': 'Sélectionnez un groupe pour voir les sous-groupes.'
     },
+    "cuenta.descripcionHelp": {
+      "es": "Ingrese una breve descripción para la cuenta contable.",
+      "en": "Enter a brief description for the accounting account.",
+      "fr": "Entrez une brève description du compte comptable."
+    },
+    "cuenta.placeholderDescripcion": {
+      "es": "Ej: Efectivo en Caja, Bancos Moneda Nacional",
+      "en": "Ex: Cash on Hand, National Currency Banks",
+      "fr": "Ex: Espèces en Caisse, Banques en Monnaie Nationale"
+    },
+    'cuenta.negocio': {
+      'es': 'Negocio',
+      'en': 'Business',
+      'fr': 'Entreprise'
+    },
+    'cuenta.negocioHelp': {
+      'es': 'Seleccione el negocio (configuración del sistema) asociado a la cuenta.',
+      'en': 'Select the business (system configuration) associated with the account.',
+      'fr': 'Sélectionnez l’entreprise (configuration système) associée au compte.'
+    },
+    'cuenta.selectNegocio': {
+      'es': 'Seleccione un negocio primero',
+      'en': 'Select a business first',
+      'fr': 'Sélectionnez d\'abord une entreprise'
+    },
+    'cuenta.noNegociosDisponibles': {
+      'es': 'No hay negocios disponibles.',
+      'en': 'No businesses available.',
+      'fr': 'Aucune entreprise disponible.'
+    },
 
-      // Ayudas para selects padre y placeholders
-      'subLinea.noLineasDisponibles': {
-        'es': 'No hay líneas disponibles.',
-        'en': 'No lines available.',
-        'fr': 'Aucune ligne disponible.'
-      },
-      'subGrupoCuenta.noGruposDisponibles': {
-        'es': 'No hay grupos disponibles.',
-        'en': 'No groups available.',
-        'fr': 'Aucun groupe disponible.'
-      },
-      'conceptoAjuste.noCuentasDisponibles': {
-        'es': 'No hay cuentas disponibles.',
-        'en': 'No accounts available.',
-        'fr': 'Aucun compte disponible.'
-      },
-      'proveedores.placeholderNif': {
-        'es': 'Ej: 12345678A',
-        'en': 'Ex: 12345678A',
-        'fr': 'Ex: 12345678A'
-      },
-      'proveedores.placeholderIva': {
-        'es': 'Ej: 21.00',
-        'en': 'Ex: 21.00',
-        'fr': 'Ex: 21.00'
-      },
-      'clientes.placeholderIva': {
-        'es': 'Ej: 21.00',
-        'en': 'Ex: 21.00',
-        'fr': 'Ex: 21.00'
-      },
+    // Ayudas para selects padre y placeholders
+    'subLinea.noLineasDisponibles': {
+      'es': 'No hay líneas disponibles.',
+      'en': 'No lines available.',
+      'fr': 'Aucune ligne disponible.'
+    },
+    'subGrupoCuenta.noGruposDisponibles': {
+      'es': 'No hay grupos disponibles.',
+      'en': 'No groups available.',
+      'fr': 'Aucun groupe disponible.'
+    },
+    'conceptoAjuste.noCuentasDisponibles': {
+      'es': 'No hay cuentas disponibles.',
+      'en': 'No accounts available.',
+      'fr': 'Aucun compte disponible.'
+    },
+    'proveedores.placeholderNif': {
+      'es': 'Ej: 12345678A',
+      'en': 'Ex: 12345678A',
+      'fr': 'Ex: 12345678A'
+    },
+    'proveedores.placeholderIva': {
+      'es': 'Ej: 21.00',
+      'en': 'Ex: 21.00',
+      'fr': 'Ex: 21.00'
+    },
+    "proveedores.placeholderCodigo": {
+      "es": "Ingrese código (5 dígitos)",
+      "en": "Enter code (5 chars)",
+      "fr": "Entrez le code (5 caractères)"
+    },
+    "proveedores.placeholderDescripcion": {
+      "es": "Ej: Nombre del proveedor",
+      "en": "Ex: Supplier name",
+      "fr": "Ex: Nom du fournisseur"
+    },
 
-      // Ayudas para selects dependientes y país
-      'cliente.selectPaisToSeeProvincias': {
-        'es': 'Seleccione un país para ver provincias.',
-        'en': 'Select a country to see provinces.',
-        'fr': 'Sélectionnez un pays pour voir les provinces.'
-      },
-      'cliente.selectProvinciaToSeeMunicipios': {
-        'es': 'Seleccione una provincia para ver municipios.',
-        'en': 'Select a province to see municipalities.',
-        'fr': 'Sélectionnez une province pour voir les municipalités.'
-      },
-      'cliente.selectMunicipioToSeeCodigosPostales': {
-        'es': 'Seleccione un municipio para ver códigos postales.',
-        'en': 'Select a municipality to see postal codes.',
-        'fr': 'Sélectionnez une municipalité pour voir les codes postaux.'
-      },
-      'cliente.noPaisesDisponibles': {
-        'es': 'No hay países disponibles.',
-        'en': 'No countries available.',
-        'fr': 'Aucun pays disponible.'
-      },
-      'proveedor.selectPaisToSeeProvincias': {
-        'es': 'Seleccione un país para ver provincias.',
-        'en': 'Select a country to see provinces.',
-        'fr': 'Sélectionnez un pays pour voir les provinces.'
-      },
-      'proveedor.selectProvinciaToSeeMunicipios': {
-        'es': 'Seleccione una provincia para ver municipios.',
-        'en': 'Select a province to see municipalities.',
-        'fr': 'Sélectionnez une province pour voir les municipalités.'
-      },
-      'proveedor.selectMunicipioToSeeCodigosPostales': {
-        'es': 'Seleccione un municipio para ver códigos postales.',
-        'en': 'Select a municipality to see postal codes.',
-        'fr': 'Sélectionnez une municipalité pour voir les codes postaux.'
-      },
-      'proveedor.selectCodigoPostalHelp': {
-        'es': 'Seleccione un código postal disponible.',
-        'en': 'Select an available postal code.',
-        'fr': 'Sélectionnez un code postal disponible.'
-      },
-      'proveedor.noPaisesDisponibles': {
-        'es': 'No hay países disponibles.',
-        'en': 'No countries available.',
-        'fr': 'Aucun pays disponible.'
-      },
-      'establecimiento.selectPaisToSeeProvincias': {
-        'es': 'Seleccione un país para ver provincias.',
-        'en': 'Select a country to see provinces.',
-        'fr': 'Sélectionnez un pays pour voir les provinces.'
-      },
-      'establecimiento.selectProvinciaToSeeMunicipios': {
-        'es': 'Seleccione una provincia para ver municipios.',
-        'en': 'Select a province to see municipalities.',
-        'fr': 'Sélectionnez une province pour voir les municipalités.'
-      },
-      'establecimiento.selectMunicipioToSeeCodigosPostales': {
-        'es': 'Seleccione un municipio para ver códigos postales.',
-        'en': 'Select a municipality to see postal codes.',
-        'fr': 'Sélectionnez une municipalité pour voir les codes postaux.'
-      },
-      'establecimiento.selectCodigoPostalHelp': {
-        'es': 'Seleccione un código postal disponible.',
-        'en': 'Select an available postal code.',
-        'fr': 'Sélectionnez un code postal disponible.'
-      },
-      'establecimiento.noPaisesDisponibles': {
-        'es': 'No hay países disponibles.',
-        'en': 'No countries available.',
-        'fr': 'Aucun pays disponible.'
-      },
-      'systemConfig.selectPaisToSeeProvincias': {
-        'es': 'Seleccione un país para ver provincias.',
-        'en': 'Select a country to see provinces.',
-        'fr': 'Sélectionnez un pays pour voir les provinces.'
-      },
-      'systemConfig.selectProvinciaToSeeMunicipios': {
-        'es': 'Seleccione una provincia para ver municipios.',
-        'en': 'Select a province to see municipalities.',
-        'fr': 'Sélectionnez une province pour voir les municipalités.'
-      },
-      'systemConfig.selectMunicipioToSeeCodigosPostales': {
-        'es': 'Seleccione un municipio para ver códigos postales.',
-        'en': 'Select a municipality to see postal codes.',
-        'fr': 'Sélectionnez une municipalité pour voir les codes postaux.'
-      },
-      'systemConfig.noPaisesDisponibles': {
-        'es': 'No hay países disponibles.',
-        'en': 'No countries available.',
-        'fr': 'Aucun pays disponible.'
-      },
-      'provincia.selectPaisToSeeProvincias': {
-        'es': 'Seleccione un país para ver provincias.',
-        'en': 'Select a country to see provinces.',
-        'fr': 'Sélectionnez un pays pour voir les provinces.'
-      },
-      'provincia.noPaisesDisponibles': {
-        'es': 'No hay países disponibles.',
-        'en': 'No countries available.',
-        'fr': 'Aucun pays disponible.'
-      },
-      'municipio.selectProvinciaToSeeMunicipios': {
-        'es': 'Seleccione una provincia para ver municipios.',
-        'en': 'Select a province to see municipalities.',
-        'fr': 'Sélectionnez une province pour voir les municipalités.'
-      },
-      'codigoPostal.selectPaisToSeeProvincias': {
-        'es': 'Seleccione un país para ver provincias.',
-        'en': 'Select a country to see provinces.',
-        'fr': 'Sélectionnez un pays pour voir les provinces.'
-      },
-      'codigoPostal.selectProvinciaToSeeMunicipios': {
-        'es': 'Seleccione una provincia para ver municipios.',
-        'en': 'Select a province to see municipalities.',
-        'fr': 'Sélectionnez une province pour voir les municipalités.'
-      },
-      'codigoPostal.selectMunicipioToSeeCodigosPostales': {
-        'es': 'Seleccione un municipio para ver códigos postales.',
-        'en': 'Select a municipality to see postal codes.',
-        'fr': 'Sélectionnez une municipalité pour voir les codes postaux.'
-      },
-      'codigoPostal.noPaisesDisponibles': {
-        'es': 'No hay países disponibles.',
-        'en': 'No countries available.',
-        'fr': 'Aucun pays disponible.'
-      },
+    'clientes.placeholderIva': {
+      'es': 'Ej: 21.00',
+      'en': 'Ex: 21.00',
+      'fr': 'Ex: 21.00'
+    },
+
+    // Ayudas para selects dependientes y país
+    'cliente.selectPaisToSeeProvincias': {
+      'es': 'Seleccione un país para ver provincias.',
+      'en': 'Select a country to see provinces.',
+      'fr': 'Sélectionnez un pays pour voir les provinces.'
+    },
+    'cliente.selectProvinciaToSeeMunicipios': {
+      'es': 'Seleccione una provincia para ver municipios.',
+      'en': 'Select a province to see municipalities.',
+      'fr': 'Sélectionnez une province pour voir les municipalités.'
+    },
+    'cliente.selectMunicipioToSeeCodigosPostales': {
+      'es': 'Seleccione un municipio para ver códigos postales.',
+      'en': 'Select a municipality to see postal codes.',
+      'fr': 'Sélectionnez une municipalité pour voir les codes postaux.'
+    },
+    'cliente.noPaisesDisponibles': {
+      'es': 'No hay países disponibles.',
+      'en': 'No countries available.',
+      'fr': 'Aucun pays disponible.'
+    },
+    'proveedor.selectPaisToSeeProvincias': {
+      'es': 'Seleccione un país para ver provincias.',
+      'en': 'Select a country to see provinces.',
+      'fr': 'Sélectionnez un pays pour voir les provinces.'
+    },
+    'proveedor.selectProvinciaToSeeMunicipios': {
+      'es': 'Seleccione una provincia para ver municipios.',
+      'en': 'Select a province to see municipalities.',
+      'fr': 'Sélectionnez une province pour voir les municipalités.'
+    },
+    'proveedor.selectMunicipioToSeeCodigosPostales': {
+      'es': 'Seleccione un municipio para ver códigos postales.',
+      'en': 'Select a municipality to see postal codes.',
+      'fr': 'Sélectionnez une municipalité pour voir les codes postaux.'
+    },
+    'proveedor.selectCodigoPostalHelp': {
+      'es': 'Seleccione un código postal disponible.',
+      'en': 'Select an available postal code.',
+      'fr': 'Sélectionnez un code postal disponible.'
+    },
+    'proveedor.noPaisesDisponibles': {
+      'es': 'No hay países disponibles.',
+      'en': 'No countries available.',
+      'fr': 'Aucun pays disponible.'
+    },
+    'establecimiento.selectPaisToSeeProvincias': {
+      'es': 'Seleccione un país para ver provincias.',
+      'en': 'Select a country to see provinces.',
+      'fr': 'Sélectionnez un pays pour voir les provinces.'
+    },
+    'establecimiento.selectProvinciaToSeeMunicipios': {
+      'es': 'Seleccione una provincia para ver municipios.',
+      'en': 'Select a province to see municipalities.',
+      'fr': 'Sélectionnez une province pour voir les municipalités.'
+    },
+    'establecimiento.selectMunicipioToSeeCodigosPostales': {
+      'es': 'Seleccione un municipio para ver códigos postales.',
+      'en': 'Select a municipality to see postal codes.',
+      'fr': 'Sélectionnez une municipalité pour voir les codes postaux.'
+    },
+    'establecimiento.selectCodigoPostalHelp': {
+      'es': 'Seleccione un código postal disponible.',
+      'en': 'Select an available postal code.',
+      'fr': 'Sélectionnez un code postal disponible.'
+    },
+    'establecimiento.noPaisesDisponibles': {
+      'es': 'No hay países disponibles.',
+      'en': 'No countries available.',
+      'fr': 'Aucun pays disponible.'
+    },
+    'systemConfig.selectPaisToSeeProvincias': {
+      'es': 'Seleccione un país para ver provincias.',
+      'en': 'Select a country to see provinces.',
+      'fr': 'Sélectionnez un pays pour voir les provinces.'
+    },
+    'systemConfig.selectProvinciaToSeeMunicipios': {
+      'es': 'Seleccione una provincia para ver municipios.',
+      'en': 'Select a province to see municipalities.',
+      'fr': 'Sélectionnez une province pour voir les municipalités.'
+    },
+    'systemConfig.selectMunicipioToSeeCodigosPostales': {
+      'es': 'Seleccione un municipio para ver códigos postales.',
+      'en': 'Select a municipality to see postal codes.',
+      'fr': 'Sélectionnez une municipalité pour voir les codes postaux.'
+    },
+    'systemConfig.noPaisesDisponibles': {
+      'es': 'No hay países disponibles.',
+      'en': 'No countries available.',
+      'fr': 'Aucun pays disponible.'
+    },
+    'provincia.selectPaisToSeeProvincias': {
+      'es': 'Seleccione un país para ver provincias.',
+      'en': 'Select a country to see provinces.',
+      'fr': 'Sélectionnez un pays pour voir les provinces.'
+    },
+    'provincia.noPaisesDisponibles': {
+      'es': 'No hay países disponibles.',
+      'en': 'No countries available.',
+      'fr': 'Aucun pays disponible.'
+    },
+    'municipio.selectProvinciaToSeeMunicipios': {
+      'es': 'Seleccione una provincia para ver municipios.',
+      'en': 'Select a province to see municipalities.',
+      'fr': 'Sélectionnez une province pour voir les municipalités.'
+    },
+    'codigoPostal.selectPaisToSeeProvincias': {
+      'es': 'Seleccione un país para ver provincias.',
+      'en': 'Select a country to see provinces.',
+      'fr': 'Sélectionnez un pays pour voir les provinces.'
+    },
+    'codigoPostal.selectProvinciaToSeeMunicipios': {
+      'es': 'Seleccione una provincia para ver municipios.',
+      'en': 'Select a province to see municipalities.',
+      'fr': 'Sélectionnez une province pour voir les municipalités.'
+    },
+    'codigoPostal.selectMunicipioToSeeCodigosPostales': {
+      'es': 'Seleccione un municipio para ver códigos postales.',
+      'en': 'Select a municipality to see postal codes.',
+      'fr': 'Sélectionnez une municipalité pour voir les codes postaux.'
+    },
+    'codigoPostal.noPaisesDisponibles': {
+      'es': 'No hay países disponibles.',
+      'en': 'No countries available.',
+      'fr': 'Aucun pays disponible.'
+    },
     'cuenta.descripcionPlaceholder': {
       'es': 'Ej: Efectivo en Caja, Bancos Moneda Nacional',
       'en': 'Ex: Cash on Hand, National Currency Banks',
@@ -2440,9 +2576,9 @@ export class TranslationService {
       'fr': 'Sélectionnez l’entreprise à laquelle appartient l’établissement.'
     },
     'establecimiento.codigoHelp': {
-      'es': 'Ingrese el código único del establecimiento. Ejemplo: EST001',
-      'en': 'Enter the unique code for the establishment. Example: EST001',
-      'fr': 'Entrez le code unique de l’établissement. Exemple : EST001'
+      'es': 'Ingrese el código único del establecimiento.',
+      'en': 'Enter the unique code for the establishment.',
+      'fr': 'Entrez le code unique de l’établissement.'
     },
     'establecimiento.descripcionHelp': {
       'es': 'Ingrese una breve descripción del establecimiento.',

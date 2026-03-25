@@ -6,6 +6,7 @@ import { skip } from 'rxjs/operators';
 import { CuentaService, CuentaDTO } from '../../../services/cuenta.service';
 import { SubGrupoCuentaService, SubGrupoCuentaDTO } from '../../../services/subgrupo-cuenta.service';
 import { GrupoCuentaService, GrupoCuentaDTO } from '../../../services/grupo-cuenta.service';
+import { SystemConfigurationService, SystemConfigurationDTO } from '../../../services/system-configuration.service';
 import { TranslationService } from '../../../services/translation.service';
 import { LanguageService } from '../../../services/language.service';
 
@@ -21,13 +22,16 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
   loading = false;
   error: string | null = null;
 
-  // All subgrupos loaded once; UI shows filteredSubgrupos according to selected grupo
   allSubGrupos: SubGrupoCuentaDTO[] = [];
   filteredSubGrupos: SubGrupoCuentaDTO[] = [];
   loadingSubGrupos = true;
 
   gruposCuenta: GrupoCuentaDTO[] = [];
   loadingGrupos = true;
+
+  // lista de negocios (SystemConfiguration)
+  systemConfigurations: SystemConfigurationDTO[] = [];
+  loadingSystemConfigurations = true;
 
   selectedSubGrupoCodigo: string = '';
   codigoCompleto: string = '';
@@ -39,27 +43,27 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
     private cuentaService: CuentaService,
     private subGrupoCuentaService: SubGrupoCuentaService,
     private grupoCuentaService: GrupoCuentaService,
+    private systemConfigurationService: SystemConfigurationService,
     private router: Router,
     private route: ActivatedRoute,
     private translate: TranslationService,
     private languageService: LanguageService
   ) {
     this.form = this.fb.group({
-      // readonly calculated code
       codigo: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(8), Validators.maxLength(8), Validators.pattern(/^\d{8}$/)]],
       codigoUsuario: [{ value: '', disabled: true }, [Validators.required, Validators.pattern(/^\d{3}$/), Validators.minLength(3), Validators.maxLength(3)]],
       grupoCuentaId: [null, Validators.required],
-      // start disabled until a grupo is selected (same UX as País->Provincia)
       subGrupoCuentaId: [{ value: null, disabled: true }, Validators.required],
       descripcion: ['', [Validators.required, Validators.maxLength(256)]],
-      systemConfigurationId: [1]
+      systemConfigurationId: [null, Validators.required]
     });
   }
 
   ngOnInit(): void {
     this.setupFormSubscriptions();
     this.loadGruposCuenta();
-    this.loadAllSubGrupos(); // load once, will filter locally
+    this.loadAllSubGrupos();
+    this.loadSystemConfigurations();
 
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
@@ -73,6 +77,7 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
         console.log('🔄 CuentaForm: Idioma cambiado, recargando datos...');
         this.loadGruposCuenta();
         this.loadAllSubGrupos();
+        this.loadSystemConfigurations();
       });
   }
 
@@ -81,17 +86,14 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
   }
 
   private setupFormSubscriptions(): void {
-    // When a group changes, filter subgroups
     this.form.get('grupoCuentaId')?.valueChanges.subscribe(grupoId => {
       this.onGrupoCuentaChange(grupoId);
     });
 
-    // When subgrupo changes, set selected prefix and enable codigoUsuario
     this.form.get('subGrupoCuentaId')?.valueChanges.subscribe(subId => {
       this.onSubGrupoChange(subId);
     });
 
-    // When codigoUsuario changes, update composed code
     this.form.get('codigoUsuario')?.valueChanges.subscribe(() => {
       this.updateCodigoCompleto();
     });
@@ -107,7 +109,6 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
     this.loadingGrupos = true;
     this.grupoCuentaService.getAll().subscribe({
       next: (data) => {
-        // ✅ CORREGIDO: Cambiar 'activo' por 'cancelado'
         this.gruposCuenta = data.filter(g => !g.cancelado);
         this.loadingGrupos = false;
         this.checkInitialLoad();
@@ -125,7 +126,6 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
     this.subGrupoCuentaService.getAll().subscribe({
       next: (data) => {
         this.allSubGrupos = data.filter(s => !s.cancelado);
-        // Initially no filter until a grupo is selected
         this.filteredSubGrupos = [];
         this.loadingSubGrupos = false;
         this.checkInitialLoad();
@@ -138,8 +138,27 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
     });
   }
 
+  loadSystemConfigurations(): void {
+    this.loadingSystemConfigurations = true;
+    this.systemConfigurationService.getAll().subscribe({
+      next: (data) => {
+        this.systemConfigurations = data.filter(sc => (sc.estaVigente ?? true));
+        this.loadingSystemConfigurations = false;
+        if (this.systemConfigurations.length > 0) {
+          this.form.get('systemConfigurationId')?.enable({ emitEvent: false });
+        } else {
+          this.form.get('systemConfigurationId')?.enable({ emitEvent: false });
+        }
+      },
+      error: (err: any) => {
+        console.error('Error al cargar configuraciones de sistema (negocios):', err);
+        this.loadingSystemConfigurations = false;
+        this.error = 'Error al cargar negocios';
+      }
+    });
+  }
+
   private checkInitialLoad(): void {
-    // Espera a que ambas colecciones hayan cargado antes de intentar poblar el formulario en modo edición
     if (this.isEditMode && this.cuentaId && !this.loadingGrupos && !this.loadingSubGrupos) {
       this.loadCuenta();
     }
@@ -148,7 +167,6 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
   onGrupoCuentaChange(grupoId: number | null): void {
     if (!grupoId) {
       this.filteredSubGrupos = [];
-      // disable the control at FormControl level (UX igual a País->Provincia)
       this.form.get('subGrupoCuentaId')?.setValue(null, { emitEvent: false });
       this.form.get('subGrupoCuentaId')?.disable();
       this.form.get('codigoUsuario')?.disable();
@@ -160,9 +178,7 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
 
     const gid = Number(grupoId);
     this.filteredSubGrupos = this.allSubGrupos.filter(s => Number(s.grupoCuentaId) === gid);
-    // reset subgrupo selection when group changes
     this.form.get('subGrupoCuentaId')?.setValue(null);
-    // enable the control so user can select a subgrupo
     this.form.get('subGrupoCuentaId')?.enable();
     this.form.get('codigoUsuario')?.disable();
     this.form.get('codigoUsuario')?.setValue('', { emitEvent: false });
@@ -206,10 +222,13 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
 
     if (this.selectedSubGrupoCodigo && codigoUsuario && codigoUsuario.length === 3) {
       this.codigoCompleto = this.selectedSubGrupoCodigo + codigoUsuario;
+      // mostrar siempre el código completo (even when in-progress), mantener control sincronizado
       this.form.get('codigo')?.setValue(this.codigoCompleto, { emitEvent: false });
     } else {
+      // mostrar prefijo + underscores si existe prefijo, o cadena vacía si no
       this.codigoCompleto = this.selectedSubGrupoCodigo ? `${this.selectedSubGrupoCodigo}___` : '';
-      this.form.get('codigo')?.setValue('', { emitEvent: false });
+      // sincronizar control para que el campo muestre el texto parcial y se mantenga alineado
+      this.form.get('codigo')?.setValue(this.codigoCompleto, { emitEvent: false });
     }
   }
 
@@ -219,17 +238,14 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.cuentaService.getById(this.cuentaId).subscribe({
       next: (data) => {
-        // data.codigo es 8 dígitos: subgrupo (5) + usuario (3)
         const codigoSubGrupo = data.codigo.substring(0, 5);
         const codigoUsuario = data.codigo.substring(5, 8);
 
         const subgrupo = this.allSubGrupos.find(s => s.codigo === codigoSubGrupo);
 
-        // Si existe subgrupo, setear grupo y lista filtrada sin disparar eventos
         if (subgrupo) {
           this.form.get('grupoCuentaId')?.setValue(subgrupo.grupoCuentaId, { emitEvent: false });
           this.filteredSubGrupos = this.allSubGrupos.filter(s => Number(s.grupoCuentaId) === Number(subgrupo.grupoCuentaId));
-          // enable subgrupo control to patch value (sin emitir cambios)
           this.form.get('subGrupoCuentaId')?.enable({ emitEvent: false });
           this.form.get('subGrupoCuentaId')?.setValue(subgrupo.id, { emitEvent: false });
           this.selectedSubGrupoCodigo = subgrupo.codigo || '';
@@ -238,18 +254,19 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
           this.selectedSubGrupoCodigo = '';
         }
 
-        // Setear valores restantes sin emitir eventos para evitar efectos secundarios
         this.form.get('codigoUsuario')?.setValue(codigoUsuario, { emitEvent: false });
         this.form.get('descripcion')?.setValue(data.descripcion, { emitEvent: false });
         this.form.get('systemConfigurationId')?.setValue(data.systemConfigurationId, { emitEvent: false });
+
         this.updateCodigoCompleto();
 
-        // En modo edición inhabilitar controles relevantes (sin emitir eventos)
         if (this.isEditMode) {
           this.form.get('grupoCuentaId')?.disable({ emitEvent: false });
           this.form.get('subGrupoCuentaId')?.disable({ emitEvent: false });
           this.form.get('codigoUsuario')?.disable({ emitEvent: false });
           this.form.get('codigo')?.disable({ emitEvent: false });
+          // Mantener comportamiento coherente con otros formularios: dejar el select "Negocio" inactivo en edición
+          this.form.get('systemConfigurationId')?.disable({ emitEvent: false });
         }
 
         this.loading = false;
@@ -264,8 +281,6 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
 
   onSubmit(): void {
     const codigoUsuario = this.form.get('codigoUsuario')?.value;
-    // En modo edición permitimos que codigoUsuario esté deshabilitado (se conserva el valor),
-    // pero igualmente comprobamos que exista el código completo.
     if (this.form.invalid || !this.codigoCompleto || (!codigoUsuario && !this.isEditMode) || (codigoUsuario && codigoUsuario.length !== 3)) {
       this.form.markAllAsTouched();
 
