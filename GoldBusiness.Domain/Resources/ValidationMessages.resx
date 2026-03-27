@@ -569,4 +569,16 @@
 	<data name="Field_Descripcion" xml:space="preserve">
 		<value>Descripción</value>
 	</data>
+	<data name="CodigoFormatoAlfanumerico" xml:space="preserve">
+		<value>El código debe ser alfanumérico (letras y/o números) de 3 caracteres</value>
+	</data>
+	<data name="Field_Licencia" xml:space="preserve">
+    <value>Licencia</value>
+  </data>
+	<data name="Field_CuentaPagar" xml:space="preserve">
+    <value>Cuenta por Pagar</value>
+  </data>
+	<data name="Field_CuentaCobrar" xml:space="preserve">
+    <value>Cuenta por Cobrar</value>
+  </data>
 </root>

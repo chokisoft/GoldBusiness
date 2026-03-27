@@ -10,6 +10,7 @@ import { PaisService, PaisDTO } from '../../../services/pais.service';
 import { ProvinciaService, ProvinciaDTO } from '../../../services/provincia.service';
 import { MunicipioService, MunicipioDTO } from '../../../services/municipio.service';
 import { CodigoPostalService, CodigoPostalDTO } from '../../../services/codigo-postal.service';
+import { normalizePhone, phoneValidator, PHONE_MAX_LENGTH } from '../../shared/phone.util';
 
 @Component({
   selector: 'app-system-configuration-form',
@@ -29,18 +30,15 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
   selectedLogoFile: File | null = null;
   logoPreviewUrl: string | null = null;
 
-  // Keep Pais type from systemConfiguration service; use DTO types for provinces/municipios/cps
   paises: Pais[] = [];
   provincias: ProvinciaDTO[] = [];
   municipios: MunicipioDTO[] = [];
   codigosPostales: CodigoPostalDTO[] = [];
 
-  // Flags de carga para mostrar estado en UI
   loadingProvincias = false;
   loadingMunicipios = false;
   loadingCodigosPostales = false;
 
-  // Phone helper: pais detallado y sub de detalle
   selectedPais?: PaisDTO;
   private paisDetailSub?: Subscription;
 
@@ -62,8 +60,8 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
     private codigoPostalService: CodigoPostalService
   ) {
     this.form = this.fb.group({
-      codigoSistema: ['', [Validators.required, Validators.maxLength(3)]],
-      licencia: ['', [Validators.required, Validators.maxLength(100)]],
+      codigoSistema: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(3), Validators.pattern(/^[A-Za-z0-9]{3}$/)]],
+      licencia: ['', [Validators.required, Validators.maxLength(400)]],
       nombreNegocio: ['', [Validators.required, Validators.maxLength(256)]],
       direccion: ['', Validators.maxLength(512)],
       paisId: [null, Validators.required],
@@ -73,10 +71,11 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
       imagen: ['', Validators.maxLength(500)],
       web: ['', Validators.maxLength(256)],
       email: ['', [Validators.email, Validators.maxLength(256)]],
-      telefono: ['', Validators.maxLength(50)],
-      cuentaPagarId: [{ value: null, disabled: this.loadingCuentas }, Validators.required],
-      cuentaCobrarId: [{ value: null, disabled: this.loadingCuentas }, Validators.required],
-      caducidad: ['', Validators.required]
+      telefono: ['', Validators.maxLength(PHONE_MAX_LENGTH)],
+      cuentaPagarId: [{ value: null, disabled: true }, Validators.required],
+      cuentaCobrarId: [{ value: null, disabled: true }, Validators.required],
+      caducidad: ['', Validators.required],
+      activo: [true]
     });
   }
 
@@ -135,10 +134,11 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
         provControl?.enable({ emitEvent: false });
         this.loadProvincias(paisId);
 
-        this.paisDetailSub = this.paisService.getById(paisId).subscribe({
-          next: p => this.applyPhoneValidators(p),
-          error: () => this.applyPhoneValidators(undefined)
-        });
+        this.paisDetailSub = this.paisService.getById(paisId)
+          .subscribe(
+            p => this.applyPhoneValidators(p),
+            _err => this.applyPhoneValidators(undefined)
+          );
       } else {
         provControl?.disable({ emitEvent: false });
       }
@@ -188,7 +188,6 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
     this.loadingProvincias = true;
     this.provinciaService.getByPaisId(paisId).subscribe({
       next: (data) => {
-        // provinciaService returns ProvinciaDTO[]
         this.provincias = data;
         this.loadingProvincias = false;
       },
@@ -204,7 +203,6 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
     this.loadingMunicipios = true;
     this.municipioService.getByProvinciaId(provinciaId).subscribe({
       next: (data) => {
-        // municipioService returns MunicipioDTO[]
         this.municipios = data;
         this.loadingMunicipios = false;
       },
@@ -220,7 +218,6 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
     this.loadingCodigosPostales = true;
     this.codigoPostalService.getByMunicipioId(municipioId).subscribe({
       next: (data) => {
-        // codigoPostalService returns CodigoPostalDTO[]
         this.codigosPostales = data;
         this.loadingCodigosPostales = false;
       },
@@ -236,24 +233,13 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
     this.selectedPais = pais;
     const telefono = this.form.get('telefono')!;
 
-    const baseValidators = [Validators.maxLength(50)];
+    const validators = [Validators.maxLength(PHONE_MAX_LENGTH)];
     if (pais && pais.regexTelefono) {
-      try {
-        const re = new RegExp(pais.regexTelefono);
-        const phonePatternValidator: ValidatorFn = (c: AbstractControl) => {
-          if (!c.value) return null;
-          return re.test(c.value) ? null : { telefonoInvalid: true };
-        };
-        telefono.setValidators([...baseValidators, phonePatternValidator]);
-      } catch {
-        telefono.setValidators(baseValidators);
-        console.warn('Invalid regexTelefono from API for pais', pais?.id);
-      }
-    } else {
-      telefono.setValidators(baseValidators);
+      validators.push(phoneValidator(pais.regexTelefono));
     }
 
-    telefono.updateValueAndValidity({ emitEvent: false });
+    telefono.setValidators(validators);
+    telefono.updateValueAndValidity({ emitEvent: true });
   }
 
   extractId(eventOrId: Event | number): number {
@@ -265,17 +251,33 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
 
   loadCuentas(): void {
     this.loadingCuentas = true;
+
     this.cuentaService.getAll().subscribe({
       next: (data) => {
         this.cuentas = data.filter(c => !c.cancelado);
+
+        const pagarControl = this.form.get('cuentaPagarId');
+        const cobrarControl = this.form.get('cuentaCobrarId');
+
+        if (pagarControl) {
+          pagarControl.setValidators([Validators.required]);
+          pagarControl.updateValueAndValidity({ emitEvent: false });
+          pagarControl.enable({ emitEvent: false });
+        }
+
+        if (cobrarControl) {
+          cobrarControl.setValidators([Validators.required]);
+          cobrarControl.updateValueAndValidity({ emitEvent: false });
+          cobrarControl.enable({ emitEvent: false });
+        }
+
         this.loadingCuentas = false;
-        this.form.get('cuentaPagarId')?.enable({ emitEvent: false });
-        this.form.get('cuentaCobrarId')?.enable({ emitEvent: false });
       },
-      error: () => {
-        this.loadingCuentas = false;
+      error: (err) => {
+        console.error('Error loading cuentas', err);
         this.form.get('cuentaPagarId')?.enable({ emitEvent: false });
         this.form.get('cuentaCobrarId')?.enable({ emitEvent: false });
+        this.loadingCuentas = false;
       }
     });
   }
@@ -298,9 +300,10 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
           web: data.web,
           email: data.email,
           telefono: data.telefono,
-          cuentaPagarId: data.cuentaPagarId,
-          cuentaCobrarId: data.cuentaCobrarId,
-          caducidad: formattedCaducidad
+          cuentaPagarId: data.cuentaPagarId ? Number(data.cuentaPagarId) : null,
+          cuentaCobrarId: data.cuentaCobrarId ? Number(data.cuentaCobrarId) : null,
+          caducidad: formattedCaducidad,
+          activo: data.activo ?? true
         }, { emitEvent: false });
 
         const paisId = data.paisId ?? 0;
@@ -314,7 +317,6 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
           return;
         }
 
-        // set paisId first to keep select state consistent
         this.form.patchValue({ paisId: paisId }, { emitEvent: false });
 
         this.paisDetailSub?.unsubscribe();
@@ -323,7 +325,6 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
           error: () => this.applyPhoneValidators(undefined)
         });
 
-        // use provinciaService/municipioService/codigoPostalService which return DTO[] types
         this.provinciaService.getByPaisId(paisId).subscribe({
           next: provinces => {
             this.provincias = provinces;
@@ -444,6 +445,12 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
 
   private submitForm(): void {
     const dto: SystemConfigurationDTO = this.form.getRawValue();
+
+    // Normalize telefono for backend (keep UI unchanged)
+    dto.telefono = normalizePhone(this.form.get('telefono')?.value) || '';
+
+    dto.activo = !!this.form.get('activo')?.value;
+
     if (this.isEditMode) {
       this.systemConfigurationService.update(this.configId!, dto).subscribe({
         next: () => this.router.navigate(['/configuracion/negocio']),
@@ -461,6 +468,26 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
         }
       });
     }
+  }
+
+  private humanizeField(field: string): string {
+    const map: { [k: string]: string } = {
+      codigoSistema: 'Código Sistema',
+      licencia: 'Licencia',
+      nombreNegocio: 'Nombre negocio',
+      paisId: 'País',
+      provinciaId: 'Provincia',
+      municipioId: 'Municipio',
+      codigoPostalId: 'Código postal',
+      cuentaPagarId: 'Cuenta por pagar',
+      cuentaCobrarId: 'Cuenta por cobrar',
+      caducidad: 'Caducidad',
+      imagen: 'Logo',
+      telefono: 'Teléfono',
+      web: 'Sitio web',
+      email: 'Email'
+    };
+    return map[field] ?? field;
   }
 
   cancel(): void { this.router.navigate(['/configuracion/negocio']); }

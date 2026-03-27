@@ -160,6 +160,15 @@ namespace GoldBusiness.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to El código debe ser alfanumérico (letras y/o números) de 3 caracteres.
+        /// </summary>
+        public static string CodigoFormatoAlfanumerico {
+            get {
+                return ResourceManager.GetString("CodigoFormatoAlfanumerico", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to El código debe tener exactamente {1} caracteres.
         /// </summary>
         public static string CodigoLongitud {
@@ -466,6 +475,15 @@ namespace GoldBusiness.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cuenta por Cobrar.
+        /// </summary>
+        public static string Field_CuentaCobrar {
+            get {
+                return ResourceManager.GetString("Field_CuentaCobrar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cuenta de Costo.
         /// </summary>
         public static string Field_CuentaCosto {
@@ -489,6 +507,15 @@ namespace GoldBusiness.Domain.Resources {
         public static string Field_CuentaInventario {
             get {
                 return ResourceManager.GetString("Field_CuentaInventario", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cuenta por Pagar.
+        /// </summary>
+        public static string Field_CuentaPagar {
+            get {
+                return ResourceManager.GetString("Field_CuentaPagar", resourceCulture);
             }
         }
         
@@ -642,6 +669,15 @@ namespace GoldBusiness.Domain.Resources {
         public static string Field_Iva {
             get {
                 return ResourceManager.GetString("Field_Iva", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Licencia.
+        /// </summary>
+        public static string Field_Licencia {
+            get {
+                return ResourceManager.GetString("Field_Licencia", resourceCulture);
             }
         }
         

@@ -11,17 +11,20 @@ import { LanguageService } from '../../../services/language.service';
 })
 export class SystemConfigurationListComponent implements OnInit, OnDestroy {
   configurations: SystemConfigurationDTO[] = [];
+  // Compatibility with existing template (keeps same names used in HTML)
   filteredConfigurations: SystemConfigurationDTO[] = [];
   paginatedConfigurations: SystemConfigurationDTO[] = [];
+
   loading = false;
   error: string | null = null;
 
   // Propiedades de búsqueda
   searchTerm: string = '';
 
-  // Propiedades de paginación
+  // Propiedades de paginación (server-side)
   currentPage: number = 1;
   pageSize: number = 10;
+  totalItems: number = 0;
   totalPages: number = 0;
 
   // Valores calculados para UI
@@ -44,7 +47,6 @@ export class SystemConfigurationListComponent implements OnInit, OnDestroy {
     this.languageSubscription = this.languageService.currentLanguage$
       .pipe(skip(1))
       .subscribe(() => {
-        console.log('🔄 SystemConfigList: Idioma cambiado, recargando datos...');
         this.loadData();
       });
   }
@@ -53,99 +55,58 @@ export class SystemConfigurationListComponent implements OnInit, OnDestroy {
     this.languageSubscription?.unsubscribe();
   }
 
-  loadData(): void {
+  loadData(page?: number): void {
     this.loading = true;
     this.error = null;
 
-    Promise.resolve().then(() => {
-      this.systemConfigService.getAll()
-        .pipe(finalize(() => this.loading = false))
-        .subscribe({
-          next: (data) => {
-            this.configurations = data.sort((a, b) => a.codigoSistema.localeCompare(b.codigoSistema));
-            this.filteredConfigurations = [...this.configurations];
+    if (page) this.currentPage = page;
 
-            if (!this.pageSize || this.pageSize <= 0) this.pageSize = 10;
-            const totalItems = this.filteredConfigurations.length;
-            this.totalPages = totalItems === 0 ? 0 : Math.ceil(totalItems / this.pageSize);
+    this.systemConfigService.getPaged(this.currentPage, this.pageSize, this.searchTerm)
+      .pipe(finalize(() => this.loading = false))
+      .subscribe({
+        next: resp => {
+          // server returns page of items -> treat them as paginatedConfigurations
+          this.configurations = resp.items;
 
-            if (this.totalPages === 0) {
-              this.currentPage = 1;
-            } else {
-              if (this.currentPage < 1) this.currentPage = 1;
-              if (this.currentPage > this.totalPages) this.currentPage = this.totalPages;
-            }
+          // Keep template-compatible collections in sync
+          this.filteredConfigurations = [...resp.items];
+          this.paginatedConfigurations = [...resp.items];
 
-            this.applyPagination();
-          },
-          error: (err: unknown) => {
-            this.error = 'Error al cargar las configuraciones';
-            console.error('Error:', err);
-          }
-        });
-    });
+          this.totalItems = resp.total;
+          this.startItem = this.totalItems === 0 ? 0 : (this.currentPage - 1) * this.pageSize + 1;
+          this.endItem = Math.min(this.currentPage * this.pageSize, this.totalItems);
+          this.totalPages = this.totalItems === 0 ? 0 : Math.ceil(this.totalItems / this.pageSize);
+        },
+        error: (err: unknown) => {
+          this.error = 'Error al cargar las configuraciones';
+          console.error('Error:', err);
+        }
+      });
   }
 
   onSearch(): void {
-    const term = this.searchTerm.toLowerCase().trim();
-    
-    if (!term) {
-      this.filteredConfigurations = [...this.configurations];
-    } else {
-      this.filteredConfigurations = this.configurations.filter(config =>
-        config.codigoSistema.toLowerCase().includes(term) ||
-        config.nombreNegocio.toLowerCase().includes(term) ||
-        config.licencia?.toLowerCase().includes(term)
-      );
-    }
-    
     this.currentPage = 1;
-    this.applyPagination();
-  }
-
-  applyPagination(): void {
-    if (!this.pageSize || this.pageSize <= 0) this.pageSize = 10;
-
-    const totalItems = this.filteredConfigurations.length;
-    this.totalPages = totalItems === 0 ? 0 : Math.ceil(totalItems / this.pageSize);
-
-    if (this.totalPages === 0) {
-      this.currentPage = 1;
-      this.paginatedConfigurations = [];
-      this.startItem = 0;
-      this.endItem = 0;
-      return;
-    }
-
-    this.currentPage = Math.min(Math.max(1, this.currentPage), this.totalPages);
-
-    const startIndex = (this.currentPage - 1) * this.pageSize;
-    const endIndex = Math.min(startIndex + this.pageSize, totalItems);
-
-    this.paginatedConfigurations = this.filteredConfigurations.slice(startIndex, endIndex);
-
-    this.startItem = totalItems === 0 ? 0 : startIndex + 1;
-    this.endItem = endIndex;
+    this.loadData();
   }
 
   goToPage(page: number): void {
     if (page >= 1 && (this.totalPages === 0 || page <= this.totalPages)) {
       this.currentPage = page;
-      this.applyPagination();
+      this.loadData(page);
     }
   }
 
   nextPage(): void {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
-      this.applyPagination();
+      this.loadData(this.currentPage);
     }
   }
 
   previousPage(): void {
     if (this.currentPage > 1) {
       this.currentPage--;
-      this.applyPagination();
+      this.loadData(this.currentPage);
     }
   }
 
@@ -170,7 +131,7 @@ export class SystemConfigurationListComponent implements OnInit, OnDestroy {
     else if (!this.pageSize || this.pageSize <= 0) this.pageSize = 10;
 
     this.currentPage = 1;
-    this.applyPagination();
+    this.loadData();
   }
 
   delete(id: number, nombreNegocio: string): void {

@@ -560,4 +560,16 @@
 	<data name="Field_Iva" xml:space="preserve"><value>VAT</value></data>
 	<data name="Field_Codigo" xml:space="preserve"><value>Code</value></data>
 	<data name="Field_Descripcion" xml:space="preserve"><value>Description</value></data>
+	<data name="CodigoFormatoAlfanumerico" xml:space="preserve">
+    <value>The code must be alphanumeric (letters and/or numbers) and exactly 3 characters long</value>
+  </data>
+	<data name="Field_Licencia" xml:space="preserve">
+    <value>License</value>
+  </data>
+  <data name="Field_CuentaPagar" xml:space="preserve">
+    <value>Accounts Payable</value>
+  </data>
+  <data name="Field_CuentaCobrar" xml:space="preserve">
+    <value>Accounts Receivable</value>
+  </data>
 </root>

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, of } from 'rxjs';
 import { switchMap, catchError } from 'rxjs/operators';
@@ -9,6 +9,7 @@ import { PaisService, PaisDTO } from '../../../services/pais.service';
 import { ProvinciaService, ProvinciaDTO } from '../../../services/provincia.service';
 import { MunicipioService, MunicipioDTO } from '../../../services/municipio.service';
 import { CodigoPostalService, CodigoPostalDTO } from '../../../services/codigo-postal.service';
+import { normalizePhone, phoneValidator, PHONE_MAX_LENGTH } from '../../shared/phone.util';
 
 @Component({
   selector: 'app-establecimiento-form',
@@ -55,7 +56,7 @@ export class EstablecimientoFormComponent implements OnInit, OnDestroy {
       codigo: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6)]],
       descripcion: ['', [Validators.required, Validators.maxLength(256)]],
       direccion: ['', Validators.maxLength(256)],
-      telefono: ['', Validators.maxLength(50)],
+      telefono: ['', Validators.maxLength(PHONE_MAX_LENGTH)],
       paisId: [null],
       provinciaId: [null],
       municipioId: [null],
@@ -219,24 +220,13 @@ export class EstablecimientoFormComponent implements OnInit, OnDestroy {
     this.selectedPais = pais;
 
     const telefono = this.itemForm.get('telefono')!;
-    const baseValidators = [Validators.maxLength(50)];
+    const validators = [Validators.maxLength(PHONE_MAX_LENGTH)];
 
     if (pais && pais.regexTelefono) {
-      try {
-        const re = new RegExp(pais.regexTelefono);
-        const phonePatternValidator: ValidatorFn = (c: AbstractControl) => {
-          if (!c.value) return null;
-          return re.test(c.value) ? null : { telefonoInvalid: true };
-        };
-        telefono.setValidators([...baseValidators, phonePatternValidator]);
-      } catch {
-        telefono.setValidators(baseValidators);
-        console.warn('Invalid regexTelefono from API for pais', pais?.id);
-      }
-    } else {
-      telefono.setValidators(baseValidators);
+      validators.push(phoneValidator(pais.regexTelefono));
     }
 
+    telefono.setValidators(validators);
     telefono.updateValueAndValidity({ emitEvent: false });
   }
 
@@ -353,7 +343,9 @@ export class EstablecimientoFormComponent implements OnInit, OnDestroy {
     const raw = this.itemForm.getRawValue();
     const formData: EstablecimientoDTO = {
       ...raw,
-      id: this.itemId
+      id: this.itemId,
+      // preserve '+' if user entered it; util will keep it
+      telefono: normalizePhone(raw.telefono)
     };
 
     const request = this.isEditMode

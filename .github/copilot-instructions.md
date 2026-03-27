@@ -13,6 +13,7 @@
 - Los workflows deben construir el cliente Angular desde `GoldBusiness.Client/dist/gold-business.client/browser` y subirlo a `$web`.
 - Usa el principal de servicio `AZURE_CREDENTIALS` para GitHub Actions; asegúrate de que el SP tenga el rol de Storage Blob Data Contributor.
 - Los mensajes de validación residen en GoldBusiness.Domain (recurso ValidationMessages); las traducciones del cliente se encuentran en GoldBusiness.Client/src/app/services/translation.service.ts. Mantenlos sincronizados y prefiere generar traducciones del cliente a partir de recursos del servidor o mapeándolos explícitamente.
+- Usa validación numérica/normalizada para números de teléfono en Establecimiento, Cliente y Proveedor. Extrae la normalización/validación de teléfonos a un servicio o utilidad compartida para su reutilización. Mantén el prefijo '+' visible en la UI; usa `normalizePhone` para preservar el '+' al enviar y `normalizePhoneForValidation` para eliminar el '+' en la validación regex. Elimina los helpers de depuración (logFormState y console.logs) antes de producción y reutiliza `shared phone.util` (normalizePhone, phoneValidator, PHONE_MAX_LENGTH) en todos los componentes.
 
 ## UI/UX Guidelines
 - Coloca el botón de alternar la barra lateral en la barra de navegación junto al título/subtítulo en escritorio y móvil; en móvil, abre la barra lateral como superposición, y en escritorio, alterna el colapso a través de SidebarService. Asegúrate de que el color del botón de alternar la barra lateral coincida con el gradiente de la barra de navegación y que los botones de alternar sean visualmente coherentes en móvil y escritorio. Prefiere botones circulares consistentes en móvil.
@@ -35,7 +36,7 @@
 
 ## Configuración del Sistema
 - El término "negocio" en la UI se refiere a SystemConfiguration (SystemConfigurationDTO.nombreNegocio) y no a una entidad Negocio separada; poblar el select de negocio desde SystemConfigurationService y asegurar que el componente use DTOs de SystemConfiguration.
-- Prefiere el diseño del formulario de SystemConfiguration: vista previa del logo ligeramente más grande (aprox. 180x110), etiqueta 'URL Logo/Imagen' mostrada encima de la vista previa, controles del logo (elegir archivo, nombre de archivo, eliminar) mostrados a la derecha de la vista previa en línea, área de texto de licencia más estrecha en altura (~72–88px) y ocupando el ancho restante; los estilos deben estar limitados bajo .system-config-form y ser responsivos en móvil.
+- Prefiere el diseño del formulario de SystemConfiguration: vista previa del logo ligeramente más grande (aprox. 180x110), etiqueta 'URL Logo/Imagen' mostrada encima de la vista previa, controles del logo (elegir archivo, nombre de archivo, eliminar) mostrados a la derecha de la vista previa en línea, área de texto de licencia más estrecha en altura (~72-88px) y ocupando el ancho restante; los estilos deben estar limitados bajo .system-config-form y ser responsivos en móvil.
 
 ## Navegación
 - Al cerrar la edición/detalle, navega de regreso a la vista de lista correspondiente (Cliente -> /nomencladores/clientes, Proveedor -> /nomencladores/proveedor).

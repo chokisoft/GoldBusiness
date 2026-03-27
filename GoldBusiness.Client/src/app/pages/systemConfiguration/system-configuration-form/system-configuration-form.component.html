@@ -26,7 +26,7 @@
                      id="codigoSistema"
                      formControlName="codigoSistema"
                      class="form-control"
-                     maxlength="6"
+                     maxlength="3"
                      [class.is-invalid]="form.get('codigoSistema')?.invalid && form.get('codigoSistema')?.touched"
                      placeholder="{{ 'systemConfig.placeholderCodigoSistema' | translate }}" />
               <div class="invalid-feedback" *ngIf="form.get('codigoSistema')?.invalid && form.get('codigoSistema')?.touched">
@@ -53,6 +53,15 @@
               <div class="invalid-feedback" *ngIf="form.get('caducidad')?.invalid && form.get('caducidad')?.touched">
                 {{ getErrorMessage('caducidad') }}
               </div>
+            </div>
+
+            <!-- Checkbox Activo (mapeado al backend: activo = !cancelado) -->
+            <div class="form-group checkbox-group" style="align-items:center; margin-top:0.5rem;">
+              <label class="checkbox-label">
+                <input type="checkbox" formControlName="activo" class="form-checkbox" />
+                <span>{{ 'systemConfig.activo' | translate }}</span>
+              </label>
+              <small class="form-text text-muted">{{ 'systemConfig.activoHelp' | translate }}</small>
             </div>
           </div>
 
@@ -103,14 +112,14 @@
         </div>
       </div>
 
-      <!-- LICENCIA - Ahora a todo lo ancho (después de la información básica) -->
+      <!-- LICENCIA -->
       <div class="form-section">
         <div class="license-full-width">
           <label for="licencia" class="form-label">{{ 'systemConfig.licencia' | translate }} *</label>
           <textarea id="licencia"
                     formControlName="licencia"
                     class="form-control"
-                    rows="3"
+                    rows="4"
                     maxlength="400"
                     placeholder="{{ 'systemConfig.placeholderLicencia' | translate }}"></textarea>
           <div class="invalid-feedback" *ngIf="form.get('licencia')?.invalid && form.get('licencia')?.touched">
@@ -123,7 +132,6 @@
       <div class="form-section">
         <h3 class="section-title">📞 {{ 'systemConfig.infoContacto' | translate }}</h3>
 
-        <!-- DIRECCIÓN - A todo lo ancho (fuera del form-row) -->
         <div class="direccion-full-width">
           <label for="direccion" class="form-label">{{ 'systemConfig.direccion' | translate }}</label>
           <textarea id="direccion"
@@ -133,7 +141,6 @@
                     placeholder="{{ 'systemConfig.placeholderDireccion' | translate }}"></textarea>
         </div>
 
-        <!-- Selects dependientes: País, Provincia, Municipio, Código Postal -->
         <div class="form-row">
           <div class="form-group">
             <label for="paisId" class="form-label">{{ 'systemConfig.pais' | translate }} *</label>
@@ -262,9 +269,7 @@
         </button>
         <button type="submit" class="btn btn-primary" [disabled]="loading || form.invalid || loadingCuentas">
           <span *ngIf="!loading">💾 {{ 'common.save' | translate }}</span>
-          <span *ngIf="loading">
-            <app-loader [translateKey]="'common.saving'" [size]="14" [inline]="true" [color]="'#fff'"></app-loader>
-          </span>
+          <span *ngIf="loading">⏳ {{ 'common.saving' | translate }}</span>
         </button>
       </div>
     </form>

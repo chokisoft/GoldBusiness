@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, of } from 'rxjs';
 import { switchMap, catchError } from 'rxjs/operators';
@@ -8,6 +8,7 @@ import { PaisService, PaisDTO } from '../../../services/pais.service';
 import { ProvinciaService, ProvinciaDTO } from '../../../services/provincia.service';
 import { MunicipioService, MunicipioDTO } from '../../../services/municipio.service';
 import { CodigoPostalService, CodigoPostalDTO } from '../../../services/codigo-postal.service';
+import { normalizePhone, phoneValidator, PHONE_MAX_LENGTH } from '../../shared/phone.util';
 
 @Component({
   selector: 'app-proveedor-form',
@@ -56,10 +57,10 @@ export class ProveedorFormComponent implements OnInit, OnDestroy {
       web: ['', Validators.maxLength(256)],
       email1: ['', [Validators.email, Validators.maxLength(256)]],
       email2: ['', [Validators.email, Validators.maxLength(256)]],
-      telefono1: ['', Validators.maxLength(50)],
-      telefono2: ['', Validators.maxLength(50)],
-      fax1: ['', Validators.maxLength(50)],
-      fax2: ['', Validators.maxLength(50)],
+      telefono1: ['', Validators.maxLength(PHONE_MAX_LENGTH)],
+      telefono2: ['', Validators.maxLength(PHONE_MAX_LENGTH)],
+      fax1: ['', Validators.maxLength(PHONE_MAX_LENGTH)],
+      fax2: ['', Validators.maxLength(PHONE_MAX_LENGTH)],
       cancelado: [false]
     });
 
@@ -210,26 +211,15 @@ export class ProveedorFormComponent implements OnInit, OnDestroy {
 
     const telefono1 = this.itemForm.get('telefono1')!;
     const telefono2 = this.itemForm.get('telefono2')!;
-    const baseValidators = [Validators.maxLength(50)];
+    const base = [Validators.maxLength(PHONE_MAX_LENGTH)];
+    const validators = [...base];
 
     if (pais && pais.regexTelefono) {
-      try {
-        const re = new RegExp(pais.regexTelefono);
-        const phonePatternValidator: ValidatorFn = (c: AbstractControl) => {
-          if (!c.value) return null;
-          return re.test(c.value) ? null : { telefonoInvalid: true };
-        };
-        telefono1.setValidators([...baseValidators, phonePatternValidator]);
-        telefono2.setValidators([...baseValidators, phonePatternValidator]);
-      } catch {
-        telefono1.setValidators(baseValidators);
-        telefono2.setValidators(baseValidators);
-        console.warn('Invalid regexTelefono from API for pais', pais?.id);
-      }
-    } else {
-      telefono1.setValidators(baseValidators);
-      telefono2.setValidators(baseValidators);
+      validators.push(phoneValidator(pais.regexTelefono));
     }
+
+    telefono1.setValidators(validators);
+    telefono2.setValidators(validators);
 
     telefono1.updateValueAndValidity({ emitEvent: false });
     telefono2.updateValueAndValidity({ emitEvent: false });
@@ -340,9 +330,14 @@ export class ProveedorFormComponent implements OnInit, OnDestroy {
     this.saving = true;
     this.error = null;
 
+    const raw = this.itemForm.getRawValue();
     const formData: ProveedorDTO = {
-      ...this.itemForm.value,
-      id: this.itemId
+      ...raw,
+      id: this.itemId,
+      telefono1: normalizePhone(raw.telefono1),
+      telefono2: normalizePhone(raw.telefono2),
+      fax1: normalizePhone(raw.fax1),
+      fax2: normalizePhone(raw.fax2)
     };
 
     const request = this.isEditMode

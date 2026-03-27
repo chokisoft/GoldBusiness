@@ -27,6 +27,14 @@
   <div class="card" *ngIf="!loading && config">
     <div class="card-header">
       📊 {{ 'systemConfig.infoBasica' | translate }}
+      <span style="float:right;">
+        <span class="badge badge-success" *ngIf="config.activo">
+          ✅ {{ 'systemConfig.activo' | translate }}
+        </span>
+        <span class="badge badge-secondary" *ngIf="!config.activo">
+          ⚠️ {{ 'systemConfig.cancelado' | translate }}
+        </span>
+      </span>
     </div>
     <div class="card-body">
       <!-- Información del sistema -->

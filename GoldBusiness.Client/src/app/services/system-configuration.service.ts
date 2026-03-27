@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
 
-// Modelos de localización: incluir 'descripcion' que devuelve el backend.
-// Mantener 'nombre' opcional para compatibilidad con otras partes que lo usen.
 export interface Pais { id: number; descripcion?: string; nombre?: string; regexTelefono?: string; formatoTelefono?: string; formatoEjemplo?: string; }
 export interface Provincia { id: number; descripcion?: string; nombre?: string; paisId: number; }
 export interface Municipio { id: number; descripcion?: string; nombre?: string; provinciaId: number; }
@@ -19,11 +17,9 @@ export interface SystemConfigurationDTO {
   provinciaId: number;
   municipioId: number;
   codigoPostalId: number;
-  // Propiedades de presentación que la UI usa
   municipio?: string;
   provincia?: string;
   codPostal?: string;
-
   imagen?: string;
   web?: string;
   email?: string;
@@ -45,6 +41,8 @@ export interface SystemConfigurationDTO {
   diasRestantes?: number;
   estadoLicencia?: string;
   tieneCuentasConfiguradas?: boolean;
+  activo?: boolean;
+  cancelado?: boolean;
 }
 
 @Injectable({
@@ -57,6 +55,11 @@ export class SystemConfigurationService {
 
   getAll(): Observable<SystemConfigurationDTO[]> {
     return this.apiService.get<SystemConfigurationDTO[]>(this.endpoint);
+  }
+
+  getPaged(page: number, pageSize: number, term?: string): Observable<{ items: SystemConfigurationDTO[]; total: number; page: number; pageSize: number }> {
+    const q = `?page=${page}&pageSize=${pageSize}${term ? `&term=${encodeURIComponent(term)}` : ''}`;
+    return this.apiService.get<{ items: SystemConfigurationDTO[]; total: number; page: number; pageSize: number }>(`${this.endpoint}/paged${q}`);
   }
 
   getById(id: number): Observable<SystemConfigurationDTO> {
@@ -75,12 +78,10 @@ export class SystemConfigurationService {
     return this.apiService.delete<void>(`${this.endpoint}/${id}`);
   }
 
-  // Métodos para selects dependientes (rutas coherentes con WebApi controllers)
   getPaises(): Observable<Pais[]> {
     return this.apiService.get<Pais[]>('pais');
   }
 
-  // Corregido: coincide con ProvinciaController -> GET api/provincia/pais/{paisId}
   getProvinciasByPais(paisId: number): Observable<Provincia[]> {
     return this.apiService.get<Provincia[]>(`provincia/pais/${paisId}`);
   }
@@ -93,10 +94,6 @@ export class SystemConfigurationService {
     return this.apiService.get<CodigoPostal[]>(`codigopostal/by-municipio/${municipioId}`);
   }
 
-  /**
-   * Sube el archivo de logo al servidor.
-   * Devuelve el nombre del archivo guardado en disco.
-   */
   uploadLogo(codigoSistema: string, file: File): Observable<{ fileName: string }> {
     const formData = new FormData();
     formData.append('file', file);
@@ -104,9 +101,6 @@ export class SystemConfigurationService {
     return this.apiService.postFormData<{ fileName: string }>(`${this.endpoint}/upload-logo`, formData);
   }
 
-  /**
-   * Devuelve la URL completa del logo para usar en [src] de <img>.
-   */
   getLogoUrl(fileName: string): string {
     if (!fileName) return '';
     if (fileName.startsWith('http://') || fileName.startsWith('https://')) {

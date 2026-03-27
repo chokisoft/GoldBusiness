@@ -45,6 +45,9 @@ namespace GoldBusiness.Domain.Entities
         public Cuenta? CuentaCobrar { get; private set; }
         public Cuenta? CuentaPagar { get; private set; }
 
+        public bool Activo { get; private set; }
+        public bool Cancelado { get; private set; }
+
         public IReadOnlyCollection<SystemConfigurationTranslation> Translations => _translations;
         public IReadOnlyCollection<Establecimiento> Establecimiento => _establecimiento;
 
@@ -81,6 +84,9 @@ namespace GoldBusiness.Domain.Entities
             SetTelefono(telefono ?? string.Empty);
             SetCaducidad(caducidad);
             EstablecerCreador(creadoPor);
+
+            Activo = true;
+            Cancelado = false;
         }
 
         // Métodos de dominio para cambiar dependencias
@@ -116,10 +122,15 @@ namespace GoldBusiness.Domain.Entities
             if (string.IsNullOrWhiteSpace(codigoSistema))
                 throw new DomainException("El código del sistema es obligatorio.");
 
-            if (codigoSistema.Length > 50)
-                throw new DomainException("El código del sistema no puede exceder 50 caracteres.");
+            var trimmed = codigoSistema.Trim();
 
-            CodigoSistema = codigoSistema.Trim();
+            if (trimmed.Length != 3)
+                throw new DomainException("El código del sistema debe tener exactamente 3 caracteres.");
+
+            if (!trimmed.All(char.IsLetterOrDigit))
+                throw new DomainException("El código del sistema debe contener solo letras o dígitos.");
+
+            CodigoSistema = trimmed;
         }
 
         public void SetLicencia(string licencia)
@@ -377,7 +388,6 @@ namespace GoldBusiness.Domain.Entities
         }
 
         // 🔧 MÉTODOS DE ACTUALIZACIÓN
-        // Ahora Update trabaja con IDs para evitar conversiones incorrectas
         public void Update(
             string nombreNegocio,
             string direccion,
@@ -409,6 +419,35 @@ namespace GoldBusiness.Domain.Entities
         {
             SetLicencia(nuevaLicencia);
             SetCaducidad(nuevaCaducidad);
+            ActualizarAuditoria(modificadoPor);
+        }
+
+        // Estado / Soft-delete
+        public void SoftDelete(string modificadoPor)
+        {
+            Cancelado = true;
+            Activo = false;
+            ActualizarAuditoria(modificadoPor);
+        }
+
+        public void Reactivar(string modificadoPor)
+        {
+            Cancelado = false;
+            Activo = true;
+            ActualizarAuditoria(modificadoPor);
+        }
+
+        public void Activar(string modificadoPor)
+        {
+            if (Activo) throw new DomainException("La configuración ya está activa.");
+            Activo = true;
+            ActualizarAuditoria(modificadoPor);
+        }
+
+        public void Desactivar(string modificadoPor)
+        {
+            if (!Activo) throw new DomainException("La configuración ya está desactivada.");
+            Activo = false;
             ActualizarAuditoria(modificadoPor);
         }
 

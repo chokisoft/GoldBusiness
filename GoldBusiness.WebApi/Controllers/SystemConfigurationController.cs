@@ -2,45 +2,16 @@
 using GoldBusiness.Domain.DTOs;
 using GoldBusiness.Domain.Resources;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace GoldBusiness.WebApi.Controllers
 {
-    // ─── Request types (usan IFormFile → pertenecen al WebApi, no al Domain) ──
-
-    /// <summary>Datos de la solicitud de subida de logo (multipart/form-data).</summary>
-    public sealed class UploadLogoRequest
-    {
-        [Required(
-            ErrorMessageResourceType = typeof(ValidationMessages),
-            ErrorMessageResourceName = nameof(ValidationMessages.Required)
-        )]
-        [Display(
-            Name = nameof(ValidationMessages.Field_Imagen),
-            ResourceType = typeof(ValidationMessages)
-        )]
-        public IFormFile File { get; set; } = null!;
-
-        [Required(
-            ErrorMessageResourceType = typeof(ValidationMessages),
-            ErrorMessageResourceName = nameof(ValidationMessages.Required)
-        )]
-        [Display(
-            Name = nameof(ValidationMessages.Field_Codigo),
-            ResourceType = typeof(ValidationMessages)
-        )]
-        [StringLength(50,
-            ErrorMessageResourceType = typeof(ValidationMessages),
-            ErrorMessageResourceName = nameof(ValidationMessages.StringLengthMax)
-        )]
-        public string CodigoSistema { get; set; } = string.Empty;
-    }
-
-    // ─────────────────────────────────────────────────────────────────────────
-
     /// <summary>
     /// Controlador para gestión de la Configuración del Sistema.
     /// Gestiona los parámetros generales del negocio, licencias y logotipo de la empresa.
@@ -51,6 +22,7 @@ namespace GoldBusiness.WebApi.Controllers
     public class SystemConfigurationController : BaseEntityController
     {
         private readonly ISystemConfigurationService _service;
+        private readonly IStringLocalizer<ValidationMessages> _localizer;
 
         private static readonly string LogoBasePath =
             RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
@@ -62,44 +34,50 @@ namespace GoldBusiness.WebApi.Controllers
 
         public SystemConfigurationController(
             ISystemConfigurationService service,
-            IStringLocalizer<ValidationMessages> localizer)
-            : base(localizer)
+            IStringLocalizer<ValidationMessages> localizer) : base(localizer)
         {
             _service = service;
+            _localizer = localizer;
         }
 
         /// <summary>Obtiene todas las configuraciones del sistema activas.</summary>
-        /// <returns>Lista de configuraciones del sistema</returns>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<SystemConfigurationDTO>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<SystemConfigurationDTO>), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<SystemConfigurationDTO>>> Get()
         {
             var lang = GetCurrentLanguage();
-            return Ok(await _service.GetAllAsync(lang));
+            var list = await _service.GetAllAsync(lang);
+            return Ok(list);
         }
 
-        /// <summary>Obtiene una configuración del sistema por su ID.</summary>
-        /// <param name="id">ID de la configuración</param>
-        /// <returns>Configuración del sistema encontrada</returns>
+        /// <summary>Lista paginada (server-side).</summary>
+        [HttpGet("paged")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> GetPaged(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 50,
+            [FromQuery] string? term = null)
+        {
+            var lang = GetCurrentLanguage();
+            var (items, total) = await _service.GetPagedAsync(page, pageSize, term, lang);
+            return Ok(new { items, total, page, pageSize });
+        }
+
+        /// <summary>Obtiene una configuración por ID.</summary>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(SystemConfigurationDTO), 200)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(typeof(SystemConfigurationDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<SystemConfigurationDTO>> Get(int id)
         {
             var lang = GetCurrentLanguage();
-            var result = await _service.GetByIdAsync(id, lang);
-            return result == null ? NotFound() : Ok(result);
+            var dto = await _service.GetByIdAsync(id, lang);
+            return dto == null ? NotFound() : Ok(dto);
         }
 
-        /// <summary>
-        /// Crea una nueva configuración del sistema.
-        /// Si el código ya existe y estaba cancelado, lo reactiva.
-        /// </summary>
-        /// <param name="dto">Datos de la configuración a crear</param>
-        /// <returns>Configuración creada o reactivada</returns>
+        /// <summary>Crear nueva configuración. Reactiva si existe cancelado.</summary>
         [HttpPost]
-        [ProducesResponseType(typeof(SystemConfigurationDTO), 201)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(typeof(SystemConfigurationDTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<SystemConfigurationDTO>> Post([FromBody] SystemConfigurationDTO dto)
         {
             try
@@ -119,29 +97,42 @@ namespace GoldBusiness.WebApi.Controllers
             }
         }
 
-        /// <summary>Actualiza una configuración del sistema existente.</summary>
-        /// <param name="id">ID de la configuración</param>
-        /// <param name="dto">Datos actualizados</param>
-        /// <returns>Configuración actualizada</returns>
+        /// <summary>Actualiza configuración existente.</summary>
         [HttpPut("{id}")]
-        [ProducesResponseType(typeof(SystemConfigurationDTO), 200)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(typeof(SystemConfigurationDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Put(int id, [FromBody] SystemConfigurationDTO dto)
         {
-            var lang = GetCurrentLanguage();
+            try
+            {
+                var lang = GetCurrentLanguage();
+                var usuario = GetCurrentUser();
+                var result = await _service.UpdateAsync(id, dto, usuario, lang);
+                return Ok(result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return HandleDuplicateCodeError(nameof(dto.CodigoSistema), ex.Message);
+            }
+        }
+
+        /// <summary>Soft-delete de una configuración (marca Cancelado).</summary>
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Delete(int id)
+        {
             var usuario = GetCurrentUser();
-            var result = await _service.UpdateAsync(id, dto, usuario, lang);
-            return Ok(result);
+            var dto = await _service.SoftDeleteAsync(id, usuario);
+            return dto == null ? NotFound() : Ok(dto);
         }
 
         /// <summary>Agrega o actualiza una traducción para la configuración del sistema.</summary>
-        /// <param name="id">ID de la configuración</param>
-        /// <param name="request">Datos de la traducción</param>
-        /// <returns>Resultado de la operación</returns>
         [HttpPost("{id}/translations")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> AddOrUpdateTranslation(int id, [FromBody] TranslationRequest request)
         {
             var supportedLanguages = new[] { "es", "en", "fr" };
@@ -177,16 +168,42 @@ namespace GoldBusiness.WebApi.Controllers
         // 🖼️ LOGO
         // ═══════════════════════════════════════════════════════════
 
+        /// <summary>Datos de la solicitud de subida de logo (multipart/form-data).</summary>
+        public sealed class UploadLogoRequest
+        {
+            [Required(
+                ErrorMessageResourceType = typeof(ValidationMessages),
+                ErrorMessageResourceName = nameof(ValidationMessages.Required)
+            )]
+            [Display(
+                Name = nameof(ValidationMessages.Field_Imagen),
+                ResourceType = typeof(ValidationMessages)
+            )]
+            public IFormFile File { get; set; } = null!;
+
+            [Required(
+                ErrorMessageResourceType = typeof(ValidationMessages),
+                ErrorMessageResourceName = nameof(ValidationMessages.Required)
+            )]
+            [Display(
+                Name = nameof(ValidationMessages.Field_Codigo),
+                ResourceType = typeof(ValidationMessages)
+            )]
+            [StringLength(50,
+                ErrorMessageResourceType = typeof(ValidationMessages),
+                ErrorMessageResourceName = nameof(ValidationMessages.StringLengthMax)
+            )]
+            public string CodigoSistema { get; set; } = string.Empty;
+        }
+
         /// <summary>
         /// Sube el logo del negocio.
         /// Se guarda en F:\Images\CompanyLogo (Windows) o /Images/CompanyLogo (Linux).
         /// </summary>
-        /// <param name="request">Archivo de imagen y código del sistema</param>
-        /// <returns>Nombre del archivo guardado</returns>
         [HttpPost("upload-logo")]
         [Consumes("multipart/form-data")]
-        [ProducesResponseType(typeof(LogoUploadResult), 200)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(typeof(LogoUploadResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<LogoUploadResult>> UploadLogo([FromForm] UploadLogoRequest request)
         {
             if (request.File == null || request.File.Length == 0)
@@ -208,11 +225,11 @@ namespace GoldBusiness.WebApi.Controllers
 
             Directory.CreateDirectory(LogoBasePath);
 
-            // ✅ UN LOGO POR NEGOCIO: Usar el código del sistema como nombre base
+            // Un logo por negocio: usar el código del sistema como nombre base
             var fileName = $"{safeCode}{extension}";
             var filePath = Path.Combine(LogoBasePath, fileName);
 
-            // ✅ Eliminar logo anterior si existe (garantiza un solo logo por negocio)
+            // Eliminar logo anterior si existe
             foreach (var ext in AllowedExtensions)
             {
                 var oldFile = Path.Combine(LogoBasePath, $"{safeCode}{ext}");
@@ -229,12 +246,10 @@ namespace GoldBusiness.WebApi.Controllers
         }
 
         /// <summary>Sirve el archivo de logo del negocio. No requiere autenticación.</summary>
-        /// <param name="fileName">Nombre del archivo de logo</param>
-        /// <returns>Imagen del logo</returns>
         [HttpGet("logo/{fileName}")]
         [AllowAnonymous]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetLogo(string fileName)
         {
             var safeFileName = Path.GetFileName(fileName);
@@ -249,18 +264,17 @@ namespace GoldBusiness.WebApi.Controllers
             var extension = Path.GetExtension(safeFileName).ToLowerInvariant();
             var contentType = extension switch
             {
-                ".png"            => "image/png",
+                ".png" => "image/png",
                 ".jpg" or ".jpeg" => "image/jpeg",
-                ".gif"            => "image/gif",
-                ".webp"           => "image/webp",
-                _                 => "application/octet-stream"
+                ".gif" => "image/gif",
+                ".webp" => "image/webp",
+                _ => "application/octet-stream"
             };
 
             return PhysicalFile(filePath, contentType);
         }
 
-        // ─── Request types ───────────────────────────────────────────
-
+        // Request type for translations
         public class TranslationRequest
         {
             public string Language { get; set; } = string.Empty;

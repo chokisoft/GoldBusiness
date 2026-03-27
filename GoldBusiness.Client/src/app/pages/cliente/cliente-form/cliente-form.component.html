@@ -107,8 +107,16 @@
 
         <div class="form-group">
           <label class="form-label">{{ 'clientes.telefono1' | translate }}</label>
-          <input class="form-control" formControlName="telefono1" placeholder="{{ 'clientes.placeholderTelefono' | translate }}" />
+          <input id="telefono1" type="tel" class="form-control"
+                 formControlName="telefono1"
+                 maxlength="50"
+                 [class.is-invalid]="itemForm.get('telefono1')?.invalid && itemForm.get('telefono1')?.touched"
+                 placeholder="{{ 'clientes.placeholderTelefono' | translate }}" />
           <div class="form-text" *ngIf="selectedPais">{{ selectedPais.formatoEjemplo }} <small>({{ selectedPais.formatoTelefono }})</small></div>
+          <div class="invalid-feedback" *ngIf="itemForm.get('telefono1')?.touched">
+            <div *ngIf="itemForm.get('telefono1')?.hasError('telefonoInvalid')">Teléfono no válido para el país seleccionado</div>
+            <div *ngIf="itemForm.get('telefono1')?.hasError('maxlength')">Máximo 50 caracteres</div>
+          </div>
         </div>
       </div>
 
@@ -119,7 +127,14 @@
         </div>
         <div class="form-group">
           <label class="form-label">{{ 'clientes.telefono2' | translate }}</label>
-          <input class="form-control" formControlName="telefono2" />
+          <input id="telefono2" type="tel" class="form-control"
+                 formControlName="telefono2"
+                 maxlength="50"
+                 [class.is-invalid]="itemForm.get('telefono2')?.invalid && itemForm.get('telefono2')?.touched" />
+          <div class="invalid-feedback" *ngIf="itemForm.get('telefono2')?.touched">
+            <div *ngIf="itemForm.get('telefono2')?.hasError('telefonoInvalid')">Teléfono no válido para el país seleccionado</div>
+            <div *ngIf="itemForm.get('telefono2')?.hasError('maxlength')">Máximo 50 caracteres</div>
+          </div>
         </div>
       </div>
 

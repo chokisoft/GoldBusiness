@@ -181,9 +181,17 @@
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">{{ 'establecimiento.telefono' | translate }}</label>
-          <input class="form-control" formControlName="telefono" placeholder="{{ 'establecimiento.placeholderTelefono' | translate }}" />
+          <input id="telefono" type="tel" class="form-control"
+                 formControlName="telefono"
+                 maxlength="50"
+                 [class.is-invalid]="itemForm.get('telefono')?.invalid && itemForm.get('telefono')?.touched"
+                 placeholder="{{ 'establecimiento.placeholderTelefono' | translate }}" />
           <small class="form-text text-muted">{{ 'establecimiento.telefonoHelp' | translate }}</small>
           <div class="form-text" *ngIf="selectedPais">{{ selectedPais.formatoEjemplo }} <small>({{ selectedPais.formatoTelefono }})</small></div>
+          <div class="invalid-feedback" *ngIf="itemForm.get('telefono')?.touched">
+            <div *ngIf="itemForm.get('telefono')?.hasError('telefonoInvalid')">Teléfono no válido para el país seleccionado</div>
+            <div *ngIf="itemForm.get('telefono')?.hasError('maxlength')">Máximo 50 caracteres</div>
+          </div>
         </div>
       </div>
 
