@@ -485,25 +485,11 @@ builder.Services.AddCors(options =>
     options.AddPolicy("Production", policy =>
     {
         var prodOrigins = builder.Configuration.GetSection("Cors:Production:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
-
-        if (prodOrigins.Length > 0)
-        {
-            // Política segura: orígenes específicos y permitir credenciales
-            policy.WithOrigins(prodOrigins)
-                  .AllowAnyHeader()
-                  .AllowAnyMethod()
-                  .AllowCredentials()
-                  .WithExposedHeaders("Token-Expired");
-        }
-        else
-        {
-            // Fallback temporal: permite cualquier origen (SIN credenciales).
-            // Usar solo mientras configuras App Settings. Si tu frontend requiere cookies, configura orígenes explícitos y mantén AllowCredentials().
-            policy.AllowAnyOrigin()
-                  .AllowAnyHeader()
-                  .AllowAnyMethod()
-                  .WithExposedHeaders("Token-Expired");
-        }
+        policy.WithOrigins(prodOrigins)
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials()
+              .WithExposedHeaders("Token-Expired");
     });
 });
 
