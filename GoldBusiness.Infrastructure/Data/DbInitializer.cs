@@ -725,7 +725,7 @@ namespace GoldBusiness.Infrastructure.Data
                 "http://localhost/imagen/imagen.jpg",
                 "http://localhost/",
                 "chokisoft@gmail.com",
-                "+53 55152424",
+                "+5355152424",
                 DateTime.UtcNow.AddYears(1),
                 "system");
 
