@@ -52,40 +52,6 @@ namespace GoldBusiness.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Cliente",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Codigo = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    Nif = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
-                    Iban = table.Column<string>(type: "nvarchar(27)", maxLength: 27, nullable: false),
-                    BicoSwift = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
-                    Iva = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
-                    Direccion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    Municipio = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Provincia = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    CodPostal = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
-                    Web = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    Email1 = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    Email2 = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    Telefono1 = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Telefono2 = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Fax1 = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Fax2 = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Cancelado = table.Column<bool>(type: "bit", nullable: false),
-                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
-                    ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Cliente", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "GrupoCuenta",
                 columns: table => new
                 {
@@ -186,40 +152,6 @@ namespace GoldBusiness.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Pais", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Proveedor",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Codigo = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    Nif = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
-                    Iban = table.Column<string>(type: "nvarchar(27)", maxLength: 27, nullable: false),
-                    BicoSwift = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
-                    Iva = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
-                    Direccion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    Municipio = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Provincia = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    CodPostal = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
-                    Web = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    Email1 = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    Email2 = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    Telefono1 = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Telefono2 = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Fax1 = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Fax2 = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Cancelado = table.Column<bool>(type: "bit", nullable: false),
-                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
-                    ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Proveedor", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -366,26 +298,28 @@ namespace GoldBusiness.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ClienteTranslation",
+                name: "RefreshToken",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ClienteId = table.Column<int>(type: "int", nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
-                    ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
-                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false)
+                    UserId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    Token = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ExpiresAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RevokedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    RevokedByIp = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    ReplacedByToken = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    CreatedByIp = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    UserAgent = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ClienteTranslation", x => x.Id);
+                    table.PrimaryKey("PK_RefreshToken", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ClienteTranslation_Cliente",
-                        column: x => x.ClienteId,
-                        principalTable: "Cliente",
+                        name: "FK_RefreshToken_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -592,31 +526,6 @@ namespace GoldBusiness.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProveedorTranslation",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ProveedorId = table.Column<int>(type: "int", nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
-                    ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
-                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProveedorTranslation", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ProveedorTranslation_Proveedor",
-                        column: x => x.ProveedorId,
-                        principalTable: "Proveedor",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "TransaccionTranslation",
                 columns: table => new
                 {
@@ -812,6 +721,174 @@ namespace GoldBusiness.Infrastructure.Migrations
                         name: "FK_MunicipioTranslation_Municipio_MunicipioId",
                         column: x => x.MunicipioId,
                         principalTable: "Municipio",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Cliente",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Codigo = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    Nif = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
+                    Iban = table.Column<string>(type: "nvarchar(27)", maxLength: 27, nullable: false),
+                    BicoSwift = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
+                    Iva = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
+                    Direccion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    Telefono1 = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Telefono2 = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    PaisId = table.Column<int>(type: "int", nullable: true),
+                    ProvinciaId = table.Column<int>(type: "int", nullable: true),
+                    MunicipioId = table.Column<int>(type: "int", nullable: true),
+                    CodigoPostalId = table.Column<int>(type: "int", nullable: true),
+                    Web = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    Email1 = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    Email2 = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    Fax1 = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Fax2 = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Cancelado = table.Column<bool>(type: "bit", nullable: false),
+                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
+                    ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cliente", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Cliente_CodigoPostal",
+                        column: x => x.CodigoPostalId,
+                        principalTable: "CodigoPostal",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Cliente_Municipio",
+                        column: x => x.MunicipioId,
+                        principalTable: "Municipio",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Cliente_Pais",
+                        column: x => x.PaisId,
+                        principalTable: "Pais",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Cliente_Provincia",
+                        column: x => x.ProvinciaId,
+                        principalTable: "Provincia",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Proveedor",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Codigo = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    Nif = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
+                    Iban = table.Column<string>(type: "nvarchar(27)", maxLength: 27, nullable: false),
+                    BicoSwift = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
+                    Iva = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
+                    Direccion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    Telefono1 = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Telefono2 = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    PaisId = table.Column<int>(type: "int", nullable: true),
+                    ProvinciaId = table.Column<int>(type: "int", nullable: true),
+                    MunicipioId = table.Column<int>(type: "int", nullable: true),
+                    CodigoPostalId = table.Column<int>(type: "int", nullable: true),
+                    Web = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    Email1 = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    Email2 = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    Fax1 = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Fax2 = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Cancelado = table.Column<bool>(type: "bit", nullable: false),
+                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
+                    ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Proveedor", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Proveedor_CodigoPostal",
+                        column: x => x.CodigoPostalId,
+                        principalTable: "CodigoPostal",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Proveedor_Municipio",
+                        column: x => x.MunicipioId,
+                        principalTable: "Municipio",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Proveedor_Pais",
+                        column: x => x.PaisId,
+                        principalTable: "Pais",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Proveedor_Provincia",
+                        column: x => x.ProvinciaId,
+                        principalTable: "Provincia",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ClienteTranslation",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClienteId = table.Column<int>(type: "int", nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
+                    ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ClienteTranslation", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ClienteTranslation_Cliente",
+                        column: x => x.ClienteId,
+                        principalTable: "Cliente",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProveedorTranslation",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProveedorId = table.Column<int>(type: "int", nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
+                    ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProveedorTranslation", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProveedorTranslation_Proveedor",
+                        column: x => x.ProveedorId,
+                        principalTable: "Proveedor",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -1100,7 +1177,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CodigoSistema = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    CodigoSistema = table.Column<string>(type: "nvarchar(3)", maxLength: 3, nullable: false),
                     Licencia = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     NombreNegocio = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     Direccion = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
@@ -1115,6 +1192,8 @@ namespace GoldBusiness.Infrastructure.Migrations
                     CuentaPagarId = table.Column<int>(type: "int", nullable: true),
                     CuentaCobrarId = table.Column<int>(type: "int", nullable: true),
                     Caducidad = table.Column<DateTime>(type: "datetime", nullable: false),
+                    Activo = table.Column<bool>(type: "bit", nullable: false),
+                    Cancelado = table.Column<bool>(type: "bit", nullable: false),
                     CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
                     ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
@@ -1170,6 +1249,12 @@ namespace GoldBusiness.Infrastructure.Migrations
                     NegocioId = table.Column<int>(type: "int", nullable: false),
                     Codigo = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    Direccion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    Telefono = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    PaisId = table.Column<int>(type: "int", nullable: true),
+                    ProvinciaId = table.Column<int>(type: "int", nullable: true),
+                    MunicipioId = table.Column<int>(type: "int", nullable: true),
+                    CodigoPostalId = table.Column<int>(type: "int", nullable: true),
                     Activo = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
                     Cancelado = table.Column<bool>(type: "bit", nullable: false),
                     CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
@@ -1181,10 +1266,34 @@ namespace GoldBusiness.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Establecimiento", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Establecimiento_CodigoPostal",
+                        column: x => x.CodigoPostalId,
+                        principalTable: "CodigoPostal",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
                         name: "FK_Establecimiento_Configuracion",
                         column: x => x.NegocioId,
                         principalTable: "SystemConfiguration",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Establecimiento_Municipio",
+                        column: x => x.MunicipioId,
+                        principalTable: "Municipio",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Establecimiento_Pais",
+                        column: x => x.PaisId,
+                        principalTable: "Pais",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Establecimiento_Provincia",
+                        column: x => x.ProvinciaId,
+                        principalTable: "Provincia",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -1256,11 +1365,10 @@ namespace GoldBusiness.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_CuentaCobrarPagar", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CuentaCobrarPagar_Cliente",
+                        name: "FK_CuentaCobrarPagar_Cliente_ClienteId",
                         column: x => x.ClienteId,
                         principalTable: "Cliente",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_CuentaCobrarPagar_CuentaCobroEfectivo",
                         column: x => x.CuentaCobroEfectivoId,
@@ -1291,11 +1399,10 @@ namespace GoldBusiness.Infrastructure.Migrations
                         principalTable: "Establecimiento",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_CuentaCobrarPagar_Proveedor",
+                        name: "FK_CuentaCobrarPagar_Proveedor_ProveedorId",
                         column: x => x.ProveedorId,
                         principalTable: "Proveedor",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_CuentaCobrarPagar_Transaccion",
                         column: x => x.TransaccionId,
@@ -1881,6 +1988,26 @@ namespace GoldBusiness.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Cliente_CodigoPostalId",
+                table: "Cliente",
+                column: "CodigoPostalId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cliente_MunicipioId",
+                table: "Cliente",
+                column: "MunicipioId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cliente_PaisId",
+                table: "Cliente",
+                column: "PaisId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cliente_ProvinciaId",
+                table: "Cliente",
+                column: "ProvinciaId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ClienteTranslation_ClienteId_Language",
                 table: "ClienteTranslation",
                 columns: new[] { "ClienteId", "Language" },
@@ -2036,9 +2163,29 @@ namespace GoldBusiness.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Establecimiento_CodigoPostalId",
+                table: "Establecimiento",
+                column: "CodigoPostalId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Establecimiento_MunicipioId",
+                table: "Establecimiento",
+                column: "MunicipioId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Establecimiento_NegocioId",
                 table: "Establecimiento",
                 column: "NegocioId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Establecimiento_PaisId",
+                table: "Establecimiento",
+                column: "PaisId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Establecimiento_ProvinciaId",
+                table: "Establecimiento",
+                column: "ProvinciaId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EstablecimientoTranslation_EstablecimientoId_Language",
@@ -2273,6 +2420,26 @@ namespace GoldBusiness.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Proveedor_CodigoPostalId",
+                table: "Proveedor",
+                column: "CodigoPostalId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Proveedor_MunicipioId",
+                table: "Proveedor",
+                column: "MunicipioId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Proveedor_PaisId",
+                table: "Proveedor",
+                column: "PaisId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Proveedor_ProvinciaId",
+                table: "Proveedor",
+                column: "ProvinciaId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ProveedorTranslation_ProveedorId_Language",
                 table: "ProveedorTranslation",
                 columns: new[] { "ProveedorId", "Language" },
@@ -2294,6 +2461,22 @@ namespace GoldBusiness.Infrastructure.Migrations
                 table: "ProvinciaTranslation",
                 columns: new[] { "ProvinciaId", "Language" },
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RefreshToken_ExpiresAt",
+                table: "RefreshToken",
+                column: "ExpiresAt");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RefreshToken_Token",
+                table: "RefreshToken",
+                column: "Token",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RefreshToken_UserId",
+                table: "RefreshToken",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Saldo_Localidad_Producto",
@@ -2470,11 +2653,23 @@ namespace GoldBusiness.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_CodigoPostal_Municipio",
-                table: "CodigoPostal");
+                name: "FK_SystemConfiguration_CodigoPostal_CodigoPostalId",
+                table: "SystemConfiguration");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_SystemConfiguration_Municipio_MunicipioId",
+                table: "SystemConfiguration");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Provincia_Pais_PaisId",
+                table: "Provincia");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_SystemConfiguration_Pais_PaisId",
+                table: "SystemConfiguration");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_SystemConfiguration_Provincia_ProvinciaId",
                 table: "SystemConfiguration");
 
             migrationBuilder.DropForeignKey(
@@ -2570,6 +2765,9 @@ namespace GoldBusiness.Infrastructure.Migrations
                 name: "ProvinciaTranslation");
 
             migrationBuilder.DropTable(
+                name: "RefreshToken");
+
+            migrationBuilder.DropTable(
                 name: "Saldo");
 
             migrationBuilder.DropTable(
@@ -2594,9 +2792,6 @@ namespace GoldBusiness.Infrastructure.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
                 name: "CajaRegistradora");
 
             migrationBuilder.DropTable(
@@ -2610,6 +2805,9 @@ namespace GoldBusiness.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "OperacionesDetalle");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "IdTurno");
@@ -2651,7 +2849,16 @@ namespace GoldBusiness.Infrastructure.Migrations
                 name: "Linea");
 
             migrationBuilder.DropTable(
+                name: "CodigoPostal");
+
+            migrationBuilder.DropTable(
                 name: "Municipio");
+
+            migrationBuilder.DropTable(
+                name: "Pais");
+
+            migrationBuilder.DropTable(
+                name: "Provincia");
 
             migrationBuilder.DropTable(
                 name: "Cuenta");
@@ -2664,15 +2871,6 @@ namespace GoldBusiness.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "GrupoCuenta");
-
-            migrationBuilder.DropTable(
-                name: "CodigoPostal");
-
-            migrationBuilder.DropTable(
-                name: "Provincia");
-
-            migrationBuilder.DropTable(
-                name: "Pais");
         }
     }
 }

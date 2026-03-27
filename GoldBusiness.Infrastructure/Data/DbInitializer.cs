@@ -689,10 +689,6 @@ namespace GoldBusiness.Infrastructure.Data
             logger.LogInformation("✅ Seed Cuenta: {Count} cuentas, {Trans} traducciones", cuentas.Count, traducciones.Count);
         }
 
-        #endregion
-
-        #region SystemConfiguration
-
         private static async Task SeedSystemConfigurationAsync(ApplicationDbContext context, ILogger logger)
         {
             if (context.SystemConfiguration.Any())
@@ -701,18 +697,70 @@ namespace GoldBusiness.Infrastructure.Data
                 return;
             }
 
-            // Reemplaza la sección donde se crea `sysConfig` por lo siguiente:
-            var firstPaisId = await context.Pais.Where(p => p.Descripcion.Contains("CUBA")).Select(p => p.Id).FirstOrDefaultAsync();
-            var firstProvinciaId = await context.Provincia.Where(p => p.PaisId == firstPaisId && p.Descripcion.Contains("HABANA")).Select(p => p.Id).FirstOrDefaultAsync();
-            var firstMunicipioId = await context.Municipio.Where(m => m.ProvinciaId == firstProvinciaId && m.Descripcion.Contains("BOYEROS")).Select(p => p.Id).FirstOrDefaultAsync();
-            var firstCodigoPostalId = await context.CodigoPostal.Where(c => c.MunicipioId == firstMunicipioId).Select(p => p.Id).FirstOrDefaultAsync();
+            // Buscar país preferido (CUBA) o usar el primer país disponible
+            var firstPaisId = await context.Pais
+                .Where(p => p.Descripcion.Contains("CUBA"))
+                .Select(p => p.Id)
+                .FirstOrDefaultAsync();
 
-            // Si alguno no existe, usa 0 o lanza — aquí se usan 0 como fallback
-            firstPaisId = firstPaisId == 0 ? 0 : firstPaisId;
-            firstProvinciaId = firstProvinciaId == 0 ? 0 : firstProvinciaId;
-            firstMunicipioId = firstMunicipioId == 0 ? 0 : firstMunicipioId;
-            firstCodigoPostalId = firstCodigoPostalId == 0 ? 0 : firstCodigoPostalId;
+            if (firstPaisId == 0)
+                firstPaisId = await context.Pais.Select(p => p.Id).FirstOrDefaultAsync();
 
+            if (firstPaisId == 0)
+            {
+                logger.LogError("No se encontraron países en la base de datos. No es posible crear SystemConfiguration.");
+                throw new InvalidOperationException("No countries available for seeding SystemConfiguration.");
+            }
+
+            // Buscar provincia preferida (HABANA) en el país seleccionado o usar la primera provincia del país
+            var firstProvinciaId = await context.Provincia
+                .Where(p => p.PaisId == firstPaisId && p.Descripcion.Contains("HABANA"))
+                .Select(p => p.Id)
+                .FirstOrDefaultAsync();
+
+            if (firstProvinciaId == 0)
+                firstProvinciaId = await context.Provincia.Where(p => p.PaisId == firstPaisId).Select(p => p.Id).FirstOrDefaultAsync();
+
+            if (firstProvinciaId == 0)
+            {
+                logger.LogError("No se encontraron provincias para PaisId={PaisId}. No es posible crear SystemConfiguration.", firstPaisId);
+                throw new InvalidOperationException("No provinces available for seeding SystemConfiguration.");
+            }
+
+            // Buscar municipio preferido (BOYEROS) en la provincia seleccionada o usar la primera del mismo
+            var firstMunicipioId = await context.Municipio
+                .Where(m => m.ProvinciaId == firstProvinciaId && m.Descripcion.Contains("BOYEROS"))
+                .Select(m => m.Id)
+                .FirstOrDefaultAsync();
+
+            if (firstMunicipioId == 0)
+                firstMunicipioId = await context.Municipio.Where(m => m.ProvinciaId == firstProvinciaId).Select(m => m.Id).FirstOrDefaultAsync();
+
+            if (firstMunicipioId == 0)
+            {
+                logger.LogError("No se encontraron municipios para ProvinciaId={ProvinciaId}. No es posible crear SystemConfiguration.", firstProvinciaId);
+                throw new InvalidOperationException("No municipalities available for seeding SystemConfiguration.");
+            }
+
+            // Buscar código postal en el municipio seleccionado; si no existe, intentar cualquier código postal disponible
+            var firstCodigoPostalId = await context.CodigoPostal
+                .Where(c => c.MunicipioId == firstMunicipioId)
+                .Select(c => c.Id)
+                .FirstOrDefaultAsync();
+
+            if (firstCodigoPostalId == 0)
+            {
+                logger.LogWarning("No se encontró código postal para MunicipioId={MunicipioId}. Intentando usar cualquier código postal disponible.", firstMunicipioId);
+                firstCodigoPostalId = await context.CodigoPostal.Select(c => c.Id).FirstOrDefaultAsync();
+
+                if (firstCodigoPostalId == 0)
+                {
+                    logger.LogError("No hay códigos postales en la base de datos. No es posible crear SystemConfiguration.");
+                    throw new InvalidOperationException("No postal codes available for seeding SystemConfiguration.");
+                }
+            }
+
+            // Crear SystemConfiguration usando IDs válidos
             var sysConfig = new SystemConfiguration(
                 "CHK",
                 "uxi/LeQnoZmyHjpkrS2J7RgiO6dKhwdapmg5r7TuwpnDzq2FPwwOWbLwRU6zUcRME2XktTsXkNmonkrYHFFPzg==",
@@ -735,7 +783,7 @@ namespace GoldBusiness.Infrastructure.Data
             // Agregar traducciones
             var traducciones = new List<SystemConfigurationTranslation>
             {
-                new(sysConfig.Id, "es", "CHOKISOFT SOLUCIONES TECNOLÓGICAS", "CALLE 172 #17830 E/ 180 y 182, REPARTO 1ERO DE MAYO", "BOYEROS", "LA HABANA", "system"),
+                new(sysConfig.Id, "es", "CHOKISOFT SOLUCIONES TECNOLÓGICAS", "CALLE 172 #17830 E/ 180 y 182, REPARTO 1RO DE MAYO", "BOYEROS", "LA HABANA", "system"),
                 new(sysConfig.Id, "en", "CHOKISOFT TECHNOLOGY SOLUTIONS", "172ND STREET #17830 BETWEEN 180TH AND 182ND, 1ST OF MAY NEIGHBORHOOD", "BOYEROS", "HAVANA", "system"),
                 new(sysConfig.Id, "fr", "CHOKISOFT SOLUTIONS TECHNOLOGIQUES", "RUE 172 N°17830 ENTRE 180 ET 182, QUARTIER 1ER MAI", "BOYEROS", "LA HAVANE", "system")
             };
