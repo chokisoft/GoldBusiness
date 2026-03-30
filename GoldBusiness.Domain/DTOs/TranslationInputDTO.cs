@@ -16,7 +16,7 @@ namespace GoldBusiness.Domain.DTOs
         [Display(Name = "Idioma")]
         [StringLength(5, MinimumLength = 2, ErrorMessage = "El código de idioma debe tener entre 2 y 5 caracteres")]
         [RegularExpression(@"^[a-z]{2}(-[A-Z]{2})?$", ErrorMessage = "Formato inválido. Use: es, en, es-ES, etc.")]
-        public string Language { get; set; } = string.Empty;
+        public string Language { get; set; } = "es";
 
         /// <summary>
         /// Texto traducido principal (descripción, nombre, etc.).

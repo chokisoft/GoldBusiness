@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace GoldBusiness.Domain.DTOs
@@ -21,10 +23,6 @@ namespace GoldBusiness.Domain.DTOs
             ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
             ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.CodigoObligatorio)
         )]
-        [Display(
-            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Codigo),
-            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
-        )]
         [StringLength(2, MinimumLength = 2,
             ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
             ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.CodigoLongitud)
@@ -42,10 +40,6 @@ namespace GoldBusiness.Domain.DTOs
             ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
             ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.DescripcionObligatoria)
         )]
-        [Display(
-            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Descripcion),
-            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
-        )]
         [StringLength(256,
             ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
             ErrorMessageResourceName = nameof(GoldBusiness.Domain.Resources.ValidationMessages.StringLengthMax)
@@ -55,56 +49,35 @@ namespace GoldBusiness.Domain.DTOs
         /// <summary>
         /// Indica si el grupo está cancelado/inactivo.
         /// </summary>
-        [Display(
-            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Cancelado),
-            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
-        )]
         public bool Cancelado { get; set; }
 
         /// <summary>
         /// Usuario que creó el registro.
         /// </summary>
-        [Display(
-            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_CreadoPor),
-            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
-        )]
         public string CreadoPor { get; set; } = string.Empty;
 
         /// <summary>
         /// Fecha y hora de creación.
         /// </summary>
-        [Display(
-            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_FechaCreacion),
-            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
-        )]
         public DateTime FechaHoraCreado { get; set; }
 
         /// <summary>
         /// Usuario que modificó el registro.
         /// </summary>
-        [Display(
-            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_ModificadoPor),
-            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
-        )]
         public string? ModificadoPor { get; set; }
 
         /// <summary>
         /// Fecha y hora de modificación.
         /// </summary>
-        [Display(
-            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_FechaModificacion),
-            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
-        )]
         public DateTime? FechaHoraModificado { get; set; }
 
         /// <summary>
         /// Cantidad de subgrupos asociados.
         /// </summary>
-        [Display(
-            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Subgrupos),
-            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
-        )]
         public int CantidadSubGrupos { get; set; }
+
+        // NUEVO: traducciones opcionales enviadas desde el cliente
+        public List<TranslationInputDTO>? Translations { get; set; } = new List<TranslationInputDTO>();
 
         /// <summary>
         /// Formato: "Código | Descripción".

@@ -102,7 +102,19 @@ export class GrupoCuentaFormComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.error = null;
 
-    const dto: GrupoCuentaDTO = this.form.getRawValue();
+    const raw = this.form.getRawValue();
+    const currentLang = this.languageService.getCurrentLanguage();
+
+    const dto: GrupoCuentaDTO = {
+      codigo: raw.codigo,
+      descripcion: raw.descripcion,
+      translations: [
+        {
+          language: currentLang,
+          translatedText: raw.descripcion
+        }
+      ]
+    };
 
     if (this.isEditMode) {
       this.grupoCuentaService.update(this.grupoId!, dto).subscribe({

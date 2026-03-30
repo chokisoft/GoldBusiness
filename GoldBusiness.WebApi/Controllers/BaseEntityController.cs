@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using System.Globalization;
+using System.Linq;
 
 namespace GoldBusiness.WebApi.Controllers
 {
@@ -18,12 +19,31 @@ namespace GoldBusiness.WebApi.Controllers
         }
 
         /// <summary>
-        /// Obtiene el idioma actual de la request basado en Accept-Language.
+        /// Obtiene el idioma actual de la request basado en Accept-Language (fallback a CultureInfo).
         /// </summary>
         protected string GetCurrentLanguage()
         {
-            var currentCulture = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName.ToLowerInvariant();
             var supportedLanguages = new[] { "es", "en", "fr" };
+
+            try
+            {
+                if (Request?.Headers != null && Request.Headers.TryGetValue("Accept-Language", out var acceptLangValues))
+                {
+                    var first = acceptLangValues.ToString().Split(',').Select(s => s.Trim()).FirstOrDefault();
+                    if (!string.IsNullOrWhiteSpace(first))
+                    {
+                        var lang = first.Split('-', System.StringSplitOptions.RemoveEmptyEntries)[0].ToLowerInvariant();
+                        if (supportedLanguages.Contains(lang))
+                            return lang;
+                    }
+                }
+            }
+            catch
+            {
+                // ignore header parsing errors and fallback to culture
+            }
+
+            var currentCulture = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName.ToLowerInvariant();
             return supportedLanguages.Contains(currentCulture) ? currentCulture : "es";
         }
 

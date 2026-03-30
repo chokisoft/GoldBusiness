@@ -2,18 +2,23 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
 
+export interface TranslationInputDTO {
+  language: string;
+  translatedText: string;
+}
+
 export interface GrupoCuentaDTO {
   id?: number;
   codigo: string;
   descripcion: string;
-  cancelado?: boolean;  // ✅ CORREGIDO: 'cancelado' en lugar de 'activo'
+  cancelado?: boolean;
   creadoPor?: string;
   fechaHoraCreado?: string;
   modificadoPor?: string;
   fechaHoraModificado?: string;
+  translations?: TranslationInputDTO[];
 }
 
-// ✅ AGREGADO: Interfaz PagedResult que faltaba
 export interface PagedResult<T> {
   items: T[];
   total: number;
@@ -25,7 +30,6 @@ export interface PagedResult<T> {
 export class GrupoCuentaService {
   constructor(private api: ApiService) {}
 
-  // ✅ Método paginado del servidor
   getPaged(page: number = 1, pageSize: number = 50, term?: string): Observable<PagedResult<GrupoCuentaDTO>> {
     let url = `GrupoCuenta/paged?page=${page}&pageSize=${pageSize}`;
     if (term) url += `&term=${encodeURIComponent(term)}`;

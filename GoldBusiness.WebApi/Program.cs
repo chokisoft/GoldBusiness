@@ -187,6 +187,8 @@ builder.Services.AddScoped<IUnidadMedidaService, UnidadMedidaService>();
 
 // Background Service para limpieza de tokens
 builder.Services.AddHostedService<TokenCleanupService>();
+// Registrar servicio de traducción (HTTP client)
+builder.Services.AddHttpClient<GoldBusiness.Application.Interfaces.ITranslatorService, GoldBusiness.Application.Services.AzureTranslatorService>();
 
 // ============================================
 // 🔐 JWT AUTHENTICATION

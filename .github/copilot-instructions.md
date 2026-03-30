@@ -6,6 +6,7 @@
 - Mantén la compatibilidad con EF Core.
 - Al recargar datos de lista, no restablezcas la paginación; preserva currentPage a menos que quede fuera de rango.
 - Los proyectos del workspace deben estar orientados a .NET 10.
+- Usa User Secrets para claves sensibles.
 - Prefiere un color de encabezado más suave y menos blanco en el inicio de sesión (por ejemplo, gris cálido suave #d6cfa9) para reducir la fatiga visual y coincidir con la marca GoldBusiness.
 - Excluye el proyecto del cliente Angular (GoldBusiness.Client) de la construcción/publicación al desplegar la WebApi; restaura y publica solo el proyecto GoldBusiness.WebApi (GoldBusiness.WebApi/GoldBusiness.WebApi.csproj).
 - Prefiere un script de despliegue en PowerShell que construya la solución y use Azure CLI para desplegar.
@@ -14,6 +15,8 @@
 - Usa el principal de servicio `AZURE_CREDENTIALS` para GitHub Actions; asegúrate de que el SP tenga el rol de Storage Blob Data Contributor.
 - Los mensajes de validación residen en GoldBusiness.Domain (recurso ValidationMessages); las traducciones del cliente se encuentran en GoldBusiness.Client/src/app/services/translation.service.ts. Mantenlos sincronizados y prefiere generar traducciones del cliente a partir de recursos del servidor o mapeándolos explícitamente.
 - Usa validación numérica/normalizada para números de teléfono en Establecimiento, Cliente y Proveedor. Extrae la normalización/validación de teléfonos a un servicio o utilidad compartida para su reutilización. Mantén el prefijo '+' visible en la UI; usa `normalizePhone` para preservar el '+' al enviar y `normalizePhoneForValidation` para eliminar el '+' en la validación regex. Elimina los helpers de depuración (logFormState y console.logs) antes de producción y reutiliza `shared phone.util` (normalizePhone, phoneValidator, PHONE_MAX_LENGTH) en todos los componentes.
+- Reutiliza el DTO existente llamado `TranslationInputDTO` para las traducciones de `GrupoCuenta` y evita la duplicación de DTOs. Implementa soporte de traducciones principalmente en el backend añadiendo una lista de traducciones a `GrupoCuentaDTO` y procesándola en `GrupoCuentaService`.
+- Al editar plantillas de Angular, prefiere usar acceso por índice de corchetes para objetos con firmas de índice (por ejemplo, `translations['es']`) o tipifica explícitamente los objetos con propiedades conocidas (es, en, fr) para satisfacer la verificación de tipos de plantilla de TypeScript.
 
 ## UI/UX Guidelines
 - Coloca el botón de alternar la barra lateral en la barra de navegación junto al título/subtítulo en escritorio y móvil; en móvil, abre la barra lateral como superposición, y en escritorio, alterna el colapso a través de SidebarService. Asegúrate de que el color del botón de alternar la barra lateral coincida con el gradiente de la barra de navegación y que los botones de alternar sean visualmente coherentes en móvil y escritorio. Prefiere botones circulares consistentes en móvil.
@@ -33,6 +36,7 @@
 - Alinear verticalmente el checkbox 'Deudora' en formularios del Plan de Cuenta y en SubGrupoCuenta para que quede centrado con respecto a los inputs en .form-row-three.
 - Prefiere que los selects en formularios de país/provincia/municipio/código postal permanezcan deshabilitados hasta seleccionar el padre; la cascada se maneja mediante valueChanges y los controles reactivos deben habilitarse/deshabilitarse con control.enable()/control.disable(); usar clases shared-select/shared-disabled y [attr.aria-disabled] para accesibilidad.
 - Al poblar los selects de país/provincia/municipio/código postal, habilita/deshabilita los Angular FormControls aguas abajo usando control.enable()/control.disable() para que los selects aparezcan inactivos hasta que se seleccione el padre.
+- El cliente Angular debe enviar la traducción del idioma actual al crear registros.
 
 ## Configuración del Sistema
 - El término "negocio" en la UI se refiere a SystemConfiguration (SystemConfigurationDTO.nombreNegocio) y no a una entidad Negocio separada; poblar el select de negocio desde SystemConfigurationService y asegurar que el componente use DTOs de SystemConfiguration.
