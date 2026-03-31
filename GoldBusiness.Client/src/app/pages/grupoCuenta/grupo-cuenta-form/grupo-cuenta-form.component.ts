@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { skip } from 'rxjs/operators';
+import { skip, finalize } from 'rxjs/operators';
 import { GrupoCuentaService, GrupoCuentaDTO } from '../../../services/grupo-cuenta.service';
 import { TranslationService } from '../../../services/translation.service';
 import { LanguageService } from '../../../services/language.service';
@@ -16,7 +16,8 @@ export class GrupoCuentaFormComponent implements OnInit, OnDestroy {
   form: FormGroup;
   isEditMode = false;
   grupoId: number | null = null;
-  loading = false;
+  loading = false;   // lectura
+  saving = false;    // persistencia (guardar)
   error: string | null = null;
 
   private languageSubscription?: Subscription;
@@ -73,7 +74,6 @@ export class GrupoCuentaFormComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.grupoCuentaService.getById(this.grupoId).subscribe({
       next: (data) => {
-        // patchValue ignorará propiedades extras (como cancelado) — no usamos Activo en esta entidad
         this.form.patchValue({
           codigo: data.codigo,
           descripcion: data.descripcion
@@ -99,7 +99,7 @@ export class GrupoCuentaFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.loading = true;
+    this.saving = true;
     this.error = null;
 
     const raw = this.form.getRawValue();
@@ -117,27 +117,29 @@ export class GrupoCuentaFormComponent implements OnInit, OnDestroy {
     };
 
     if (this.isEditMode) {
-      this.grupoCuentaService.update(this.grupoId!, dto).subscribe({
-        next: () => {
-          this.router.navigate(['/nomencladores/grupo-cuenta']);
-        },
-        error: (err: any) => {
-          this.error = this.translate.translate('error.saving');
-          this.loading = false;
-          console.error('Error:', err);
-        }
-      });
+      this.grupoCuentaService.update(this.grupoId!, dto)
+        .pipe(finalize(() => this.saving = false))
+        .subscribe({
+          next: () => {
+            this.router.navigate(['/nomencladores/grupo-cuenta']);
+          },
+          error: (err: any) => {
+            this.error = this.translate.translate('error.saving');
+            console.error('Error:', err);
+          }
+        });
     } else {
-      this.grupoCuentaService.create(dto).subscribe({
-        next: () => {
-          this.router.navigate(['/nomencladores/grupo-cuenta']);
-        },
-        error: (err: any) => {
-          this.error = this.translate.translate('error.saving');
-          this.loading = false;
-          console.error('Error:', err);
-        }
-      });
+      this.grupoCuentaService.create(dto)
+        .pipe(finalize(() => this.saving = false))
+        .subscribe({
+          next: () => {
+            this.router.navigate(['/nomencladores/grupo-cuenta']);
+          },
+          error: (err: any) => {
+            this.error = this.translate.translate('error.saving');
+            console.error('Error:', err);
+          }
+        });
     }
   }
 
