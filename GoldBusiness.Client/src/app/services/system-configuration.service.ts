@@ -7,6 +7,8 @@ export interface Provincia { id: number; descripcion?: string; nombre?: string; 
 export interface Municipio { id: number; descripcion?: string; nombre?: string; provinciaId: number; }
 export interface CodigoPostal { id: number; codigo: string; municipioId: number; }
 
+export interface FormaJuridicaDTO { id: number; descripcion: string; }
+
 export interface SystemConfigurationDTO {
   id?: number;
   codigoSistema: string;
@@ -43,6 +45,10 @@ export interface SystemConfigurationDTO {
   tieneCuentasConfiguradas?: boolean;
   activo?: boolean;
   cancelado?: boolean;
+  // Presentation props (if backend sends them)
+  personaContacto?: string;
+  formaJuridicaId?: number;
+  formaJuridica?: string;
 }
 
 @Injectable({
@@ -92,6 +98,11 @@ export class SystemConfigurationService {
 
   getCodigosPostalesByMunicipio(municipioId: number): Observable<CodigoPostal[]> {
     return this.apiService.get<CodigoPostal[]>(`codigopostal/by-municipio/${municipioId}`);
+  }
+
+  getFormasJuridicas(lang?: string): Observable<FormaJuridicaDTO[]> {
+    const q = lang ? `?lang=${encodeURIComponent(lang)}` : '';
+    return this.apiService.get<FormaJuridicaDTO[]>(`formaJuridica${q}`);
   }
 
   uploadLogo(codigoSistema: string, file: File): Observable<{ fileName: string }> {

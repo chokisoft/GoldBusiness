@@ -42,6 +42,8 @@ namespace GoldBusiness.Infrastructure.Context
         public DbSet<CuentaTranslation> CuentaTranslation { get; set; } = null!;
 
         // Estructura Organizacional
+        public DbSet<FormaJuridica> FormaJuridica { get; set; } = null!;
+        public DbSet<FormaJuridicaTranslation> FormaJuridicaTranslation { get; set; } = null!;
         public DbSet<Establecimiento> Establecimiento { get; set; } = null!;
         public DbSet<EstablecimientoTranslation> EstablecimientoTranslation { get; set; } = null!;
         public DbSet<Localidad> Localidad { get; set; } = null!;

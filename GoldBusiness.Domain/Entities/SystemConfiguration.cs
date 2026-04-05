@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using GoldBusiness.Domain.Exceptions;
 using GoldBusiness.Domain.Helpers;
 using GoldBusiness.Domain.Translation;
@@ -17,6 +18,9 @@ namespace GoldBusiness.Domain.Entities
         public string CodigoSistema { get; private set; } = string.Empty;
         public string Licencia { get; private set; } = string.Empty;
         public string NombreNegocio { get; private set; } = string.Empty;
+        public int FormaJuridicaId { get; private set; }
+        public FormaJuridica FormaJuridica { get; private set; } = null!;
+        public string PersonaContacto { get; private set; } = string.Empty;
         public string Direccion { get; private set; } = string.Empty;
 
         // Localización dependiente
@@ -35,6 +39,7 @@ namespace GoldBusiness.Domain.Entities
         public string Imagen { get; private set; } = string.Empty;
         public string Web { get; private set; } = string.Empty;
         public string Email { get; private set; } = string.Empty;
+
         public string Telefono { get; private set; } = string.Empty;
 
         public int? CuentaPagarId { get; private set; }
@@ -58,7 +63,9 @@ namespace GoldBusiness.Domain.Entities
             string codigoSistema,
             string licencia,
             string nombreNegocio,
-            string? direccion,
+            string personaContacto,
+            int formaJuridica,
+            string direccion,
             int paisId,
             int provinciaId,
             int municipioId,
@@ -66,14 +73,16 @@ namespace GoldBusiness.Domain.Entities
             string? imagen,
             string? web,
             string? email,
-            string? telefono,
+            string telefono,
             DateTime caducidad,
             string creadoPor)
         {
             SetCodigoSistema(codigoSistema);
             SetLicencia(licencia);
             SetNombreNegocio(nombreNegocio);
-            SetDireccion(direccion ?? string.Empty);
+            SetPersonaContacto(personaContacto);
+            SetDireccion(direccion);
+            SetFormaJuridica(formaJuridica);
             SetPais(paisId);
             SetProvincia(provinciaId);
             SetMunicipio(municipioId);
@@ -81,12 +90,17 @@ namespace GoldBusiness.Domain.Entities
             SetImagen(imagen ?? string.Empty);
             SetWeb(web ?? string.Empty);
             SetEmail(email ?? string.Empty);
-            SetTelefono(telefono ?? string.Empty);
+            SetTelefono(telefono);
             SetCaducidad(caducidad);
             EstablecerCreador(creadoPor);
 
             Activo = true;
             Cancelado = false;
+        }
+
+        public void SetFormaJuridica(int formaJuridicaId)
+        {
+            FormaJuridicaId = formaJuridicaId;
         }
 
         // Métodos de dominio para cambiar dependencias
@@ -155,12 +169,23 @@ namespace GoldBusiness.Domain.Entities
             NombreNegocio = nombreNegocio.Trim();
         }
 
+        public void SetPersonaContacto(string personaContacto)
+        {
+            if (string.IsNullOrWhiteSpace(personaContacto))
+                throw new DomainException("El nombre de la persona de contacto es obligatorio.");
+
+            if (personaContacto.Length > 256)
+                throw new DomainException("El nombre de la persona de contacto no puede exceder 256 caracteres.");
+
+            PersonaContacto = personaContacto.Trim();
+        }
+
         public void SetDireccion(string direccion)
         {
             if (!string.IsNullOrWhiteSpace(direccion) && direccion.Length > 512)
                 throw new DomainException("La dirección no puede exceder 512 caracteres.");
 
-            Direccion = direccion?.Trim() ?? string.Empty;
+            Direccion = direccion.Trim();
         }
 
         public void SetImagen(string imagen)
@@ -263,7 +288,7 @@ namespace GoldBusiness.Domain.Entities
                 }
             }
 
-            Telefono = telefono?.Trim() ?? string.Empty;
+            Telefono = telefono.Trim();
         }
 
         public void SetCaducidad(DateTime caducidad)
@@ -390,6 +415,7 @@ namespace GoldBusiness.Domain.Entities
         // 🔧 MÉTODOS DE ACTUALIZACIÓN
         public void Update(
             string nombreNegocio,
+            string personaContacto,
             string direccion,
             int provinciaId,
             int municipioId,
@@ -403,6 +429,7 @@ namespace GoldBusiness.Domain.Entities
             string modificadoPor)
         {
             SetNombreNegocio(nombreNegocio);
+            SetPersonaContacto(personaContacto); 
             SetDireccion(direccion);
             SetProvincia(provinciaId);
             SetMunicipio(municipioId);

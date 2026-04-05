@@ -52,6 +52,24 @@ namespace GoldBusiness.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "FormaJuridica",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Cancelado = table.Column<bool>(type: "bit", nullable: false),
+                    CreadoPor = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FechaHoraCreado = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModificadoPor = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FormaJuridica", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "GrupoCuenta",
                 columns: table => new
                 {
@@ -320,6 +338,31 @@ namespace GoldBusiness.Infrastructure.Migrations
                         name: "FK_RefreshToken_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FormaJuridicaTranslation",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FormaJuridicaId = table.Column<int>(type: "int", nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
+                    ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FechaHoraModificado = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FormaJuridicaTranslation", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_FormaJuridicaTranslation_FormaJuridica",
+                        column: x => x.FormaJuridicaId,
+                        principalTable: "FormaJuridica",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -1180,6 +1223,8 @@ namespace GoldBusiness.Infrastructure.Migrations
                     CodigoSistema = table.Column<string>(type: "nvarchar(3)", maxLength: 3, nullable: false),
                     Licencia = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     NombreNegocio = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FormaJuridicaId = table.Column<int>(type: "int", nullable: false),
+                    PersonaContacto = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Direccion = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
                     PaisId = table.Column<int>(type: "int", nullable: false),
                     ProvinciaId = table.Column<int>(type: "int", nullable: false),
@@ -1218,6 +1263,12 @@ namespace GoldBusiness.Infrastructure.Migrations
                         name: "FK_SystemConfiguration_CodigoPostal_CodigoPostalId",
                         column: x => x.CodigoPostalId,
                         principalTable: "CodigoPostal",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_SystemConfiguration_FormaJuridica_FormaJuridicaId",
+                        column: x => x.FormaJuridicaId,
+                        principalTable: "FormaJuridica",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -2219,6 +2270,12 @@ namespace GoldBusiness.Infrastructure.Migrations
                 column: "ProductoId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_FormaJuridicaTranslation_FormaJuridicaId_Language",
+                table: "FormaJuridicaTranslation",
+                columns: new[] { "FormaJuridicaId", "Language" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_GrupoCuenta",
                 table: "GrupoCuenta",
                 columns: new[] { "Codigo", "Cancelado" },
@@ -2277,6 +2334,12 @@ namespace GoldBusiness.Infrastructure.Migrations
                 name: "IX_LocalidadTranslation_LocalidadId_Language",
                 table: "LocalidadTranslation",
                 columns: new[] { "LocalidadId", "Language" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FormaJuridica",
+                table: "Moneda",
+                columns: new[] { "Descripcion", "Cancelado" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -2559,6 +2622,11 @@ namespace GoldBusiness.Infrastructure.Migrations
                 column: "CuentaPagarId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_SystemConfiguration_FormaJuridicaId",
+                table: "SystemConfiguration",
+                column: "FormaJuridicaId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_SystemConfiguration_MunicipioId",
                 table: "SystemConfiguration",
                 column: "MunicipioId");
@@ -2732,6 +2800,9 @@ namespace GoldBusiness.Infrastructure.Migrations
                 name: "FichaProducto");
 
             migrationBuilder.DropTable(
+                name: "FormaJuridicaTranslation");
+
+            migrationBuilder.DropTable(
                 name: "GrupoCuentaTranslation");
 
             migrationBuilder.DropTable(
@@ -2871,6 +2942,9 @@ namespace GoldBusiness.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "GrupoCuenta");
+
+            migrationBuilder.DropTable(
+                name: "FormaJuridica");
         }
     }
 }

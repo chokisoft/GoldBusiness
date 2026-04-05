@@ -2339,26 +2339,6 @@ export class TranslationService {
       'en': 'No countries available.',
       'fr': 'Aucun pays disponible.'
     },
-    'systemConfig.selectPaisToSeeProvincias': {
-      'es': 'Seleccione un país para ver provincias.',
-      'en': 'Select a country to see provinces.',
-      'fr': 'Sélectionnez un pays pour voir les provinces.'
-    },
-    'systemConfig.selectProvinciaToSeeMunicipios': {
-      'es': 'Seleccione una provincia para ver municipios.',
-      'en': 'Select a province to see municipalities.',
-      'fr': 'Sélectionnez une province pour voir les municipalités.'
-    },
-    'systemConfig.selectMunicipioToSeeCodigosPostales': {
-      'es': 'Seleccione un municipio para ver códigos postales.',
-      'en': 'Select a municipality to see postal codes.',
-      'fr': 'Sélectionnez une municipalité pour voir les codes postaux.'
-    },
-    'systemConfig.noPaisesDisponibles': {
-      'es': 'No hay países disponibles.',
-      'en': 'No countries available.',
-      'fr': 'Aucun pays disponible.'
-    },
     'provincia.selectPaisToSeeProvincias': {
       'es': 'Seleccione un país para ver provincias.',
       'en': 'Select a country to see provinces.',
@@ -2563,10 +2543,142 @@ export class TranslationService {
       'en': 'days remaining',
       'fr': 'jours restants'
     },
+    'systemConfig.personaContacto': {
+      'es': 'Persona de Contacto',
+      'en': 'Contact Person',
+      'fr': 'Personne de Contact'
+    },
+    'systemConfig.formaJuridica': {
+      'es': 'Forma Jurídica',
+      'en': 'Legal Form',
+      'fr': 'Forme Juridique'
+    },
+    'systemConfig.activo': {
+      'es': 'Activo',
+      'en': 'Active',
+      'fr': 'Actif'
+    },
+    'systemConfig.selectPaisToSeeProvincias': {
+      'es': 'Seleccione un país para ver provincias.',
+      'en': 'Select a country to see provinces.',
+      'fr': 'Sélectionnez un pays pour voir les provinces.'
+    },
+    'systemConfig.selectProvinciaToSeeMunicipios': {
+      'es': 'Seleccione una provincia para ver municipios.',
+      'en': 'Select a province to see municipalities.',
+      'fr': 'Sélectionnez une province pour voir les municipalités.'
+    },
+    'systemConfig.selectMunicipioToSeeCodigosPostales': {
+      'es': 'Seleccione un municipio para ver códigos postales.',
+      'en': 'Select a municipality to see postal codes.',
+      'fr': 'Sélectionnez une municipalité pour voir les codes postaux.'
+    },
+    'systemConfig.noPaisesDisponibles': {
+      'es': 'No hay países disponibles.',
+      'en': 'No countries available.',
+      'fr': 'Aucun pays disponible.'
+    },
+    'systemConfig.activoHelp': {
+      'es': 'Indica si el negocio está activo.',
+      'en': 'Indicates whether the business is active.',
+      'fr': 'Indique si l’entreprise est active.'
+    },
+    'systemConfig.codigoHelp': {
+      'es': 'Ingrese 3 caracteres alfanuméricos (ej: GOL-ERP-001)',
+      'en': 'Enter 3 alphanumeric characters (e.g. GOL-ERP-001)',
+      'fr': 'Entrez 3 caractères alphanumériques (p.ex. GOL-ERP-001)'
+    },
+    'systemConfig.formaJuridicaHelp': {
+      'es': 'Seleccione la forma jurídica del negocio.',
+      'en': 'Select the legal form of the business.',
+      'fr': 'Sélectionnez la forme juridique de l’entreprise.'
+    },
+    'systemConfig.placeholderPersonaContacto': {
+      'es': 'Nombre de la persona de contacto',
+      'en': 'Contact person name',
+      'fr': 'Nom de la personne de contact'
+    },
+    'systemConfig.personaContactoHelp': {
+      'es': 'Nombre de la persona responsable para comunicaciones y soporte.',
+      'en': 'Name of the person responsible for communications and support.',
+      'fr': 'Nom de la personne responsable des communications et du support.'
+    },
+    'systemConfig.caducidadHelp': {
+      'es': 'Fecha en la que la licencia dejará de ser válida.',
+      'en': 'Date when the license will expire.',
+      'fr': 'Date à laquelle la licence expirera.'
+    },
+    'systemConfig.licenciaHelp': {
+      'es': 'Código de licencia entregado por el proveedor; necesario para activar el sistema.',
+      'en': 'License code provided by the vendor; required to activate the system.',
+      'fr': 'Code de licence fourni par le fournisseur ; requis pour activer le système.'
+    },
+    'systemConfig.nombreNegocioHelp': {
+      'es': 'Nombre legal o comercial del negocio (visible en documentos).',
+      'en': 'Legal or trade name of the business (visible on documents).',
+      'fr': 'Nom légal ou commercial de l’entreprise (visible sur les documents).'
+    },
+    'systemConfig.emailHelp': {
+      'es': 'Email principal para notificaciones y contacto.',
+      'en': 'Primary email for notifications and contact.',
+      'fr': 'Email principal pour les notifications et le contact.'
+    },
+    'systemConfig.telefonoHelp': {
+      'es': 'Teléfono de contacto (incluya prefijo internacional si aplica).',
+      'en': 'Contact phone (include international prefix if applicable).',
+      'fr': 'Téléphone de contact (inclure l’indicatif international si applicable).'
+    },
+    'systemConfig.webHelp': {
+      'es': 'Sitio web oficial del negocio (use https://).',
+      'en': 'Official business website (use https://).',
+      'fr': 'Site web officiel de l’entreprise (utilisez https://).'
+    },
+    'systemConfig.imagenHelp': {
+      'es': 'URL pública del logo o nombre del archivo subido. Máx. 2MB.',
+      'en': 'Public URL of the logo or uploaded file name. Max 2MB.',
+      'fr': 'URL publique du logo ou nom du fichier téléchargé. Max 2Mo.'
+    },
+    'systemConfig.paisHelp': {
+      'es': 'País donde está localizado el negocio.',
+      'en': 'Country where the business is located.',
+      'fr': 'Pays où se trouve l’entreprise.'
+    },
+    'systemConfig.provinciaHelp': {
+      'es': 'Provincia o estado del negocio.',
+      'en': 'Province or state of the business.',
+      'fr': 'Province ou État de l’entreprise.'
+    },
+    'systemConfig.municipioHelp': {
+      'es': 'Municipio o localidad del negocio.',
+      'en': 'Municipality or locality of the business.',
+      'fr': 'Municipalité ou localité de l’entreprise.'
+    },
+    'systemConfig.codigoPostalHelp': {
+      'es': 'Código postal aplicable al domicilio del negocio.',
+      'en': 'Postal code applicable to the business address.',
+      'fr': 'Code postal applicable à l’adresse de l’entreprise.'
+    },
+    'systemConfig.direccionHelp': {
+      'es': 'Ingrese la dirección completa del negocio.',
+      'en': 'Enter the full business address.',
+      'fr': "Entrez l'adresse complète de l'entreprise."
+    },
+    'systemConfig.cuentaPagarHelp': {
+      'es': 'Cuenta contable predeterminada para registrar las cuentas por pagar.',
+      'en': 'Default accounting account for recording accounts payable.',
+      'fr': 'Compte comptable par défaut pour enregistrer les comptes fournisseurs.'
+    },
+    'systemConfig.cuentaCobrarHelp': {
+      'es': 'Cuenta contable predeterminada para registrar las cuentas por cobrar.',
+      'en': 'Default accounting account for recording accounts receivable.',
+      'fr': 'Compte comptable par défaut pour enregistrer les comptes clients.'
+    },
 
     // ═══════════════════════════════════════════════════════════
     // 🖼️ LOGO
     // ═══════════════════════════════════════════════════════════
+
+
     // ═══════════════════════════════════════════════════════════
     // 🏢 ESTABLECIMIENTO
     // ═══════════════════════════════════════════════════════════

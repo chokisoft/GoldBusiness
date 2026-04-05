@@ -46,9 +46,20 @@ namespace GoldBusiness.Domain.DTOs
         )]
         public string NombreNegocio { get; set; } = string.Empty;
 
+        [Required(ErrorMessageResourceType = typeof(ValidationMessages), ErrorMessageResourceName = nameof(ValidationMessages.Required))]
+        [Display(Name = nameof(ValidationMessages.Field_Descripcion), ResourceType = typeof(ValidationMessages))]
+        [StringLength(256,
+            ErrorMessageResourceType = typeof(ValidationMessages),
+            ErrorMessageResourceName = nameof(ValidationMessages.StringLengthMax)
+        )]
+        public string PersonaContacto { get; set; } = string.Empty;
+
+        [Required(ErrorMessageResourceType = typeof(ValidationMessages), ErrorMessageResourceName = nameof(ValidationMessages.Required))]
+        public int FormaJuridicaId { get; set; }
+
         [Display(Name = nameof(ValidationMessages.Field_Direccion), ResourceType = typeof(ValidationMessages))]
         [StringLength(512, ErrorMessageResourceType = typeof(ValidationMessages), ErrorMessageResourceName = nameof(ValidationMessages.StringLengthMax))]
-        public string? Direccion { get; set; }
+        public string Direccion { get; set; } = string.Empty;
 
         // NUEVO: IDs dependientes
         [Required(ErrorMessageResourceType = typeof(ValidationMessages), ErrorMessageResourceName = nameof(ValidationMessages.Required))]
@@ -64,6 +75,8 @@ namespace GoldBusiness.Domain.DTOs
         public int CodigoPostalId { get; set; }
 
         // Propiedades de presentación (para el cliente)
+        public string? FormaJuridica { get; set; }
+
         public string? Municipio { get; set; }
         public string? Provincia { get; set; }
         public string? CodPostal { get; set; }
@@ -84,7 +97,7 @@ namespace GoldBusiness.Domain.DTOs
 
         [Display(Name = nameof(ValidationMessages.Field_Telefono1), ResourceType = typeof(ValidationMessages))]
         [StringLength(20, ErrorMessageResourceType = typeof(ValidationMessages), ErrorMessageResourceName = nameof(ValidationMessages.TelefonoLongitud))]
-        public string? Telefono { get; set; }
+        public string Telefono { get; set; } = string.Empty;
 
         [Required(ErrorMessageResourceType = typeof(ValidationMessages), ErrorMessageResourceName = nameof(ValidationMessages.Required))]
         [Display(Name = nameof(ValidationMessages.Field_CuentaPagar), ResourceType = typeof(ValidationMessages))]

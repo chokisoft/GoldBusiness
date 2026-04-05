@@ -81,6 +81,8 @@ namespace GoldBusiness.Application.Services
                 dto.CodigoSistema,
                 dto.Licencia,
                 dto.NombreNegocio,
+                dto.PersonaContacto,
+                dto.FormaJuridicaId,
                 dto.Direccion,
                 dto.PaisId,
                 dto.ProvinciaId,
@@ -98,7 +100,7 @@ namespace GoldBusiness.Application.Services
                 entity.AddOrUpdateTranslation(
                 lang,
                 dto.NombreNegocio,
-                dto.Direccion ?? string.Empty,
+                dto.Direccion,
                 string.Empty,
                 string.Empty,
                 creador);
@@ -146,21 +148,23 @@ namespace GoldBusiness.Application.Services
 
             entity.SetLicencia(dto.Licencia);
             entity.SetNombreNegocio(dto.NombreNegocio);
-            entity.SetDireccion(dto.Direccion ?? string.Empty);
+            entity.SetDireccion(dto.Direccion);
+            entity.SetPersonaContacto(dto.PersonaContacto);
+            entity.SetFormaJuridica(dto.FormaJuridicaId);
             entity.SetProvincia(dto.ProvinciaId);
             entity.SetMunicipio(dto.MunicipioId);
             entity.SetCodigoPostal(dto.CodigoPostalId);
             entity.SetImagen(dto.Imagen ?? string.Empty);
             entity.SetWeb(dto.Web ?? string.Empty);
             entity.SetEmail(dto.Email ?? string.Empty);
-            entity.SetTelefono(dto.Telefono ?? string.Empty);
+            entity.SetTelefono(dto.Telefono);
             entity.SetCaducidad(dto.Caducidad);
             entity.SetCuentas(dto.CuentaPagarId, dto.CuentaCobrarId);
 
             entity.AddOrUpdateTranslation(
                 lang,
                 dto.NombreNegocio,
-                dto.Direccion ?? string.Empty,
+                dto.Direccion,
                 string.Empty,
                 string.Empty,
                 user);
@@ -237,15 +241,18 @@ namespace GoldBusiness.Application.Services
                 CodigoSistema = s.CodigoSistema,
                 Licencia = s.Licencia,
                 NombreNegocio = s.GetNombreNegocio(lang),
+                PersonaContacto = s.PersonaContacto,
                 Direccion = s.GetDireccion(lang),
 
                 // Mapear IDs
+                FormaJuridicaId = s.FormaJuridicaId,
                 PaisId = s.PaisId,
                 ProvinciaId = s.ProvinciaId,
                 MunicipioId = s.MunicipioId,
                 CodigoPostalId = s.CodigoPostalId,
 
                 // Propiedades de presentación (texto)
+                FormaJuridica = s.FormaJuridica != null ? s.FormaJuridica.GetDescripcion(lang) : null,
                 Municipio = s.GetMunicipio(lang),
                 Provincia = s.GetProvincia(lang),
                 CodPostal = s.CodigoPostal?.Codigo ?? string.Empty,

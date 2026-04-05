@@ -867,3 +867,45 @@ select.shared-select {
     min-height: 65px;
   }
 }
+
+/* Scoped tweaks for SystemConfiguration: support both inline-style rows and .form-row-inline */
+.system-config-form .form-row[style*="display:flex"],
+.system-config-form .form-row-inline {
+  align-items: flex-start !important; /* help text aligned with left control */
+}
+
+  /* Ensure checkbox group is column-based and matches input height */
+  .system-config-form .form-row[style*="display:flex"] .form-group.checkbox-group,
+  .system-config-form .form-row-inline .form-group.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    min-height: 48px;
+  }
+
+  /* Nudge checkbox label down so the checkbox label visually centers with the date input */
+  .system-config-form .form-row[style*="display:flex"] .checkbox-label,
+  .system-config-form .form-row-inline .checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    height: 48px;
+    gap: 0.5rem;
+    margin-top: 29px; /* ajuste fino: prueba 14/16/18/20 según tu preferencia */
+    padding: 0;
+  }
+
+  /* Force checkbox size and remove unexpected margins */
+  .system-config-form .form-row[style*="display:flex"] input[type="checkbox"],
+  .system-config-form .form-row-inline input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    vertical-align: middle;
+  }
+
+  /* Align helper text with the left control’s help line */
+  .system-config-form .form-row[style*="display:flex"] .form-group.checkbox-group .form-text.text-muted,
+  .system-config-form .form-row-inline .form-group.checkbox-group .form-text.text-muted {
+    margin-top: 0.25rem;
+    align-self: flex-start;
+  }

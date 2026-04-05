@@ -17,24 +17,42 @@
         <h3 class="section-title">📋 {{ 'systemConfig.infoBasica' | translate }}</h3>
 
         <div class="info-basica-layout">
-          <!-- COLUMNA IZQUIERDA: Código → Nombre → Fecha -->
+          <!-- COLUMNA IZQUIERDA -->
           <div class="info-basica-column">
-            <!-- Código del Sistema -->
-            <div class="form-group">
-              <label for="codigoSistema" class="form-label">{{ 'systemConfig.codigoSistema' | translate }} *</label>
-              <input type="text"
-                     id="codigoSistema"
-                     formControlName="codigoSistema"
-                     class="form-control"
-                     maxlength="3"
-                     [class.is-invalid]="form.get('codigoSistema')?.invalid && form.get('codigoSistema')?.touched"
-                     placeholder="{{ 'systemConfig.placeholderCodigoSistema' | translate }}" />
-              <div class="invalid-feedback" *ngIf="form.get('codigoSistema')?.invalid && form.get('codigoSistema')?.touched">
-                {{ getErrorMessage('codigoSistema') }}
+            <!-- ROW: Código corto + Forma Jurídica -->
+            <div class="form-row" style="display:flex; gap:0.75rem; align-items:flex-start;">
+              <div style="flex: 0 0 160px;">
+                <label for="codigoSistema" class="form-label">{{ 'systemConfig.codigoSistema' | translate }} *</label>
+                <input type="text"
+                       id="codigoSistema"
+                       formControlName="codigoSistema"
+                       class="form-control"
+                       maxlength="3"
+                       [class.is-invalid]="form.get('codigoSistema')?.invalid && form.get('codigoSistema')?.touched"
+                       placeholder="{{ 'systemConfig.placeholderCodigoSistema' | translate }}" />
+                <div class="invalid-feedback" *ngIf="form.get('codigoSistema')?.invalid && form.get('codigoSistema')?.touched">
+                  {{ getErrorMessage('codigoSistema') }}
+                </div>
+                <small class="form-text text-muted">{{ 'systemConfig.codigoHelp' | translate }}</small>
+              </div>
+
+              <div style="flex: 1;">
+                <label for="formaJuridicaId" class="form-label">{{ 'systemConfig.formaJuridica' | translate }} *</label>
+                <select id="formaJuridicaId" formControlName="formaJuridicaId" class="form-control shared-select"
+                        [class.is-invalid]="form.get('formaJuridicaId')?.invalid && form.get('formaJuridicaId')?.touched">
+                  <option [ngValue]="null">{{ 'common.select' | translate }}</option>
+                  <option *ngFor="let f of formasJuridicas" [ngValue]="f.id">
+                    {{ f.descripcion }}
+                  </option>
+                </select>
+                <small class="form-text text-muted">{{ 'systemConfig.formaJuridicaHelp' | translate }}</small>
+                <div class="invalid-feedback" *ngIf="form.get('formaJuridicaId')?.invalid && form.get('formaJuridicaId')?.touched">
+                  {{ getErrorMessage('formaJuridicaId') }}
+                </div>
               </div>
             </div>
 
-            <!-- Nombre del Negocio -->
+            <!-- Nombre negocio -->
             <div class="form-group">
               <label for="nombreNegocio" class="form-label">{{ 'systemConfig.nombreNegocio' | translate }} *</label>
               <input type="text" id="nombreNegocio" formControlName="nombreNegocio" class="form-control"
@@ -43,36 +61,50 @@
               <div class="invalid-feedback" *ngIf="form.get('nombreNegocio')?.invalid && form.get('nombreNegocio')?.touched">
                 {{ getErrorMessage('nombreNegocio') }}
               </div>
+              <small class="form-text text-muted">{{ 'systemConfig.nombreNegocioHelp' | translate }}</small>
             </div>
 
-            <!-- Fecha de Caducidad -->
+            <!-- Persona contacto -->
             <div class="form-group">
-              <label for="caducidad" class="form-label">{{ 'systemConfig.caducidad' | translate }} *</label>
-              <input type="date" id="caducidad" formControlName="caducidad" class="form-control"
-                     [class.is-invalid]="form.get('caducidad')?.invalid && form.get('caducidad')?.touched" />
-              <div class="invalid-feedback" *ngIf="form.get('caducidad')?.invalid && form.get('caducidad')?.touched">
-                {{ getErrorMessage('caducidad') }}
+              <label for="personaContacto" class="form-label">{{ 'systemConfig.personaContacto' | translate }}</label>
+              <input type="text" id="personaContacto" formControlName="personaContacto" class="form-control"
+                     [class.is-invalid]="form.get('personaContacto')?.invalid && form.get('personaContacto')?.touched"
+                     placeholder="{{ 'systemConfig.placeholderPersonaContacto' | translate }}" />
+              <div class="invalid-feedback" *ngIf="form.get('personaContacto')?.invalid && form.get('personaContacto')?.touched">
+                {{ getErrorMessage('personaContacto') }}
               </div>
+              <small class="form-text text-muted">{{ 'systemConfig.personaContactoHelp' | translate }}</small>
             </div>
 
-            <!-- Checkbox Activo (mapeado al backend: activo = !cancelado) -->
-            <div class="form-group checkbox-group" style="align-items:center; margin-top:0.5rem;">
-              <label class="checkbox-label">
-                <input type="checkbox" formControlName="activo" class="form-checkbox" />
-                <span>{{ 'systemConfig.activo' | translate }}</span>
-              </label>
-              <small class="form-text text-muted">{{ 'systemConfig.activoHelp' | translate }}</small>
+            <!-- Caducidad + Activo (checkbox INLINE, ayuda debajo del checkbox) -->
+            <div class="form-row form-row-inline">
+              <div class="form-group" style="flex: 0 0 220px;">
+                <label for="caducidad" class="form-label">{{ 'systemConfig.caducidad' | translate }} *</label>
+                <input type="date" id="caducidad" formControlName="caducidad" class="form-control"
+                       [class.is-invalid]="form.get('caducidad')?.invalid && form.get('caducidad')?.touched" />
+                <div class="invalid-feedback" *ngIf="form.get('caducidad')?.invalid && form.get('caducidad')?.touched">
+                  {{ getErrorMessage('caducidad') }}
+                </div>
+                <small class="form-text text-muted">{{ 'systemConfig.caducidadHelp' | translate }}</small>
+              </div>
+
+              <div class="form-group checkbox-group" style="flex: 0 0 auto;">
+                <label class="checkbox-label">
+                  <input type="checkbox" formControlName="activo" class="form-checkbox" />
+                  <span>{{ 'systemConfig.activo' | translate }}</span>
+                </label>
+                <small class="form-text text-muted">{{ 'systemConfig.activoHelp' | translate }}</small>
+              </div>
             </div>
           </div>
 
-          <!-- COLUMNA DERECHA: Logo -->
+          <!-- COLUMNA DERECHA: Logo (sin cambios funcionales) -->
           <div class="logo-column-wrapper">
             <div class="logo-title-outside">
               🖼️ {{ 'systemConfig.imagen' | translate }}
             </div>
 
             <div class="logo-column-right">
-              <!-- Preview del logo -->
               <div class="logo-preview-container">
                 <img *ngIf="logoPreviewUrl"
                      [src]="logoPreviewUrl"
@@ -96,6 +128,7 @@
                   📁 {{ 'systemConfig.logoChooseFile' | translate }}
                 </button>
                 <small class="form-text">{{ 'systemConfig.logoFormatHint' | translate }}</small>
+                <!--<small class="form-text text-muted">{{ 'systemConfig.imagenHelp' | translate }}</small>-->
               </div>
 
               <div *ngIf="form.get('imagen')?.value && !selectedLogoFile" class="current-logo-name" style="display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-top:0.5rem;">
@@ -125,6 +158,7 @@
           <div class="invalid-feedback" *ngIf="form.get('licencia')?.invalid && form.get('licencia')?.touched">
             {{ getErrorMessage('licencia') }}
           </div>
+          <small class="form-text text-muted">{{ 'systemConfig.licenciaHelp' | translate }}</small>
         </div>
       </div>
 
@@ -139,8 +173,9 @@
                     class="form-control"
                     rows="2"
                     placeholder="{{ 'systemConfig.placeholderDireccion' | translate }}"></textarea>
+          <small class="form-text text-muted">{{ 'systemConfig.direccionHelp' | translate }}</small>
         </div>
-
+        
         <div class="form-row">
           <div class="form-group">
             <label for="paisId" class="form-label">{{ 'systemConfig.pais' | translate }} *</label>
@@ -150,9 +185,16 @@
                 {{ pais.descripcion }}
               </option>
             </select>
-            <small class="form-text" *ngIf="paises.length === 0">{{ 'systemConfig.noPaisesDisponibles' | translate }}</small>
-            <small class="form-text" *ngIf="!form.get('paisId')?.value">{{ 'systemConfig.selectPaisToSeeProvincias' | translate }}</small>
+
+            <!-- Si no hay países, mostrar mensaje; si existen, siempre mostrar el help -->
+            <ng-container *ngIf="paises.length === 0; else paisHelpTpl">
+              <small class="form-text text-muted">{{ 'systemConfig.noPaisesDisponibles' | translate }}</small>
+            </ng-container>
+            <ng-template #paisHelpTpl>
+              <small class="form-text text-muted">{{ 'systemConfig.paisHelp' | translate }}</small>
+            </ng-template>
           </div>
+
           <div class="form-group">
             <label for="provinciaId" class="form-label">{{ 'systemConfig.provincia' | translate }} *</label>
             <select id="provinciaId" formControlName="provinciaId" class="form-control shared-select"
@@ -162,8 +204,13 @@
                 {{ provincia.descripcion }}
               </option>
             </select>
-            <small class="form-text" *ngIf="!form.get('provinciaId')?.value">{{ 'systemConfig.selectProvinciaToSeeMunicipios' | translate }}</small>
-            <small *ngIf="loadingProvincias">⏳ {{ 'common.loading' | translate }}...</small>
+
+            <ng-container *ngIf="provincias.length === 0; else provHelp">
+              <small class="form-text text-muted">{{ 'systemConfig.selectPaisToSeeProvincias' | translate }}</small>
+            </ng-container>
+            <ng-template #provHelp>
+              <small class="form-text text-muted">{{ 'systemConfig.provinciaHelp' | translate }}</small>
+            </ng-template>
           </div>
         </div>
 
@@ -177,8 +224,13 @@
                 {{ municipio.descripcion }}
               </option>
             </select>
-            <small class="form-text" *ngIf="!form.get('municipioId')?.value">{{ 'systemConfig.selectMunicipioToSeeCodigosPostales' | translate }}</small>
-            <small *ngIf="loadingMunicipios">⏳ {{ 'common.loading' | translate }}...</small>
+
+            <ng-container *ngIf="municipios.length === 0; else munHelp">
+              <small class="form-text text-muted">{{ 'systemConfig.selectProvinciaToSeeMunicipios' | translate }}</small>
+            </ng-container>
+            <ng-template #munHelp>
+              <small class="form-text text-muted">{{ 'systemConfig.municipioHelp' | translate }}</small>
+            </ng-template>
           </div>
 
           <div class="form-group">
@@ -190,7 +242,13 @@
                 {{ codigo.codigo }}
               </option>
             </select>
-            <small *ngIf="loadingCodigosPostales">⏳ {{ 'common.loading' | translate }}...</small>
+
+            <ng-container *ngIf="codigosPostales.length === 0; else cpHelp">
+              <small class="form-text text-muted">{{ 'systemConfig.selectMunicipioToSeeCodigosPostales' | translate }}</small>
+            </ng-container>
+            <ng-template #cpHelp>
+              <small class="form-text text-muted">{{ 'systemConfig.codigoPostalHelp' | translate }}</small>
+            </ng-template>
           </div>
         </div>
 
@@ -199,14 +257,15 @@
             <label for="email" class="form-label">{{ 'systemConfig.email' | translate }}</label>
             <input type="email" id="email" formControlName="email" class="form-control"
                    [class.is-invalid]="form.get('email')?.invalid && form.get('email')?.touched"
-                   placeholder="correo@empresa.com" />
+                   placeholder="{{ 'common.emailPlaceholder' | translate }}" />
             <div class="invalid-feedback" *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
               {{ getErrorMessage('email') }}
             </div>
+            <small class="form-text text-muted">{{ 'systemConfig.emailHelp' | translate }}</small>
           </div>
           <div class="form-group">
             <label for="telefono" class="form-label">{{ 'systemConfig.telefono' | translate }}</label>
-            <input type="tel" id="telefono" formControlName="telefono" class="form-control" placeholder="+1 (555) 123-4567" />
+            <input type="tel" id="telefono" formControlName="telefono" class="form-control" placeholder="{{ 'common.telefonoPlaceholder' | translate }}" />
             <div class="form-text text-muted" *ngIf="selectedPais">
               {{ selectedPais.formatoEjemplo }} <small>({{ selectedPais.formatoTelefono }})</small>
             </div>
@@ -214,16 +273,18 @@
               <div *ngIf="form.get('telefono')?.hasError('telefonoInvalid')">{{ getErrorMessage('telefono') }}</div>
               <div *ngIf="form.get('telefono')?.hasError('maxlength')">{{ getErrorMessage('telefono') }}</div>
             </div>
+            <small class="form-text text-muted">{{ 'systemConfig.telefonoHelp' | translate }}</small>
           </div>
         </div>
 
         <div class="form-group">
           <label for="web" class="form-label">{{ 'systemConfig.web' | translate }}</label>
-          <input type="url" id="web" formControlName="web" class="form-control" placeholder="https://www.empresa.com" />
+          <input type="url" id="web" formControlName="web" class="form-control" placeholder="{{ 'common.webPlaceholder' | translate }}" />
+          <small class="form-text text-muted">{{ 'systemConfig.webHelp' | translate }}</small>
         </div>
       </div>
 
-      <!-- Sección de Cuentas Contables -->
+      <!-- Sección de Cuentas Contables (sin cambios) -->
       <div class="form-section">
         <h3 class="section-title">💰 {{ 'systemConfig.cuentasContables' | translate }}</h3>
 
@@ -244,6 +305,7 @@
             <div class="invalid-feedback" *ngIf="form.get('cuentaPagarId')?.invalid && form.get('cuentaPagarId')?.touched">
               {{ getErrorMessage('cuentaPagarId') }}
             </div>
+            <small class="form-text text-muted">{{ 'systemConfig.cuentaPagarHelp' | translate }}</small>
           </div>
 
           <div class="form-group">
@@ -259,6 +321,7 @@
             <div class="invalid-feedback" *ngIf="form.get('cuentaCobrarId')?.invalid && form.get('cuentaCobrarId')?.touched">
               {{ getErrorMessage('cuentaCobrarId') }}
             </div>
+            <small class="form-text text-muted">{{ 'systemConfig.cuentaCobrarHelp' | translate }}</small>
           </div>
         </div>
       </div>
@@ -275,3 +338,4 @@
     </form>
   </div>
 </div>
+

@@ -2,7 +2,6 @@
 using GoldBusiness.Domain.Translation;
 using GoldBusiness.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace GoldBusiness.Infrastructure.Data
 {
@@ -15,6 +14,7 @@ namespace GoldBusiness.Infrastructure.Data
                 logger.LogInformation("Iniciando seed de datos maestros...");
 
                 // Commons
+                await SeedFormaJuridicaAsync(context, logger);
                 await SeedPaisAsync(context, logger);
                 await SeedProvinciaAsync(context, logger);
                 await SeedMunicipioAsync(context, logger);
@@ -69,6 +69,84 @@ namespace GoldBusiness.Infrastructure.Data
                 throw;
             }
         }
+
+        #region FormaJuridica
+
+        private static async Task SeedFormaJuridicaAsync(ApplicationDbContext context, ILogger logger)
+        {
+            if (context.FormaJuridica.Any())
+            {
+                logger.LogInformation("FormaJuridica ya tiene datos, omitiendo seed.");
+                return;
+            }
+
+            var formaJuridica = new[]
+            {
+                new FormaJuridica("PERSONA FÍSICA CON ACTIVIDAD EMPRESARIAL", "system"),
+                new FormaJuridica("AUTÓNOMO / EMPRESARIO INDIVIDUAL", "system"),
+                new FormaJuridica("SOCIEDAD COLECTIVA", "system"),
+                new FormaJuridica("SOCIEDAD EN COMANDITA", "system"),
+                new FormaJuridica("SOCIEDAD DE RESPONSABILIDAD LIMITADA (SRL, GMBH, SARL, LTD)", "system"),
+                new FormaJuridica("SOCIEDAD ANÓNIMA (SA, S.A. DE C.V., AG, PLC)", "system"),
+                new FormaJuridica("SOCIEDAD POR ACCIONES SIMPLIFICADA (S.A.S.)", "system"),
+                new FormaJuridica("COOPERATIVA", "system"),
+                new FormaJuridica("SOCIEDAD CIVIL", "system"),
+                new FormaJuridica("ASOCIACIÓN", "system"),
+            };
+
+            context.FormaJuridica.AddRange(formaJuridica);
+            await context.SaveChangesAsync();
+
+            var traducciones = new List<FormaJuridicaTranslation>
+            {
+                new(formaJuridica[0].Id, "es", "PERSONA FÍSICA CON ACTIVIDAD EMPRESARIAL", "system"),
+                new(formaJuridica[0].Id, "en", "SOLE PROPRIETOR / INDIVIDUAL ENTREPRENEUR", "system"),
+                new(formaJuridica[0].Id, "fr", "ENTREPRENEUR INDIVIDUEL / PERSONNE PHYSIQUE", "system"),
+
+                new(formaJuridica[1].Id, "es", "AUTÓNOMO / EMPRESARIO INDIVIDUAL", "system"),
+                new(formaJuridica[1].Id, "en", "SELF-EMPLOYED / SOLE TRADER", "system"),
+                new(formaJuridica[1].Id, "fr", "TRAVAILLEUR INDÉPENDANT / ENTREPRENEUR INDIVIDUEL", "system"),
+
+                new(formaJuridica[2].Id, "es", "SOCIEDAD COLECTIVA", "system"),
+                new(formaJuridica[2].Id, "en", "GENERAL PARTNERSHIP", "system"),
+                new(formaJuridica[2].Id, "fr", "SOCIÉTÉ EN NOM COLLECTIF", "system"),
+
+                new(formaJuridica[3].Id, "es", "SOCIEDAD EN COMANDITA", "system"),
+                new(formaJuridica[3].Id, "en", "LIMITED PARTNERSHIP", "system"),
+                new(formaJuridica[3].Id, "fr", "SOCIÉTÉ EN COMMANDITE", "system"),
+
+                new(formaJuridica[4].Id, "es", "SOCIEDAD DE RESPONSABILIDAD LIMITADA (SRL)", "system"),
+                new(formaJuridica[4].Id, "en", "LIMITED LIABILITY COMPANY (LLC, GMBH, SARL, LTD)", "system"),
+                new(formaJuridica[4].Id, "fr", "SOCIÉTÉ À RESPONSABILITÉ LIMITÉE (SARL, GMBH, LTD)", "system"),
+
+                new(formaJuridica[5].Id, "es", "SOCIEDAD ANÓNIMA (SA, S.A. DE C.V.)", "system"),
+                new(formaJuridica[5].Id, "en", "CORPORATION / PUBLIC LIMITED COMPANY (PLC, AG)", "system"),
+                new(formaJuridica[5].Id, "fr", "SOCIÉTÉ ANONYME (SA, AG)", "system"),
+
+                new(formaJuridica[6].Id, "es", "SOCIEDAD POR ACCIONES SIMPLIFICADA (S.A.S.)", "system"),
+                new(formaJuridica[6].Id, "en", "SIMPLIFIED JOINT STOCK COMPANY (SAS)", "system"),
+                new(formaJuridica[6].Id, "fr", "SOCIÉTÉ PAR ACTIONS SIMPLIFIÉE (SAS)", "system"),
+
+                new(formaJuridica[7].Id, "es", "COOPERATIVA", "system"),
+                new(formaJuridica[7].Id, "en", "COOPERATIVE", "system"),
+                new(formaJuridica[7].Id, "fr", "COOPÉRATIVE", "system"),
+
+                new(formaJuridica[8].Id, "es", "SOCIEDAD CIVIL", "system"),
+                new(formaJuridica[8].Id, "en", "CIVIL PARTNERSHIP", "system"),
+                new(formaJuridica[8].Id, "fr", "SOCIÉTÉ CIVILE", "system"),
+
+                new(formaJuridica[9].Id, "es", "ASOCIACIÓN", "system"),
+                new(formaJuridica[9].Id, "en", "ASSOCIATION / NON-PROFIT ORGANIZATION", "system"),
+                new(formaJuridica[9].Id, "fr", "ASSOCIATION", "system"),
+            };
+
+            context.FormaJuridicaTranslation.AddRange(traducciones);
+            await context.SaveChangesAsync();
+
+            logger.LogInformation("Seed de Forma Juridica completado: {Count} formas jurídicas agregadas", formaJuridica.Length);
+        }
+
+        #endregion
 
         #region Pais
 
@@ -438,35 +516,6 @@ namespace GoldBusiness.Infrastructure.Data
 
         #endregion
 
-        /// <summary>
-        /// Trunca un string al largo máximo especificado
-        /// </summary>
-        private static string Truncar(string value, int maxLength)
-        {
-            if (string.IsNullOrEmpty(value)) return value;
-            return value.Length > maxLength ? value[..maxLength] : value;
-        }
-
-        /// <summary>
-        /// Parse CSV respetando comillas
-        /// </summary>
-        private static string[] ParseCsvLine(string line)
-        {
-            var result = new List<string>();
-            var current = new System.Text.StringBuilder();
-            bool inQuotes = false;
-
-            for (int i = 0; i < line.Length; i++)
-            {
-                char c = line[i];
-                if (c == '"') inQuotes = !inQuotes;
-                else if (c == ',' && !inQuotes) { result.Add(current.ToString()); current.Clear(); }
-                else current.Append(c);
-            }
-            result.Add(current.ToString());
-            return result.ToArray();
-        }
-
         #region GrupoCuenta
 
         private static async Task SeedGrupoCuentaAsync(ApplicationDbContext context, ILogger logger)
@@ -689,6 +738,10 @@ namespace GoldBusiness.Infrastructure.Data
             logger.LogInformation("✅ Seed Cuenta: {Count} cuentas, {Trans} traducciones", cuentas.Count, traducciones.Count);
         }
 
+        #endregion
+
+        #region SystemConfiguration
+
         private static async Task SeedSystemConfigurationAsync(ApplicationDbContext context, ILogger logger)
         {
             if (context.SystemConfiguration.Any())
@@ -765,12 +818,14 @@ namespace GoldBusiness.Infrastructure.Data
                 "CHK",
                 "uxi/LeQnoZmyHjpkrS2J7RgiO6dKhwdapmg5r7TuwpnDzq2FPwwOWbLwRU6zUcRME2XktTsXkNmonkrYHFFPzg==",
                 "CHOKISOFT SOLUCIONES TECNOLÓGICAS",
+                "ROLANDO FRAGELA HERVA",
+                2,
                 "CALLE 172 #17830 E/ 180 y 182, REPARTO 1RO DE MAYO",
                 firstPaisId,
                 firstProvinciaId,
                 firstMunicipioId,
                 firstCodigoPostalId,
-                "http://localhost/imagen/imagen.jpg",
+                "CHK.gif",
                 "http://localhost/",
                 "chokisoft@gmail.com",
                 "+5355152424",
@@ -1683,5 +1738,34 @@ namespace GoldBusiness.Infrastructure.Data
 
         #endregion
 
+
+        /// <summary>
+        /// Trunca un string al largo máximo especificado
+        /// </summary>
+        private static string Truncar(string value, int maxLength)
+        {
+            if (string.IsNullOrEmpty(value)) return value;
+            return value.Length > maxLength ? value[..maxLength] : value;
+        }
+
+        /// <summary>
+        /// Parse CSV respetando comillas
+        /// </summary>
+        private static string[] ParseCsvLine(string line)
+        {
+            var result = new List<string>();
+            var current = new System.Text.StringBuilder();
+            bool inQuotes = false;
+
+            for (int i = 0; i < line.Length; i++)
+            {
+                char c = line[i];
+                if (c == '"') inQuotes = !inQuotes;
+                else if (c == ',' && !inQuotes) { result.Add(current.ToString()); current.Clear(); }
+                else current.Append(c);
+            }
+            result.Add(current.ToString());
+            return result.ToArray();
+        }
     }
 }

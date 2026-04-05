@@ -20,6 +20,8 @@ namespace GoldBusiness.Infrastructure.Repositories
                 .Include(s => s.CuentaCobrar)
                     .ThenInclude(c => c.Translations)
                 .Include(s => s.Translations)
+                .Include(s => s.FormaJuridica)
+                    .ThenInclude(f => f.Translations)
                 .OrderBy(c => c.CodigoSistema)
                 .ToListAsync();
 
@@ -31,6 +33,8 @@ namespace GoldBusiness.Infrastructure.Repositories
                 .Include(s => s.CuentaCobrar)
                     .ThenInclude(c => c.Translations)
                 .Include(s => s.Translations)
+                .Include(s => s.FormaJuridica)
+                    .ThenInclude(f => f.Translations)
                 .Where(s => !s.Cancelado)
                 .AsQueryable();
 
@@ -60,6 +64,8 @@ namespace GoldBusiness.Infrastructure.Repositories
                 .Include(s => s.CuentaCobrar)
                     .ThenInclude(c => c.Translations)
                 .Include(s => s.Translations)
+                .Include(s => s.FormaJuridica)
+                    .ThenInclude(f => f.Translations)
                 .FirstOrDefaultAsync(s => s.Id == id);
 
         public async Task<SystemConfiguration?> GetByCodigoAsync(string codigo, bool includeCanceled = false)
@@ -70,6 +76,8 @@ namespace GoldBusiness.Infrastructure.Repositories
                 .Include(s => s.CuentaCobrar)
                     .ThenInclude(c => c.Translations)
                 .Include(s => s.Translations)
+                .Include(s => s.FormaJuridica)
+                    .ThenInclude(f => f.Translations)
                 .FirstOrDefaultAsync(s => s.CodigoSistema == codigo && (includeCanceled || !s.Cancelado));
         }
 
@@ -108,6 +116,12 @@ namespace GoldBusiness.Infrastructure.Repositories
                 .Query()
                 .Include(c => c.Translations)
                 .LoadAsync();
+
+            await _context.Entry(entity)
+                .Reference(e => e.FormaJuridica)
+                .Query()
+                .Include(f => f.Translations)
+                .LoadAsync();
         }
 
         public async Task UpdateAsync(SystemConfiguration entity)
@@ -130,6 +144,12 @@ namespace GoldBusiness.Infrastructure.Repositories
                 .Reference(e => e.CuentaCobrar)
                 .Query()
                 .Include(c => c.Translations)
+                .LoadAsync();
+
+            await _context.Entry(entity)
+                .Reference(e => e.FormaJuridica)
+                .Query()
+                .Include(f => f.Translations)
                 .LoadAsync();
         }
     }

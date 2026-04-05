@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import { skip } from 'rxjs/operators';
 import { CuentaService, CuentaDTO } from '../../../services/cuenta.service';
 import { LanguageService } from '../../../services/language.service';
-import { SystemConfigurationService, SystemConfigurationDTO, Pais } from '../../../services/system-configuration.service';
+import { SystemConfigurationService, SystemConfigurationDTO, Pais, FormaJuridicaDTO } from '../../../services/system-configuration.service';
 import { PaisService, PaisDTO } from '../../../services/pais.service';
 import { ProvinciaService, ProvinciaDTO } from '../../../services/provincia.service';
 import { MunicipioService, MunicipioDTO } from '../../../services/municipio.service';
@@ -35,6 +35,9 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
   municipios: MunicipioDTO[] = [];
   codigosPostales: CodigoPostalDTO[] = [];
 
+  formasJuridicas: FormaJuridicaDTO[] = [];
+  loadingFormasJuridicas = false;
+
   loadingProvincias = false;
   loadingMunicipios = false;
   loadingCodigosPostales = false;
@@ -63,6 +66,8 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
       codigoSistema: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(3), Validators.pattern(/^[A-Za-z0-9]{3}$/)]],
       licencia: ['', [Validators.required, Validators.maxLength(400)]],
       nombreNegocio: ['', [Validators.required, Validators.maxLength(256)]],
+      personaContacto: ['', [Validators.required, Validators.maxLength(256)]],
+      formaJuridicaId: [null, Validators.required],
       direccion: ['', Validators.maxLength(512)],
       paisId: [null, Validators.required],
       provinciaId: [{ value: null, disabled: true }, Validators.required],
@@ -83,6 +88,7 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
     this.setupFormSubscriptions();
     this.loadCuentas();
     this.loadPaises();
+    this.loadFormasJuridicas();
 
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
@@ -96,6 +102,7 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
       .subscribe(() => {
         this.loadCuentas();
         this.loadPaises();
+        this.loadFormasJuridicas();
         if (this.isEditMode) this.loadConfiguration();
       });
   }
@@ -170,6 +177,21 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
         this.loadCodigosPostales(municipioId);
       } else {
         cpControl?.disable({ emitEvent: false });
+      }
+    });
+  }
+
+  loadFormasJuridicas(): void {
+    this.loadingFormasJuridicas = true;
+    const lang = this.languageService.getCurrentLanguage();
+    this.systemConfigurationService.getFormasJuridicas(lang).subscribe({
+      next: data => {
+        this.formasJuridicas = data;
+        this.loadingFormasJuridicas = false;
+      },
+      error: err => {
+        console.error('Error al cargar formas jurídicas', err);
+        this.loadingFormasJuridicas = false;
       }
     });
   }
@@ -295,6 +317,8 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
           codigoSistema: data.codigoSistema,
           licencia: data.licencia,
           nombreNegocio: data.nombreNegocio,
+          personaContacto: data.personaContacto ?? '',
+          formaJuridicaId: data.formaJuridicaId ?? null,
           direccion: data.direccion,
           imagen: data.imagen,
           web: data.web,
@@ -379,6 +403,7 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
         }
 
         if (this.isEditMode) this.form.get('codigoSistema')?.disable();
+        this.loading = false;
       },
       error: err => {
         this.error = 'Error al cargar configuración';
@@ -475,6 +500,7 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
       codigoSistema: 'Código Sistema',
       licencia: 'Licencia',
       nombreNegocio: 'Nombre negocio',
+      personaContacto: 'Persona contacto',
       paisId: 'País',
       provinciaId: 'Provincia',
       municipioId: 'Municipio',

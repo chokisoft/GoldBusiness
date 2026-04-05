@@ -13,6 +13,7 @@ namespace GoldBusiness.Infrastructure.Settings.Setting
             builder.Property(e => e.Licencia).IsRequired().HasMaxLength(100);
             builder.Property(e => e.NombreNegocio).IsRequired().HasMaxLength(256);
             builder.Property(e => e.Direccion).HasMaxLength(512);
+            builder.HasOne(x => x.FormaJuridica).WithMany().HasForeignKey(x => x.FormaJuridicaId).OnDelete(DeleteBehavior.Restrict);
             builder.HasOne(x => x.Pais).WithMany().HasForeignKey(x => x.PaisId).OnDelete(DeleteBehavior.Restrict);
             builder.HasOne(x => x.Provincia).WithMany().HasForeignKey(x => x.ProvinciaId).OnDelete(DeleteBehavior.Restrict);
             builder.HasOne(x => x.Municipio).WithMany().HasForeignKey(x => x.MunicipioId).OnDelete(DeleteBehavior.Restrict);

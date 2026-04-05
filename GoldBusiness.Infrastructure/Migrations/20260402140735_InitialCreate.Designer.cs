@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GoldBusiness.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260327222807_InitialCreate")]
+    [Migration("20260402140735_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -1044,6 +1044,40 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.ToTable("FichaProducto");
                 });
 
+            modelBuilder.Entity("GoldBusiness.Domain.Entities.FormaJuridica", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Cancelado")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("CreadoPor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("FechaHoraCreado")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FechaHoraModificado")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModificadoPor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FormaJuridica");
+                });
+
             modelBuilder.Entity("GoldBusiness.Domain.Entities.GrupoCuenta", b =>
                 {
                     b.Property<int>("Id")
@@ -1306,6 +1340,10 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.HasIndex("Codigo", "Cancelado")
                         .IsUnique()
                         .HasDatabaseName("IX_Moneda");
+
+                    b.HasIndex("Descripcion", "Cancelado")
+                        .IsUnique()
+                        .HasDatabaseName("IX_FormaJuridica");
 
                     b.ToTable("Moneda");
                 });
@@ -2270,6 +2308,9 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.Property<DateTime?>("FechaHoraModificado")
                         .HasColumnType("datetime");
 
+                    b.Property<int>("FormaJuridicaId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Imagen")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -2296,6 +2337,10 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.Property<int>("PaisId")
                         .HasColumnType("int");
 
+                    b.Property<string>("PersonaContacto")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("ProvinciaId")
                         .HasColumnType("int");
 
@@ -2316,6 +2361,8 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.HasIndex("CuentaCobrarId");
 
                     b.HasIndex("CuentaPagarId");
+
+                    b.HasIndex("FormaJuridicaId");
 
                     b.HasIndex("MunicipioId");
 
@@ -2724,6 +2771,51 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("EstablecimientoTranslation");
+                });
+
+            modelBuilder.Entity("GoldBusiness.Domain.Translation.FormaJuridicaTranslation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CreadoPor")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<DateTime>("FechaHoraCreado")
+                        .HasColumnType("datetime");
+
+                    b.Property<DateTime?>("FechaHoraModificado")
+                        .HasColumnType("datetime");
+
+                    b.Property<int>("FormaJuridicaId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Language")
+                        .IsRequired()
+                        .HasMaxLength(5)
+                        .HasColumnType("nvarchar(5)");
+
+                    b.Property<string>("ModificadoPor")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FormaJuridicaId", "Language")
+                        .IsUnique();
+
+                    b.ToTable("FormaJuridicaTranslation");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.GrupoCuentaTranslation", b =>
@@ -4219,6 +4311,12 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .HasConstraintName("FK_Configuracion_CuentaPagar");
 
+                    b.HasOne("GoldBusiness.Domain.Entities.FormaJuridica", "FormaJuridica")
+                        .WithMany()
+                        .HasForeignKey("FormaJuridicaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("GoldBusiness.Domain.Entities.Municipio", "Municipio")
                         .WithMany()
                         .HasForeignKey("MunicipioId")
@@ -4242,6 +4340,8 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.Navigation("CuentaCobrar");
 
                     b.Navigation("CuentaPagar");
+
+                    b.Navigation("FormaJuridica");
 
                     b.Navigation("Municipio");
 
@@ -4321,6 +4421,16 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .HasConstraintName("FK_EstablecimientoTranslation_Establecimiento");
 
                     b.Navigation("Establecimiento");
+                });
+
+            modelBuilder.Entity("GoldBusiness.Domain.Translation.FormaJuridicaTranslation", b =>
+                {
+                    b.HasOne("GoldBusiness.Domain.Entities.FormaJuridica", null)
+                        .WithMany("Translations")
+                        .HasForeignKey("FormaJuridicaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_FormaJuridicaTranslation_FormaJuridica");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.GrupoCuentaTranslation", b =>
@@ -4586,6 +4696,11 @@ namespace GoldBusiness.Infrastructure.Migrations
 
                     b.Navigation("Producto");
 
+                    b.Navigation("Translations");
+                });
+
+            modelBuilder.Entity("GoldBusiness.Domain.Entities.FormaJuridica", b =>
+                {
                     b.Navigation("Translations");
                 });
 
