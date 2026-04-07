@@ -28,7 +28,7 @@ namespace GoldBusiness.Application.Services
                 .Select(dto => dto!)
                 .ToList();
 
-        public async Task<(IEnumerable<CodigoPostalDTO> Items, int Total)> GetPagedAsync(int page, int pageSize, string termino = null, int? municipioId = null, string lang = "es")
+        public async Task<(IEnumerable<CodigoPostalDTO> Items, int Total)> GetPagedAsync(int page, int pageSize, string? termino = null, int? municipioId = null, string lang = "es")
         {
             var (items, total) = await _repo.GetPagedAsync(page, pageSize, termino, municipioId);
             var dtos = items.Select(cp => MapToDTO(cp, lang)).ToList();

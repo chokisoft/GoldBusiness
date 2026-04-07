@@ -38,7 +38,7 @@
 
               <div style="flex: 1;">
                 <label for="formaJuridicaId" class="form-label">{{ 'systemConfig.formaJuridica' | translate }} *</label>
-                <select id="formaJuridicaId" formControlName="formaJuridicaId" class="form-control shared-select"
+                <select id="formaJuridicaId" formControlName="formaJuridicaId" class="form-control"
                         [class.is-invalid]="form.get('formaJuridicaId')?.invalid && form.get('formaJuridicaId')?.touched">
                   <option [ngValue]="null">{{ 'common.select' | translate }}</option>
                   <option *ngFor="let f of formasJuridicas" [ngValue]="f.id">
@@ -179,7 +179,7 @@
         <div class="form-row">
           <div class="form-group">
             <label for="paisId" class="form-label">{{ 'systemConfig.pais' | translate }} *</label>
-            <select id="paisId" formControlName="paisId" class="form-control shared-select">
+            <select id="paisId" formControlName="paisId" class="form-control">
               <option [ngValue]="null">{{ 'common.select' | translate }}</option>
               <option *ngFor="let pais of paises" [ngValue]="pais.id">
                 {{ pais.descripcion }}
@@ -197,7 +197,7 @@
 
           <div class="form-group">
             <label for="provinciaId" class="form-label">{{ 'systemConfig.provincia' | translate }} *</label>
-            <select id="provinciaId" formControlName="provinciaId" class="form-control shared-select"
+            <select id="provinciaId" formControlName="provinciaId" class="form-control"
                     [attr.aria-disabled]="form.get('provinciaId')?.disabled">
               <option [ngValue]="null">{{ 'common.select' | translate }}</option>
               <option *ngFor="let provincia of provincias" [ngValue]="provincia.id">
@@ -217,7 +217,7 @@
         <div class="form-row">
           <div class="form-group">
             <label for="municipioId" class="form-label">{{ 'systemConfig.municipio' | translate }} *</label>
-            <select id="municipioId" formControlName="municipioId" class="form-control shared-select"
+            <select id="municipioId" formControlName="municipioId" class="form-control"
                     [attr.aria-disabled]="form.get('municipioId')?.disabled">
               <option [ngValue]="null">{{ 'common.select' | translate }}</option>
               <option *ngFor="let municipio of municipios" [ngValue]="municipio.id">
@@ -235,7 +235,7 @@
 
           <div class="form-group">
             <label for="codigoPostalId" class="form-label">{{ 'systemConfig.codigoPostal' | translate }} *</label>
-            <select id="codigoPostalId" formControlName="codigoPostalId" class="form-control shared-select"
+            <select id="codigoPostalId" formControlName="codigoPostalId" class="form-control"
                     [attr.aria-disabled]="form.get('codigoPostalId')?.disabled">
               <option [ngValue]="null">{{ 'common.select' | translate }}</option>
               <option *ngFor="let codigo of codigosPostales" [ngValue]="codigo.id">
