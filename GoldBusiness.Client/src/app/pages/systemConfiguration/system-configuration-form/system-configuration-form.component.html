@@ -64,18 +64,6 @@
               <small class="form-text text-muted">{{ 'systemConfig.nombreNegocioHelp' | translate }}</small>
             </div>
 
-            <!-- Persona contacto -->
-            <div class="form-group">
-              <label for="personaContacto" class="form-label">{{ 'systemConfig.personaContacto' | translate }}</label>
-              <input type="text" id="personaContacto" formControlName="personaContacto" class="form-control"
-                     [class.is-invalid]="form.get('personaContacto')?.invalid && form.get('personaContacto')?.touched"
-                     placeholder="{{ 'systemConfig.placeholderPersonaContacto' | translate }}" />
-              <div class="invalid-feedback" *ngIf="form.get('personaContacto')?.invalid && form.get('personaContacto')?.touched">
-                {{ getErrorMessage('personaContacto') }}
-              </div>
-              <small class="form-text text-muted">{{ 'systemConfig.personaContactoHelp' | translate }}</small>
-            </div>
-
             <!-- Caducidad + Activo (checkbox INLINE, ayuda debajo del checkbox) -->
             <div class="form-row form-row-inline">
               <div class="form-group" style="flex: 0 0 220px;">
@@ -152,7 +140,7 @@
           <textarea id="licencia"
                     formControlName="licencia"
                     class="form-control"
-                    rows="4"
+                    rows="2"
                     maxlength="400"
                     placeholder="{{ 'systemConfig.placeholderLicencia' | translate }}"></textarea>
           <div class="invalid-feedback" *ngIf="form.get('licencia')?.invalid && form.get('licencia')?.touched">
@@ -165,6 +153,18 @@
       <!-- Información de Contacto -->
       <div class="form-section">
         <h3 class="section-title">📞 {{ 'systemConfig.infoContacto' | translate }}</h3>
+
+        <!-- Persona contacto -->
+        <div class="personaContacto-full-width">
+          <label for="personaContacto" class="form-label">{{ 'systemConfig.personaContacto' | translate }}</label>
+          <input type="text" id="personaContacto" formControlName="personaContacto" class="form-control"
+                [class.is-invalid]="form.get('personaContacto')?.invalid && form.get('personaContacto')?.touched"
+                placeholder="{{ 'systemConfig.placeholderPersonaContacto' | translate }}" />
+          <div class="invalid-feedback" *ngIf="form.get('personaContacto')?.invalid && form.get('personaContacto')?.touched">
+            {{ getErrorMessage('personaContacto') }}
+          </div>
+          <small class="form-text text-muted">{{ 'systemConfig.personaContactoHelp' | translate }}</small>
+        </div>
 
         <div class="direccion-full-width">
           <label for="direccion" class="form-label">{{ 'systemConfig.direccion' | translate }}</label>

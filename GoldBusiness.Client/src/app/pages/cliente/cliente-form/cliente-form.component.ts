@@ -89,6 +89,14 @@ export class ClienteFormComponent implements OnInit, OnDestroy {
     this.subs.push(this.itemForm.get('provinciaId')!.valueChanges.subscribe(v => this.onProvinciaChange(v)));
     this.subs.push(this.itemForm.get('municipioId')!.valueChanges.subscribe(v => this.onMunicipioChange(v)));
 
+    this.subs.push(
+      this.itemForm.get('descripcion')!.valueChanges.subscribe(value => {
+        if (value && typeof value === 'string' && value !== value.toUpperCase()) {
+          this.itemForm.get('descripcion')?.setValue(value.toUpperCase(), { emitEvent: false });
+        }
+      })
+    );
+
     this.route.params.subscribe(params => {
       if (params['id']) {
         this.itemId = +params['id'];

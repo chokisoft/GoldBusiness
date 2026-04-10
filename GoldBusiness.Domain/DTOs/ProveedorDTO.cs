@@ -1,17 +1,17 @@
-using System.ComponentModel.DataAnnotations;
+ï»¿using System.ComponentModel.DataAnnotations;
 
 namespace GoldBusiness.Domain.DTOs
 {
     /// <summary>
     /// DTO para Proveedor - Representa un proveedor de productos/servicios.
-    /// Almacena información fiscal, bancaria y de contacto.
+    /// Almacena informaciÃ³n fiscal, bancaria y de contacto.
     /// </summary>
     public class ProveedorDTO
     {
         public int Id { get; set; }
 
         /// <summary>
-        /// Código único del proveedor (5 caracteres).
+        /// CÃ³digo Ãºnico del proveedor (5 caracteres).
         /// </summary>
         [Required(
             ErrorMessageResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages),
@@ -95,7 +95,7 @@ namespace GoldBusiness.Domain.DTOs
         )]
         public string? Direccion { get; set; }
 
-        // Relaciones geográficas por ID
+        // Relaciones geogrÃ¡ficas por ID
         public int? PaisId { get; set; }
         public string? PaisDescripcion { get; set; }
 
@@ -151,7 +151,7 @@ namespace GoldBusiness.Domain.DTOs
         public string? Email2 { get; set; }
 
         [Display(
-            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Telefono1),
+            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Telefono),
             ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
         )]
         [StringLength(50,
@@ -196,38 +196,16 @@ namespace GoldBusiness.Domain.DTOs
         )]
         public bool Cancelado { get; set; }
 
-        [Display(
-            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_CreadoPor),
-            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
-        )]
         public string CreadoPor { get; set; } = string.Empty;
-
-        [Display(
-            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_FechaCreacion),
-            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
-        )]
         public DateTime FechaHoraCreado { get; set; }
-
-        [Display(
-            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_ModificadoPor),
-            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
-        )]
         public string? ModificadoPor { get; set; }
-
-        [Display(
-            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_FechaModificacion),
-            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
-        )]
         public DateTime? FechaHoraModificado { get; set; }
 
-        [Display(
-            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_CantidadProductos),
-            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
-        )]
-        public int CantidadProductos { get; set; }
+        // âœ… NUEVO: traducciones opcionales (NO automÃ¡ticas para Cliente/Proveedor)
+        public List<TranslationInputDTO>? Translations { get; set; } = new List<TranslationInputDTO>();
 
         /// <summary>
-        /// Formato: "Código | Descripción".
+        /// Formato: "CÃ³digo | DescripciÃ³n".
         /// </summary>
         public string CodigoDescripcion => $"{Codigo} | {Descripcion}";
     }

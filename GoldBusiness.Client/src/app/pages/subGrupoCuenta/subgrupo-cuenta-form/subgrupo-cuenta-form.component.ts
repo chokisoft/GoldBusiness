@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { skip } from 'rxjs/operators';
+import { skip, finalize } from 'rxjs/operators';
 import { SubGrupoCuentaService, SubGrupoCuentaDTO } from '../../../services/subgrupo-cuenta.service';
 import { GrupoCuentaService, GrupoCuentaDTO } from '../../../services/grupo-cuenta.service';
 import { TranslationService } from '../../../services/translation.service';
@@ -17,7 +17,8 @@ export class SubGrupoCuentaFormComponent implements OnInit, OnDestroy {
   form: FormGroup;
   isEditMode = false;
   subgrupoId: number | null = null;
-  loading = false;
+  loading = false;   // ✅ Solo para cargar datos
+  saving = false;    // ✅ Solo para guardar datos
   loadingGrupos = true;
   error: string | null = null;
   gruposCuenta: GrupoCuentaDTO[] = [];
@@ -165,7 +166,7 @@ export class SubGrupoCuentaFormComponent implements OnInit, OnDestroy {
   loadSubGrupoCuenta(): void {
     if (!this.subgrupoId) return;
 
-    this.loading = true;
+    this.loading = true; // ✅ Usar loading para carga
     this.subGrupoCuentaService.getById(this.subgrupoId).subscribe({
       next: (data) => {
         const codigoGrupo = data.codigo.substring(0, 2);
@@ -190,11 +191,11 @@ export class SubGrupoCuentaFormComponent implements OnInit, OnDestroy {
           }
         }, 100);
 
-        this.loading = false;
+        this.loading = false; // ✅ Finalizar loading
       },
       error: (err: any) => {
         this.error = this.translate.translate('error.loading');
-        this.loading = false;
+        this.loading = false; // ✅ Finalizar loading en error
         console.error('Error:', err);
       }
     });
@@ -212,37 +213,47 @@ export class SubGrupoCuentaFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.loading = true;
+    this.saving = true; // ✅ Usar saving para guardado
     this.error = null;
 
     const rawValue = this.form.getRawValue();
+    const currentLang = this.languageService.getCurrentLanguage();
+
     const dto: SubGrupoCuentaDTO = {
       ...rawValue,
-      codigo: this.codigoCompleto
+      codigo: this.codigoCompleto,
+      translations: [
+        {
+          language: currentLang,
+          translatedText: rawValue.descripcion
+        }
+      ]
     };
 
     if (this.isEditMode) {
-      this.subGrupoCuentaService.update(this.subgrupoId!, dto).subscribe({
-        next: () => {
-          this.router.navigate(['/nomencladores/subgrupo-cuenta']);
-        },
-        error: (err: any) => {
-          this.error = this.translate.translate('error.saving');
-          this.loading = false;
-          console.error('Error:', err);
-        }
-      });
+      this.subGrupoCuentaService.update(this.subgrupoId!, dto)
+        .pipe(finalize(() => this.saving = false)) // ✅ Usar finalize para saving
+        .subscribe({
+          next: () => {
+            this.router.navigate(['/nomencladores/subgrupo-cuenta']);
+          },
+          error: (err: any) => {
+            this.error = this.translate.translate('error.saving');
+            console.error('Error:', err);
+          }
+        });
     } else {
-      this.subGrupoCuentaService.create(dto).subscribe({
-        next: () => {
-          this.router.navigate(['/nomencladores/subgrupo-cuenta']);
-        },
-        error: (err: any) => {
-          this.error = this.translate.translate('error.saving');
-          this.loading = false;
-          console.error('Error:', err);
-        }
-      });
+      this.subGrupoCuentaService.create(dto)
+        .pipe(finalize(() => this.saving = false)) // ✅ Usar finalize para saving
+        .subscribe({
+          next: () => {
+            this.router.navigate(['/nomencladores/subgrupo-cuenta']);
+          },
+          error: (err: any) => {
+            this.error = this.translate.translate('error.saving');
+            console.error('Error:', err);
+          }
+        });
     }
   }
 

@@ -6,35 +6,93 @@
     </div>
   </div>
 
-  <div class="alert alert-error" *ngIf="error">{{ error }}</div>
+  <div class="alert alert-error" *ngIf="error">
+    <span class="alert-icon">⚠️</span>
+    {{ error }}
+  </div>
 
   <div class="card">
     <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" class="form-container">
+      
+      <!-- Sección: Información Principal -->
+      <h3 class="section-title">{{ 'proveedores.mainInfo' | translate }}</h3>
+
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">{{ 'proveedores.codigo' | translate }} *</label>
-          <input class="form-control" formControlName="codigo" maxlength="5" placeholder="{{ 'proveedores.placeholderCodigo' | translate }}" />
+          <input class="form-control" 
+                 formControlName="codigo" 
+                 maxlength="5" 
+                 placeholder="{{ 'proveedores.placeholderCodigo' | translate }}" />
+          <small class="form-text">{{ 'proveedores.codigoHelp' | translate }}</small>
         </div>
+
         <div class="form-group">
           <label class="form-label">{{ 'proveedores.descripcion' | translate }} *</label>
-          <input class="form-control" formControlName="descripcion" maxlength="256" placeholder="{{ 'proveedores.placeholderDescripcion' | translate }}" />
+          <input class="form-control" 
+                 formControlName="descripcion" 
+                 maxlength="256" 
+                 placeholder="{{ 'proveedores.placeholderDescripcion' | translate }}" />
+          <small class="form-text">{{ 'proveedores.descripcionHelp' | translate }}</small>
         </div>
       </div>
 
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">{{ 'proveedores.nif' | translate }}</label>
-            <input class="form-control" formControlName="nif" maxlength="11" placeholder="{{ 'proveedores.placeholderNif' | translate }}" />
+          <input class="form-control" 
+                 formControlName="nif" 
+                 maxlength="11" 
+                 placeholder="{{ 'proveedores.placeholderNif' | translate }}" />
+          <small class="form-text">{{ 'proveedores.nifHelp' | translate }}</small>
         </div>
+
         <div class="form-group">
           <label class="form-label">{{ 'proveedores.iva' | translate }}</label>
-            <input class="form-control" formControlName="iva" type="text" inputmode="decimal" pattern="[0-9]+([\.,][0-9]{1,2})?" placeholder="{{ 'proveedores.placeholderIva' | translate }}" autocomplete="off" />
+          <input class="form-control" 
+                 formControlName="iva" 
+                 type="text" 
+                 inputmode="decimal" 
+                 pattern="[0-9]+([\.,][0-9]{1,2})?" 
+                 placeholder="{{ 'proveedores.ivaPlaceholder' | translate }}" 
+                 autocomplete="off" />
+          <small class="form-text">{{ 'proveedores.ivaHelp' | translate }}</small>
         </div>
       </div>
 
+      <!-- Sección: Información Bancaria -->
+      <h3 class="section-title">{{ 'proveedores.infoBancaria' | translate }}</h3>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">{{ 'proveedores.iban' | translate }}</label>
+          <input class="form-control" 
+                 formControlName="iban" 
+                 maxlength="27" 
+                 placeholder="{{ 'proveedores.placeholderIban' | translate }}" />
+          <small class="form-text">{{ 'proveedores.ibanHelp' | translate }}</small>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">{{ 'proveedores.bicoSwift' | translate }}</label>
+          <input class="form-control" 
+                 formControlName="bicoSwift" 
+                 maxlength="11" 
+                 placeholder="{{ 'proveedores.placeholderBicoSwift' | translate }}" />
+          <small class="form-text">{{ 'proveedores.bicoSwiftHelp' | translate }}</small>
+        </div>
+      </div>
+
+      <!-- Sección: Información de Ubicación -->
+      <h3 class="section-title">{{ 'proveedores.infoUbicacion' | translate }}</h3>
+
       <div class="form-group">
         <label class="form-label">{{ 'proveedores.direccion' | translate }}</label>
-        <textarea class="form-control" formControlName="direccion" rows="2"></textarea>
+        <textarea class="form-control" 
+                  formControlName="direccion" 
+                  rows="2" 
+                  placeholder="{{ 'proveedores.placeholderDireccion' | translate }}"></textarea>
+        <small class="form-text">{{ 'proveedores.direccionHelp' | translate }}</small>
       </div>
 
       <div class="form-row">
@@ -44,8 +102,8 @@
             <option [ngValue]="null">{{ 'common.select' | translate }}</option>
             <option *ngFor="let p of paises" [ngValue]="p.id">{{ p.descripcion }}</option>
           </select>
-            <small class="form-text" *ngIf="paises.length === 0">{{ 'proveedor.noPaisesDisponibles' | translate }}</small>
-            <small class="form-text" *ngIf="!itemForm.get('paisId')?.value">{{ 'proveedor.selectPaisToSeeProvincias' | translate }}</small>
+          <small class="form-text" *ngIf="paises.length === 0">{{ 'proveedor.noPaisesDisponibles' | translate }}</small>
+          <small class="form-text" *ngIf="paises.length > 0">{{ 'proveedor.paisHelp' | translate }}</small>
         </div>
 
         <div class="form-group">
@@ -54,7 +112,7 @@
             <option [ngValue]="null">{{ 'common.select' | translate }}</option>
             <option *ngFor="let prov of provincias" [ngValue]="prov.id">{{ prov.descripcion }}</option>
           </select>
-            <small class="form-text" *ngIf="!itemForm.get('provinciaId')?.value">{{ 'proveedor.selectProvinciaToSeeMunicipios' | translate }}</small>
+          <small class="form-text" *ngIf="!itemForm.get('paisId')?.value">{{ 'proveedor.selectPaisToSeeProvincias' | translate }}</small>
         </div>
       </div>
 
@@ -65,7 +123,7 @@
             <option [ngValue]="null">{{ 'common.select' | translate }}</option>
             <option *ngFor="let mun of municipios" [ngValue]="mun.id">{{ mun.descripcion }}</option>
           </select>
-            <small class="form-text" *ngIf="!itemForm.get('municipioId')?.value">{{ 'proveedor.selectMunicipioToSeeCodigosPostales' | translate }}</small>
+          <small class="form-text" *ngIf="!itemForm.get('provinciaId')?.value">{{ 'proveedor.selectProvinciaToSeeMunicipios' | translate }}</small>
         </div>
 
         <div class="form-group">
@@ -74,32 +132,109 @@
             <option [ngValue]="null">{{ 'common.select' | translate }}</option>
             <option *ngFor="let cp of codigosPostales" [ngValue]="cp.id">{{ cp.codigo }}</option>
           </select>
-            <small class="form-text" *ngIf="!itemForm.get('codigoPostalId')?.value">{{ 'proveedor.selectCodigoPostalHelp' | translate }}</small>
+          <small class="form-text" *ngIf="!itemForm.get('municipioId')?.value">{{ 'proveedor.selectMunicipioToSeeCodigosPostales' | translate }}</small>
+        </div>
+      </div>
+
+      <!-- Sección: Información de Contacto -->
+      <h3 class="section-title">{{ 'proveedores.infoContacto' | translate }}</h3>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">{{ 'proveedores.email1' | translate }}</label>
+          <input class="form-control" 
+                 formControlName="email1" 
+                 type="email" 
+                 placeholder="{{ 'proveedores.placeholderEmail' | translate }}" />
+          <small class="form-text">{{ 'proveedores.email1Help' | translate }}</small>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">{{ 'proveedores.telefono1' | translate }}</label>
+          <input id="telefono1" 
+                 type="tel" 
+                 class="form-control"
+                 formControlName="telefono1"
+                 maxlength="50"
+                 [class.is-invalid]="itemForm.get('telefono1')?.invalid && itemForm.get('telefono1')?.touched"
+                 placeholder="{{ 'proveedores.placeholderTelefono' | translate }}" />
+          <div class="form-text" *ngIf="selectedPais">{{ selectedPais.formatoEjemplo }} <small>({{ selectedPais.formatoTelefono }})</small></div>
+          <small class="form-text" *ngIf="!selectedPais">{{ 'proveedores.telefono1Help' | translate }}</small>
+          <div class="invalid-feedback" *ngIf="itemForm.get('telefono1')?.touched">
+            <div *ngIf="itemForm.get('telefono1')?.hasError('telefonoInvalid')">{{ 'proveedores.telefonoInvalido' | translate }}</div>
+            <div *ngIf="itemForm.get('telefono1')?.hasError('maxlength')">{{ 'validation.maxLength' | translate:[50] }}</div>
+          </div>
         </div>
       </div>
 
       <div class="form-row">
         <div class="form-group">
-          <label class="form-label">{{ 'proveedores.email1' | translate }}</label>
-          <input class="form-control" formControlName="email1" type="email" />
+          <label class="form-label">{{ 'proveedores.email2' | translate }}</label>
+          <input class="form-control" 
+                 formControlName="email2" 
+                 type="email" 
+                 placeholder="{{ 'proveedores.placeholderEmail' | translate }}" />
+          <small class="form-text">{{ 'proveedores.email2Help' | translate }}</small>
         </div>
+
         <div class="form-group">
-          <label class="form-label">{{ 'proveedores.telefono1' | translate }}</label>
-          <input id="telefono1" type="tel" class="form-control"
-                 formControlName="telefono1"
+          <label class="form-label">{{ 'proveedores.telefono2' | translate }}</label>
+          <input id="telefono2" 
+                 type="tel" 
+                 class="form-control"
+                 formControlName="telefono2"
                  maxlength="50"
-                 [class.is-invalid]="itemForm.get('telefono1')?.invalid && itemForm.get('telefono1')?.touched" />
-          <div class="form-text" *ngIf="selectedPais">{{ selectedPais.formatoEjemplo }} <small>({{ selectedPais.formatoTelefono }})</small></div>
-          <div class="invalid-feedback" *ngIf="itemForm.get('telefono1')?.touched">
-            <div *ngIf="itemForm.get('telefono1')?.hasError('telefonoInvalid')">Teléfono no válido para el país seleccionado</div>
-            <div *ngIf="itemForm.get('telefono1')?.hasError('maxlength')">Máximo 50 caracteres</div>
+                 [class.is-invalid]="itemForm.get('telefono2')?.invalid && itemForm.get('telefono2')?.touched"
+                 placeholder="{{ 'proveedores.placeholderTelefono' | translate }}" />
+          <small class="form-text" *ngIf="!selectedPais">{{ 'proveedores.telefono2Help' | translate }}</small>
+          <div class="invalid-feedback" *ngIf="itemForm.get('telefono2')?.touched">
+            <div *ngIf="itemForm.get('telefono2')?.hasError('telefonoInvalid')">{{ 'proveedores.telefonoInvalido' | translate }}</div>
+            <div *ngIf="itemForm.get('telefono2')?.hasError('maxlength')">{{ 'validation.maxLength' | translate:[50] }}</div>
           </div>
         </div>
       </div>
 
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">{{ 'proveedores.web' | translate }}</label>
+          <input class="form-control" 
+                 formControlName="web" 
+                 type="url" 
+                 maxlength="256" 
+                 placeholder="{{ 'proveedores.placeholderWeb' | translate }}" />
+          <small class="form-text">{{ 'proveedores.webHelp' | translate }}</small>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">{{ 'proveedores.fax1' | translate }}</label>
+          <input class="form-control" 
+                 formControlName="fax1" 
+                 maxlength="50" 
+                 placeholder="{{ 'proveedores.placeholderFax' | translate }}" />
+          <small class="form-text">{{ 'proveedores.fax1Help' | translate }}</small>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">{{ 'proveedores.fax2' | translate }}</label>
+          <input class="form-control" 
+                 formControlName="fax2" 
+                 maxlength="50" 
+                 placeholder="{{ 'proveedores.placeholderFax' | translate }}" />
+          <small class="form-text">{{ 'proveedores.fax2Help' | translate }}</small>
+        </div>
+        <div class="form-group"></div>
+      </div>
+
+      <!-- Botones de Acción -->
       <div class="form-actions">
-        <button type="button" class="btn btn-secondary" (click)="onCancel()">{{ 'common.cancel' | translate }}</button>
-        <button type="submit" class="btn btn-primary" [disabled]="loading || saving">{{ saving ? ('common.saving' | translate) : ('common.save' | translate) }}</button>
+        <button type="button" class="btn btn-secondary" (click)="onCancel()" [disabled]="saving">
+          {{ 'common.cancel' | translate }}
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="loading || saving">
+          {{ saving ? ('common.saving' | translate) : ('common.save' | translate) }}
+        </button>
       </div>
     </form>
   </div>

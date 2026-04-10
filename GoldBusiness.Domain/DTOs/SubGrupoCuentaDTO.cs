@@ -98,15 +98,12 @@ namespace GoldBusiness.Domain.DTOs
         public string GrupoCuentaCodigo { get; set; } = string.Empty;
         public string GrupoCuentaDescripcion { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Cantidad de cuentas hijas.
-        /// </summary>
-        [Display(
-            Name = nameof(GoldBusiness.Domain.Resources.ValidationMessages.Field_Cuentas),
-            ResourceType = typeof(GoldBusiness.Domain.Resources.ValidationMessages)
-        )]
-        public int CantidadCuentas { get; set; }
+        // ✅ NUEVO: traducciones opcionales enviadas desde el cliente
+        public List<TranslationInputDTO>? Translations { get; set; } = new List<TranslationInputDTO>();
 
+        /// <summary>
+        /// Formato: "Código | Descripción".
+        /// </summary>
         public string CodigoDescripcion => $"{Codigo} | {Descripcion}";
     }
 }

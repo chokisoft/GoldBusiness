@@ -787,6 +787,19 @@ select.shared-select {
       box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.12);
     }
 
+/* ========== Persona de Contacto - A TODO LO ANCHO ========== */
+.system-config-form .personaContacto-full-width {
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+  .system-config-form .personaContacto-full-width .form-label {
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #2c3e50;
+  }
+
 /* ========== DIRECCIÓN - A TODO LO ANCHO ========== */
 .system-config-form .direccion-full-width {
   width: 100%;

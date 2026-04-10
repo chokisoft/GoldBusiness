@@ -15,6 +15,10 @@
 
   <div class="card">
     <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" class="form-container">
+      
+      <!-- Sección: Información Principal -->
+      <h3 class="section-title">{{ 'clientes.mainInfo' | translate }}</h3>
+
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">{{ 'clientes.codigo' | translate }} *</label>
@@ -23,8 +27,9 @@
                  maxlength="8"
                  [class.is-invalid]="itemForm.get('codigo')?.invalid && itemForm.get('codigo')?.touched"
                  placeholder="{{ 'clientes.placeholderCodigo' | translate }}" />
+          <small class="form-text">{{ 'clientes.codigoHelp' | translate }}</small>
           <div class="invalid-feedback" *ngIf="itemForm.get('codigo')?.invalid && itemForm.get('codigo')?.touched">
-            {{ 'common.invalid' | translate }}
+            {{ 'validation.codigo8Digitos' | translate }}
           </div>
         </div>
 
@@ -35,8 +40,9 @@
                  maxlength="256"
                  [class.is-invalid]="itemForm.get('descripcion')?.invalid && itemForm.get('descripcion')?.touched"
                  placeholder="{{ 'clientes.placeholderDescripcion' | translate }}" />
+          <small class="form-text">{{ 'clientes.descripcionHelp' | translate }}</small>
           <div class="invalid-feedback" *ngIf="itemForm.get('descripcion')?.invalid && itemForm.get('descripcion')?.touched">
-            {{ 'common.invalid' | translate }}
+            {{ 'validation.required' | translate }}
           </div>
         </div>
       </div>
@@ -44,18 +50,59 @@
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">{{ 'clientes.nif' | translate }}</label>
-          <input class="form-control" formControlName="nif" maxlength="11" placeholder="{{ 'clientes.placeholderNif' | translate }}" />
+          <input class="form-control" 
+                 formControlName="nif" 
+                 maxlength="11" 
+                 placeholder="{{ 'clientes.placeholderNif' | translate }}" />
+          <small class="form-text">{{ 'clientes.nifHelp' | translate }}</small>
         </div>
 
         <div class="form-group">
           <label class="form-label">{{ 'clientes.iva' | translate }}</label>
-            <input class="form-control" formControlName="iva" type="text" inputmode="decimal" pattern="[0-9]+([\.,][0-9]{1,2})?" placeholder="{{ 'clientes.placeholderIva' | translate }}" autocomplete="off" />
+          <input class="form-control" 
+                 formControlName="iva" 
+                 type="text" 
+                 inputmode="decimal" 
+                 pattern="[0-9]+([\.,][0-9]{1,2})?" 
+                 placeholder="{{ 'clientes.ivaPlaceholder' | translate }}" 
+                 autocomplete="off" />
+          <small class="form-text">{{ 'clientes.ivaHelp' | translate }}</small>
         </div>
       </div>
 
+      <!-- Sección: Información Bancaria -->
+      <h3 class="section-title">{{ 'clientes.infoBancaria' | translate }}</h3>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">{{ 'clientes.iban' | translate }}</label>
+          <input class="form-control" 
+                 formControlName="iban" 
+                 maxlength="27" 
+                 placeholder="{{ 'clientes.placeholderIban' | translate }}" />
+          <small class="form-text">{{ 'clientes.ibanHelp' | translate }}</small>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">{{ 'clientes.bicoSwift' | translate }}</label>
+          <input class="form-control" 
+                 formControlName="bicoSwift" 
+                 maxlength="11" 
+                 placeholder="{{ 'clientes.placeholderBicoSwift' | translate }}" />
+          <small class="form-text">{{ 'clientes.bicoSwiftHelp' | translate }}</small>
+        </div>
+      </div>
+
+      <!-- Sección: Información de Ubicación -->
+      <h3 class="section-title">{{ 'clientes.infoUbicacion' | translate }}</h3>
+
       <div class="form-group">
         <label class="form-label">{{ 'clientes.direccion' | translate }}</label>
-        <textarea class="form-control" formControlName="direccion" rows="2" placeholder="{{ 'clientes.placeholderDireccion' | translate }}"></textarea>
+        <textarea class="form-control" 
+                  formControlName="direccion" 
+                  rows="2" 
+                  placeholder="{{ 'clientes.placeholderDireccion' | translate }}"></textarea>
+        <small class="form-text">{{ 'clientes.direccionHelp' | translate }}</small>
       </div>
 
       <div class="form-row">
@@ -65,8 +112,8 @@
             <option [ngValue]="null">{{ 'common.select' | translate }}</option>
             <option *ngFor="let p of paises" [ngValue]="p.id">{{ p.descripcion }}</option>
           </select>
-            <small class="form-text" *ngIf="paises.length === 0">{{ 'cliente.noPaisesDisponibles' | translate }}</small>
-            <small class="form-text" *ngIf="paises?.length === 0">{{ 'cliente.selectPaisToSeeProvincias' | translate }}</small>
+          <small class="form-text" *ngIf="paises.length === 0">{{ 'cliente.noPaisesDisponibles' | translate }}</small>
+          <small class="form-text" *ngIf="paises.length > 0">{{ 'cliente.paisHelp' | translate }}</small>
         </div>
 
         <div class="form-group">
@@ -75,7 +122,7 @@
             <option [ngValue]="null">{{ 'common.select' | translate }}</option>
             <option *ngFor="let prov of provincias" [ngValue]="prov.id">{{ prov.descripcion }}</option>
           </select>
-            <small class="form-text" *ngIf="!itemForm.get('paisId')?.value">{{ 'cliente.selectPaisToSeeProvincias' | translate }}</small>
+          <small class="form-text" *ngIf="!itemForm.get('paisId')?.value">{{ 'cliente.selectPaisToSeeProvincias' | translate }}</small>
         </div>
       </div>
 
@@ -86,7 +133,7 @@
             <option [ngValue]="null">{{ 'common.select' | translate }}</option>
             <option *ngFor="let mun of municipios" [ngValue]="mun.id">{{ mun.descripcion }}</option>
           </select>
-            <small class="form-text" *ngIf="!itemForm.get('provinciaId')?.value">{{ 'cliente.selectProvinciaToSeeMunicipios' | translate }}</small>
+          <small class="form-text" *ngIf="!itemForm.get('provinciaId')?.value">{{ 'cliente.selectProvinciaToSeeMunicipios' | translate }}</small>
         </div>
 
         <div class="form-group">
@@ -95,27 +142,37 @@
             <option [ngValue]="null">{{ 'common.select' | translate }}</option>
             <option *ngFor="let cp of codigosPostales" [ngValue]="cp.id">{{ cp.codigo }}</option>
           </select>
-            <small class="form-text" *ngIf="!itemForm.get('municipioId')?.value">{{ 'cliente.selectMunicipioToSeeCodigosPostales' | translate }}</small>
+          <small class="form-text" *ngIf="!itemForm.get('municipioId')?.value">{{ 'cliente.selectMunicipioToSeeCodigosPostales' | translate }}</small>
         </div>
       </div>
+
+      <!-- Sección: Información de Contacto -->
+      <h3 class="section-title">{{ 'clientes.infoContacto' | translate }}</h3>
 
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">{{ 'clientes.email1' | translate }}</label>
-          <input class="form-control" formControlName="email1" type="email" placeholder="{{ 'clientes.placeholderEmail' | translate }}" />
+          <input class="form-control" 
+                 formControlName="email1" 
+                 type="email" 
+                 placeholder="{{ 'clientes.placeholderEmail' | translate }}" />
+          <small class="form-text">{{ 'clientes.email1Help' | translate }}</small>
         </div>
 
         <div class="form-group">
           <label class="form-label">{{ 'clientes.telefono1' | translate }}</label>
-          <input id="telefono1" type="tel" class="form-control"
+          <input id="telefono1" 
+                 type="tel" 
+                 class="form-control"
                  formControlName="telefono1"
                  maxlength="50"
                  [class.is-invalid]="itemForm.get('telefono1')?.invalid && itemForm.get('telefono1')?.touched"
                  placeholder="{{ 'clientes.placeholderTelefono' | translate }}" />
           <div class="form-text" *ngIf="selectedPais">{{ selectedPais.formatoEjemplo }} <small>({{ selectedPais.formatoTelefono }})</small></div>
+          <small class="form-text" *ngIf="!selectedPais">{{ 'clientes.telefono1Help' | translate }}</small>
           <div class="invalid-feedback" *ngIf="itemForm.get('telefono1')?.touched">
-            <div *ngIf="itemForm.get('telefono1')?.hasError('telefonoInvalid')">Teléfono no válido para el país seleccionado</div>
-            <div *ngIf="itemForm.get('telefono1')?.hasError('maxlength')">Máximo 50 caracteres</div>
+            <div *ngIf="itemForm.get('telefono1')?.hasError('telefonoInvalid')">{{ 'clientes.telefonoInvalido' | translate }}</div>
+            <div *ngIf="itemForm.get('telefono1')?.hasError('maxlength')">{{ 'validation.maxLength' | translate:[50] }}</div>
           </div>
         </div>
       </div>
@@ -123,24 +180,71 @@
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">{{ 'clientes.email2' | translate }}</label>
-          <input class="form-control" formControlName="email2" type="email" />
+          <input class="form-control" 
+                 formControlName="email2" 
+                 type="email" 
+                 placeholder="{{ 'clientes.placeholderEmail' | translate }}" />
+          <small class="form-text">{{ 'clientes.email2Help' | translate }}</small>
         </div>
+
         <div class="form-group">
           <label class="form-label">{{ 'clientes.telefono2' | translate }}</label>
-          <input id="telefono2" type="tel" class="form-control"
+          <input id="telefono2" 
+                 type="tel" 
+                 class="form-control"
                  formControlName="telefono2"
                  maxlength="50"
-                 [class.is-invalid]="itemForm.get('telefono2')?.invalid && itemForm.get('telefono2')?.touched" />
+                 [class.is-invalid]="itemForm.get('telefono2')?.invalid && itemForm.get('telefono2')?.touched"
+                 placeholder="{{ 'clientes.placeholderTelefono' | translate }}" />
+          <small class="form-text" *ngIf="!selectedPais">{{ 'clientes.telefono2Help' | translate }}</small>
           <div class="invalid-feedback" *ngIf="itemForm.get('telefono2')?.touched">
-            <div *ngIf="itemForm.get('telefono2')?.hasError('telefonoInvalid')">Teléfono no válido para el país seleccionado</div>
-            <div *ngIf="itemForm.get('telefono2')?.hasError('maxlength')">Máximo 50 caracteres</div>
+            <div *ngIf="itemForm.get('telefono2')?.hasError('telefonoInvalid')">{{ 'clientes.telefonoInvalido' | translate }}</div>
+            <div *ngIf="itemForm.get('telefono2')?.hasError('maxlength')">{{ 'validation.maxLength' | translate:[50] }}</div>
           </div>
         </div>
       </div>
 
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">{{ 'clientes.web' | translate }}</label>
+          <input class="form-control" 
+                 formControlName="web" 
+                 type="url" 
+                 maxlength="256" 
+                 placeholder="{{ 'clientes.placeholderWeb' | translate }}" />
+          <small class="form-text">{{ 'clientes.webHelp' | translate }}</small>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">{{ 'clientes.fax1' | translate }}</label>
+          <input class="form-control" 
+                 formControlName="fax1" 
+                 maxlength="50" 
+                 placeholder="{{ 'clientes.placeholderFax' | translate }}" />
+          <small class="form-text">{{ 'clientes.fax1Help' | translate }}</small>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">{{ 'clientes.fax2' | translate }}</label>
+          <input class="form-control" 
+                 formControlName="fax2" 
+                 maxlength="50" 
+                 placeholder="{{ 'clientes.placeholderFax' | translate }}" />
+          <small class="form-text">{{ 'clientes.fax2Help' | translate }}</small>
+        </div>
+        <div class="form-group"></div>
+      </div>
+
+      <!-- Botones de Acción -->
       <div class="form-actions">
-        <button type="button" class="btn btn-secondary" (click)="onCancel()">{{ 'common.cancel' | translate }}</button>
-        <button type="submit" class="btn btn-primary" [disabled]="loading || saving">{{ saving ? ('common.saving' | translate) : ('common.save' | translate) }}</button>
+        <button type="button" class="btn btn-secondary" (click)="onCancel()" [disabled]="saving">
+          {{ 'common.cancel' | translate }}
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="loading || saving">
+          {{ saving ? ('common.saving' | translate) : ('common.save' | translate) }}
+        </button>
       </div>
     </form>
   </div>

@@ -93,7 +93,7 @@
       </div>
 
       <div class="form-row-three">
-        <!-- subGrupo select (reemplazar el bloque existente para subGrupoCuentaId) -->
+        <!-- subGrupo select -->
         <div class="form-group subgrupo-cuenta-group">
           <label for="subGrupoCuentaId" class="form-label">{{ 'cuenta.subGrupoCuenta' | translate }} *</label>
           <select id="subGrupoCuentaId"
@@ -114,7 +114,7 @@
 
           <ng-template #subGruposLoaded>
             <ng-container *ngIf="filteredSubGrupos.length === 0; else subGruposList">
-              <small class="form-text text-muted">{{ 'subGrupoCuenta.noGruposDisponibles' | translate }}</small>
+              <small class="form-text text-muted">{{ 'subGrupoCuenta.noSubgruposDisponibles' | translate }}</small>
             </ng-container>
 
             <ng-template #subGruposList>
@@ -134,30 +134,30 @@
         </div>
 
         <div class="form-group">
-          <label for="codigoUsuario" class="form-label">{{ 'subGrupoCuenta.codigoUsuario' | translate }} *</label>
+          <label for="codigoUsuario" class="form-label">{{ 'cuenta.codigoUsuario' | translate }} *</label>
           <input type="text"
                  id="codigoUsuario"
                  formControlName="codigoUsuario"
                  class="form-control"
                  maxlength="3"
                  [class.is-invalid]="form.get('codigoUsuario')?.invalid && form.get('codigoUsuario')?.touched"
-                 [placeholder]="'subGrupoCuenta.placeholderCodigoUsuario' | translate"
+                 [placeholder]="'cuenta.codigoUsuarioPlaceholder' | translate"
                  [disabled]="!selectedSubGrupoCodigo" />
-          <small class="form-text text-muted">{{ 'subGrupoCuenta.codigoUsuarioHelp' | translate }}</small>
+          <small class="form-text text-muted">{{ 'cuenta.codigoUsuarioHelp' | translate }}</small>
           <div class="invalid-feedback" *ngIf="form.get('codigoUsuario')?.invalid && form.get('codigoUsuario')?.touched">
             {{ getErrorMessage('codigoUsuario') }}
           </div>
         </div>
 
         <div class="form-group codigo-completo-group">
-          <label for="codigo" class="form-label">{{ 'subGrupoCuenta.codigoCompleto' | translate }}</label>
+          <label for="codigo" class="form-label">{{ 'cuenta.codigoCompleto' | translate }}</label>
           <input type="text"
                  id="codigo"
                  formControlName="codigo"
                  class="form-control"
                  readonly
-                 [placeholder]="'subGrupoCuenta.placeholderCodigoCompleto' | translate" />
-          <small class="form-text text-muted">{{ 'subGrupoCuenta.codigoCompletoHelp' | translate }}</small>
+                 [placeholder]="'cuenta.codigoCompletoPlaceholder' | translate" />
+          <small class="form-text text-muted">{{ 'cuenta.codigoCompletoHelp' | translate }}</small>
         </div>
       </div>
 
@@ -177,12 +177,12 @@
       </div>
 
       <div class="form-actions">
-        <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="loading">
+        <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="loading || saving">
           ❌ {{ 'common.cancel' | translate }}
         </button>
-        <button type="submit" class="btn btn-primary" [disabled]="loading || form.invalid || loadingSubGrupos || loadingGrupos">
-          <span *ngIf="!loading">💾 {{ 'common.save' | translate }}</span>
-          <span *ngIf="loading">⏳ {{ 'common.saving' | translate }}</span>
+        <button type="submit" class="btn btn-primary" [disabled]="saving || form.invalid || loadingSubGrupos || loadingGrupos">
+          <span *ngIf="!saving">💾 {{ 'common.save' | translate }}</span>
+          <span *ngIf="saving">⏳ {{ 'common.saving' | translate }}</span>
         </button>
       </div>
     </form>

@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { skip } from 'rxjs/operators';
+import { skip, finalize } from 'rxjs/operators';
 import { CuentaService, CuentaDTO } from '../../../services/cuenta.service';
 import { SubGrupoCuentaService, SubGrupoCuentaDTO } from '../../../services/subgrupo-cuenta.service';
 import { GrupoCuentaService, GrupoCuentaDTO } from '../../../services/grupo-cuenta.service';
@@ -19,7 +19,8 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
   form: FormGroup;
   isEditMode = false;
   cuentaId: number | null = null;
-  loading = false;
+  loading = false;   // ✅ Solo para cargar datos
+  saving = false;    // ✅ Solo para guardar datos
   error: string | null = null;
 
   allSubGrupos: SubGrupoCuentaDTO[] = [];
@@ -222,12 +223,9 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
 
     if (this.selectedSubGrupoCodigo && codigoUsuario && codigoUsuario.length === 3) {
       this.codigoCompleto = this.selectedSubGrupoCodigo + codigoUsuario;
-      // mostrar siempre el código completo (even when in-progress), mantener control sincronizado
       this.form.get('codigo')?.setValue(this.codigoCompleto, { emitEvent: false });
     } else {
-      // mostrar prefijo + underscores si existe prefijo, o cadena vacía si no
       this.codigoCompleto = this.selectedSubGrupoCodigo ? `${this.selectedSubGrupoCodigo}___` : '';
-      // sincronizar control para que el campo muestre el texto parcial y se mantenga alineado
       this.form.get('codigo')?.setValue(this.codigoCompleto, { emitEvent: false });
     }
   }
@@ -235,7 +233,7 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
   loadCuenta(): void {
     if (!this.cuentaId) return;
 
-    this.loading = true;
+    this.loading = true; // ✅ Usar loading para carga
     this.cuentaService.getById(this.cuentaId).subscribe({
       next: (data) => {
         const codigoSubGrupo = data.codigo.substring(0, 5);
@@ -265,15 +263,14 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
           this.form.get('subGrupoCuentaId')?.disable({ emitEvent: false });
           this.form.get('codigoUsuario')?.disable({ emitEvent: false });
           this.form.get('codigo')?.disable({ emitEvent: false });
-          // Mantener comportamiento coherente con otros formularios: dejar el select "Negocio" inactivo en edición
           this.form.get('systemConfigurationId')?.disable({ emitEvent: false });
         }
 
-        this.loading = false;
+        this.loading = false; // ✅ Finalizar loading
       },
       error: (err: any) => {
         this.error = 'Error al cargar la cuenta';
-        this.loading = false;
+        this.loading = false; // ✅ Finalizar loading en error
         console.error('Error:', err);
       }
     });
@@ -290,39 +287,49 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.loading = true;
+    this.saving = true; // ✅ Usar saving para guardado
     this.error = null;
 
     const raw = this.form.getRawValue();
+    const currentLang = this.languageService.getCurrentLanguage();
+
     const dto: CuentaDTO = {
       ...raw,
       codigo: this.codigoCompleto,
       subGrupoCuentaId: raw.subGrupoCuentaId,
-      systemConfigurationId: raw.systemConfigurationId
+      systemConfigurationId: raw.systemConfigurationId,
+      translations: [
+        {
+          language: currentLang,
+          translatedText: raw.descripcion
+        }
+      ]
     };
 
     if (this.isEditMode) {
-      this.cuentaService.update(this.cuentaId!, dto).subscribe({
-        next: () => {
-          this.router.navigate(['/nomencladores/cuenta']);
-        },
-        error: (err: any) => {
-          this.error = 'Error al guardar la cuenta';
-          this.loading = false;
-          console.error('Error:', err);
-        }
-      });
+      this.cuentaService.update(this.cuentaId!, dto)
+        .pipe(finalize(() => this.saving = false)) // ✅ Usar finalize para saving
+        .subscribe({
+          next: () => {
+            this.router.navigate(['/nomencladores/cuenta']);
+          },
+          error: (err: any) => {
+            this.error = 'Error al guardar la cuenta';
+            console.error('Error:', err);
+          }
+        });
     } else {
-      this.cuentaService.create(dto).subscribe({
-        next: () => {
-          this.router.navigate(['/nomencladores/cuenta']);
-        },
-        error: (err: any) => {
-          this.error = 'Error al guardar la cuenta';
-          this.loading = false;
-          console.error('Error:', err);
-        }
-      });
+      this.cuentaService.create(dto)
+        .pipe(finalize(() => this.saving = false)) // ✅ Usar finalize para saving
+        .subscribe({
+          next: () => {
+            this.router.navigate(['/nomencladores/cuenta']);
+          },
+          error: (err: any) => {
+            this.error = 'Error al guardar la cuenta';
+            console.error('Error:', err);
+          }
+        });
     }
   }
 

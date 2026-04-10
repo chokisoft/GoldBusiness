@@ -399,6 +399,206 @@ export class TranslationService {
       'en': 'Ex: 21.00',
       'fr': 'Ex: 21.00'
     },
+    'proveedores.pais': {
+      'es': 'País',
+      'en': 'Country',
+      'fr': 'Pays'
+    },
+    'proveedores.provincia': {
+      'es': 'Provincia',
+      'en': 'Province',
+      'fr': 'Province'
+    },
+    'proveedores.municipio': {
+      'es': 'Municipio',
+      'en': 'Municipality',
+      'fr': 'Municipalité'
+    },
+    'proveedores.codigoPostal': {
+      'es': 'Código Postal',
+      'en': 'Postal Code',
+      'fr': 'Code Postal'
+    },
+    'proveedores.email1': {
+      'es': 'Email Principal',
+      'en': 'Primary Email',
+      'fr': 'Email Principal'
+    },
+    'proveedores.email2': {
+      'es': 'Email Secundario',
+      'en': 'Secondary Email',
+      'fr': 'Email Secondaire'
+    },
+    'proveedores.telefono1': {
+      'es': 'Teléfono Principal',
+      'en': 'Primary Phone',
+      'fr': 'Téléphone Principal'
+    },
+    'proveedores.telefono2': {
+      'es': 'Teléfono Secundario',
+      'en': 'Secondary Phone',
+      'fr': 'Téléphone Secondaire'
+    },
+    'proveedores.nif': {
+      'es': 'NIF/CIF',
+      'en': 'Tax ID',
+      'fr': 'Numéro fiscal'
+    },
+    'proveedor.noPaisesDisponibles': {
+      'es': 'No hay países disponibles.',
+      'en': 'No countries available.',
+      'fr': 'Aucun pays disponible.'
+    },
+    'proveedor.selectPaisToSeeProvincias': {
+      'es': 'Seleccione un país para ver provincias.',
+      'en': 'Select a country to see provinces.',
+      'fr': 'Sélectionnez un pays pour voir les provinces.'
+    },
+    'proveedor.selectProvinciaToSeeMunicipios': {
+      'es': 'Seleccione una provincia para ver municipios.',
+      'en': 'Select a province to see municipalities.',
+      'fr': 'Sélectionnez une province pour voir les municipalités.'
+    },
+    'proveedor.selectMunicipioToSeeCodigosPostales': {
+      'es': 'Seleccione un municipio para ver códigos postales.',
+      'en': 'Select a municipality to see postal codes.',
+      'fr': 'Sélectionnez une municipalité pour voir les codes postaux.'
+    },
+    'proveedor.selectCodigoPostalHelp': {
+      'es': 'Seleccione un código postal.',
+      'en': 'Select a postal code.',
+      'fr': 'Sélectionnez un code postal.'
+    },
+    'proveedores.codigoHelp': {
+      'es': 'Ingrese el código único del proveedor (5 caracteres).',
+      'en': 'Enter the unique supplier code (5 characters).',
+      'fr': 'Entrez le code fournisseur unique (5 caractères).'
+    },
+    'proveedores.descripcionHelp': {
+      'es': 'Ingrese el nombre completo o razón social del proveedor.',
+      'en': 'Enter the full name or company name of the supplier.',
+      'fr': 'Entrez le nom complet ou la raison sociale du fournisseur.'
+    },
+    'proveedores.nifHelp': {
+      'es': 'Número de identificación fiscal del proveedor (opcional).',
+      'en': 'Supplier tax identification number (optional).',
+      'fr': 'Numéro d\'identification fiscale du fournisseur (optionnel).'
+    },
+    'proveedores.ivaHelp': {
+      'es': 'Porcentaje de IVA aplicable al proveedor (0-99.99%).',
+      'en': 'VAT percentage applicable to the supplier (0-99.99%).',
+      'fr': 'Pourcentage de TVA applicable au fournisseur (0-99.99%).'
+    },
+    'proveedores.ibanHelp': {
+      'es': 'Código IBAN de la cuenta bancaria del proveedor.',
+      'en': 'IBAN code of the supplier\'s bank account.',
+      'fr': 'Code IBAN du compte bancaire du fournisseur.'
+    },
+    'proveedores.bicoSwiftHelp': {
+      'es': 'Código BIC/SWIFT del banco del proveedor.',
+      'en': 'BIC/SWIFT code of the supplier\'s bank.',
+      'fr': 'Code BIC/SWIFT de la banque du fournisseur.'
+    },
+    'proveedores.direccionHelp': {
+      'es': 'Ingrese la dirección completa del proveedor.',
+      'en': 'Enter the full address of the supplier.',
+      'fr': 'Entrez l\'adresse complète du fournisseur.'
+    },
+    'proveedor.paisHelp': {
+      'es': 'Seleccione el país donde se encuentra el proveedor.',
+      'en': 'Select the country where the supplier is located.',
+      'fr': 'Sélectionnez le pays où se trouve le fournisseur.'
+    },
+    'proveedores.email1Help': {
+      'es': 'Email principal de contacto del proveedor.',
+      'en': 'Primary contact email for the supplier.',
+      'fr': 'Email de contact principal du fournisseur.'
+    },
+    'proveedores.email2Help': {
+      'es': 'Email secundario de contacto (opcional).',
+      'en': 'Secondary contact email (optional).',
+      'fr': 'Email de contact secondaire (optionnel).'
+    },
+    'proveedores.telefono1Help': {
+      'es': 'Teléfono principal de contacto (incluya prefijo del país).',
+      'en': 'Primary contact phone (include country prefix).',
+      'fr': 'Téléphone de contact principal (inclure l\'indicatif du pays).'
+    },
+    'proveedores.telefono2Help': {
+      'es': 'Teléfono secundario de contacto (opcional).',
+      'en': 'Secondary contact phone (optional).',
+      'fr': 'Téléphone de contact secondaire (optionnel).'
+    },
+    'proveedores.webHelp': {
+      'es': 'Sitio web del proveedor (opcional, use https://).',
+      'en': 'Supplier website (optional, use https://).',
+      'fr': 'Site web du fournisseur (optionnel, utilisez https://).'
+    },
+    'proveedores.fax1Help': {
+      'es': 'Número de fax principal (opcional).',
+      'en': 'Primary fax number (optional).',
+      'fr': 'Numéro de fax principal (optionnel).'
+    },
+    'proveedores.fax2Help': {
+      'es': 'Número de fax secundario (opcional).',
+      'en': 'Secondary fax number (optional).',
+      'fr': 'Numéro de fax secondaire (optionnel).'
+    },
+    'proveedores.telefonoInvalido': {
+      'es': 'Teléfono no válido para el país seleccionado',
+      'en': 'Invalid phone for selected country',
+      'fr': 'Téléphone invalide pour le pays sélectionné'
+    },
+    'proveedores.placeholderIban': {
+      'es': 'Ej: ES91 2100 0418 4502 0005 1332',
+      'en': 'Ex: ES91 2100 0418 4502 0005 1332',
+      'fr': 'Ex: FR14 2004 1010 0505 0001 3M02 606'
+    },
+    'proveedores.placeholderBicoSwift': {
+      'es': 'Ej: CAIXESBBXXX',
+      'en': 'Ex: CAIXESBBXXX',
+      'fr': 'Ex: BNPAFRPPXXX'
+    },
+    'proveedores.placeholderWeb': {
+      'es': 'Ej: https://www.proveedor.com',
+      'en': 'Ex: https://www.supplier.com',
+      'fr': 'Ex: https://www.fournisseur.fr'
+    },
+    'proveedores.placeholderFax': {
+      'es': 'Ej: +34 912 345 678',
+      'en': 'Ex: +34 912 345 678',
+      'fr': 'Ex: +33 1 23 45 67 89'
+    },
+    'proveedores.placeholderDireccion': {
+      'es': 'Ej: Calle y número',
+      'en': 'Ex: Street and number',
+      'fr': 'Ex: Rue et numéro'
+    },
+    'proveedores.iban': {
+      'es': 'IBAN',
+      'en': 'IBAN',
+      'fr': 'IBAN'
+    },
+    'proveedores.bicoSwift': {
+      'es': 'BIC/SWIFT',
+      'en': 'BIC/SWIFT',
+      'fr': 'BIC/SWIFT'
+    },
+    'proveedores.web': {
+      'es': 'Sitio Web',
+      'en': 'Website',
+      'fr': 'Site Web'
+    },
+    'proveedores.fax1': {
+      'es': 'Fax Principal',
+      'en': 'Primary Fax',
+      'fr': 'Fax Principal'
+    },
+    'proveedores.fax2': {
+      'es': 'Fax Secundario',
+      'en': 'Secondary Fax',
+      'fr': 'Fax Secondaire'
+    },
 
     'clientes.title': {
       'es': 'Clientes',
@@ -529,6 +729,206 @@ export class TranslationService {
       "es": "Ej: +34 912 345 678",
       "en": "Ex: +34 912 345 678",
       "fr": "Ex: +33 1 23 45 67 89"
+    },
+    'clientes.pais': {
+      'es': 'País',
+      'en': 'Country',
+      'fr': 'Pays'
+    },
+    'clientes.provincia': {
+      'es': 'Provincia',
+      'en': 'Province',
+      'fr': 'Province'
+    },
+    'clientes.municipio': {
+      'es': 'Municipio',
+      'en': 'Municipality',
+      'fr': 'Municipalité'
+    },
+    'clientes.codigoPostal': {
+      'es': 'Código Postal',
+      'en': 'Postal Code',
+      'fr': 'Code Postal'
+    },
+    'clientes.email1': {
+      'es': 'Email Principal',
+      'en': 'Primary Email',
+      'fr': 'Email Principal'
+    },
+    'clientes.email2': {
+      'es': 'Email Secundario',
+      'en': 'Secondary Email',
+      'fr': 'Email Secondaire'
+    },
+    'clientes.telefono1': {
+      'es': 'Teléfono Principal',
+      'en': 'Primary Phone',
+      'fr': 'Téléphone Principal'
+    },
+    'clientes.telefono2': {
+      'es': 'Teléfono Secundario',
+      'en': 'Secondary Phone',
+      'fr': 'Téléphone Secondaire'
+    },
+    'cliente.noPaisesDisponibles': {
+      'es': 'No hay países disponibles.',
+      'en': 'No countries available.',
+      'fr': 'Aucun pays disponible.'
+    },
+    'cliente.selectPaisToSeeProvincias': {
+      'es': 'Seleccione un país para ver provincias.',
+      'en': 'Select a country to see provinces.',
+      'fr': 'Sélectionnez un pays pour voir les provinces.'
+    },
+    'cliente.selectProvinciaToSeeMunicipios': {
+      'es': 'Seleccione una provincia para ver municipios.',
+      'en': 'Select a province to see municipalities.',
+      'fr': 'Sélectionnez une province pour voir les municipalités.'
+    },
+    'cliente.selectMunicipioToSeeCodigosPostales': {
+      'es': 'Seleccione un municipio para ver códigos postales.',
+      'en': 'Select a municipality to see postal codes.',
+      'fr': 'Sélectionnez une municipalité pour voir les codes postaux.'
+    },
+    'clientes.codigoHelp': {
+      'es': 'Ingrese el código único del cliente (8 dígitos numéricos).',
+      'en': 'Enter the unique customer code (8 numeric digits).',
+      'fr': 'Entrez le code client unique (8 chiffres numériques).'
+    },
+    'clientes.descripcionHelp': {
+      'es': 'Ingrese el nombre completo o razón social del cliente.',
+      'en': 'Enter the full name or company name of the customer.',
+      'fr': 'Entrez le nom complet ou la raison sociale du client.'
+    },
+    'clientes.nifHelp': {
+      'es': 'Número de identificación fiscal del cliente (opcional).',
+      'en': 'Customer tax identification number (optional).',
+      'fr': 'Numéro d\'identification fiscale du client (optionnel).'
+    },
+    'clientes.ivaHelp': {
+      'es': 'Porcentaje de IVA aplicable al cliente (0-99.99%).',
+      'en': 'VAT percentage applicable to the customer (0-99.99%).',
+      'fr': 'Pourcentage de TVA applicable au client (0-99.99%).'
+    },
+    'clientes.ibanHelp': {
+      'es': 'Código IBAN de la cuenta bancaria del cliente.',
+      'en': 'IBAN code of the customer\'s bank account.',
+      'fr': 'Code IBAN du compte bancaire du client.'
+    },
+    'clientes.bicoSwiftHelp': {
+      'es': 'Código BIC/SWIFT del banco del cliente.',
+      'en': 'BIC/SWIFT code of the customer\'s bank.',
+      'fr': 'Code BIC/SWIFT de la banque du client.'
+    },
+    'clientes.direccionHelp': {
+      'es': 'Ingrese la dirección completa del cliente.',
+      'en': 'Enter the full address of the customer.',
+      'fr': 'Entrez l\'adresse complète du client.'
+    },
+    'cliente.paisHelp': {
+      'es': 'Seleccione el país donde se encuentra el cliente.',
+      'en': 'Select the country where the customer is located.',
+      'fr': 'Sélectionnez le pays où se trouve le client.'
+    },
+    'clientes.email1Help': {
+      'es': 'Email principal de contacto del cliente.',
+      'en': 'Primary contact email for the customer.',
+      'fr': 'Email de contact principal du client.'
+    },
+    'clientes.email2Help': {
+      'es': 'Email secundario de contacto (opcional).',
+      'en': 'Secondary contact email (optional).',
+      'fr': 'Email de contact secondaire (optionnel).'
+    },
+    'clientes.telefono1Help': {
+      'es': 'Teléfono principal de contacto (incluya prefijo del país).',
+      'en': 'Primary contact phone (include country prefix).',
+      'fr': 'Téléphone de contact principal (inclure l\'indicatif du pays).'
+    },
+    'clientes.telefono2Help': {
+      'es': 'Teléfono secundario de contacto (opcional).',
+      'en': 'Secondary contact phone (optional).',
+      'fr': 'Téléphone de contact secondaire (optionnel).'
+    },
+    'clientes.webHelp': {
+      'es': 'Sitio web del cliente (opcional, use https://).',
+      'en': 'Customer website (optional, use https://).',
+      'fr': 'Site web du client (optionnel, utilisez https://).'
+    },
+    'clientes.fax1Help': {
+      'es': 'Número de fax principal (opcional).',
+      'en': 'Primary fax number (optional).',
+      'fr': 'Numéro de fax principal (optionnel).'
+    },
+    'clientes.placeholderIban': {
+      'es': 'Ej: ES91 2100 0418 4502 0005 1332',
+      'en': 'Ex: ES91 2100 0418 4502 0005 1332',
+      'fr': 'Ex: FR14 2004 1010 0505 0001 3M02 606'
+    },
+    'clientes.placeholderBicoSwift': {
+      'es': 'Ej: CAIXESBBXXX',
+      'en': 'Ex: CAIXESBBXXX',
+      'fr': 'Ex: BNPAFRPPXXX'
+    },
+    'clientes.placeholderWeb': {
+      'es': 'Ej: https://www.cliente.com',
+      'en': 'Ex: https://www.customer.com',
+      'fr': 'Ex: https://www.client.fr'
+    },
+    'clientes.iban': {
+      'es': 'IBAN',
+      'en': 'IBAN',
+      'fr': 'IBAN'
+    },
+    'clientes.bicoSwift': {
+      'es': 'BIC/SWIFT',
+      'en': 'BIC/SWIFT',
+      'fr': 'BIC/SWIFT'
+    },
+    'clientes.web': {
+      'es': 'Sitio Web',
+      'en': 'Website',
+      'fr': 'Site Web'
+    },
+    'clientes.fax1': {
+      'es': 'Fax Principal',
+      'en': 'Primary Fax',
+      'fr': 'Fax Principal'
+    },
+    'clientes.fax2': {
+      'es': 'Fax Secundario',
+      'en': 'Secondary Fax',
+      'fr': 'Fax Secondaire'
+    },
+    'clientes.infoContacto': {
+      'es': 'Información de Contacto',
+      'en': 'Contact Information',
+      'fr': 'Informations de Contact'
+    },
+    'clientes.infoUbicacion': {
+      'es': 'Información de Ubicación',
+      'en': 'Location Information',
+      'fr': 'Informations de Localisation'
+    },
+    'clientes.infoBancaria': {
+      'es': 'Información Bancaria',
+      'en': 'Banking Information',
+      'fr': 'Informations Bancaires'
+    },
+    'clientes.fax2Help': {
+      'es': 'Número de fax secundario (opcional).',
+      'en': 'Secondary fax number (optional).',
+      'fr': 'Numéro de fax secondaire (optionnel).'
+    },
+    'clientes.telefonoInvalido': {
+      'es': 'Teléfono no válido para el país seleccionado',
+      'en': 'Invalid phone for selected country',
+      'fr': 'Téléphone invalide pour le pays sélectionné'
+    },
+    'clientes.placeholderFax': {
+      'es': 'Ej: +34 912 345 678',
+      'en': 'Ex: +34 912 345 678',
+      'fr': 'Ex: +33 1 23 45 67 89'
     },
 
     // ═══════════════════════════════════════════════════════════
@@ -2130,6 +2530,11 @@ export class TranslationService {
       "en": "Select the group to generate the subgroup prefix.",
       "fr": "Sélectionnez le groupe pour générer le préfixe du sous-groupe."
     },
+    'subGrupoCuenta.noSubgruposDisponibles': {
+      'es': 'No hay subgrupos disponibles.',
+      'en': 'No subgroups available.',
+      'fr': 'Aucun sous-groupe disponible.'
+    },
 
     // ═══════════════════════════════════════════════════════════
     // 📄 CUENTA
@@ -2224,6 +2629,41 @@ export class TranslationService {
       'en': 'No businesses available.',
       'fr': 'Aucune entreprise disponible.'
     },
+    'cuenta.codigoUsuario': {
+      'es': 'Código (3 Dígitos)',
+      'en': 'Code (3 Digits)',
+      'fr': 'Code (3 Chiffres)'
+    },
+    'cuenta.codigoUsuarioPlaceholder': {
+      'es': 'Ej: 001',
+      'en': 'Ex: 001',
+      'fr': 'Ex: 001'
+    },
+    'cuenta.codigoUsuarioHelp': {
+      'es': 'Ingrese los últimos 3 dígitos del código',
+      'en': 'Enter the last 3 digits of the code',
+      'fr': 'Entrez les 3 derniers chiffres du code'
+    },
+    'cuenta.codigoCompleto': {
+      'es': 'Código Completo',
+      'en': 'Full Code',
+      'fr': 'Code Complet'
+    },
+    'cuenta.codigoCompletoPlaceholder': {
+      'es': 'Se generará automáticamente',
+      'en': 'Will be generated automatically',
+      'fr': 'Sera généré automatiquement'
+    },
+    'cuenta.codigoCompletoHelp': {
+      'es': 'Código del subgrupo + sus 3 dígitos = Código completo',
+      'en': 'Subgroup code + your 3 digits = Full code',
+      'fr': 'Code du sous-groupe + vos 3 chiffres = Code complet'
+    },
+    'cuenta.prefijoSeleccionado': {
+      'es': 'Prefijo Seleccionado',
+      'en': 'Selected Prefix',
+      'fr': 'Préfixe Sélectionné'
+    },
 
     // Ayudas para selects padre y placeholders
     'subLinea.noLineasDisponibles': {
@@ -2267,53 +2707,27 @@ export class TranslationService {
       'en': 'Ex: 21.00',
       'fr': 'Ex: 21.00'
     },
+    'proveedores.infoContacto': {
+      'es': 'Información de Contacto',
+      'en': 'Contact Information',
+      'fr': 'Informations de Contact'
+    },
+    'proveedores.infoUbicacion': {
+      'es': 'Información de Ubicación',
+      'en': 'Location Information',
+      'fr': 'Informations de Localisation'
+    },
+    'proveedores.infoBancaria': {
+      'es': 'Información Bancaria',
+      'en': 'Banking Information',
+      'fr': 'Informations Bancaires'
+    },
+    'proveedores.mainInfo': {
+      'es': 'Información Principal',
+      'en': 'Main Information',
+      'fr': 'Informations Principales'
+    },
 
-    // Ayudas para selects dependientes y país
-    'cliente.selectPaisToSeeProvincias': {
-      'es': 'Seleccione un país para ver provincias.',
-      'en': 'Select a country to see provinces.',
-      'fr': 'Sélectionnez un pays pour voir les provinces.'
-    },
-    'cliente.selectProvinciaToSeeMunicipios': {
-      'es': 'Seleccione una provincia para ver municipios.',
-      'en': 'Select a province to see municipalities.',
-      'fr': 'Sélectionnez une province pour voir les municipalités.'
-    },
-    'cliente.selectMunicipioToSeeCodigosPostales': {
-      'es': 'Seleccione un municipio para ver códigos postales.',
-      'en': 'Select a municipality to see postal codes.',
-      'fr': 'Sélectionnez une municipalité pour voir les codes postaux.'
-    },
-    'cliente.noPaisesDisponibles': {
-      'es': 'No hay países disponibles.',
-      'en': 'No countries available.',
-      'fr': 'Aucun pays disponible.'
-    },
-    'proveedor.selectPaisToSeeProvincias': {
-      'es': 'Seleccione un país para ver provincias.',
-      'en': 'Select a country to see provinces.',
-      'fr': 'Sélectionnez un pays pour voir les provinces.'
-    },
-    'proveedor.selectProvinciaToSeeMunicipios': {
-      'es': 'Seleccione una provincia para ver municipios.',
-      'en': 'Select a province to see municipalities.',
-      'fr': 'Sélectionnez une province pour voir les municipalités.'
-    },
-    'proveedor.selectMunicipioToSeeCodigosPostales': {
-      'es': 'Seleccione un municipio para ver códigos postales.',
-      'en': 'Select a municipality to see postal codes.',
-      'fr': 'Sélectionnez une municipalité pour voir les codes postaux.'
-    },
-    'proveedor.selectCodigoPostalHelp': {
-      'es': 'Seleccione un código postal disponible.',
-      'en': 'Select an available postal code.',
-      'fr': 'Sélectionnez un code postal disponible.'
-    },
-    'proveedor.noPaisesDisponibles': {
-      'es': 'No hay países disponibles.',
-      'en': 'No countries available.',
-      'fr': 'Aucun pays disponible.'
-    },
     'establecimiento.selectPaisToSeeProvincias': {
       'es': 'Seleccione un país para ver provincias.',
       'en': 'Select a country to see provinces.',
@@ -2987,6 +3401,12 @@ export class TranslationService {
       'en': 'VAT must be between 0 and 100',
       'fr': 'La TVA doit être comprise entre 0 et 100'
     },
+    'validation.codigo8Digitos': {
+      'es': 'El código debe ser numérico de 8 dígitos (00000000-99999999)',
+      'en': 'Code must be an 8-digit number (00000000-99999999)',
+      'fr': 'Le code doit être un nombre à 8 chiffres (00000000-99999999)'
+    },
+
     'error.loading': {
       'es': 'Error al cargar los datos',
       'en': 'Error loading data',

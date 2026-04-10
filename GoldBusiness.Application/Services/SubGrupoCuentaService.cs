@@ -2,8 +2,10 @@
 using GoldBusiness.Application.Interfaces;
 using GoldBusiness.Domain.DTOs;
 using GoldBusiness.Domain.Entities;
+using GoldBusiness.Domain.Helpers;
 using GoldBusiness.Infrastructure.Repositories;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
 
 namespace GoldBusiness.Application.Services
 {
@@ -11,12 +13,19 @@ namespace GoldBusiness.Application.Services
     {
         private readonly ISubGrupoCuentaRepository _repo;
         private readonly IStringLocalizer<GoldBusiness.Domain.Resources.ValidationMessages> _localizer;
+        private readonly ITranslatorService _translatorService;
+        private readonly ILogger<SubGrupoCuentaService> _logger;
 
-        public SubGrupoCuentaService(ISubGrupoCuentaRepository repo,
-            IStringLocalizer<GoldBusiness.Domain.Resources.ValidationMessages> localizer)
+        public SubGrupoCuentaService(
+            ISubGrupoCuentaRepository repo,
+            IStringLocalizer<GoldBusiness.Domain.Resources.ValidationMessages> localizer,
+            ITranslatorService translatorService,
+            ILogger<SubGrupoCuentaService> logger)
         {
             _repo = repo;
             _localizer = localizer;
+            _translatorService = translatorService;
+            _logger = logger;
         }
 
         public async Task<IEnumerable<SubGrupoCuentaDTO>> GetAllAsync(string lang = "es")
@@ -40,7 +49,6 @@ namespace GoldBusiness.Application.Services
         {
             var creador = user ?? "system";
 
-            // Usar el helper genérico
             var (existe, estaCancelado, existingEntity) = await CodigoValidationHelper
                 .ValidateCodigoForCreateAsync(_repo, dto.Codigo);
 
@@ -48,29 +56,72 @@ namespace GoldBusiness.Application.Services
             {
                 if (estaCancelado && existingEntity != null)
                 {
-                    // Reactivar el registro existente
                     existingEntity.Reactivar(dto.Descripcion, creador);
                     existingEntity.AddOrUpdateTranslation(lang, dto.Descripcion, creador);
                     await _repo.UpdateAsync(existingEntity);
-
                     return MapToDTO(existingEntity, lang)!;
                 }
                 else
                 {
-                    // Lanzar error con mensaje genérico
                     var errorMessage = CodigoValidationHelper.GetDuplicateCodeErrorMessage(
                         _localizer, dto.Codigo, false);
                     throw new InvalidOperationException(errorMessage);
                 }
             }
 
-            // No existe, crear nuevo registro
-            var entity = new SubGrupoCuenta(dto.Codigo, dto.Descripcion, dto.GrupoCuentaId, dto.Deudora, creador);
+            // ✅ Preparar traducciones automáticas (es, en, fr)
+            var supportedLanguages = new[] { "es", "en", "fr" };
+            var provided = dto.Translations ?? new List<TranslationInputDTO>();
+            if (!provided.Any())
+            {
+                provided.Add(new TranslationInputDTO { Language = lang, TranslatedText = dto.Descripcion });
+            }
+
+            var map = provided
+                .Where(t => !string.IsNullOrWhiteSpace(t.Language) && !string.IsNullOrWhiteSpace(t.TranslatedText))
+                .ToDictionary(
+                    t => t.Language.Split('-', StringSplitOptions.RemoveEmptyEntries)[0].ToLowerInvariant(),
+                    t => t.TranslatedText,
+                    StringComparer.OrdinalIgnoreCase);
+
+            if (!map.ContainsKey(lang))
+            {
+                map[lang] = dto.Descripcion;
+            }
+
+            var normalizedLang = LanguageHelper.NormalizeLang(lang);
+            var sourceLang = map.ContainsKey(normalizedLang) ? normalizedLang : map.Keys.First();
+            var sourceText = map[sourceLang];
+
+            foreach (var target in supportedLanguages)
+            {
+                if (!map.ContainsKey(target))
+                {
+                    try
+                    {
+                        var translated = await _translatorService.TranslateAsync(sourceText, sourceLang, target);
+                        map[target] = string.IsNullOrWhiteSpace(translated) ? sourceText : translated;
+                    }
+                    catch
+                    {
+                        map[target] = sourceText;
+                    }
+                }
+            }
+
+            _logger.LogInformation("SubGrupoCuenta Create: codigo={Codigo}, source={SourceLang}, sourceText={SourceText}", dto.Codigo, sourceLang, sourceText);
+            _logger.LogInformation("Translations map: {Map}", string.Join("; ", map.Select(kv => $"{kv.Key}={kv.Value}")));
+
+            var entity = new SubGrupoCuenta(dto.Codigo, map[lang], dto.GrupoCuentaId, dto.Deudora, creador);
             await _repo.AddAsync(entity);
 
-            entity.AddOrUpdateTranslation(lang, dto.Descripcion, creador);
-            await _repo.UpdateAsync(entity);
+            foreach (var kv in map)
+            {
+                _logger.LogInformation("Persisting translation (Create) -> SubGrupoCuentaId={SubId}, Lang={Lang}, Text={Text}", entity.Id, kv.Key, kv.Value);
+                entity.AddOrUpdateTranslation(kv.Key, kv.Value, creador);
+            }
 
+            await _repo.UpdateAsync(entity);
             return MapToDTO(entity, lang)!;
         }
 
@@ -79,24 +130,20 @@ namespace GoldBusiness.Application.Services
             var entity = await _repo.GetByIdAsync(id);
             if (entity == null) throw new KeyNotFoundException();
 
-            // Si el código cambió, validar
             if (entity.Codigo != dto.Codigo)
             {
-                // Verificar si existe otro registro con el nuevo código (incluyendo cancelados)
                 var existingWithNewCode = await _repo.GetByCodigoAsync(dto.Codigo, includeCanceled: true);
 
                 if (existingWithNewCode != null && existingWithNewCode.Id != id)
                 {
                     if (existingWithNewCode.Cancelado)
                     {
-                        // Existe pero está cancelado - no permitir el cambio
                         var errorMessage = $"Ya existe un registro cancelado con el código '{dto.Codigo}'. " +
                                          $"Considere reactivar el registro existente (ID: {existingWithNewCode.Id}).";
                         throw new InvalidOperationException(errorMessage);
                     }
                     else
                     {
-                        // Existe y está activo
                         var errorMessage = string.Format(_localizer["CodigoDuplicado"].Value, dto.Codigo);
                         throw new InvalidOperationException(errorMessage);
                     }
@@ -107,7 +154,54 @@ namespace GoldBusiness.Application.Services
 
             entity.Update(dto.Descripcion, dto.GrupoCuentaId, dto.Deudora, user);
 
-            entity.AddOrUpdateTranslation(lang, dto.Descripcion, user ?? "system");
+            // ✅ Preparar traducciones automáticas (es, en, fr)
+            var supportedLanguages = new[] { "es", "en", "fr" };
+            var provided = dto.Translations ?? new List<TranslationInputDTO>();
+            if (!provided.Any())
+            {
+                provided.Add(new TranslationInputDTO { Language = lang, TranslatedText = dto.Descripcion });
+            }
+
+            var map = provided
+                .Where(t => !string.IsNullOrWhiteSpace(t.Language) && !string.IsNullOrWhiteSpace(t.TranslatedText))
+                .ToDictionary(
+                    t => t.Language.Split('-', StringSplitOptions.RemoveEmptyEntries)[0].ToLowerInvariant(),
+                    t => t.TranslatedText,
+                    StringComparer.OrdinalIgnoreCase);
+
+            if (!map.ContainsKey(lang))
+            {
+                map[lang] = dto.Descripcion;
+            }
+
+            var normalizedLang = LanguageHelper.NormalizeLang(lang);
+            var sourceLang = map.ContainsKey(normalizedLang) ? normalizedLang : map.Keys.First();
+            var sourceText = map[sourceLang];
+
+            foreach (var target in supportedLanguages)
+            {
+                if (!map.ContainsKey(target))
+                {
+                    try
+                    {
+                        var translated = await _translatorService.TranslateAsync(sourceText, sourceLang, target);
+                        map[target] = string.IsNullOrWhiteSpace(translated) ? sourceText : translated;
+                    }
+                    catch
+                    {
+                        map[target] = sourceText;
+                    }
+                }
+            }
+
+            _logger.LogInformation("SubGrupoCuenta Update: id={Id}, codigo={Codigo}, source={SourceLang}", id, dto.Codigo, sourceLang);
+            _logger.LogInformation("Translations map: {Map}", string.Join("; ", map.Select(kv => $"{kv.Key}={kv.Value}")));
+
+            foreach (var kv in map)
+            {
+                _logger.LogInformation("Persisting translation (Update) -> SubGrupoCuentaId={SubId}, Lang={Lang}, Text={Text}", id, kv.Key, kv.Value);
+                entity.AddOrUpdateTranslation(kv.Key, kv.Value, user ?? "system");
+            }
 
             await _repo.UpdateAsync(entity);
             return MapToDTO(entity, lang)!;

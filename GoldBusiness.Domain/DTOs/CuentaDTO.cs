@@ -82,6 +82,8 @@ namespace GoldBusiness.Domain.DTOs
         public string GrupoCuentaCodigo { get; set; } = string.Empty;
         public string GrupoCuentaDescripcion { get; set; } = string.Empty;
 
+        public List<TranslationInputDTO>? Translations { get; set; } = new List<TranslationInputDTO>();
+
         public string CodigoDescripcion => $"{Codigo} | {Descripcion}";
     }
 }
