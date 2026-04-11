@@ -1,19 +1,32 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
+import { TipoIdentificacionFiscal, RegimenFiscal } from './fiscal.types';
 
-export interface Pais { id: number; descripcion?: string; nombre?: string; regexTelefono?: string; formatoTelefono?: string; formatoEjemplo?: string; }
-export interface Provincia { id: number; descripcion?: string; nombre?: string; paisId: number; }
-export interface Municipio { id: number; descripcion?: string; nombre?: string; provinciaId: number; }
-export interface CodigoPostal { id: number; codigo: string; municipioId: number; }
+// ═══════════════════════════════════════════════════════════════
+// 🔷 INTERFACES
+// ═══════════════════════════════════════════════════════════════
 
-export interface FormaJuridicaDTO { id: number; descripcion: string; }
+export interface Pais {
+  id: number;
+  descripcion: string;
+  regexTelefono?: string;
+  formatoTelefono?: string;
+  formatoEjemplo?: string;
+}
+
+export interface FormaJuridicaDTO {
+  id: number;
+  descripcion: string;
+}
 
 export interface SystemConfigurationDTO {
-  id?: number;
+  id: number;
   codigoSistema: string;
   licencia: string;
   nombreNegocio: string;
+  personaContacto?: string;
+  formaJuridicaId?: number;
   direccion?: string;
   paisId: number;
   provinciaId: number;
@@ -28,11 +41,17 @@ export interface SystemConfigurationDTO {
   telefono?: string;
   cuentaPagarId?: number;
   cuentaCobrarId?: number;
-  caducidad: string;
+  identificadorFiscal?: string;
+  tipoIdentificadorFiscal?: TipoIdentificacionFiscal;
+  regimenFiscal?: RegimenFiscal;
+  tasaIvaDefecto?: number;
+  registradaIva?: boolean;
+  ivaInternacional?: boolean;
+  caducidad: Date;
   creadoPor?: string;
-  fechaHoraCreado?: string;
+  fechaHoraCreado?: Date;
   modificadoPor?: string;
-  fechaHoraModificado?: string;
+  fechaHoraModificado?: Date;
   cuentaPagarCodigo?: string;
   cuentaPagarDescripcion?: string;
   cuentaCobrarCodigo?: string;
@@ -43,13 +62,13 @@ export interface SystemConfigurationDTO {
   diasRestantes?: number;
   estadoLicencia?: string;
   tieneCuentasConfiguradas?: boolean;
-  activo?: boolean;
-  cancelado?: boolean;
-  // Presentation props (if backend sends them)
-  personaContacto?: string;
-  formaJuridicaId?: number;
-  formaJuridica?: string;
+  activo: boolean;
+  cancelado: boolean;
 }
+
+// ═══════════════════════════════════════════════════════════════
+// 🔷 SERVICIO
+// ═══════════════════════════════════════════════════════════════
 
 @Injectable({
   providedIn: 'root'
@@ -57,61 +76,104 @@ export interface SystemConfigurationDTO {
 export class SystemConfigurationService {
   private readonly endpoint = 'SystemConfiguration';
 
-  constructor(private apiService: ApiService) { }
+  constructor(private apiService: ApiService) {}
 
+  // ───────────────────────────────────────────────────────────
+  // 📖 MÉTODOS DE LECTURA
+  // ───────────────────────────────────────────────────────────
+
+  /**
+   * Obtiene la configuración del sistema (asume ID = 1)
+   */
+  get(): Observable<SystemConfigurationDTO> {
+    return this.apiService.get<SystemConfigurationDTO>(`${this.endpoint}/1`);
+  }
+
+  /**
+   * Obtiene todas las configuraciones del sistema
+   */
   getAll(): Observable<SystemConfigurationDTO[]> {
     return this.apiService.get<SystemConfigurationDTO[]>(this.endpoint);
   }
 
-  getPaged(page: number, pageSize: number, term?: string): Observable<{ items: SystemConfigurationDTO[]; total: number; page: number; pageSize: number }> {
-    const q = `?page=${page}&pageSize=${pageSize}${term ? `&term=${encodeURIComponent(term)}` : ''}`;
-    return this.apiService.get<{ items: SystemConfigurationDTO[]; total: number; page: number; pageSize: number }>(`${this.endpoint}/paged${q}`);
-  }
-
+  /**
+   * Obtiene una configuración específica por ID
+   */
   getById(id: number): Observable<SystemConfigurationDTO> {
     return this.apiService.get<SystemConfigurationDTO>(`${this.endpoint}/${id}`);
   }
 
+  /**
+   * Obtiene configuraciones paginadas con búsqueda opcional
+   */
+  getPaged(page: number, pageSize: number, term?: string): Observable<any> {
+    let url = `${this.endpoint}/paged?page=${page}&pageSize=${pageSize}`;
+    if (term) url += `&term=${encodeURIComponent(term)}`;
+    return this.apiService.get<any>(url);
+  }
+
+  // ───────────────────────────────────────────────────────────
+  // ✏️ MÉTODOS DE ESCRITURA
+  // ───────────────────────────────────────────────────────────
+
+  /**
+   * Crea una nueva configuración del sistema
+   */
   create(dto: SystemConfigurationDTO): Observable<SystemConfigurationDTO> {
     return this.apiService.post<SystemConfigurationDTO>(this.endpoint, dto);
   }
 
-  update(id: number, dto: SystemConfigurationDTO): Observable<SystemConfigurationDTO> {
-    return this.apiService.put<SystemConfigurationDTO>(`${this.endpoint}/${id}`, dto);
+  /**
+   * Actualiza una configuración existente
+   * NOTA: El DTO ya contiene el ID, por eso solo recibe 1 parámetro
+   */
+  update(dto: SystemConfigurationDTO): Observable<SystemConfigurationDTO> {
+    return this.apiService.put<SystemConfigurationDTO>(`${this.endpoint}/${dto.id}`, dto);
   }
 
-  delete(id: number): Observable<void> {
-    return this.apiService.delete<void>(`${this.endpoint}/${id}`);
+  /**
+   * Elimina (soft delete) una configuración
+   */
+  delete(id: number): Observable<any> {
+    return this.apiService.delete<any>(`${this.endpoint}/${id}`);
   }
 
-  getPaises(): Observable<Pais[]> {
-    return this.apiService.get<Pais[]>('pais');
+  // ───────────────────────────────────────────────────────────
+  // 🔍 MÉTODOS AUXILIARES PARA DROPDOWNS
+  // ───────────────────────────────────────────────────────────
+
+  /**
+   * Obtiene la lista de formas jurídicas para el dropdown
+   */
+  getFormasJuridicas(lang: string = 'es'): Observable<FormaJuridicaDTO[]> {
+    return this.apiService.get<FormaJuridicaDTO[]>(`FormaJuridica?lang=${lang}`);
   }
 
-  getProvinciasByPais(paisId: number): Observable<Provincia[]> {
-    return this.apiService.get<Provincia[]>(`provincia/pais/${paisId}`);
+  /**
+   * Obtiene la lista de países para el dropdown
+   */
+  getPaises(lang: string = 'es'): Observable<Pais[]> {
+    return this.apiService.get<Pais[]>(`Pais?lang=${lang}`);
   }
 
-  getMunicipiosByProvincia(provinciaId: number): Observable<Municipio[]> {
-    return this.apiService.get<Municipio[]>(`municipio/provincia/${provinciaId}`);
-  }
-
-  getCodigosPostalesByMunicipio(municipioId: number): Observable<CodigoPostal[]> {
-    return this.apiService.get<CodigoPostal[]>(`codigopostal/by-municipio/${municipioId}`);
-  }
-
-  getFormasJuridicas(lang?: string): Observable<FormaJuridicaDTO[]> {
-    const q = lang ? `?lang=${encodeURIComponent(lang)}` : '';
-    return this.apiService.get<FormaJuridicaDTO[]>(`formaJuridica${q}`);
-  }
-
+  /**
+   * Sube un nuevo logo al servidor
+   * NOTA: Los nombres DEBEN coincidir EXACTAMENTE con UploadLogoRequest en el backend (case-sensitive)
+   */
   uploadLogo(codigoSistema: string, file: File): Observable<{ fileName: string }> {
     const formData = new FormData();
-    formData.append('file', file);
-    formData.append('codigoSistema', codigoSistema);
+    // ⭐ IMPORTANTE: Mayúsculas exactas como en C# UploadLogoRequest
+    formData.append('file', file); // ⭐ minúscula como antes
+    formData.append('codigoSistema', codigoSistema); // ⭐ camelCase como antes
+    
     return this.apiService.postFormData<{ fileName: string }>(`${this.endpoint}/upload-logo`, formData);
   }
 
+  /**
+   * Construye la URL completa del logo usando el endpoint del backend
+   * @param fileName - Nombre del archivo del logo
+   * @returns URL completa para mostrar la imagen
+   */
   getLogoUrl(fileName: string): string {
     if (!fileName) return '';
     if (fileName.startsWith('http://') || fileName.startsWith('https://')) {
@@ -123,5 +185,12 @@ export class SystemConfigurationService {
       return anyApi.buildUrl(`${this.endpoint}/logo/${fileName}`);
     }
     return `/api/${this.endpoint}/logo/${fileName}`;
+  }
+
+  /**
+   * Elimina un logo del servidor
+   */
+  deleteLogo(fileName: string): Observable<any> {
+    return this.apiService.delete<any>(`${this.endpoint}/delete-logo/${fileName}`);
   }
 }

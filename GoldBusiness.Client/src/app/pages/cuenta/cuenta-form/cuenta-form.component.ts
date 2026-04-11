@@ -139,23 +139,12 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  loadSystemConfigurations(): void {
-    this.loadingSystemConfigurations = true;
+  private loadSystemConfigurations(): void {
     this.systemConfigurationService.getAll().subscribe({
-      next: (data) => {
-        this.systemConfigurations = data.filter(sc => (sc.estaVigente ?? true));
-        this.loadingSystemConfigurations = false;
-        if (this.systemConfigurations.length > 0) {
-          this.form.get('systemConfigurationId')?.enable({ emitEvent: false });
-        } else {
-          this.form.get('systemConfigurationId')?.enable({ emitEvent: false });
-        }
+      next: (data: SystemConfigurationDTO[]) => {
+        this.systemConfigurations = data.filter((sc: SystemConfigurationDTO) => (sc.estaVigente ?? true));
       },
-      error: (err: any) => {
-        console.error('Error al cargar configuraciones de sistema (negocios):', err);
-        this.loadingSystemConfigurations = false;
-        this.error = 'Error al cargar negocios';
-      }
+      error: (err: any) => console.error('Error loading system configurations:', err)
     });
   }
 

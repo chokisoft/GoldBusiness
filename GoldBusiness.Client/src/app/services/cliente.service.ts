@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
+import { TipoIdentificacionFiscal, RegimenFiscal } from './fiscal.types';
 
 export interface ClienteDTO {
   id: number;
@@ -26,6 +27,18 @@ export interface ClienteDTO {
   telefono2?: string;
   fax1?: string;
   fax2?: string;
+  
+  // ═══════════════════════════════════════════════════════════════
+  // 🧾 DATOS FISCALES EXTENDIDOS
+  // ═══════════════════════════════════════════════════════════════
+  tipoIdentificadorFiscal?: TipoIdentificacionFiscal;
+  regimenFiscal?: RegimenFiscal;
+  exentoIva?: boolean;
+  extranjero?: boolean;
+  codigoPaisIso?: string;
+  validarIdentificadorFiscal?: boolean;
+  inversionSujetoPasivo?: boolean;
+  
   cancelado: boolean;
   creadoPor: string;
   fechaHoraCreado: Date;
@@ -50,24 +63,23 @@ export class ClienteService {
     return this.api.get<PagedResult<ClienteDTO>>(url);
   }
 
-  getAll(): Observable<ClienteDTO[]> {
-    console.warn('⚠️ ClienteService.getAll() puede ser lento. Considera usar getPaged()');
-    return this.api.get<ClienteDTO[]>('Cliente');
-  }
-
   getById(id: number): Observable<ClienteDTO> {
     return this.api.get<ClienteDTO>(`Cliente/${id}`);
   }
 
-  create(data: ClienteDTO): Observable<ClienteDTO> {
-    return this.api.post<ClienteDTO>('Cliente', data);
+  create(cliente: Partial<ClienteDTO>): Observable<ClienteDTO> {
+    return this.api.post<ClienteDTO>('Cliente', cliente);
   }
 
-  update(id: number, data: ClienteDTO): Observable<ClienteDTO> {
-    return this.api.put<ClienteDTO>(`Cliente/${id}`, data);
+  update(id: number, cliente: Partial<ClienteDTO>): Observable<ClienteDTO> {
+    return this.api.put<ClienteDTO>(`Cliente/${id}`, cliente);
   }
 
   delete(id: number): Observable<void> {
     return this.api.delete<void>(`Cliente/${id}`);
+  }
+
+  reactivate(id: number): Observable<ClienteDTO> {
+    return this.api.post<ClienteDTO>(`Cliente/${id}/reactivate`, {});
   }
 }

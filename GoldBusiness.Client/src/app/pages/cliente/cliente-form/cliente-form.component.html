@@ -237,6 +237,89 @@
         <div class="form-group"></div>
       </div>
 
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- 🧾 DATOS FISCALES -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+
+      <h3 class="section-title">{{ 'fiscal.title' | translate }}</h3>
+
+      <div class="form-row form-row-three">
+        <div class="form-group">
+          <label for="tipoIdentificadorFiscal">{{ 'fiscal.tipoIdentificadorFiscal' | translate }}</label>
+          <select 
+            id="tipoIdentificadorFiscal" 
+            formControlName="tipoIdentificadorFiscal"
+            class="shared-select">
+            <option [ngValue]="null">{{ 'common.select' | translate }}</option>
+            <option *ngFor="let tipo of tiposIdentificacionFiscal" [ngValue]="tipo.value">
+              {{ tipo.label }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="regimenFiscal">{{ 'fiscal.regimenFiscal' | translate }}</label>
+          <select 
+            id="regimenFiscal" 
+            formControlName="regimenFiscal"
+            class="shared-select">
+            <option [ngValue]="null">{{ 'common.select' | translate }}</option>
+            <option *ngFor="let regimen of regimenesFiscales" [ngValue]="regimen.value">
+              {{ regimen.label }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="codigoPaisIso">{{ 'fiscal.codigoPaisIso' | translate }}</label>
+          <input 
+            type="text" 
+            id="codigoPaisIso" 
+            formControlName="codigoPaisIso"
+            class="shared-input"
+            maxlength="3"
+            placeholder="ES, FR, MX...">
+        </div>
+      </div>
+
+      <div class="form-row form-row-checkboxes">
+        <div class="checkbox-group">
+          <input 
+            type="checkbox" 
+            id="exentoIva" 
+            formControlName="exentoIva"
+            class="form-checkbox">
+          <label for="exentoIva">{{ 'fiscal.exentoIva' | translate }}</label>
+        </div>
+
+        <div class="checkbox-group">
+          <input 
+            type="checkbox" 
+            id="extranjero" 
+            formControlName="extranjero"
+            class="form-checkbox">
+          <label for="extranjero">{{ 'fiscal.extranjero' | translate }}</label>
+        </div>
+
+        <div class="checkbox-group">
+          <input 
+            type="checkbox" 
+            id="validarIdentificadorFiscal" 
+            formControlName="validarIdentificadorFiscal"
+            class="form-checkbox">
+          <label for="validarIdentificadorFiscal">{{ 'fiscal.validarIdentificadorFiscal' | translate }}</label>
+        </div>
+
+        <div class="checkbox-group">
+          <input 
+            type="checkbox" 
+            id="inversionSujetoPasivo" 
+            formControlName="inversionSujetoPasivo"
+            class="form-checkbox">
+          <label for="inversionSujetoPasivo">{{ 'fiscal.inversionSujetoPasivo' | translate }}</label>
+        </div>
+      </div>
+
       <!-- Botones de Acción -->
       <div class="form-actions">
         <button type="button" class="btn btn-secondary" (click)="onCancel()" [disabled]="saving">
@@ -247,5 +330,87 @@
         </button>
       </div>
     </form>
+  </div>
+</div>
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 🧾 DATOS FISCALES -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+
+<h3 class="section-title">{{ 'fiscal.title' | translate }}</h3>
+
+<div class="form-row form-row-three">
+  <div class="form-group">
+    <label for="tipoIdentificadorFiscal">{{ 'fiscal.tipoIdentificadorFiscal' | translate }}</label>
+    <select 
+      id="tipoIdentificadorFiscal" 
+      formControlName="tipoIdentificadorFiscal"
+      class="shared-select">
+      <option [ngValue]="null">{{ 'common.select' | translate }}</option>
+      <option *ngFor="let tipo of tiposIdentificacionFiscal" [ngValue]="tipo.value">
+        {{ tipo.label }}
+      </option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="regimenFiscal">{{ 'fiscal.regimenFiscal' | translate }}</label>
+    <select 
+      id="regimenFiscal" 
+      formControlName="regimenFiscal"
+      class="shared-select">
+      <option [ngValue]="null">{{ 'common.select' | translate }}</option>
+      <option *ngFor="let regimen of regimenesFiscales" [ngValue]="regimen.value">
+        {{ regimen.label }}
+      </option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="codigoPaisIso">{{ 'fiscal.codigoPaisIso' | translate }}</label>
+    <input 
+      type="text" 
+      id="codigoPaisIso" 
+      formControlName="codigoPaisIso"
+      class="shared-input"
+      maxlength="3"
+      placeholder="ES, FR, MX...">
+  </div>
+</div>
+
+<div class="form-row form-row-checkboxes">
+  <div class="checkbox-group">
+    <input 
+      type="checkbox" 
+      id="exentoIva" 
+      formControlName="exentoIva"
+      class="form-checkbox">
+    <label for="exentoIva">{{ 'fiscal.exentoIva' | translate }}</label>
+  </div>
+
+  <div class="checkbox-group">
+    <input 
+      type="checkbox" 
+      id="extranjero" 
+      formControlName="extranjero"
+      class="form-checkbox">
+    <label for="extranjero">{{ 'fiscal.extranjero' | translate }}</label>
+  </div>
+
+  <div class="checkbox-group">
+    <input 
+      type="checkbox" 
+      id="validarIdentificadorFiscal" 
+      formControlName="validarIdentificadorFiscal"
+      class="form-checkbox">
+    <label for="validarIdentificadorFiscal">{{ 'fiscal.validarIdentificadorFiscal' | translate }}</label>
+  </div>
+
+  <div class="checkbox-group">
+    <input 
+      type="checkbox" 
+      id="inversionSujetoPasivo" 
+      formControlName="inversionSujetoPasivo"
+      class="form-checkbox">
+    <label for="inversionSujetoPasivo">{{ 'fiscal.inversionSujetoPasivo' | translate }}</label>
   </div>
 </div>

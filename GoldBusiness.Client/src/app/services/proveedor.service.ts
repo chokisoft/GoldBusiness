@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
+import { TipoIdentificacionFiscal, RegimenFiscal } from './fiscal.types';
 
 export interface ProveedorDTO {
   id: number;
@@ -26,12 +27,23 @@ export interface ProveedorDTO {
   telefono2?: string;
   fax1?: string;
   fax2?: string;
+  
+  // ═══════════════════════════════════════════════════════════════
+  // 🧾 DATOS FISCALES EXTENDIDOS
+  // ═══════════════════════════════════════════════════════════════
+  tipoIdentificadorFiscal?: TipoIdentificacionFiscal;
+  regimenFiscal?: RegimenFiscal;
+  exentoIva?: boolean;
+  extranjero?: boolean;
+  codigoPaisIso?: string;
+  validarIdentificadorFiscal?: boolean;
+  inversionSujetoPasivo?: boolean;
+  
   cancelado: boolean;
   creadoPor: string;
   fechaHoraCreado: Date;
   modificadoPor?: string;
   fechaHoraModificado?: Date;
-  cantidadProductos?: number;
 }
 
 export interface PagedResult<T> {
@@ -51,24 +63,23 @@ export class ProveedorService {
     return this.api.get<PagedResult<ProveedorDTO>>(url);
   }
 
-  getAll(): Observable<ProveedorDTO[]> {
-    console.warn('⚠️ ProveedorService.getAll() puede ser lento. Considera usar getPaged()');
-    return this.api.get<ProveedorDTO[]>('Proveedor');
-  }
-
   getById(id: number): Observable<ProveedorDTO> {
     return this.api.get<ProveedorDTO>(`Proveedor/${id}`);
   }
 
-  create(data: ProveedorDTO): Observable<ProveedorDTO> {
-    return this.api.post<ProveedorDTO>('Proveedor', data);
+  create(proveedor: Partial<ProveedorDTO>): Observable<ProveedorDTO> {
+    return this.api.post<ProveedorDTO>('Proveedor', proveedor);
   }
 
-  update(id: number, data: ProveedorDTO): Observable<ProveedorDTO> {
-    return this.api.put<ProveedorDTO>(`Proveedor/${id}`, data);
+  update(id: number, proveedor: Partial<ProveedorDTO>): Observable<ProveedorDTO> {
+    return this.api.put<ProveedorDTO>(`Proveedor/${id}`, proveedor);
   }
 
   delete(id: number): Observable<void> {
     return this.api.delete<void>(`Proveedor/${id}`);
+  }
+
+  reactivate(id: number): Observable<ProveedorDTO> {
+    return this.api.post<ProveedorDTO>(`Proveedor/${id}/reactivate`, {});
   }
 }

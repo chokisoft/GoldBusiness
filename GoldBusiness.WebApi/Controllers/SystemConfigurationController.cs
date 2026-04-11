@@ -9,6 +9,7 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Microsoft.Extensions.Logging; // ⭐ AGREGAR
 
 namespace GoldBusiness.WebApi.Controllers
 {
@@ -23,6 +24,7 @@ namespace GoldBusiness.WebApi.Controllers
     {
         private readonly ISystemConfigurationService _service;
         private readonly IStringLocalizer<ValidationMessages> _localizer;
+        private readonly ILogger<SystemConfigurationController> _logger;
 
         private static readonly string LogoBasePath =
             RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
@@ -34,10 +36,12 @@ namespace GoldBusiness.WebApi.Controllers
 
         public SystemConfigurationController(
             ISystemConfigurationService service,
-            IStringLocalizer<ValidationMessages> localizer) : base(localizer)
+            IStringLocalizer<ValidationMessages> localizer,
+            ILogger<SystemConfigurationController> logger) : base(localizer) // ✅ SOLO pasar localizer a la base
         {
             _service = service;
             _localizer = localizer;
+            _logger = logger;
         }
 
         /// <summary>Obtiene todas las configuraciones del sistema activas.</summary>
@@ -86,8 +90,13 @@ namespace GoldBusiness.WebApi.Controllers
                 var usuario = GetCurrentUser();
                 var result = await _service.CreateAsync(dto, usuario, lang);
 
-                if (WasReactivated(result.FechaHoraCreado, result.FechaHoraModificado))
+                // ✅ CORREGIDO - Verificar que ambos tengan valor antes de comparar
+                if (result.FechaHoraCreado.HasValue &&
+                    result.FechaHoraModificado.HasValue &&
+                    WasReactivated(result.FechaHoraCreado.Value, result.FechaHoraModificado.Value))
+                {
                     return CreateReactivatedResponse(result, result.CodigoSistema);
+                }
 
                 return CreatedAtAction(nameof(Get), new { id = result.Id }, result);
             }
@@ -239,10 +248,21 @@ namespace GoldBusiness.WebApi.Controllers
                 }
             }
 
-            await using var stream = new FileStream(filePath, FileMode.Create);
-            await request.File.CopyToAsync(stream);
+            try
+            {
+                await using var stream = new FileStream(filePath, FileMode.Create);
+                await request.File.CopyToAsync(stream);
 
-            return Ok(new LogoUploadResult(fileName));
+                _logger.LogInformation("Logo subido exitosamente: {FileName} para código: {CodigoSistema}", 
+                    fileName, request.CodigoSistema);
+
+                return Ok(new LogoUploadResult(fileName));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al subir logo para código: {CodigoSistema}", request.CodigoSistema);
+                return StatusCode(500, new { Message = "Error al guardar el archivo." });
+            }
         }
 
         /// <summary>Sirve el archivo de logo del negocio. No requiere autenticación.</summary>
@@ -283,5 +303,7 @@ namespace GoldBusiness.WebApi.Controllers
             public string? Municipio { get; set; }
             public string? Provincia { get; set; }
         }
+
+        public record LogoUploadResult(string FileName);
     }
 }

@@ -6,6 +6,7 @@ using GoldBusiness.Application.Helpers;
 using GoldBusiness.Application.Interfaces;
 using GoldBusiness.Domain.DTOs;
 using GoldBusiness.Domain.Entities;
+using GoldBusiness.Domain.Enums;
 using GoldBusiness.Infrastructure.Repositories;
 using Microsoft.Extensions.Localization;
 
@@ -51,7 +52,6 @@ namespace GoldBusiness.Application.Services
         {
             var creador = user ?? "system";
 
-            // Usar el helper genérico
             var (existe, estaCancelado, existingEntity) = await CodigoValidationHelper
                 .ValidateCodigoForCreateAsync(_repo, dto.CodigoSistema);
 
@@ -60,10 +60,9 @@ namespace GoldBusiness.Application.Services
                 if (estaCancelado && existingEntity != null)
                 {
                     existingEntity.Reactivar(creador);
-                    existingEntity.AddOrUpdateTranslation(lang, dto.NombreNegocio, dto.Direccion, dto.Municipio, dto.Provincia, creador);
+                    existingEntity.AddOrUpdateTranslation(lang, dto.NombreNegocio, dto.Direccion ?? string.Empty, dto.Municipio ?? string.Empty, dto.Provincia ?? string.Empty, creador);
                     await _repo.UpdateAsync(existingEntity);
-
-                    return MapToDTO(existingEntity, lang);
+                    return MapToDTO(existingEntity, lang)!;
                 }
                 else
                 {
@@ -73,17 +72,13 @@ namespace GoldBusiness.Application.Services
                 }
             }
 
-            // Obtener país si existe para validar teléfono
-            Pais? pais = null;
-            pais = await _paisRepo.GetByIdAsync(dto.PaisId);
-
             var entity = new SystemConfiguration(
                 dto.CodigoSistema,
                 dto.Licencia,
                 dto.NombreNegocio,
-                dto.PersonaContacto,
-                dto.FormaJuridicaId,
-                dto.Direccion,
+                dto.PersonaContacto ?? string.Empty,
+                dto.FormaJuridicaId ?? 0,
+                dto.Direccion ?? string.Empty,
                 dto.PaisId,
                 dto.ProvinciaId,
                 dto.MunicipioId,
@@ -91,23 +86,28 @@ namespace GoldBusiness.Application.Services
                 dto.Imagen,
                 dto.Web,
                 dto.Email,
-                dto.Telefono,
-                dto.Caducidad,
-                creador);
-
-                await _repo.AddAsync(entity);
-
-                entity.AddOrUpdateTranslation(
-                lang,
-                dto.NombreNegocio,
-                dto.Direccion,
-                string.Empty,
-                string.Empty,
-                creador);
+                dto.Telefono ?? string.Empty,
+                dto.Caducidad == default ? DateTime.UtcNow.AddYears(1) : dto.Caducidad, // ⭐ CORREGIDO
+                dto.IdentificadorFiscal,
+                dto.TipoIdentificadorFiscal ?? TipoIdentificacionFiscal.NIF,
+                dto.RegimenFiscal ?? RegimenFiscal.General,
+                dto.TasaIvaDefecto ?? 21m,
+                dto.RegistradaIva ?? true,
+                dto.IvaInternacional ?? false,
+                creador
+            );
 
             await _repo.AddAsync(entity);
-            await _repo.UpdateAsync(entity);
 
+            entity.AddOrUpdateTranslation(
+                lang,
+                dto.NombreNegocio,
+                dto.Direccion ?? string.Empty,
+                string.Empty,
+                string.Empty,
+                creador);
+
+            await _repo.UpdateAsync(entity);
             return MapToDTO(entity, lang)!;
         }
 
@@ -116,7 +116,6 @@ namespace GoldBusiness.Application.Services
             var entity = await _repo.GetByIdAsync(id);
             if (entity == null) throw new KeyNotFoundException($"SystemConfiguration con ID {id} no encontrada");
 
-            // Normalizar y validar cambio de código para evitar duplicados
             var incomingCodigo = dto.CodigoSistema?.Trim() ?? string.Empty;
             var codigoUpper = incomingCodigo.ToUpperInvariant();
 
@@ -142,47 +141,41 @@ namespace GoldBusiness.Application.Services
                 entity.SetCodigoSistema(codigoUpper);
             }
 
-            // Obtener país si existe para validar teléfono
-            Pais? pais = null;
-            pais = await _paisRepo.GetByIdAsync(dto.PaisId);
-
             entity.SetLicencia(dto.Licencia);
             entity.SetNombreNegocio(dto.NombreNegocio);
-            entity.SetDireccion(dto.Direccion);
-            entity.SetPersonaContacto(dto.PersonaContacto);
-            entity.SetFormaJuridica(dto.FormaJuridicaId);
+            entity.SetPersonaContacto(dto.PersonaContacto ?? string.Empty);
+            entity.SetFormaJuridica(dto.FormaJuridicaId ?? 0);
+            entity.SetDireccion(dto.Direccion ?? string.Empty);
+            entity.SetPais(dto.PaisId);
             entity.SetProvincia(dto.ProvinciaId);
             entity.SetMunicipio(dto.MunicipioId);
             entity.SetCodigoPostal(dto.CodigoPostalId);
             entity.SetImagen(dto.Imagen ?? string.Empty);
             entity.SetWeb(dto.Web ?? string.Empty);
             entity.SetEmail(dto.Email ?? string.Empty);
-            entity.SetTelefono(dto.Telefono);
+            entity.SetTelefono(dto.Telefono ?? string.Empty);
             entity.SetCaducidad(dto.Caducidad);
-            entity.SetCuentas(dto.CuentaPagarId, dto.CuentaCobrarId);
+            
+            // Campos fiscales
+            entity.SetIdentificadorFiscal(dto.IdentificadorFiscal ?? string.Empty);
+            entity.SetTipoIdentificadorFiscal(dto.TipoIdentificadorFiscal ?? TipoIdentificacionFiscal.NIF);
+            entity.SetRegimenFiscal(dto.RegimenFiscal ?? RegimenFiscal.General);
+            entity.SetTasaIvaDefecto(dto.TasaIvaDefecto ?? 21m);
+            entity.SetRegistradaIva(dto.RegistradaIva ?? true);
+            entity.SetIvaInternacional(dto.IvaInternacional ?? false);
+
+            if (dto.CuentaPagarId.HasValue) entity.AsignarCuentaPagar(dto.CuentaPagarId.Value);
+            if (dto.CuentaCobrarId.HasValue) entity.AsignarCuentaCobrar(dto.CuentaCobrarId.Value);
+
+            entity.ActualizarAuditoria(user ?? "system");
 
             entity.AddOrUpdateTranslation(
                 lang,
                 dto.NombreNegocio,
-                dto.Direccion,
+                dto.Direccion ?? string.Empty,
                 string.Empty,
                 string.Empty,
-                user);
-
-            // Manejar cambio de estado Activo desde el formulario (Cancelado no se envía desde form)
-            if (dto.Activo == false && entity.Activo)
-            {
-                entity.Desactivar(user);
-            }
-            else if (dto.Activo == true && !entity.Activo)
-            {
-                entity.Activar(user);
-            }
-            else
-            {
-                // Si no hay cambio de estado, actualizar auditoría general
-                entity.ActualizarAuditoria(user);
-            }
+                user ?? "system");
 
             await _repo.UpdateAsync(entity);
             return MapToDTO(entity, lang)!;
@@ -190,47 +183,26 @@ namespace GoldBusiness.Application.Services
 
         public async Task<SystemConfigurationDTO?> SoftDeleteAsync(int id, string user, string lang = "es")
         {
-            var usuario = user ?? "system";
             var entity = await _repo.GetByIdAsync(id);
             if (entity == null) return null;
 
-            entity.SoftDelete(usuario);
+            entity.SoftDelete(user);
             await _repo.UpdateAsync(entity);
             return MapToDTO(entity, lang);
         }
 
-        public async Task AddOrUpdateTranslationAsync(
-            int id,
-            string lang,
-            string nombreNegocio,
-            string? direccion,
-            string? municipio,
-            string? provincia,
-            string user)
+        public async Task AddOrUpdateTranslationAsync(int id, string lang, string nombreNegocio, string direccion, string municipio, string provincia, string user)
         {
-            var modificador = user ?? "system";
+            if (string.IsNullOrWhiteSpace(lang)) lang = "es";
+            if (string.IsNullOrWhiteSpace(nombreNegocio)) throw new ArgumentException("Nombre de negocio requerido.", nameof(nombreNegocio));
 
             var entity = await _repo.GetByIdAsync(id);
-            if (entity == null)
-                throw new KeyNotFoundException($"SystemConfiguration con ID {id} no encontrada");
+            if (entity == null) throw new KeyNotFoundException();
 
-            entity.AddOrUpdateTranslation(
-                lang,
-                nombreNegocio,
-                direccion ?? string.Empty,
-                municipio ?? string.Empty,
-                provincia ?? string.Empty,
-                modificador);
-
-            // CORRECCIÓN: llamar por posición (nombre del parámetro en BaseEntity es 'usuario')
-            entity.ActualizarAuditoria(modificador);
-
+            entity.AddOrUpdateTranslation(lang, nombreNegocio, direccion ?? string.Empty, municipio ?? string.Empty, provincia ?? string.Empty, user ?? "system");
             await _repo.UpdateAsync(entity);
         }
 
-        /// <summary>
-        /// Mapea la entidad SystemConfiguration a DTO
-        /// </summary>
         private static SystemConfigurationDTO? MapToDTO(SystemConfiguration? s, string lang)
         {
             if (s == null) return null;
@@ -242,44 +214,41 @@ namespace GoldBusiness.Application.Services
                 Licencia = s.Licencia,
                 NombreNegocio = s.GetNombreNegocio(lang),
                 PersonaContacto = s.PersonaContacto,
-                Direccion = s.GetDireccion(lang),
-
-                // Mapear IDs
                 FormaJuridicaId = s.FormaJuridicaId,
+                Direccion = s.GetDireccion(lang),
                 PaisId = s.PaisId,
                 ProvinciaId = s.ProvinciaId,
                 MunicipioId = s.MunicipioId,
                 CodigoPostalId = s.CodigoPostalId,
-
-                // Propiedades de presentación (texto)
-                FormaJuridica = s.FormaJuridica != null ? s.FormaJuridica.GetDescripcion(lang) : null,
                 Municipio = s.GetMunicipio(lang),
                 Provincia = s.GetProvincia(lang),
-                CodPostal = s.CodigoPostal?.Codigo ?? string.Empty,
-
+                CodPostal = s.CodigoPostal?.Codigo,
                 Imagen = s.Imagen,
                 Web = s.Web,
                 Email = s.Email,
                 Telefono = s.Telefono,
                 CuentaPagarId = s.CuentaPagarId,
                 CuentaCobrarId = s.CuentaCobrarId,
+                
+                // Campos fiscales
+                IdentificadorFiscal = s.IdentificadorFiscal,
+                TipoIdentificadorFiscal = s.TipoIdentificadorFiscal,
+                RegimenFiscal = s.RegimenFiscal,
+                TasaIvaDefecto = s.TasaIvaDefecto,
+                RegistradaIva = s.RegistradaIva,
+                IvaInternacional = s.IvaInternacional,
+                
                 Caducidad = s.Caducidad,
-
-                // Propiedades de navegación (nullable)
+                CreadoPor = s.CreadoPor,
+                FechaHoraCreado = s.FechaHoraCreado,
+                ModificadoPor = s.ModificadoPor,
+                FechaHoraModificado = s.FechaHoraModificado,
                 CuentaPagarCodigo = s.CuentaPagar?.Codigo,
                 CuentaPagarDescripcion = s.CuentaPagar?.GetDescripcion(lang),
                 CuentaCobrarCodigo = s.CuentaCobrar?.Codigo,
                 CuentaCobrarDescripcion = s.CuentaCobrar?.GetDescripcion(lang),
-
-                // Estado
                 Activo = s.Activo,
-                Cancelado = s.Cancelado,
-
-                // Auditoría
-                CreadoPor = s.CreadoPor,
-                FechaHoraCreado = s.FechaHoraCreado,
-                ModificadoPor = s.ModificadoPor,
-                FechaHoraModificado = s.FechaHoraModificado
+                Cancelado = s.Cancelado
             };
         }
     }

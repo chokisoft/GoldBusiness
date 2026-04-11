@@ -1,11 +1,12 @@
-﻿using System;
+﻿using GoldBusiness.Domain.Enums;
+using GoldBusiness.Domain.Exceptions;
+using GoldBusiness.Domain.Helpers;
+using GoldBusiness.Domain.Translation;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using GoldBusiness.Domain.Exceptions;
-using GoldBusiness.Domain.Helpers;
-using GoldBusiness.Domain.Translation;
 
 namespace GoldBusiness.Domain.Entities
 {
@@ -35,6 +36,13 @@ namespace GoldBusiness.Domain.Entities
 
         public int CodigoPostalId { get; private set; }
         public CodigoPostal CodigoPostal { get; private set; } = null!;
+
+        public string IdentificadorFiscal { get; private set; } = string.Empty;
+        public TipoIdentificacionFiscal TipoIdentificadorFiscal { get; private set; }
+        public RegimenFiscal RegimenFiscal { get; private set; }
+        public decimal TasaIvaDefecto { get; private set; }
+        public bool RegistradaIva { get; private set; }
+        public bool IvaInternacional { get; private set; }
 
         public string Imagen { get; private set; } = string.Empty;
         public string Web { get; private set; } = string.Empty;
@@ -75,6 +83,12 @@ namespace GoldBusiness.Domain.Entities
             string? email,
             string telefono,
             DateTime caducidad,
+            string? identificadorFiscal,
+            TipoIdentificacionFiscal tipoIdentificadorFiscal,
+            RegimenFiscal regimenFiscal,
+            decimal tasaIvaDefecto,
+            bool registradaIva,
+            bool ivaInternacional,
             string creadoPor)
         {
             SetCodigoSistema(codigoSistema);
@@ -92,6 +106,12 @@ namespace GoldBusiness.Domain.Entities
             SetEmail(email ?? string.Empty);
             SetTelefono(telefono);
             SetCaducidad(caducidad);
+            SetIdentificadorFiscal(identificadorFiscal ?? string.Empty);
+            SetTipoIdentificadorFiscal(tipoIdentificadorFiscal);
+            SetRegimenFiscal(regimenFiscal);
+            SetTasaIvaDefecto(tasaIvaDefecto);
+            SetRegistradaIva(registradaIva);
+            SetIvaInternacional(ivaInternacional);
             EstablecerCreador(creadoPor);
 
             Activo = true;
@@ -291,6 +311,48 @@ namespace GoldBusiness.Domain.Entities
             Telefono = telefono.Trim();
         }
 
+        public void SetIdentificadorFiscal(string identificadorFiscal)
+        {
+            if (!string.IsNullOrWhiteSpace(identificadorFiscal) && identificadorFiscal.Length > 30)
+                throw new DomainException("El identificador fiscal no puede exceder 30 caracteres.");
+
+            IdentificadorFiscal = identificadorFiscal?.Trim().ToUpperInvariant() ?? string.Empty;
+        }
+
+        public void SetTipoIdentificadorFiscal(TipoIdentificacionFiscal tipo)
+        {
+            if (!Enum.IsDefined(typeof(TipoIdentificacionFiscal), tipo))
+                throw new DomainException("Tipo de identificador fiscal inválido.");
+
+            TipoIdentificadorFiscal = tipo;
+        }
+
+        public void SetRegimenFiscal(RegimenFiscal regimen)
+        {
+            if (!Enum.IsDefined(typeof(RegimenFiscal), regimen))
+                throw new DomainException("Régimen fiscal inválido.");
+
+            RegimenFiscal = regimen;
+        }
+
+        public void SetTasaIvaDefecto(decimal tasa)
+        {
+            if (tasa < 0 || tasa > 100)
+                throw new DomainException("La tasa de IVA debe estar entre 0 y 100.");
+
+            TasaIvaDefecto = tasa;
+        }
+
+        public void SetRegistradaIva(bool registrada)
+        {
+            RegistradaIva = registrada;
+        }
+
+        public void SetIvaInternacional(bool internacional)
+        {
+            IvaInternacional = internacional;
+        }
+
         public void SetCaducidad(DateTime caducidad)
         {
             if (caducidad == default)
@@ -426,6 +488,12 @@ namespace GoldBusiness.Domain.Entities
             int? cuentaPagarId,
             int? cuentaCobrarId,
             DateTime caducidad,
+            string? identificadorFiscal,
+            TipoIdentificacionFiscal tipoIdentificadorFiscal,
+            RegimenFiscal regimenFiscal,
+            decimal tasaIvaDefecto,
+            bool registradaIva,
+            bool ivaInternacional,
             string modificadoPor)
         {
             SetNombreNegocio(nombreNegocio);
@@ -439,6 +507,12 @@ namespace GoldBusiness.Domain.Entities
             SetTelefono(telefono);
             SetCuentas(cuentaPagarId, cuentaCobrarId);
             SetCaducidad(caducidad);
+            SetIdentificadorFiscal(identificadorFiscal ?? string.Empty);
+            SetTipoIdentificadorFiscal(tipoIdentificadorFiscal);
+            SetRegimenFiscal(regimenFiscal);
+            SetTasaIvaDefecto(tasaIvaDefecto);
+            SetRegistradaIva(registradaIva);
+            SetIvaInternacional(ivaInternacional);
             ActualizarAuditoria(modificadoPor);
         }
 
@@ -487,5 +561,24 @@ namespace GoldBusiness.Domain.Entities
 
         // Método para verificar si tiene cuentas configuradas
         public bool TieneCuentasConfiguradas() => CuentaPagarId.HasValue && CuentaCobrarId.HasValue;
+        // ═══════════════════════════════════════════════════════════════
+        // 🏦 MÉTODOS PARA ASIGNAR CUENTAS CONTABLES
+        // ═══════════════════════════════════════════════════════════════
+
+        public void AsignarCuentaPagar(int cuentaId)
+        {
+            if (cuentaId <= 0)
+                throw new DomainException("El ID de la cuenta por pagar debe ser mayor que cero.");
+
+            CuentaPagarId = cuentaId;
+        }
+
+        public void AsignarCuentaCobrar(int cuentaId)
+        {
+            if (cuentaId <= 0)
+                throw new DomainException("El ID de la cuenta por cobrar debe ser mayor que cero.");
+
+            CuentaCobrarId = cuentaId;
+        }
     }
 }

@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, of } from 'rxjs';
 import { switchMap, catchError } from 'rxjs/operators';
 import { EstablecimientoService, EstablecimientoDTO } from '../../../services/establecimiento.service';
-import { SystemConfigurationService, SystemConfigurationDTO } from '../../../services/system-configuration.service';
+import { SystemConfigurationService, SystemConfigurationDTO } from '../../../services/system-configuration.service'; // ⭐ CORREGIDO
 import { PaisService, PaisDTO } from '../../../services/pais.service';
 import { ProvinciaService, ProvinciaDTO } from '../../../services/provincia.service';
 import { MunicipioService, MunicipioDTO } from '../../../services/municipio.service';
@@ -32,7 +32,6 @@ export class EstablecimientoFormComponent implements OnInit, OnDestroy {
 
   selectedPais?: PaisDTO;
 
-  // Small helpers so shared templates that expect these names work unchanged
   loadingSubGrupos = false;
   loadingGrupos = false;
   get form(): FormGroup { return this.itemForm; }
@@ -65,7 +64,6 @@ export class EstablecimientoFormComponent implements OnInit, OnDestroy {
       cancelado: [false]
     });
 
-    // Inicialmente deshabilitar dependientes
     this.itemForm.get('provinciaId')!.disable();
     this.itemForm.get('municipioId')!.disable();
     this.itemForm.get('codigoPostalId')!.disable();
@@ -77,7 +75,7 @@ export class EstablecimientoFormComponent implements OnInit, OnDestroy {
 
     this.subs.push(
       this.itemForm.get('paisId')!.valueChanges.pipe(
-        switchMap(v => {
+        switchMap((v: number | null) => {
           this.onPaisChange(v);
           if (v) {
             return this.paisService.getById(+v).pipe(catchError(() => of(null)));
@@ -89,15 +87,14 @@ export class EstablecimientoFormComponent implements OnInit, OnDestroy {
       })
     );
 
-    this.subs.push(this.itemForm.get('provinciaId')!.valueChanges.subscribe(v => this.onProvinciaChange(v)));
-    this.subs.push(this.itemForm.get('municipioId')!.valueChanges.subscribe(v => this.onMunicipioChange(v)));
+    this.subs.push(this.itemForm.get('provinciaId')!.valueChanges.subscribe((v: number | null) => this.onProvinciaChange(v)));
+    this.subs.push(this.itemForm.get('municipioId')!.valueChanges.subscribe((v: number | null) => this.onMunicipioChange(v)));
 
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params: any) => {
       if (params['id']) {
         this.itemId = +params['id'];
         this.isEditMode = true;
         this.loadItem();
-        // Deshabilitar negocioId y codigo en modo edición
         this.itemForm.get('negocioId')?.disable();
         this.itemForm.get('codigo')?.disable();
       }
@@ -110,15 +107,15 @@ export class EstablecimientoFormComponent implements OnInit, OnDestroy {
 
   private loadNegocios(): void {
     this.systemConfigurationService.getAll().subscribe({
-      next: list => this.negocios = list,
-      error: err => console.error('Error loading negocios (system configurations)', err)
+      next: (list: SystemConfigurationDTO[]) => this.negocios = list,
+      error: (err: any) => console.error('Error loading negocios', err)
     });
   }
 
   private loadPaises(): void {
     this.paisService.getAll().subscribe({
-      next: list => this.paises = list,
-      error: err => console.error('Error loading paises', err)
+      next: (list: PaisDTO[]) => this.paises = list,
+      error: (err: any) => console.error('Error loading paises', err)
     });
   }
 
@@ -137,8 +134,8 @@ export class EstablecimientoFormComponent implements OnInit, OnDestroy {
 
     this.itemForm.get('provinciaId')!.enable();
     this.provinciaService.getByPaisId(paisId).subscribe({
-      next: list => this.provincias = list,
-      error: err => console.error('Error loading provincias', err)
+      next: (list: ProvinciaDTO[]) => this.provincias = list,
+      error: (err: any) => console.error('Error loading provincias', err)
     });
   }
 
@@ -155,8 +152,8 @@ export class EstablecimientoFormComponent implements OnInit, OnDestroy {
 
     this.itemForm.get('municipioId')!.enable();
     this.municipioService.getByProvinciaId(provinciaId).subscribe({
-      next: list => this.municipios = list,
-      error: err => console.error('Error loading municipios', err)
+      next: (list: MunicipioDTO[]) => this.municipios = list,
+      error: (err: any) => console.error('Error loading municipios', err)
     });
   }
 
@@ -171,8 +168,8 @@ export class EstablecimientoFormComponent implements OnInit, OnDestroy {
 
     this.itemForm.get('codigoPostalId')!.enable();
     this.codigoPostalService.getByMunicipioId(municipioId).subscribe({
-      next: list => this.codigosPostales = list,
-      error: err => console.error('Error loading codigos postales', err)
+      next: (list: CodigoPostalDTO[]) => this.codigosPostales = list,
+      error: (err: any) => console.error('Error loading codigos postales', err)
     });
   }
 
@@ -218,7 +215,6 @@ export class EstablecimientoFormComponent implements OnInit, OnDestroy {
 
   private applyPhoneValidators(pais?: PaisDTO): void {
     this.selectedPais = pais;
-
     const telefono = this.itemForm.get('telefono')!;
     const validators = [Validators.maxLength(PHONE_MAX_LENGTH)];
 
@@ -236,7 +232,7 @@ export class EstablecimientoFormComponent implements OnInit, OnDestroy {
     this.error = null;
 
     this.establecimientoService.getById(this.itemId).subscribe({
-      next: item => {
+      next: (item: EstablecimientoDTO) => {
         this.itemForm.patchValue({
           negocioId: item.negocioId,
           codigo: item.codigo,
@@ -247,15 +243,14 @@ export class EstablecimientoFormComponent implements OnInit, OnDestroy {
           cancelado: item.cancelado
         }, { emitEvent: false });
 
-        // Si el negocio asociado no está en la lista, cargarlo y añadirlo
-        if (item.negocioId && !this.negocios.find(n => n.id === item.negocioId)) {
+        if (item.negocioId && !this.negocios.find((n: SystemConfigurationDTO) => n.id === item.negocioId)) {
           this.systemConfigurationService.getById(item.negocioId).subscribe({
-            next: n => {
-              if (n && !this.negocios.find(x => x.id === n.id)) {
+            next: (n: SystemConfigurationDTO) => {
+              if (n && !this.negocios.find((x: SystemConfigurationDTO) => x.id === n.id)) {
                 this.negocios = [...this.negocios, n];
               }
             },
-            error: err => console.error('Error loading negocio (system configuration)', err)
+            error: (err: any) => console.error('Error loading negocio', err)
           });
         }
 
@@ -263,12 +258,12 @@ export class EstablecimientoFormComponent implements OnInit, OnDestroy {
           this.itemForm.patchValue({ paisId: item.paisId }, { emitEvent: false });
 
           this.paisService.getById(item.paisId).subscribe({
-            next: pais => this.applyPhoneValidators(pais),
+            next: (pais: PaisDTO) => this.applyPhoneValidators(pais),
             error: () => this.applyPhoneValidators(undefined)
           });
 
           this.provinciaService.getByPaisId(item.paisId).subscribe({
-            next: provinces => {
+            next: (provinces: ProvinciaDTO[]) => {
               this.provincias = provinces;
               this.itemForm.get('provinciaId')!.enable();
 
@@ -280,7 +275,7 @@ export class EstablecimientoFormComponent implements OnInit, OnDestroy {
               this.itemForm.patchValue({ provinciaId: item.provinciaId }, { emitEvent: false });
 
               this.municipioService.getByProvinciaId(item.provinciaId).subscribe({
-                next: municipios => {
+                next: (municipios: MunicipioDTO[]) => {
                   this.municipios = municipios;
                   this.itemForm.get('municipioId')!.enable();
 
@@ -292,7 +287,7 @@ export class EstablecimientoFormComponent implements OnInit, OnDestroy {
                   this.itemForm.patchValue({ municipioId: item.municipioId }, { emitEvent: false });
 
                   this.codigoPostalService.getByMunicipioId(item.municipioId).subscribe({
-                    next: cps => {
+                    next: (cps: CodigoPostalDTO[]) => {
                       this.codigosPostales = cps;
                       this.itemForm.get('codigoPostalId')!.enable();
 
@@ -301,19 +296,19 @@ export class EstablecimientoFormComponent implements OnInit, OnDestroy {
                       }
                       this.loading = false;
                     },
-                    error: err => {
+                    error: (err: any) => {
                       console.error('Error loading cp', err);
                       this.loading = false;
                     }
                   });
                 },
-                error: err => {
+                error: (err: any) => {
                   console.error('Error loading municipios', err);
                   this.loading = false;
                 }
               });
             },
-            error: err => {
+            error: (err: any) => {
               console.error('Error loading provincias', err);
               this.loading = false;
             }
@@ -323,7 +318,7 @@ export class EstablecimientoFormComponent implements OnInit, OnDestroy {
           this.loading = false;
         }
       },
-      error: err => {
+      error: (err: any) => {
         this.error = err.message || 'Error al cargar el establecimiento';
         this.loading = false;
       }
@@ -339,12 +334,10 @@ export class EstablecimientoFormComponent implements OnInit, OnDestroy {
     this.saving = true;
     this.error = null;
 
-    // Usar getRawValue() para incluir controles deshabilitados (codigo, negocioId en edición)
     const raw = this.itemForm.getRawValue();
     const formData: EstablecimientoDTO = {
       ...raw,
       id: this.itemId,
-      // preserve '+' if user entered it; util will keep it
       telefono: normalizePhone(raw.telefono)
     };
 
@@ -357,7 +350,7 @@ export class EstablecimientoFormComponent implements OnInit, OnDestroy {
         this.saving = false;
         this.router.navigate(['/nomencladores/establecimiento']);
       },
-      error: err => {
+      error: (err: any) => {
         this.error = err.message || 'Error al guardar el establecimiento';
         this.saving = false;
       }

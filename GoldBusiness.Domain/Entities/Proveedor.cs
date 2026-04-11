@@ -1,6 +1,7 @@
 ﻿using GoldBusiness.Domain.Exceptions;
 using GoldBusiness.Domain.Translation;
 using GoldBusiness.Domain.Helpers;
+using GoldBusiness.Domain.Enums; // ⭐ LÍNEA 4: AGREGAR
 using System.Text.RegularExpressions;
 
 namespace GoldBusiness.Domain.Entities
@@ -32,6 +33,31 @@ namespace GoldBusiness.Domain.Entities
         public string Fax1 { get; private set; } = string.Empty;
         public string Fax2 { get; private set; } = string.Empty;
         public bool Cancelado { get; private set; }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 🧾 DATOS FISCALES EXTENDIDOS
+        // ═══════════════════════════════════════════════════════════════
+
+        /// <summary>Tipo de identificador fiscal del proveedor</summary>
+        public TipoIdentificacionFiscal? TipoIdentificadorFiscal { get; private set; }
+
+        /// <summary>Régimen fiscal del proveedor</summary>
+        public RegimenFiscal? RegimenFiscal { get; private set; }
+
+        /// <summary>Indica si el proveedor está exento de IVA</summary>
+        public bool ExentoIva { get; private set; }
+
+        /// <summary>Indica si es proveedor extranjero (fuera del país de la empresa)</summary>
+        public bool Extranjero { get; private set; }
+
+        /// <summary>Código de país ISO 3166-1 (útil para validaciones internacionales)</summary>
+        public string CodigoPaisIso { get; private set; } = string.Empty;
+
+        /// <summary>Habilita validación automática del identificador fiscal</summary>
+        public bool ValidarIdentificadorFiscal { get; private set; }
+
+        /// <summary>Aplicar inversión del sujeto pasivo (compras intracomunitarias UE)</summary>
+        public bool InversionSujetoPasivo { get; private set; }
 
         // Propiedades de navegación
         public Pais? Pais { get; private set; }
@@ -68,6 +94,14 @@ namespace GoldBusiness.Domain.Entities
             string? telefono2,
             string? fax1,
             string? fax2,
+            // ⭐ AGREGAR PARÁMETROS FISCALES
+            TipoIdentificacionFiscal? tipoIdentificadorFiscal,
+            RegimenFiscal? regimenFiscal,
+            bool exentoIva,
+            bool extranjero,
+            string? codigoPaisIso,
+            bool validarIdentificadorFiscal,
+            bool inversionSujetoPasivo,
             string creadoPor)
         {
             SetCodigo(codigo);
@@ -85,6 +119,16 @@ namespace GoldBusiness.Domain.Entities
             SetEmails(email1 ?? string.Empty, email2 ?? string.Empty);
             SetTelefonos(telefono1 ?? string.Empty, telefono2 ?? string.Empty, null);
             SetFaxes(fax1 ?? string.Empty, fax2 ?? string.Empty);
+
+            // ⭐ AGREGAR SETTERS FISCALES
+            SetTipoIdentificadorFiscal(tipoIdentificadorFiscal);
+            SetRegimenFiscal(regimenFiscal);
+            SetExentoIva(exentoIva);
+            SetExtranjero(extranjero);
+            SetCodigoPaisIso(codigoPaisIso ?? string.Empty);
+            SetValidarIdentificadorFiscal(validarIdentificadorFiscal);
+            SetInversionSujetoPasivo(inversionSujetoPasivo);
+
             EstablecerCreador(creadoPor);
             Cancelado = false;
         }
@@ -246,6 +290,50 @@ namespace GoldBusiness.Domain.Entities
             Fax2 = fax2?.Trim() ?? string.Empty;
         }
 
+        public void SetTipoIdentificadorFiscal(TipoIdentificacionFiscal? tipo)
+        {
+            if (tipo.HasValue && !Enum.IsDefined(typeof(TipoIdentificacionFiscal), tipo.Value))
+                throw new DomainException("Tipo de identificador fiscal inválido.");
+
+            TipoIdentificadorFiscal = tipo;
+        }
+
+        public void SetRegimenFiscal(RegimenFiscal? regimen)
+        {
+            if (regimen.HasValue && !Enum.IsDefined(typeof(RegimenFiscal), regimen.Value))
+                throw new DomainException("Régimen fiscal inválido.");
+
+            RegimenFiscal = regimen;
+        }
+
+        public void SetExentoIva(bool exento)
+        {
+            ExentoIva = exento;
+        }
+
+        public void SetExtranjero(bool extranjero)
+        {
+            Extranjero = extranjero;
+        }
+
+        public void SetCodigoPaisIso(string codigo)
+        {
+            if (!string.IsNullOrWhiteSpace(codigo) && codigo.Length > 3)
+                throw new DomainException("El código ISO de país no puede exceder 3 caracteres.");
+
+            CodigoPaisIso = codigo?.Trim().ToUpperInvariant() ?? string.Empty;
+        }
+
+        public void SetValidarIdentificadorFiscal(bool validar)
+        {
+            ValidarIdentificadorFiscal = validar;
+        }
+
+        public void SetInversionSujetoPasivo(bool inversion)
+        {
+            InversionSujetoPasivo = inversion;
+        }
+
         public void Actualizar(
             string descripcion,
             string? nif,
@@ -265,6 +353,13 @@ namespace GoldBusiness.Domain.Entities
             string? fax1,
             string? fax2,
             Pais? pais,
+            TipoIdentificacionFiscal? tipoIdentificadorFiscal,
+            RegimenFiscal? regimenFiscal,
+            bool exentoIva,
+            bool extranjero,
+            string? codigoPaisIso,
+            bool validarIdentificadorFiscal,
+            bool inversionSujetoPasivo,
             string modificadoPor)
         {
             SetDescripcion(descripcion);
@@ -278,6 +373,13 @@ namespace GoldBusiness.Domain.Entities
             SetEmails(email1 ?? string.Empty, email2 ?? string.Empty);
             SetTelefonos(telefono1 ?? string.Empty, telefono2 ?? string.Empty, pais);
             SetFaxes(fax1 ?? string.Empty, fax2 ?? string.Empty);
+            SetTipoIdentificadorFiscal(tipoIdentificadorFiscal);
+            SetRegimenFiscal(regimenFiscal);
+            SetExentoIva(exentoIva);
+            SetExtranjero(extranjero);
+            SetCodigoPaisIso(codigoPaisIso ?? string.Empty);
+            SetValidarIdentificadorFiscal(validarIdentificadorFiscal);
+            SetInversionSujetoPasivo(inversionSujetoPasivo);
             ActualizarAuditoria(modificadoPor);
         }
 

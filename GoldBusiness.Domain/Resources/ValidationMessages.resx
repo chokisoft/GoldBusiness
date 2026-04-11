@@ -581,4 +581,180 @@
 	<data name="Field_CuentaCobrar" xml:space="preserve">
     <value>Cuenta por Cobrar</value>
   </data>
+	<data name="Field_IdentificadorFiscal" xml:space="preserve">
+  <value>Identificador Fiscal</value>
+</data>
+	<data name="Field_TipoIdentificadorFiscal" xml:space="preserve">
+  <value>Tipo de Identificación Fiscal</value>
+</data>
+	<data name="Field_RegimenFiscal" xml:space="preserve">
+  <value>Régimen Fiscal</value>
+</data>
+	<data name="Field_TasaIvaDefecto" xml:space="preserve">
+  <value>Tasa IVA por Defecto (%)</value>
+</data>
+	<data name="Field_RegistradaIva" xml:space="preserve">
+  <value>Registrada para IVA</value>
+</data>
+	<data name="Field_IvaInternacional" xml:space="preserve">
+  <value>IVA Internacional/Intracomunitario</value>
+</data>
+	<data name="Field_ExentoIva" xml:space="preserve">
+  <value>Exento de IVA</value>
+</data>
+	<data name="Field_Extranjero" xml:space="preserve">
+  <value>Cliente/Proveedor Extranjero</value>
+</data>
+	<data name="Field_CodigoPaisIso" xml:space="preserve">
+  <value>Código País ISO</value>
+</data>
+	<data name="Field_ValidarIdentificadorFiscal" xml:space="preserve">
+  <value>Validar Identificador Fiscal</value>
+</data>
+	<data name="Field_InversionSujetoPasivo" xml:space="preserve">
+  <value>Inversión del Sujeto Pasivo</value>
+</data>
+
+	<!-- VALIDACIONES FISCALES -->
+	<data name="IdentificadorFiscalLongitud" xml:space="preserve">
+  <value>El identificador fiscal no puede exceder {1} caracteres</value>
+</data>
+	<data name="TasaIvaRango" xml:space="preserve">
+  <value>La tasa de IVA debe estar entre {1} y {2}</value>
+</data>
+	<data name="CodigoPaisIsoLongitud" xml:space="preserve">
+  <value>El código ISO del país no puede exceder {1} caracteres</value>
+</data>
+	<data name="WebFormato" xml:space="preserve">
+  <value>El formato del sitio web no es válido</value>
+</data>
+	<data name="EmailFormato" xml:space="preserve">
+  <value>El formato del email no es válido</value>
+</data>
+	<data name="TelefonoLongitud" xml:space="preserve">
+  <value>El teléfono no puede exceder 20 caracteres</value>
+</data>
+	<data name="Field_Licencia" xml:space="preserve">
+  <value>Licencia</value>
+</data>
+	<data name="Field_Imagen" xml:space="preserve">
+  <value>Logo/Imagen</value>
+</data>
+	<data name="CodigoFormatoAlfanumerico" xml:space="preserve">
+  <value>El código debe ser alfanumérico</value>
+</data>
+	<data name="Field_CuentaPagar" xml:space="preserve">
+  <value>Cuenta a Pagar</value>
+</data>
+	<data name="Field_CuentaCobrar" xml:space="preserve">
+  <value>Cuenta a Cobrar</value>
+</data>
+	<data name="Field_FechaCreacion" xml:space="preserve">
+  <value>Fecha de Caducidad</value>
+</data>
+
+	<!-- ═══════════════════════════════════════════════════════════════ -->
+	<!-- 🧾 CAMPOS FISCALES -->
+	<!-- ═══════════════════════════════════════════════════════════════ -->
+
+	<data name="Field_IdentificadorFiscal" xml:space="preserve">
+  <value>Identificador Fiscal</value>
+</data>
+	<data name="Field_TipoIdentificadorFiscal" xml:space="preserve">
+  <value>Tipo de Identificación Fiscal</value>
+</data>
+	<data name="Field_RegimenFiscal" xml:space="preserve">
+  <value>Régimen Fiscal</value>
+</data>
+	<data name="Field_TasaIvaDefecto" xml:space="preserve">
+  <value>Tasa IVA por Defecto (%)</value>
+</data>
+	<data name="Field_RegistradaIva" xml:space="preserve">
+  <value>Registrada para IVA</value>
+</data>
+	<data name="Field_IvaInternacional" xml:space="preserve">
+  <value>IVA Internacional/Intracomunitario</value>
+</data>
+	<data name="Field_ExentoIva" xml:space="preserve">
+  <value>Exento de IVA</value>
+</data>
+	<data name="Field_Extranjero" xml:space="preserve">
+  <value>Cliente/Proveedor Extranjero</value>
+</data>
+	<data name="Field_CodigoPaisIso" xml:space="preserve">
+  <value>Código País ISO</value>
+</data>
+	<data name="Field_ValidarIdentificadorFiscal" xml:space="preserve">
+  <value>Validar Identificador Fiscal</value>
+</data>
+	<data name="Field_InversionSujetoPasivo" xml:space="preserve">
+  <value>Inversión del Sujeto Pasivo</value>
+</data>
+
+	<!-- VALIDACIONES FISCALES -->
+	<data name="IdentificadorFiscalLongitud" xml:space="preserve">
+  <value>El identificador fiscal no puede exceder {1} caracteres</value>
+</data>
+	<data name="TasaIvaRango" xml:space="preserve">
+  <value>La tasa de IVA debe estar entre {1} y {2}</value>
+</data>
+	<data name="CodigoPaisIsoLongitud" xml:space="preserve">
+  <value>El código ISO del país no puede exceder {1} caracteres</value>
+</data>
+	<data name="CodigoPaisIsoLongitud" xml:space="preserve">
+  <value>El código de país ISO no puede superar 3 caracteres.</value>
+</data>
+
+	<data name="IdentificadorFiscalLongitud" xml:space="preserve">
+  <value>El identificador fiscal no puede superar 30 caracteres.</value>
+</data>
+
+	<data name="TasaIvaRango" xml:space="preserve">
+  <value>La tasa de IVA debe estar entre 0 y 100.</value>
+</data>
+
+	<!-- Campos fiscales para labels -->
+	<data name="Field_TipoIdentificadorFiscal" xml:space="preserve">
+  <value>Tipo de Identificación Fiscal</value>
+</data>
+
+	<data name="Field_RegimenFiscal" xml:space="preserve">
+  <value>Régimen Fiscal</value>
+</data>
+
+	<data name="Field_IdentificadorFiscal" xml:space="preserve">
+  <value>Identificador Fiscal</value>
+</data>
+
+	<data name="Field_TasaIvaDefecto" xml:space="preserve">
+  <value>Tasa IVA por Defecto</value>
+</data>
+
+	<data name="Field_RegistradaIva" xml:space="preserve">
+  <value>Registrada para IVA</value>
+</data>
+
+	<data name="Field_IvaInternacional" xml:space="preserve">
+  <value>IVA Internacional</value>
+</data>
+
+	<data name="Field_ExentoIva" xml:space="preserve">
+  <value>Exento de IVA</value>
+</data>
+
+	<data name="Field_Extranjero" xml:space="preserve">
+  <value>Extranjero</value>
+</data>
+
+	<data name="Field_CodigoPaisIso" xml:space="preserve">
+  <value>Código País ISO</value>
+</data>
+
+	<data name="Field_ValidarIdentificadorFiscal" xml:space="preserve">
+  <value>Validar Identificador Fiscal</value>
+</data>
+
+	<data name="Field_InversionSujetoPasivo" xml:space="preserve">
+  <value>Inversión del Sujeto Pasivo</value>
+</data>
 </root>

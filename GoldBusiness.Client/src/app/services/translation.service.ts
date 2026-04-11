@@ -3089,11 +3089,6 @@ export class TranslationService {
     },
 
     // ═══════════════════════════════════════════════════════════
-    // 🖼️ LOGO
-    // ═══════════════════════════════════════════════════════════
-
-
-    // ═══════════════════════════════════════════════════════════
     // 🏢 ESTABLECIMIENTO
     // ═══════════════════════════════════════════════════════════
     'establecimiento.negocioHelp': {
@@ -3426,7 +3421,103 @@ export class TranslationService {
       'es': '¿Está seguro que desea eliminar?',
       'en': 'Are you sure you want to delete?',
       'fr': 'Êtes-vous sûr de vouloir supprimer?'
+    },
+    'fiscal.title': {
+      'es': 'Datos Fiscales',
+      'en': 'Tax Information',
+      'fr': 'Informations Fiscales'
+    },
+    'fiscal.titleEmpresa': {
+      'es': 'Datos Fiscales de la Empresa',
+      'en': 'Company Tax Information',
+      'fr': 'Informations Fiscales de l\'Entreprise'
+    },
+    'fiscal.tipoIdentificadorFiscal': {
+      'es': 'Tipo de Identificación Fiscal',
+      'en': 'Tax ID Type',
+      'fr': 'Type d\'Identifiant Fiscal'
+    },
+    'fiscal.regimenFiscal': {
+      'es': 'Régimen Fiscal',
+      'en': 'Tax Regime',
+      'fr': 'Régime Fiscal'
+    },
+    'fiscal.identificadorFiscal': {
+      'es': 'Identificador Fiscal',
+      'en': 'Tax ID',
+      'fr': 'Identifiant Fiscal'
+    },
+    'fiscal.tasaIvaDefecto': {
+      'es': 'Tasa IVA por Defecto (%)',
+      'en': 'Default VAT Rate (%)',
+      'fr': 'Taux TVA par Défaut (%)'
+    },
+    'fiscal.registradaIva': {
+      'es': 'Registrada para IVA',
+      'en': 'Registered for VAT',
+      'fr': 'Enregistrée pour TVA'
+    },
+    'fiscal.ivaInternacional': {
+      'es': 'IVA Internacional/Intracomunitario',
+      'en': 'International/Intra-Community VAT',
+      'fr': 'TVA Internationale/Intracommunautaire'
+    },
+    'fiscal.exentoIva': {
+      'es': 'Exento de IVA',
+      'en': 'VAT Exempt',
+      'fr': 'Exempté de TVA'
+    },
+    'fiscal.extranjero': {
+      'es': 'Extranjero',
+      'en': 'Foreign',
+      'fr': 'Étranger'
+    },
+    'fiscal.codigoPaisIso': {
+      'es': 'Código País ISO',
+      'en': 'ISO Country Code',
+      'fr': 'Code Pays ISO'
+    },
+    'fiscal.validarIdentificadorFiscal': {
+      'es': 'Validar Identificador Fiscal',
+      'en': 'Validate Tax ID',
+      'fr': 'Valider Identifiant Fiscal'
+    },
+    'fiscal.inversionSujetoPasivo': {
+      'es': 'Inversión del Sujeto Pasivo',
+      'en': 'Reverse Charge',
+      'fr': 'Autoliquidation'
+    },
+    'fiscal.identificadorFiscalHelp': {
+      'es': 'Número de identificación fiscal del negocio (NIF, CIF, VAT, etc.). Opcional si no aplica.',
+      'en': 'Business tax identification number (NIF, CIF, VAT, etc.). Optional if not applicable.',
+      'fr': 'Numéro d\'identification fiscale de l\'entreprise (NIF, CIF, TVA, etc.). Optionnel si non applicable.'
+    },
+    'fiscal.tipoIdentificadorFiscalHelp': {
+      'es': 'Seleccione el tipo de identificación fiscal que corresponda a su negocio.',
+      'en': 'Select the type of tax identification that applies to your business.',
+      'fr': 'Sélectionnez le type d\'identification fiscale applicable à votre entreprise.'
+    },
+    'fiscal.regimenFiscalHelp': {
+      'es': 'Régimen fiscal aplicable al negocio (General, Simplificado, etc.).',
+      'en': 'Tax regime applicable to the business (General, Simplified, etc.).',
+      'fr': 'Régime fiscal applicable à l\'entreprise (Général, Simplifié, etc.).'
+    },
+    'fiscal.tasaIvaDefectoHelp': {
+      'es': 'Tasa de IVA predeterminada para operaciones del negocio (0-99.99%). Ej: 21 para 21%.',
+      'en': 'Default VAT rate for business operations (0-99.99%). Ex: 21 for 21%.',
+      'fr': 'Taux de TVA par défaut pour les opérations commerciales (0-99,99%). Ex: 21 pour 21%.'
+    },
+    'fiscal.registradaIvaHelp': {
+      'es': 'Marque si el negocio está registrado para IVA/TVA.',
+      'en': 'Check if the business is registered for VAT.',
+      'fr': 'Cochez si l\'entreprise est enregistrée pour la TVA.'
+    },
+    'fiscal.ivaInternacionalHelp': {
+      'es': 'Marque si el negocio realiza operaciones intracomunitarias o internacionales con IVA.',
+      'en': 'Check if the business performs intra-community or international VAT operations.',
+      'fr': 'Cochez si l\'entreprise effectue des opérations intracommunautaires ou internationales avec TVA.'
     }
+
   };
 
   constructor(private languageService: LanguageService) {

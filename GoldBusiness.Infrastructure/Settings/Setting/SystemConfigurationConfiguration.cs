@@ -33,6 +33,32 @@ namespace GoldBusiness.Infrastructure.Settings.Setting
             builder.Ignore(e => e.Establecimiento);
             builder.HasOne(d => d.CuentaPagar).WithMany(p => p.ConfiguracionCuentaPagar).HasForeignKey(d => d.CuentaPagarId).OnDelete(DeleteBehavior.Restrict).IsRequired(false).HasConstraintName("FK_Configuracion_CuentaPagar");
             builder.HasOne(d => d.CuentaCobrar).WithMany(p => p.ConfiguracionCuentaCobrar).HasForeignKey(d => d.CuentaCobrarId).OnDelete(DeleteBehavior.Restrict).IsRequired(false).HasConstraintName("FK_Configuracion_CuentaCobrar");
+            builder.Property(e => e.IdentificadorFiscal)
+                .HasMaxLength(30)
+                .IsRequired(false);
+
+            builder.Property(e => e.IdentificadorFiscal)
+                .HasMaxLength(30)
+                .IsRequired(false);
+
+            // En SystemConfiguration, estos campos NO son nullable
+            builder.Property(e => e.TipoIdentificadorFiscal)
+                .HasConversion<int>()
+                .IsRequired();
+
+            builder.Property(e => e.RegimenFiscal)
+                .HasConversion<int>()
+                .IsRequired();
+
+            builder.Property(e => e.TasaIvaDefecto)
+                .HasColumnType("decimal(5,2)")
+                .IsRequired();
+
+            builder.Property(e => e.RegistradaIva)
+                .IsRequired();
+
+            builder.Property(e => e.IvaInternacional)
+                .IsRequired();
         }
     }
 }

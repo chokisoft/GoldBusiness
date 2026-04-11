@@ -571,4 +571,59 @@
 	<data name="Field_CuentaCobrar" xml:space="preserve">
     <value>Compte client</value>
   </data>
+	<data name="CodigoPaisIsoLongitud" xml:space="preserve">
+  <value>Le code pays ISO ne peut pas dépasser 3 caractères.</value>
+</data>
+
+	<data name="IdentificadorFiscalLongitud" xml:space="preserve">
+  <value>L'identifiant fiscal ne peut pas dépasser 30 caractères.</value>
+</data>
+
+	<data name="TasaIvaRango" xml:space="preserve">
+  <value>Le taux de TVA doit être entre 0 et 100.</value>
+</data>
+
+	<data name="Field_TipoIdentificadorFiscal" xml:space="preserve">
+  <value>Type d'Identifiant Fiscal</value>
+</data>
+
+	<data name="Field_RegimenFiscal" xml:space="preserve">
+  <value>Régime Fiscal</value>
+</data>
+
+	<data name="Field_IdentificadorFiscal" xml:space="preserve">
+  <value>Identifiant Fiscal</value>
+</data>
+
+	<data name="Field_TasaIvaDefecto" xml:space="preserve">
+  <value>Taux TVA par Défaut</value>
+</data>
+
+	<data name="Field_RegistradaIva" xml:space="preserve">
+  <value>Enregistrée pour TVA</value>
+</data>
+
+	<data name="Field_IvaInternacional" xml:space="preserve">
+  <value>TVA Internationale</value>
+</data>
+
+	<data name="Field_ExentoIva" xml:space="preserve">
+  <value>Exempté de TVA</value>
+</data>
+
+	<data name="Field_Extranjero" xml:space="preserve">
+  <value>Étranger</value>
+</data>
+
+	<data name="Field_CodigoPaisIso" xml:space="preserve">
+  <value>Code Pays ISO</value>
+</data>
+
+	<data name="Field_ValidarIdentificadorFiscal" xml:space="preserve">
+  <value>Valider Identifiant Fiscal</value>
+</data>
+
+	<data name="Field_InversionSujetoPasivo" xml:space="preserve">
+  <value>Autoliquidation</value>
+</data>
 </root>

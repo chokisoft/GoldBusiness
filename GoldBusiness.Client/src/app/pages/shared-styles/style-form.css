@@ -922,3 +922,17 @@ select.shared-select {
     margin-top: 0.25rem;
     align-self: flex-start;
   }
+
+/* ═══════════════════════════════════════════════════════════════
+   🧾 DATOS FISCALES - Proporciones específicas
+   ═══════════════════════════════════════════════════════════════ */
+.form-row-three.form-row-fiscal {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 1.2fr);
+}
+
+/* En móvil, igual que el resto de form-row-three (1 columna) */
+@media (max-width: 992px) {
+  .form-row-three.form-row-fiscal {
+    grid-template-columns: 1fr;
+  }
+}

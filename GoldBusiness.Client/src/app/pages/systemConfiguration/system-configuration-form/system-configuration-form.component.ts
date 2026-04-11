@@ -1,16 +1,24 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { skip } from 'rxjs/operators';
 import { CuentaService, CuentaDTO } from '../../../services/cuenta.service';
 import { LanguageService } from '../../../services/language.service';
-import { SystemConfigurationService, SystemConfigurationDTO, Pais, FormaJuridicaDTO } from '../../../services/system-configuration.service';
+import { TranslationService } from '../../../services/translation.service';
+import { SystemConfigurationService, SystemConfigurationDTO } from '../../../services/system-configuration.service';
 import { PaisService, PaisDTO } from '../../../services/pais.service';
 import { ProvinciaService, ProvinciaDTO } from '../../../services/provincia.service';
 import { MunicipioService, MunicipioDTO } from '../../../services/municipio.service';
 import { CodigoPostalService, CodigoPostalDTO } from '../../../services/codigo-postal.service';
+import { FormaJuridicaService } from '../../../services/forma-juridica.service';
 import { normalizePhone, phoneValidator, PHONE_MAX_LENGTH } from '../../shared/phone.util';
+import { 
+  TipoIdentificacionFiscal, 
+  RegimenFiscal,
+  TIPO_IDENTIFICACION_FISCAL_OPTIONS,
+  REGIMEN_FISCAL_OPTIONS 
+} from '../../../services/fiscal.types';
 
 @Component({
   selector: 'app-system-configuration-form',
@@ -29,41 +37,44 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
 
   selectedLogoFile: File | null = null;
   logoPreviewUrl: string | null = null;
+  selectedPais?: PaisDTO;
 
-  paises: Pais[] = [];
+  paises: PaisDTO[] = [];
   provincias: ProvinciaDTO[] = [];
   municipios: MunicipioDTO[] = [];
   codigosPostales: CodigoPostalDTO[] = [];
+  formasJuridicas: any[] = [];
 
-  formasJuridicas: FormaJuridicaDTO[] = [];
-  loadingFormasJuridicas = false;
-
-  loadingProvincias = false;
-  loadingMunicipios = false;
-  loadingCodigosPostales = false;
-
-  selectedPais?: PaisDTO;
-  private paisDetailSub?: Subscription;
+  tiposIdentificacionFiscal = TIPO_IDENTIFICACION_FISCAL_OPTIONS;
+  regimenesFiscales = REGIMEN_FISCAL_OPTIONS;
 
   private languageSubscription?: Subscription;
   private paisSub?: Subscription;
   private provinciaSub?: Subscription;
   private municipioSub?: Subscription;
+  private paisDetailSub?: Subscription;
 
   constructor(
     private fb: FormBuilder,
     private systemConfigurationService: SystemConfigurationService,
     private cuentaService: CuentaService,
+    private formaJuridicaService: FormaJuridicaService,
     private router: Router,
     private route: ActivatedRoute,
     private languageService: LanguageService,
+    public translationService: TranslationService,
     private paisService: PaisService,
     private provinciaService: ProvinciaService,
     private municipioService: MunicipioService,
     private codigoPostalService: CodigoPostalService
   ) {
     this.form = this.fb.group({
-      codigoSistema: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(3), Validators.pattern(/^[A-Za-z0-9]{3}$/)]],
+      codigoSistema: ['', [
+        Validators.required, 
+        Validators.minLength(3), 
+        Validators.maxLength(3),
+        Validators.pattern(/^[A-Za-z0-9]{3}$/)
+      ]],
       licencia: ['', [Validators.required, Validators.maxLength(400)]],
       nombreNegocio: ['', [Validators.required, Validators.maxLength(256)]],
       personaContacto: ['', [Validators.required, Validators.maxLength(256)]],
@@ -80,20 +91,32 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
       cuentaPagarId: [{ value: null, disabled: true }, Validators.required],
       cuentaCobrarId: [{ value: null, disabled: true }, Validators.required],
       caducidad: ['', Validators.required],
-      activo: [true]
+      activo: [true],
+      
+      identificadorFiscal: ['', Validators.maxLength(30)],
+      tipoIdentificadorFiscal: [null, Validators.required],
+      regimenFiscal: [null, Validators.required],
+      tasaIvaDefecto: [21, [
+        Validators.required, 
+        Validators.min(0), 
+        Validators.max(99.99),
+        Validators.pattern(/^\d{1,2}(\.\d{1,2})?$/)
+      ]],
+      registradaIva: [true],
+      ivaInternacional: [false]
     });
   }
 
   ngOnInit(): void {
     this.setupFormSubscriptions();
-    this.loadCuentas();
-    this.loadPaises();
     this.loadFormasJuridicas();
+    this.loadPaises();
+    this.loadCuentas();
 
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
-      this.isEditMode = true;
       this.configId = +id;
+      this.isEditMode = true;
       this.loadConfiguration();
     }
 
@@ -128,6 +151,7 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
     this.paisSub = this.form.get('paisId')?.valueChanges.subscribe((paisIdRaw: any) => {
       const paisId = paisIdRaw ? Number(paisIdRaw) : 0;
       const provControl = this.form.get('provinciaId');
+      
       this.provincias = [];
       this.municipios = [];
       this.codigosPostales = [];
@@ -140,12 +164,11 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
       if (paisId) {
         provControl?.enable({ emitEvent: false });
         this.loadProvincias(paisId);
-
-        this.paisDetailSub = this.paisService.getById(paisId)
-          .subscribe(
-            p => this.applyPhoneValidators(p),
-            _err => this.applyPhoneValidators(undefined)
-          );
+        
+        this.paisDetailSub = this.paisService.getById(paisId).subscribe({
+          next: p => this.applyPhoneValidators(p),
+          error: () => this.applyPhoneValidators(undefined)
+        });
       } else {
         provControl?.disable({ emitEvent: false });
       }
@@ -154,6 +177,7 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
     this.provinciaSub = this.form.get('provinciaId')?.valueChanges.subscribe((provRaw: any) => {
       const provinciaId = provRaw ? Number(provRaw) : 0;
       const munControl = this.form.get('municipioId');
+      
       this.municipios = [];
       this.codigosPostales = [];
       this.form.patchValue({ municipioId: null, codigoPostalId: null }, { emitEvent: false });
@@ -169,6 +193,7 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
     this.municipioSub = this.form.get('municipioId')?.valueChanges.subscribe((munRaw: any) => {
       const municipioId = munRaw ? Number(munRaw) : 0;
       const cpControl = this.form.get('codigoPostalId');
+      
       this.codigosPostales = [];
       this.form.patchValue({ codigoPostalId: null }, { emitEvent: false });
 
@@ -181,121 +206,59 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  loadFormasJuridicas(): void {
-    this.loadingFormasJuridicas = true;
-    const lang = this.languageService.getCurrentLanguage();
-    this.systemConfigurationService.getFormasJuridicas(lang).subscribe({
-      next: data => {
-        this.formasJuridicas = data;
-        this.loadingFormasJuridicas = false;
-      },
-      error: err => {
-        console.error('Error al cargar formas jurídicas', err);
-        this.loadingFormasJuridicas = false;
-      }
-    });
-  }
-
-  loadPaises(): void {
-    this.systemConfigurationService.getPaises().subscribe({
-      next: data => this.paises = data,
-      error: err => {
-        console.error('Error al cargar países', err);
-        this.error = 'Error al cargar países';
-      }
-    });
-  }
-
-  loadProvincias(paisId: number): void {
-    this.loadingProvincias = true;
-    this.provinciaService.getByPaisId(paisId).subscribe({
-      next: (data) => {
-        this.provincias = data;
-        this.loadingProvincias = false;
-      },
-      error: err => {
-        console.error('Error al cargar provincias', err);
-        this.loadingProvincias = false;
-        this.error = 'Error al cargar provincias';
-      }
-    });
-  }
-
-  loadMunicipios(provinciaId: number): void {
-    this.loadingMunicipios = true;
-    this.municipioService.getByProvinciaId(provinciaId).subscribe({
-      next: (data) => {
-        this.municipios = data;
-        this.loadingMunicipios = false;
-      },
-      error: err => {
-        console.error('Error al cargar municipios', err);
-        this.loadingMunicipios = false;
-        this.error = 'Error al cargar municipios';
-      }
-    });
-  }
-
-  loadCodigosPostales(municipioId: number): void {
-    this.loadingCodigosPostales = true;
-    this.codigoPostalService.getByMunicipioId(municipioId).subscribe({
-      next: (data) => {
-        this.codigosPostales = data;
-        this.loadingCodigosPostales = false;
-      },
-      error: err => {
-        console.error('Error al cargar códigos postales', err);
-        this.loadingCodigosPostales = false;
-        this.error = 'Error al cargar códigos postales';
-      }
-    });
-  }
-
   private applyPhoneValidators(pais?: PaisDTO): void {
     this.selectedPais = pais;
     const telefono = this.form.get('telefono')!;
-
+    
     const validators = [Validators.maxLength(PHONE_MAX_LENGTH)];
     if (pais && pais.regexTelefono) {
       validators.push(phoneValidator(pais.regexTelefono));
     }
-
+    
     telefono.setValidators(validators);
     telefono.updateValueAndValidity({ emitEvent: true });
   }
 
-  extractId(eventOrId: Event | number): number {
-    if (typeof eventOrId === 'number') return eventOrId;
-    const target = (eventOrId as Event).target as HTMLSelectElement | null;
-    const val = target?.value ?? (eventOrId as any);
-    return val ? Number(val) : 0;
+  private loadFormasJuridicas(): void {
+    const lang = this.languageService.getCurrentLanguage();
+    this.systemConfigurationService.getFormasJuridicas(lang).subscribe({
+      next: (data: any) => this.formasJuridicas = data,
+      error: (err: any) => console.error('Error loading formas juridicas:', err)
+    });
   }
 
-  loadCuentas(): void {
+  private loadPaises(): void {
+    this.systemConfigurationService.getPaises().subscribe({
+      next: (data: any) => this.paises = data,
+      error: (err: any) => console.error('Error loading paises:', err)
+    });
+  }
+
+  private loadCuentas(): void {
     this.loadingCuentas = true;
-
+    
     this.cuentaService.getAll().subscribe({
-      next: (data) => {
+      next: (data: CuentaDTO[]) => {
         this.cuentas = data.filter(c => !c.cancelado);
-
+        
         const pagarControl = this.form.get('cuentaPagarId');
         const cobrarControl = this.form.get('cuentaCobrarId');
-
+        
         if (pagarControl) {
           pagarControl.setValidators([Validators.required]);
           pagarControl.updateValueAndValidity({ emitEvent: false });
           pagarControl.enable({ emitEvent: false });
         }
-
+        
         if (cobrarControl) {
           cobrarControl.setValidators([Validators.required]);
           cobrarControl.updateValueAndValidity({ emitEvent: false });
           cobrarControl.enable({ emitEvent: false });
         }
-
+        
         this.loadingCuentas = false;
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error loading cuentas', err);
         this.form.get('cuentaPagarId')?.enable({ emitEvent: false });
         this.form.get('cuentaCobrarId')?.enable({ emitEvent: false });
@@ -304,11 +267,33 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  loadConfiguration(): void {
+  private loadProvincias(paisId: number): void {
+    this.provinciaService.getByPaisId(paisId).subscribe({
+      next: (data: any) => this.provincias = data,
+      error: (err: any) => console.error('Error loading provincias:', err)
+    });
+  }
+
+  private loadMunicipios(provinciaId: number): void {
+    this.municipioService.getByProvinciaId(provinciaId).subscribe({
+      next: (data: any) => this.municipios = data,
+      error: (err: any) => console.error('Error loading municipios:', err)
+    });
+  }
+
+  private loadCodigosPostales(municipioId: number): void {
+    this.codigoPostalService.getByMunicipioId(municipioId).subscribe({
+      next: (data: any) => this.codigosPostales = data,
+      error: (err: any) => console.error('Error loading codigos postales:', err)
+    });
+  }
+
+  private loadConfiguration(): void {
     if (!this.configId) return;
+    
     this.loading = true;
     this.systemConfigurationService.getById(this.configId).subscribe({
-      next: data => {
+      next: (data: SystemConfigurationDTO) => {
         const formattedCaducidad = data.caducidad
           ? new Date(data.caducidad).toISOString().substring(0, 10)
           : '';
@@ -327,7 +312,13 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
           cuentaPagarId: data.cuentaPagarId ? Number(data.cuentaPagarId) : null,
           cuentaCobrarId: data.cuentaCobrarId ? Number(data.cuentaCobrarId) : null,
           caducidad: formattedCaducidad,
-          activo: data.activo ?? true
+          activo: data.activo ?? true,
+          identificadorFiscal: data.identificadorFiscal ?? '',
+          tipoIdentificadorFiscal: data.tipoIdentificadorFiscal ?? TipoIdentificacionFiscal.NIF,
+          regimenFiscal: data.regimenFiscal ?? RegimenFiscal.General,
+          tasaIvaDefecto: data.tasaIvaDefecto ?? 21,
+          registradaIva: data.registradaIva ?? true,
+          ivaInternacional: data.ivaInternacional ?? false
         }, { emitEvent: false });
 
         const paisId = data.paisId ?? 0;
@@ -335,80 +326,72 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
         const municipioId = data.municipioId ?? 0;
         const codigoPostalId = data.codigoPostalId ?? 0;
 
-        if (!paisId) {
-          this.applyPhoneValidators(undefined);
-          this.loading = false;
-          return;
-        }
+        if (paisId) {
+          this.form.patchValue({ paisId: paisId }, { emitEvent: false });
+          
+          this.paisDetailSub?.unsubscribe();
+          this.paisDetailSub = this.paisService.getById(paisId).subscribe({
+            next: p => this.applyPhoneValidators(p),
+            error: () => this.applyPhoneValidators(undefined)
+          });
 
-        this.form.patchValue({ paisId: paisId }, { emitEvent: false });
+          this.provinciaService.getByPaisId(paisId).subscribe({
+            next: provinces => {
+              this.provincias = provinces;
+              this.form.get('provinciaId')?.enable({ emitEvent: false });
 
-        this.paisDetailSub?.unsubscribe();
-        this.paisDetailSub = this.paisService.getById(paisId).subscribe({
-          next: p => this.applyPhoneValidators(p),
-          error: () => this.applyPhoneValidators(undefined)
-        });
+              if (provinciaId) {
+                this.form.patchValue({ provinciaId: provinciaId }, { emitEvent: false });
 
-        this.provinciaService.getByPaisId(paisId).subscribe({
-          next: provinces => {
-            this.provincias = provinces;
-            this.form.get('provinciaId')?.enable({ emitEvent: false });
+                this.municipioService.getByProvinciaId(provinciaId).subscribe({
+                  next: municipios => {
+                    this.municipios = municipios;
+                    this.form.get('municipioId')?.enable({ emitEvent: false });
 
-            if (!provinciaId) {
-              this.loading = false;
-              return;
-            }
+                    if (municipioId) {
+                      this.form.patchValue({ municipioId: municipioId }, { emitEvent: false });
 
-            this.form.patchValue({ provinciaId: provinciaId }, { emitEvent: false });
+                      this.codigoPostalService.getByMunicipioId(municipioId).subscribe({
+                        next: cps => {
+                          this.codigosPostales = cps;
+                          this.form.get('codigoPostalId')?.enable({ emitEvent: false });
 
-            this.municipioService.getByProvinciaId(provinciaId).subscribe({
-              next: municipios => {
-                this.municipios = municipios;
-                this.form.get('municipioId')?.enable({ emitEvent: false });
-
-                if (!municipioId) {
-                  this.loading = false;
-                  return;
-                }
-
-                this.form.patchValue({ municipioId: municipioId }, { emitEvent: false });
-
-                this.codigoPostalService.getByMunicipioId(municipioId).subscribe({
-                  next: cps => {
-                    this.codigosPostales = cps;
-                    this.form.get('codigoPostalId')?.enable({ emitEvent: false });
-
-                    if (codigoPostalId) {
-                      this.form.patchValue({ codigoPostalId: codigoPostalId }, { emitEvent: false });
+                          if (codigoPostalId) {
+                            this.form.patchValue({ codigoPostalId: codigoPostalId }, { emitEvent: false });
+                          }
+                          this.loading = false;
+                        },
+                        error: () => this.loading = false
+                      });
+                    } else {
+                      this.loading = false;
                     }
-                    this.loading = false;
                   },
-                  error: () => {
-                    this.loading = false;
-                  }
+                  error: () => this.loading = false
                 });
-              },
-              error: () => {
+              } else {
                 this.loading = false;
               }
-            });
-          },
-          error: () => {
-            this.loading = false;
-          }
-        });
+            },
+            error: () => this.loading = false
+          });
+        } else {
+          this.applyPhoneValidators(undefined);
+          this.loading = false;
+        }
 
         if (data.imagen) {
           this.logoPreviewUrl = this.systemConfigurationService.getLogoUrl(data.imagen);
         }
 
-        if (this.isEditMode) this.form.get('codigoSistema')?.disable();
-        this.loading = false;
+        if (this.isEditMode) {
+          this.form.get('codigoSistema')?.disable();
+        }
       },
-      error: err => {
+      error: (err: any) => {
         this.error = 'Error al cargar configuración';
+        console.error(err);
         this.loading = false;
-        console.error('Error cargando configuración:', err);
       }
     });
   }
@@ -416,23 +399,30 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
   onLogoSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (!input.files?.length) return;
+    
     const file = input.files[0];
     const allowedExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.webp'];
     const fileExtension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+    
     if (!allowedExtensions.includes(fileExtension)) {
       this.error = 'Formato no válido. Use PNG, JPG, GIF o WEBP.';
       input.value = '';
       return;
     }
+    
     if (file.size > 2 * 1024 * 1024) {
       this.error = 'El archivo no puede superar 2MB.';
       input.value = '';
       return;
     }
+    
     this.error = null;
     this.selectedLogoFile = file;
+    
     const reader = new FileReader();
-    reader.onload = (e) => { this.logoPreviewUrl = e.target?.result as string; };
+    reader.onload = (e) => {
+      this.logoPreviewUrl = e.target?.result as string;
+    };
     reader.readAsDataURL(file);
   }
 
@@ -442,15 +432,19 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
     this.form.get('imagen')?.setValue('');
   }
 
-  onLogoError(): void { this.logoPreviewUrl = null; }
+  onLogoError(): void {
+    this.logoPreviewUrl = null;
+  }
 
   onSubmit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
+    
     this.loading = true;
     this.error = null;
+    
     if (this.selectedLogoFile) {
       const codigoSistema = this.form.getRawValue().codigoSistema;
       this.systemConfigurationService.uploadLogo(codigoSistema, this.selectedLogoFile).subscribe({
@@ -468,16 +462,21 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
     }
   }
 
+  // ⭐ MÉTODO CORREGIDO - LÍNEA 484
   private submitForm(): void {
     const dto: SystemConfigurationDTO = this.form.getRawValue();
-
-    // Normalize telefono for backend (keep UI unchanged)
+    
+    // ⭐ ASEGURAR QUE EL DTO TENGA EL ID EN MODO EDICIÓN
+    if (this.isEditMode && this.configId) {
+      dto.id = this.configId;
+    }
+    
     dto.telefono = normalizePhone(this.form.get('telefono')?.value) || '';
-
     dto.activo = !!this.form.get('activo')?.value;
 
     if (this.isEditMode) {
-      this.systemConfigurationService.update(this.configId!, dto).subscribe({
+      // ✅ CORRECTO: Solo pasar el DTO (que ya contiene el id)
+      this.systemConfigurationService.update(dto).subscribe({
         next: () => this.router.navigate(['/configuracion/negocio']),
         error: () => {
           this.error = 'Error al guardar configuración';
@@ -495,37 +494,23 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  private humanizeField(field: string): string {
-    const map: { [k: string]: string } = {
-      codigoSistema: 'Código Sistema',
-      licencia: 'Licencia',
-      nombreNegocio: 'Nombre negocio',
-      personaContacto: 'Persona contacto',
-      paisId: 'País',
-      provinciaId: 'Provincia',
-      municipioId: 'Municipio',
-      codigoPostalId: 'Código postal',
-      cuentaPagarId: 'Cuenta por pagar',
-      cuentaCobrarId: 'Cuenta por cobrar',
-      caducidad: 'Caducidad',
-      imagen: 'Logo',
-      telefono: 'Teléfono',
-      web: 'Sitio web',
-      email: 'Email'
-    };
-    return map[field] ?? field;
+  cancel(): void {
+    this.router.navigate(['/configuracion/negocio']);
   }
 
-  cancel(): void { this.router.navigate(['/configuracion/negocio']); }
+  getErrorMessage(field: string): string {
+    const control = this.form.get(field);
+    if (!control || !control.errors) return '';
 
-  getErrorMessage(fieldName: string): string {
-    const control = this.form.get(fieldName);
-    if (control?.hasError('required')) return 'Este campo es requerido';
-    if (control?.hasError('maxlength')) {
-      return `Máximo ${control.errors?.['maxlength'].requiredLength} caracteres`;
-    }
-    if (control?.hasError('email')) return 'Email no válido';
-    if (control?.hasError('telefonoInvalid')) return 'Teléfono no válido';
-    return '';
+    if (control.errors['required']) return this.translationService.translate('validation.required');
+    if (control.errors['email']) return this.translationService.translate('validation.emailInvalid');
+    if (control.errors['pattern']) return 'Formato no válido';
+    if (control.errors['minlength']) return `Mínimo ${control.errors['minlength'].requiredLength} caracteres`;
+    if (control.errors['maxlength']) return `Máximo ${control.errors['maxlength'].requiredLength} caracteres`;
+    if (control.errors['min']) return `Valor mínimo: ${control.errors['min'].min}`;
+    if (control.errors['max']) return `Valor máximo: ${control.errors['max'].max}`;
+    if (control.errors['telefonoInvalid']) return 'Teléfono no válido';
+
+    return 'Error de validación';
   }
 }

@@ -1,4 +1,5 @@
 ﻿using GoldBusiness.Domain.Entities;
+using GoldBusiness.Domain.Enums;
 using GoldBusiness.Domain.Translation;
 using GoldBusiness.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
@@ -830,6 +831,12 @@ namespace GoldBusiness.Infrastructure.Data
                 "chokisoft@gmail.com",
                 "+5355152424",
                 DateTime.UtcNow.AddYears(1),
+                "B12345678",                           // 16. IdentificadorFiscal
+                TipoIdentificacionFiscal.NIF,          // 17. TipoIdentificadorFiscal ⭐
+                RegimenFiscal.General,                 // 18. RegimenFiscal ⭐
+                21m,                                   // 19. TasaIvaDefecto ⭐
+                true,                                  // 20. RegistradaIva ⭐
+                false,
                 "system");
 
             context.SystemConfiguration.Add(sysConfig);

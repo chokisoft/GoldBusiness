@@ -572,4 +572,59 @@
   <data name="Field_CuentaCobrar" xml:space="preserve">
     <value>Accounts Receivable</value>
   </data>
+	<data name="CodigoPaisIsoLongitud" xml:space="preserve">
+  <value>The ISO country code cannot exceed 3 characters.</value>
+</data>
+
+	<data name="IdentificadorFiscalLongitud" xml:space="preserve">
+  <value>The tax ID cannot exceed 30 characters.</value>
+</data>
+
+	<data name="TasaIvaRango" xml:space="preserve">
+  <value>The VAT rate must be between 0 and 100.</value>
+</data>
+
+	<data name="Field_TipoIdentificadorFiscal" xml:space="preserve">
+  <value>Tax ID Type</value>
+</data>
+
+	<data name="Field_RegimenFiscal" xml:space="preserve">
+  <value>Tax Regime</value>
+</data>
+
+	<data name="Field_IdentificadorFiscal" xml:space="preserve">
+  <value>Tax ID</value>
+</data>
+
+	<data name="Field_TasaIvaDefecto" xml:space="preserve">
+  <value>Default VAT Rate</value>
+</data>
+
+	<data name="Field_RegistradaIva" xml:space="preserve">
+  <value>Registered for VAT</value>
+</data>
+
+	<data name="Field_IvaInternacional" xml:space="preserve">
+  <value>International VAT</value>
+</data>
+
+	<data name="Field_ExentoIva" xml:space="preserve">
+  <value>VAT Exempt</value>
+</data>
+
+	<data name="Field_Extranjero" xml:space="preserve">
+  <value>Foreign</value>
+</data>
+
+	<data name="Field_CodigoPaisIso" xml:space="preserve">
+  <value>ISO Country Code</value>
+</data>
+
+	<data name="Field_ValidarIdentificadorFiscal" xml:space="preserve">
+  <value>Validate Tax ID</value>
+</data>
+
+	<data name="Field_InversionSujetoPasivo" xml:space="preserve">
+  <value>Reverse Charge</value>
+</data>
 </root>

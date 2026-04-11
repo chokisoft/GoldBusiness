@@ -84,6 +84,21 @@ export class SystemConfigurationListComponent implements OnInit, OnDestroy {
       });
   }
 
+  loadPage(): void {
+    this.loading = true;
+    this.systemConfigService.getPaged(this.currentPage, this.pageSize, this.searchTerm).subscribe({
+      next: (resp: any) => {
+        this.configurations = resp.items;
+        this.totalItems = resp.total;
+        this.loading = false;
+      },
+      error: (err: any) => {
+        console.error('Error loading page:', err);
+        this.loading = false;
+      }
+    });
+  }
+
   onSearch(): void {
     this.currentPage = 1;
     this.loadData();
@@ -142,6 +157,15 @@ export class SystemConfigurationListComponent implements OnInit, OnDestroy {
           this.error = 'Error al eliminar la configuración';
           console.error('Error:', err);
         }
+      });
+    }
+  }
+
+  onDelete(id: number): void {
+    if (confirm('¿Seguro que desea eliminar esta configuración?')) {
+      this.systemConfigService.delete(id).subscribe({
+        next: () => this.loadPage(),
+        error: (err: any) => console.error('Error deleting:', err)
       });
     }
   }

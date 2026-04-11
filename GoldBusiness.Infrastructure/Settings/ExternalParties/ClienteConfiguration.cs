@@ -59,6 +59,34 @@ namespace GoldBusiness.Infrastructure.Settings.ExternalParties
             builder.Ignore(e => e.Translations);
             builder.Ignore(e => e.CuentasCobrarPagar);
             builder.Ignore(e => e.OperacionesEncabezado);
+
+            builder.Property(e => e.TipoIdentificadorFiscal)
+                .HasConversion<int?>()
+                .IsRequired(false);
+
+            builder.Property(e => e.RegimenFiscal)
+                .HasConversion<int?>()
+                .IsRequired(false);
+
+            builder.Property(e => e.ExentoIva)
+                .IsRequired()
+                .HasDefaultValue(false);
+
+            builder.Property(e => e.Extranjero)
+                .IsRequired()
+                .HasDefaultValue(false);
+
+            builder.Property(e => e.CodigoPaisIso)
+                .HasMaxLength(3)
+                .IsRequired(false);
+
+            builder.Property(e => e.ValidarIdentificadorFiscal)
+                .IsRequired()
+                .HasDefaultValue(false);
+
+            builder.Property(e => e.InversionSujetoPasivo)
+                .IsRequired()
+                .HasDefaultValue(false);
         }
     }
 }

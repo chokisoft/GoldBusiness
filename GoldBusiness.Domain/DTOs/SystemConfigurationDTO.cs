@@ -1,146 +1,66 @@
-﻿using System.ComponentModel.DataAnnotations;
-using GoldBusiness.Domain.Resources;
+﻿using GoldBusiness.Domain.Enums;
+using System;
 
 namespace GoldBusiness.Domain.DTOs
 {
-    /// <summary>
-    /// DTO para la configuración general del sistema.
-    /// Almacena datos del negocio, licencia y cuentas contables por defecto.
-    /// </summary>
     public class SystemConfigurationDTO
     {
         public int Id { get; set; }
-
-        [Required(
-            ErrorMessageResourceType = typeof(ValidationMessages),
-            ErrorMessageResourceName = nameof(ValidationMessages.CodigoObligatorio)
-        )]
-        [Display(
-            Name = nameof(ValidationMessages.Field_Codigo),
-            ResourceType = typeof(ValidationMessages)
-        )]
-        // Exactamente 3 caracteres alfanuméricos
-        [StringLength(3, MinimumLength = 3,
-            ErrorMessageResourceType = typeof(ValidationMessages),
-            ErrorMessageResourceName = nameof(ValidationMessages.CodigoLongitud)
-        )]
-        [RegularExpression(@"^[A-Za-z0-9]{3}$",
-            ErrorMessageResourceType = typeof(ValidationMessages),
-            ErrorMessageResourceName = nameof(ValidationMessages.CodigoFormatoAlfanumerico)
-        )]
         public string CodigoSistema { get; set; } = string.Empty;
-
-        [Required(ErrorMessageResourceType = typeof(ValidationMessages), ErrorMessageResourceName = nameof(ValidationMessages.Required))]
-        [Display(Name = nameof(ValidationMessages.Field_Licencia), ResourceType = typeof(ValidationMessages))]
-        [StringLength(400,
-            ErrorMessageResourceType = typeof(ValidationMessages),
-            ErrorMessageResourceName = nameof(ValidationMessages.StringLengthMax)
-        )]
         public string Licencia { get; set; } = string.Empty;
-
-        [Required(ErrorMessageResourceType = typeof(ValidationMessages), ErrorMessageResourceName = nameof(ValidationMessages.Required))]
-        [Display(Name = nameof(ValidationMessages.Field_Descripcion), ResourceType = typeof(ValidationMessages))]
-        [StringLength(256,
-            ErrorMessageResourceType = typeof(ValidationMessages),
-            ErrorMessageResourceName = nameof(ValidationMessages.StringLengthMax)
-        )]
         public string NombreNegocio { get; set; } = string.Empty;
-
-        [Required(ErrorMessageResourceType = typeof(ValidationMessages), ErrorMessageResourceName = nameof(ValidationMessages.Required))]
-        [Display(Name = nameof(ValidationMessages.Field_Descripcion), ResourceType = typeof(ValidationMessages))]
-        [StringLength(256,
-            ErrorMessageResourceType = typeof(ValidationMessages),
-            ErrorMessageResourceName = nameof(ValidationMessages.StringLengthMax)
-        )]
-        public string PersonaContacto { get; set; } = string.Empty;
-
-        [Required(ErrorMessageResourceType = typeof(ValidationMessages), ErrorMessageResourceName = nameof(ValidationMessages.Required))]
-        public int FormaJuridicaId { get; set; }
-
-        [Display(Name = nameof(ValidationMessages.Field_Direccion), ResourceType = typeof(ValidationMessages))]
-        [StringLength(512, ErrorMessageResourceType = typeof(ValidationMessages), ErrorMessageResourceName = nameof(ValidationMessages.StringLengthMax))]
-        public string Direccion { get; set; } = string.Empty;
-
-        // NUEVO: IDs dependientes
-        [Required(ErrorMessageResourceType = typeof(ValidationMessages), ErrorMessageResourceName = nameof(ValidationMessages.Required))]
+        public string? PersonaContacto { get; set; }
+        public int? FormaJuridicaId { get; set; }
+        public string? Direccion { get; set; }
+        
         public int PaisId { get; set; }
-
-        [Required(ErrorMessageResourceType = typeof(ValidationMessages), ErrorMessageResourceName = nameof(ValidationMessages.Required))]
         public int ProvinciaId { get; set; }
-
-        [Required(ErrorMessageResourceType = typeof(ValidationMessages), ErrorMessageResourceName = nameof(ValidationMessages.Required))]
         public int MunicipioId { get; set; }
-
-        [Required(ErrorMessageResourceType = typeof(ValidationMessages), ErrorMessageResourceName = nameof(ValidationMessages.Required))]
         public int CodigoPostalId { get; set; }
-
-        // Propiedades de presentación (para el cliente)
-        public string? FormaJuridica { get; set; }
-
+        
         public string? Municipio { get; set; }
         public string? Provincia { get; set; }
         public string? CodPostal { get; set; }
-
-        [Display(Name = nameof(ValidationMessages.Field_Imagen), ResourceType = typeof(ValidationMessages))]
-        [StringLength(500, ErrorMessageResourceType = typeof(ValidationMessages), ErrorMessageResourceName = nameof(ValidationMessages.StringLengthMax))]
         public string? Imagen { get; set; }
-
-        [Display(Name = nameof(ValidationMessages.Field_Web), ResourceType = typeof(ValidationMessages))]
-        [Url(ErrorMessageResourceType = typeof(ValidationMessages), ErrorMessageResourceName = nameof(ValidationMessages.WebFormato))]
-        [StringLength(256, ErrorMessageResourceType = typeof(ValidationMessages), ErrorMessageResourceName = nameof(ValidationMessages.StringLengthMax))]
         public string? Web { get; set; }
-
-        [Display(Name = nameof(ValidationMessages.Field_Email1), ResourceType = typeof(ValidationMessages))]
-        [EmailAddress(ErrorMessageResourceType = typeof(ValidationMessages), ErrorMessageResourceName = nameof(ValidationMessages.EmailFormato))]
-        [StringLength(256, ErrorMessageResourceType = typeof(ValidationMessages), ErrorMessageResourceName = nameof(ValidationMessages.StringLengthMax))]
         public string? Email { get; set; }
-
-        [Display(Name = nameof(ValidationMessages.Field_Telefono1), ResourceType = typeof(ValidationMessages))]
-        [StringLength(20, ErrorMessageResourceType = typeof(ValidationMessages), ErrorMessageResourceName = nameof(ValidationMessages.TelefonoLongitud))]
-        public string Telefono { get; set; } = string.Empty;
-
-        [Required(ErrorMessageResourceType = typeof(ValidationMessages), ErrorMessageResourceName = nameof(ValidationMessages.Required))]
-        [Display(Name = nameof(ValidationMessages.Field_CuentaPagar), ResourceType = typeof(ValidationMessages))]
-        [Range(1, int.MaxValue, ErrorMessageResourceType = typeof(ValidationMessages), ErrorMessageResourceName = nameof(ValidationMessages.Required))]
+        public string? Telefono { get; set; }
+        
         public int? CuentaPagarId { get; set; }
-
-        [Required(ErrorMessageResourceType = typeof(ValidationMessages), ErrorMessageResourceName = nameof(ValidationMessages.Required))]
-        [Display(Name = nameof(ValidationMessages.Field_CuentaCobrar), ResourceType = typeof(ValidationMessages))]
-        [Range(1, int.MaxValue, ErrorMessageResourceType = typeof(ValidationMessages), ErrorMessageResourceName = nameof(ValidationMessages.Required))]
         public int? CuentaCobrarId { get; set; }
-
-        [Required(ErrorMessageResourceType = typeof(ValidationMessages), ErrorMessageResourceName = nameof(ValidationMessages.Required))]
-        [Display(Name = nameof(ValidationMessages.Field_FechaCreacion), ResourceType = typeof(ValidationMessages))]
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        
+        // ═══════════════════════════════════════════════════════════════
+        // 🧾 DATOS FISCALES DE LA EMPRESA (NULLABLE para flexibilidad)
+        // ═══════════════════════════════════════════════════════════════
+        
+        public string? IdentificadorFiscal { get; set; }
+        public TipoIdentificacionFiscal? TipoIdentificadorFiscal { get; set; }
+        public RegimenFiscal? RegimenFiscal { get; set; }
+        public decimal? TasaIvaDefecto { get; set; }
+        public bool? RegistradaIva { get; set; }
+        public bool? IvaInternacional { get; set; }
+        
         public DateTime Caducidad { get; set; }
-
-        public string CreadoPor { get; set; } = string.Empty;
-        public DateTime FechaHoraCreado { get; set; }
+        
+        public string? CreadoPor { get; set; }
+        public DateTime? FechaHoraCreado { get; set; }
         public string? ModificadoPor { get; set; }
         public DateTime? FechaHoraModificado { get; set; }
-
-        public string? CuentaPagarCodigo { get; set; } = string.Empty;
-        public string? CuentaPagarDescripcion { get; set; } = string.Empty;
-        public string? CuentaCobrarCodigo { get; set; } = string.Empty;
-        public string? CuentaCobrarDescripcion { get; set; } = string.Empty;
-
-        // Estado (mapeo frontend: Activo = !Cancelado)
-        public bool Activo { get; set; } = true;
-        public bool Cancelado { get; set; } = false;
-
-        // ─── Propiedades calculadas ───────────────────────────────
-        public bool EstaVigente => Caducidad > DateTime.UtcNow;
-        public bool EstaVencida => !EstaVigente;
-        public bool ProximoAVencer => Caducidad <= DateTime.UtcNow.AddDays(30) && EstaVigente;
-        public int DiasRestantes => EstaVigente ? (Caducidad - DateTime.UtcNow).Days : 0;
-        public bool TieneImagen => !string.IsNullOrEmpty(Imagen);
-        public string EstadoLicencia => EstaVencida ? "Vencida" : (ProximoAVencer ? "Por Vencer" : "Vigente");
+        
+        public string? CuentaPagarCodigo { get; set; }
+        public string? CuentaPagarDescripcion { get; set; }
+        public string? CuentaCobrarCodigo { get; set; }
+        public string? CuentaCobrarDescripcion { get; set; }
+        
+        // Propiedades calculadas (readonly, no se setean desde el form)
+        public bool EstaVigente => Caducidad > DateTime.Now;
+        public bool EstaVencida => Caducidad <= DateTime.Now;
+        public bool ProximoAVencer => Caducidad > DateTime.Now && Caducidad <= DateTime.Now.AddDays(30);
+        public int? DiasRestantes => EstaVigente ? (int?)(Caducidad - DateTime.Now).TotalDays : null;
+        public string EstadoLicencia => EstaVencida ? "Vencida" : (ProximoAVencer ? "Próximo a vencer" : "Vigente");
         public bool TieneCuentasConfiguradas => CuentaPagarId.HasValue && CuentaCobrarId.HasValue;
+        
+        public bool Activo { get; set; }
+        public bool Cancelado { get; set; }
     }
-
-    /// <summary>
-    /// Resultado devuelto tras subir el logo de la empresa.
-    /// </summary>
-    public record LogoUploadResult(string FileName);
 }

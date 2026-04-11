@@ -1,6 +1,7 @@
-﻿using GoldBusiness.Domain.Exceptions;
-using GoldBusiness.Domain.Translation;
+﻿using GoldBusiness.Domain.Enums;
+using GoldBusiness.Domain.Exceptions;
 using GoldBusiness.Domain.Helpers;
+using GoldBusiness.Domain.Translation;
 using System.Text.RegularExpressions;
 
 namespace GoldBusiness.Domain.Entities
@@ -18,6 +19,13 @@ namespace GoldBusiness.Domain.Entities
         public string Iban { get; private set; } = string.Empty;
         public string BicoSwift { get; private set; } = string.Empty;
         public decimal Iva { get; private set; }
+        public TipoIdentificacionFiscal? TipoIdentificadorFiscal { get; private set; }
+        public RegimenFiscal? RegimenFiscal { get; private set; }
+        public bool ExentoIva { get; private set; }
+        public bool Extranjero { get; private set; }
+        public string CodigoPaisIso { get; private set; } = string.Empty;
+        public bool ValidarIdentificadorFiscal { get; private set; }
+        public bool InversionSujetoPasivo { get; private set; }
         public string Direccion { get; private set; } = string.Empty;
         public string Telefono1 { get; private set; } = string.Empty;
         public string Telefono2 { get; private set; } = string.Empty;
@@ -66,6 +74,13 @@ namespace GoldBusiness.Domain.Entities
             string? telefono2,
             string? fax1,
             string? fax2,
+            TipoIdentificacionFiscal? tipoIdentificadorFiscal,
+            RegimenFiscal? regimenFiscal,
+            bool exentoIva,
+            bool extranjero,
+            string? codigoPaisIso,
+            bool validarIdentificadorFiscal,
+            bool inversionSujetoPasivo,
             string creadoPor)
         {
             SetCodigo(codigo);
@@ -83,6 +98,13 @@ namespace GoldBusiness.Domain.Entities
             SetEmails(email1 ?? string.Empty, email2 ?? string.Empty);
             SetTelefonos(telefono1 ?? string.Empty, telefono2 ?? string.Empty, null);
             SetFaxes(fax1 ?? string.Empty, fax2 ?? string.Empty);
+            SetTipoIdentificadorFiscal(tipoIdentificadorFiscal);
+            SetRegimenFiscal(regimenFiscal);
+            SetExentoIva(exentoIva);
+            SetExtranjero(extranjero);
+            SetCodigoPaisIso(codigoPaisIso ?? string.Empty);
+            SetValidarIdentificadorFiscal(validarIdentificadorFiscal);
+            SetInversionSujetoPasivo(inversionSujetoPasivo);
             EstablecerCreador(creadoPor);
             Cancelado = false;
         }
@@ -244,6 +266,50 @@ namespace GoldBusiness.Domain.Entities
             Fax2 = fax2?.Trim() ?? string.Empty;
         }
 
+        public void SetTipoIdentificadorFiscal(TipoIdentificacionFiscal? tipo)
+        {
+            if (tipo.HasValue && !Enum.IsDefined(typeof(TipoIdentificacionFiscal), tipo.Value))
+                throw new DomainException("Tipo de identificador fiscal inválido.");
+
+            TipoIdentificadorFiscal = tipo;
+        }
+
+        public void SetRegimenFiscal(RegimenFiscal? regimen)
+        {
+            if (regimen.HasValue && !Enum.IsDefined(typeof(RegimenFiscal), regimen.Value))
+                throw new DomainException("Régimen fiscal inválido.");
+
+            RegimenFiscal = regimen;
+        }
+
+        public void SetExentoIva(bool exento)
+        {
+            ExentoIva = exento;
+        }
+
+        public void SetExtranjero(bool extranjero)
+        {
+            Extranjero = extranjero;
+        }
+
+        public void SetCodigoPaisIso(string codigo)
+        {
+            if (!string.IsNullOrWhiteSpace(codigo) && codigo.Length > 3)
+                throw new DomainException("El código ISO de país no puede exceder 3 caracteres.");
+
+            CodigoPaisIso = codigo?.Trim().ToUpperInvariant() ?? string.Empty;
+        }
+
+        public void SetValidarIdentificadorFiscal(bool validar)
+        {
+            ValidarIdentificadorFiscal = validar;
+        }
+
+        public void SetInversionSujetoPasivo(bool inversion)
+        {
+            InversionSujetoPasivo = inversion;
+        }
+
         public void Actualizar(
             string descripcion,
             string? nif,
@@ -262,6 +328,13 @@ namespace GoldBusiness.Domain.Entities
             string? telefono2,
             string? fax1,
             string? fax2,
+            TipoIdentificacionFiscal? tipoIdentificadorFiscal,
+            RegimenFiscal? regimenFiscal,
+            bool exentoIva,
+            bool extranjero,
+            string? codigoPaisIso,
+            bool validarIdentificadorFiscal,
+            bool inversionSujetoPasivo,
             Pais? pais,
             string modificadoPor)
         {
@@ -276,6 +349,13 @@ namespace GoldBusiness.Domain.Entities
             SetEmails(email1 ?? string.Empty, email2 ?? string.Empty);
             SetTelefonos(telefono1 ?? string.Empty, telefono2 ?? string.Empty, pais);
             SetFaxes(fax1 ?? string.Empty, fax2 ?? string.Empty);
+            SetTipoIdentificadorFiscal(tipoIdentificadorFiscal);
+            SetRegimenFiscal(regimenFiscal);
+            SetExentoIva(exentoIva);
+            SetExtranjero(extranjero);
+            SetCodigoPaisIso(codigoPaisIso ?? string.Empty);
+            SetValidarIdentificadorFiscal(validarIdentificadorFiscal);
+            SetInversionSujetoPasivo(inversionSujetoPasivo);
             ActualizarAuditoria(modificadoPor);
         }
 
