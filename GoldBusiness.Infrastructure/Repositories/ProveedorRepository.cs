@@ -42,9 +42,9 @@ namespace GoldBusiness.Infrastructure.Repositories
                 query = query.Where(p =>
                     p.Codigo.ToLower().Contains(lower) ||
                     p.Descripcion.ToLower().Contains(lower) ||
-                    (p.Nif != null && p.Nif.ToLower().Contains(lower)) ||
-                    (p.Email1 != null && p.Email1.ToLower().Contains(lower)) ||
-                    (p.Telefono1 != null && p.Telefono1.ToLower().Contains(lower))
+                    (p.IdentificadorFiscal != null && p.IdentificadorFiscal.ToLower().Contains(lower)) ||
+                    (p.Email != null && p.Email.ToLower().Contains(lower)) ||
+                    (p.Telefono != null && p.Telefono.ToLower().Contains(lower))
                 );
             }
 

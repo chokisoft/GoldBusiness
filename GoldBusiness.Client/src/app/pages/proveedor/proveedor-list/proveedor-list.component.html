@@ -48,23 +48,25 @@
 				<table class="table">
 				  <thead>
 				    <tr>
-				      <th>Código</th>
-				      <th>Nombre / Descripción</th>
-				      <th>NIF</th>
-				      <th>Teléfono</th>
-				      <th>Email</th>
-				      <th>Acciones</th>
+				      <th>{{ 'proveedores.codigo' | translate }}</th>
+				      <th>{{ 'proveedores.nombre' | translate }}</th>
+				      <th>{{ 'proveedores.identificadorFiscal' | translate }}</th>
+				      <th>{{ 'proveedores.telefono' | translate }}</th>
+				      <th>{{ 'proveedores.email' | translate }}</th>
+				      <th>{{ 'common.actions' | translate }}</th>
 				    </tr>
 				  </thead>
 				  <tbody>
 				    <tr *ngFor="let item of proveedores">
 				      <td>{{ item.codigo }}</td>
 				      <td>{{ item.descripcion }}</td>
-				      <td>{{ item.nif || '-' }}</td>
-				      <td>{{ item.telefono1 || '-' }}</td>
-				      <td>{{ item.email1 || '-' }}</td>
+				      <td>{{ item.identificadorFiscal || '-' }}</td>
+				      <td>{{ item.telefono || '-' }}</td>
+				      <td>{{ item.email || '-' }}</td>
 				      <td>
-				        <button (click)="delete(item.id, item.descripcion)">Eliminar</button>
+				        <button class="btn btn-sm btn-danger" (click)="delete(item.id, item.descripcion)" [title]="'common.delete' | translate">
+				          <span>🗑️</span>
+				        </button>
 				      </td>
 				    </tr>
 				    <tr *ngIf="proveedores.length === 0">

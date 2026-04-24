@@ -27,6 +27,7 @@ export class ClienteFormComponent implements OnInit {
   error: string | null = null;
   saving = false;
   loading = false;
+  loadingCuentas = false; // flag used by template when loading account data
   
   selectedPais?: PaisDTO; // ⭐ AGREGADO
 
@@ -65,22 +66,18 @@ export class ClienteFormComponent implements OnInit {
     this.itemForm = this.fb.group({
       codigo: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
       descripcion: ['', [Validators.required, Validators.maxLength(256)]],
-      nif: ['', Validators.maxLength(11)],
+      identificadorFiscal: ['', Validators.maxLength(30)],
       iban: ['', Validators.maxLength(27)],
       bicoSwift: ['', Validators.maxLength(11)],
-      iva: [0, [Validators.required, Validators.min(-0.01), Validators.max(99.99)]],
+      tasaIva: [0, [Validators.required, Validators.min(-0.01), Validators.max(99.99)]],
       direccion: ['', Validators.maxLength(256)],
-      telefono1: ['', Validators.maxLength(50)],
-      telefono2: ['', Validators.maxLength(50)],
+      telefono: ['', Validators.maxLength(50)],
       paisId: [null],
       provinciaId: [{ value: null, disabled: true }],
       municipioId: [{ value: null, disabled: true }],
       codigoPostalId: [{ value: null, disabled: true }],
       web: ['', Validators.maxLength(256)],
-      email1: ['', [Validators.email, Validators.maxLength(256)]],
-      email2: ['', [Validators.email, Validators.maxLength(256)]],
-      fax1: ['', Validators.maxLength(50)],
-      fax2: ['', Validators.maxLength(50)],
+      email: ['', [Validators.email, Validators.maxLength(256)]],
       tipoIdentificadorFiscal: [null],
       regimenFiscal: [null],
       exentoIva: [false],
@@ -241,5 +238,15 @@ export class ClienteFormComponent implements OnInit {
 
   onCancel(): void {
     this.router.navigate(['/nomencladores/clientes']);
+  }
+
+  // Alias for templates using `cancel()` instead of `onCancel()`
+  cancel(): void {
+    this.onCancel();
+  }
+
+  // Compatibility alias: some templates reference `form` instead of `itemForm`
+  get form(): FormGroup {
+    return this.itemForm;
   }
 }

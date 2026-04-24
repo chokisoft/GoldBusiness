@@ -1,7 +1,7 @@
-﻿using GoldBusiness.Domain.Exceptions;
-using GoldBusiness.Domain.Translation;
+﻿using GoldBusiness.Domain.Enums;
+using GoldBusiness.Domain.Exceptions;
 using GoldBusiness.Domain.Helpers;
-using GoldBusiness.Domain.Enums; // ⭐ LÍNEA 4: AGREGAR
+using GoldBusiness.Domain.Translation;
 using System.Text.RegularExpressions;
 
 namespace GoldBusiness.Domain.Entities
@@ -13,51 +13,52 @@ namespace GoldBusiness.Domain.Entities
         private readonly HashSet<OperacionesEncabezado> _operacionesEncabezado = new();
         private readonly HashSet<Producto> _producto = new();
 
+        // ═══════════════════════════════════════════════════════════════
+        // 📋 PROPIEDADES PRINCIPALES
+        // ═══════════════════════════════════════════════════════════════
         public int Id { get; private set; }
         public string Codigo { get; private set; } = string.Empty;
         public string Descripcion { get; private set; } = string.Empty;
-        public string Nif { get; private set; } = string.Empty;
+
+        // ═══════════════════════════════════════════════════════════════
+        // 🧾 DATOS FISCALES
+        // ═══════════════════════════════════════════════════════════════
+        public string IdentificadorFiscal { get; private set; } = string.Empty;
+        public TipoIdentificacionFiscal? TipoIdentificadorFiscal { get; private set; }
+        public RegimenFiscal? RegimenFiscal { get; private set; }
+        public decimal TasaIva { get; private set; }
+        public bool ExentoIva { get; private set; }
+        public bool Extranjero { get; private set; }
+        public string CodigoPaisIso { get; private set; } = string.Empty;
+        public bool ValidarIdentificadorFiscal { get; private set; }
+        public bool InversionSujetoPasivo { get; private set; }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 🏦 DATOS BANCARIOS
+        // ═══════════════════════════════════════════════════════════════
         public string Iban { get; private set; } = string.Empty;
         public string BicoSwift { get; private set; } = string.Empty;
-        public decimal Iva { get; private set; }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 📍 LOCALIZACIÓN
+        // ═══════════════════════════════════════════════════════════════
         public string Direccion { get; private set; } = string.Empty;
-        public string Telefono1 { get; private set; } = string.Empty;
-        public string Telefono2 { get; private set; } = string.Empty;
         public int? PaisId { get; private set; }
         public int? ProvinciaId { get; private set; }
         public int? MunicipioId { get; private set; }
         public int? CodigoPostalId { get; private set; }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 📞 CONTACTO
+        // ═══════════════════════════════════════════════════════════════
+        public string Email { get; private set; } = string.Empty;
+        public string Telefono { get; private set; } = string.Empty;
         public string Web { get; private set; } = string.Empty;
-        public string Email1 { get; private set; } = string.Empty;
-        public string Email2 { get; private set; } = string.Empty;
-        public string Fax1 { get; private set; } = string.Empty;
-        public string Fax2 { get; private set; } = string.Empty;
+
+        // ═══════════════════════════════════════════════════════════════
+        // 🔧 CONTROL
+        // ═══════════════════════════════════════════════════════════════
         public bool Cancelado { get; private set; }
-
-        // ═══════════════════════════════════════════════════════════════
-        // 🧾 DATOS FISCALES EXTENDIDOS
-        // ═══════════════════════════════════════════════════════════════
-
-        /// <summary>Tipo de identificador fiscal del proveedor</summary>
-        public TipoIdentificacionFiscal? TipoIdentificadorFiscal { get; private set; }
-
-        /// <summary>Régimen fiscal del proveedor</summary>
-        public RegimenFiscal? RegimenFiscal { get; private set; }
-
-        /// <summary>Indica si el proveedor está exento de IVA</summary>
-        public bool ExentoIva { get; private set; }
-
-        /// <summary>Indica si es proveedor extranjero (fuera del país de la empresa)</summary>
-        public bool Extranjero { get; private set; }
-
-        /// <summary>Código de país ISO 3166-1 (útil para validaciones internacionales)</summary>
-        public string CodigoPaisIso { get; private set; } = string.Empty;
-
-        /// <summary>Habilita validación automática del identificador fiscal</summary>
-        public bool ValidarIdentificadorFiscal { get; private set; }
-
-        /// <summary>Aplicar inversión del sujeto pasivo (compras intracomunitarias UE)</summary>
-        public bool InversionSujetoPasivo { get; private set; }
 
         // Propiedades de navegación
         public Pais? Pais { get; private set; }
@@ -78,23 +79,18 @@ namespace GoldBusiness.Domain.Entities
         public Proveedor(
             string codigo,
             string descripcion,
-            string? nif,
+            string? identificadorFiscal,
             string? iban,
             string? bicoSwift,
-            decimal iva,
+            decimal tasaIva,
             string? direccion,
             int? paisId,
             int? provinciaId,
             int? municipioId,
             int? codigoPostalId,
             string? web,
-            string? email1,
-            string? email2,
-            string? telefono1,
-            string? telefono2,
-            string? fax1,
-            string? fax2,
-            // ⭐ AGREGAR PARÁMETROS FISCALES
+            string? email,
+            string? telefono,
             TipoIdentificacionFiscal? tipoIdentificadorFiscal,
             RegimenFiscal? regimenFiscal,
             bool exentoIva,
@@ -106,21 +102,18 @@ namespace GoldBusiness.Domain.Entities
         {
             SetCodigo(codigo);
             SetDescripcion(descripcion);
-            SetNif(nif ?? string.Empty);
+            SetIdentificadorFiscal(identificadorFiscal ?? string.Empty);
             SetIban(iban ?? string.Empty);
             SetBicoSwift(bicoSwift ?? string.Empty);
-            SetIva(iva);
+            SetTasaIva(tasaIva);
             SetDireccion(direccion ?? string.Empty);
             PaisId = paisId;
             ProvinciaId = provinciaId;
             MunicipioId = municipioId;
             CodigoPostalId = codigoPostalId;
             SetWeb(web ?? string.Empty);
-            SetEmails(email1 ?? string.Empty, email2 ?? string.Empty);
-            SetTelefonos(telefono1 ?? string.Empty, telefono2 ?? string.Empty, null);
-            SetFaxes(fax1 ?? string.Empty, fax2 ?? string.Empty);
-
-            // ⭐ AGREGAR SETTERS FISCALES
+            SetEmail(email ?? string.Empty);
+            SetTelefono(telefono ?? string.Empty, null);
             SetTipoIdentificadorFiscal(tipoIdentificadorFiscal);
             SetRegimenFiscal(regimenFiscal);
             SetExentoIva(exentoIva);
@@ -128,7 +121,6 @@ namespace GoldBusiness.Domain.Entities
             SetCodigoPaisIso(codigoPaisIso ?? string.Empty);
             SetValidarIdentificadorFiscal(validarIdentificadorFiscal);
             SetInversionSujetoPasivo(inversionSujetoPasivo);
-
             EstablecerCreador(creadoPor);
             Cancelado = false;
         }
@@ -156,12 +148,12 @@ namespace GoldBusiness.Domain.Entities
             Descripcion = descripcion.Trim();
         }
 
-        public void SetNif(string nif)
+        public void SetIdentificadorFiscal(string identificadorFiscal)
         {
-            if (!string.IsNullOrWhiteSpace(nif) && nif.Length > 11)
-                throw new DomainException("El NIF no puede exceder 11 caracteres.");
+            if (!string.IsNullOrWhiteSpace(identificadorFiscal) && identificadorFiscal.Length > 30)
+                throw new DomainException("El identificador fiscal no puede exceder 30 caracteres.");
 
-            Nif = nif?.Trim().ToUpperInvariant() ?? string.Empty;
+            IdentificadorFiscal = identificadorFiscal?.Trim().ToUpperInvariant() ?? string.Empty;
         }
 
         public void SetIban(string iban)
@@ -180,12 +172,12 @@ namespace GoldBusiness.Domain.Entities
             BicoSwift = bicoSwift?.Trim().ToUpperInvariant() ?? string.Empty;
         }
 
-        public void SetIva(decimal iva)
+        public void SetTasaIva(decimal tasaIva)
         {
-            if (iva < -0.01m || iva > 99.99m)
-                throw new DomainException("El IVA debe estar entre -0.01 y 99.99.");
+            if (tasaIva < -0.01m || tasaIva > 99.99m)
+                throw new DomainException("La tasa de IVA debe estar entre -0.01 y 99.99.");
 
-            Iva = iva;
+            TasaIva = tasaIva;
         }
 
         public void SetDireccion(string direccion)
@@ -221,50 +213,31 @@ namespace GoldBusiness.Domain.Entities
             Web = web?.Trim() ?? string.Empty;
         }
 
-        public void SetEmails(string email1, string email2 = "")
+        public void SetEmail(string email)
         {
-            if (!string.IsNullOrWhiteSpace(email1))
+            if (!string.IsNullOrWhiteSpace(email))
             {
-                if (email1.Length > 256)
-                    throw new DomainException("El email 1 no puede exceder 256 caracteres.");
+                if (email.Length > 256)
+                    throw new DomainException("El email no puede exceder 256 caracteres.");
 
-                if (!Regex.IsMatch(email1, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
-                    throw new DomainException("El email 1 no es válido.");
+                if (!Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+                    throw new DomainException("El email no es válido.");
             }
 
-            if (!string.IsNullOrWhiteSpace(email2))
-            {
-                if (email2.Length > 256)
-                    throw new DomainException("El email 2 no puede exceder 256 caracteres.");
-
-                if (!Regex.IsMatch(email2, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
-                    throw new DomainException("El email 2 no es válido.");
-            }
-
-            Email1 = email1?.Trim() ?? string.Empty;
-            Email2 = email2?.Trim() ?? string.Empty;
+            Email = email?.Trim() ?? string.Empty;
         }
 
-        public void SetTelefonos(string telefono1, string telefono2, Pais? pais)
+        public void SetTelefono(string telefono, Pais? pais)
         {
-            if (!string.IsNullOrWhiteSpace(telefono1))
+            if (!string.IsNullOrWhiteSpace(telefono))
             {
-                if (telefono1.Length > 50)
-                    throw new DomainException("El teléfono 1 no puede exceder 50 caracteres.");
+                if (telefono.Length > 50)
+                    throw new DomainException("El teléfono no puede exceder 50 caracteres.");
 
-                ValidarTelefonoConPais(telefono1, "teléfono 1", pais);
+                ValidarTelefonoConPais(telefono, "teléfono", pais);
             }
 
-            if (!string.IsNullOrWhiteSpace(telefono2))
-            {
-                if (telefono2.Length > 50)
-                    throw new DomainException("El teléfono 2 no puede exceder 50 caracteres.");
-
-                ValidarTelefonoConPais(telefono2, "teléfono 2", pais);
-            }
-
-            Telefono1 = telefono1?.Trim() ?? string.Empty;
-            Telefono2 = telefono2?.Trim() ?? string.Empty;
+            Telefono = telefono?.Trim() ?? string.Empty;
         }
 
         private void ValidarTelefonoConPais(string telefono, string campo, Pais? pais)
@@ -276,18 +249,6 @@ namespace GoldBusiness.Domain.Entities
                 if (!regex.IsMatch(telefono))
                     throw new DomainException($"El {campo} no cumple con el formato esperado. Ejemplo: {pais.FormatoEjemplo}");
             }
-        }
-
-        public void SetFaxes(string fax1, string fax2 = "")
-        {
-            if (!string.IsNullOrWhiteSpace(fax1) && fax1.Length > 50)
-                throw new DomainException("El fax 1 no puede exceder 50 caracteres.");
-
-            if (!string.IsNullOrWhiteSpace(fax2) && fax2.Length > 50)
-                throw new DomainException("El fax 2 no puede exceder 50 caracteres.");
-
-            Fax1 = fax1?.Trim() ?? string.Empty;
-            Fax2 = fax2?.Trim() ?? string.Empty;
         }
 
         public void SetTipoIdentificadorFiscal(TipoIdentificacionFiscal? tipo)
@@ -336,23 +297,18 @@ namespace GoldBusiness.Domain.Entities
 
         public void Actualizar(
             string descripcion,
-            string? nif,
+            string? identificadorFiscal,
             string? iban,
             string? bicoSwift,
-            decimal iva,
+            decimal tasaIva,
             string? direccion,
             int? paisId,
             int? provinciaId,
             int? municipioId,
             int? codigoPostalId,
             string? web,
-            string? email1,
-            string? email2,
-            string? telefono1,
-            string? telefono2,
-            string? fax1,
-            string? fax2,
-            Pais? pais,
+            string? email,
+            string? telefono,
             TipoIdentificacionFiscal? tipoIdentificadorFiscal,
             RegimenFiscal? regimenFiscal,
             bool exentoIva,
@@ -360,19 +316,19 @@ namespace GoldBusiness.Domain.Entities
             string? codigoPaisIso,
             bool validarIdentificadorFiscal,
             bool inversionSujetoPasivo,
+            Pais? pais,
             string modificadoPor)
         {
             SetDescripcion(descripcion);
-            SetNif(nif ?? string.Empty);
+            SetIdentificadorFiscal(identificadorFiscal ?? string.Empty);
             SetIban(iban ?? string.Empty);
             SetBicoSwift(bicoSwift ?? string.Empty);
-            SetIva(iva);
+            SetTasaIva(tasaIva);
             SetDireccion(direccion ?? string.Empty);
             SetUbicacion(paisId, provinciaId, municipioId, codigoPostalId);
             SetWeb(web ?? string.Empty);
-            SetEmails(email1 ?? string.Empty, email2 ?? string.Empty);
-            SetTelefonos(telefono1 ?? string.Empty, telefono2 ?? string.Empty, pais);
-            SetFaxes(fax1 ?? string.Empty, fax2 ?? string.Empty);
+            SetEmail(email ?? string.Empty);
+            SetTelefono(telefono ?? string.Empty, pais);
             SetTipoIdentificadorFiscal(tipoIdentificadorFiscal);
             SetRegimenFiscal(regimenFiscal);
             SetExentoIva(exentoIva);

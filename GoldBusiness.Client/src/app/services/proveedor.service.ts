@@ -7,10 +7,29 @@ export interface ProveedorDTO {
   id: number;
   codigo: string;
   descripcion: string;
-  nif?: string;
+  
+  // ═══════════════════════════════════════════════════════════════
+  // 🧾 DATOS FISCALES
+  // ═══════════════════════════════════════════════════════════════
+  identificadorFiscal?: string;
+  tipoIdentificadorFiscal?: TipoIdentificacionFiscal;
+  regimenFiscal?: RegimenFiscal;
+  tasaIva: number;
+  exentoIva?: boolean;
+  extranjero?: boolean;
+  codigoPaisIso?: string;
+  validarIdentificadorFiscal?: boolean;
+  inversionSujetoPasivo?: boolean;
+  
+  // ═══════════════════════════════════════════════════════════════
+  // 🏦 DATOS BANCARIOS
+  // ═══════════════════════════════════════════════════════════════
   iban?: string;
   bicoSwift?: string;
-  iva: number;
+  
+  // ═══════════════════════════════════════════════════════════════
+  // 📍 LOCALIZACIÓN
+  // ═══════════════════════════════════════════════════════════════
   direccion?: string;
   paisId?: number;
   paisDescripcion?: string;
@@ -20,25 +39,17 @@ export interface ProveedorDTO {
   municipioDescripcion?: string;
   codigoPostalId?: number;
   codigoPostalCodigo?: string;
+  
+  // ═══════════════════════════════════════════════════════════════
+  // 📞 CONTACTO
+  // ═══════════════════════════════════════════════════════════════
+  email?: string;
+  telefono?: string;
   web?: string;
-  email1?: string;
-  email2?: string;
-  telefono1?: string;
-  telefono2?: string;
-  fax1?: string;
-  fax2?: string;
   
   // ═══════════════════════════════════════════════════════════════
-  // 🧾 DATOS FISCALES EXTENDIDOS
+  // 🔧 AUDITORÍA
   // ═══════════════════════════════════════════════════════════════
-  tipoIdentificadorFiscal?: TipoIdentificacionFiscal;
-  regimenFiscal?: RegimenFiscal;
-  exentoIva?: boolean;
-  extranjero?: boolean;
-  codigoPaisIso?: string;
-  validarIdentificadorFiscal?: boolean;
-  inversionSujetoPasivo?: boolean;
-  
   cancelado: boolean;
   creadoPor: string;
   fechaHoraCreado: Date;

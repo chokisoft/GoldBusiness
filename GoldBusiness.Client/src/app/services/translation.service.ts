@@ -469,6 +469,21 @@ export class TranslationService {
       'en': 'Select a postal code.',
       'fr': 'Sélectionnez un code postal.'
     },
+    'proveedor.provinciaHelp': {
+      'es': 'Provincia o estado donde se encuentra el proveedor.',
+      'en': 'Province or state where the supplier is located.',
+      'fr': 'Province ou état où se trouve le fournisseur.'
+    },
+    'proveedor.municipioHelp': {
+      'es': 'Municipio o localidad donde se encuentra el proveedor.',
+      'en': 'Municipality or locality where the supplier is located.',
+      'fr': 'Municipalité ou localité où se trouve le fournisseur.'
+    },
+    'proveedor.codigoPostalHelp': {
+      'es': 'Código postal del proveedor.',
+      'en': 'Supplier postal code.',
+      'fr': 'Code postal du fournisseur.'
+    },
     'proveedores.codigoHelp': {
       'es': 'Ingrese el código único del proveedor (5 caracteres).',
       'en': 'Enter the unique supplier code (5 characters).',
@@ -574,6 +589,46 @@ export class TranslationService {
       'en': 'Ex: Street and number',
       'fr': 'Ex: Rue et numéro'
     },
+    'proveedores.identificadorFiscal': {
+      'es': 'Identificador Fiscal',
+      'en': 'Tax ID',
+      'fr': 'Identifiant Fiscal'
+    },
+    'proveedores.identificadorFiscalHelp': {
+      'es': 'Número de identificación fiscal del proveedor (NIF, CIF, VAT, etc.).',
+      'en': 'Supplier tax identification number (NIF, CIF, VAT, etc.).',
+      'fr': 'Numéro d\'identification fiscale du fournisseur (NIF, CIF, TVA, etc.).'
+    },
+    'proveedores.placeholderIdentificadorFiscal': {
+      'es': 'Ej: 12345678A',
+      'en': 'Ex: 12345678A',
+      'fr': 'Ex: 12345678A'
+    },
+    'proveedores.tasaIva': {
+      'es': 'Tasa IVA (%)',
+      'en': 'VAT Rate (%)',
+      'fr': 'Taux TVA (%)'
+    },
+    'proveedores.tasaIvaHelp': {
+      'es': 'Tasa de IVA aplicable al proveedor (0-99.99%). Ej: 21 para 21%.',
+      'en': 'VAT rate applicable to the supplier (0-99.99%). Ex: 21 for 21%.',
+      'fr': 'Taux de TVA applicable au fournisseur (0-99,99%). Ex: 21 pour 21%.'
+    },
+    'proveedores.tasaIvaPlaceholder': {
+      'es': 'Ej: 21.00',
+      'en': 'Ex: 21.00',
+      'fr': 'Ex: 21.00'
+    },
+    'proveedores.telefonoHelp': {
+      'es': 'Teléfono de contacto del proveedor (incluya prefijo internacional si aplica).',
+      'en': 'Supplier contact phone (include international prefix if applicable).',
+      'fr': 'Téléphone de contact du fournisseur (inclure l\'indicatif international si applicable).'
+    },
+    'proveedores.emailHelp': {
+      'es': 'Email de contacto del proveedor.',
+      'en': 'Supplier contact email.',
+      'fr': 'Email de contact du fournisseur.'
+    },
     'proveedores.iban': {
       'es': 'IBAN',
       'en': 'IBAN',
@@ -598,6 +653,26 @@ export class TranslationService {
       'es': 'Fax Secundario',
       'en': 'Secondary Fax',
       'fr': 'Fax Secondaire'
+    },
+    'proveedores.mainInfo': {
+      'es': 'Información Principal',
+      'en': 'Main Information',
+      'fr': 'Informations Principales'
+    },
+    'proveedores.infoContacto': {
+      'es': 'Información de Contacto',
+      'en': 'Contact Information',
+      'fr': 'Informations de Contact'
+    },
+    'proveedores.infoUbicacion': {
+      'es': 'Información de Ubicación',
+      'en': 'Location Information',
+      'fr': 'Informations de Localisation'
+    },
+    'proveedores.infoBancaria': {
+      'es': 'Información Bancaria',
+      'en': 'Banking Information',
+      'fr': 'Informations Bancaires'
     },
 
     'clientes.title': {
@@ -790,6 +865,21 @@ export class TranslationService {
       'en': 'Select a municipality to see postal codes.',
       'fr': 'Sélectionnez une municipalité pour voir les codes postaux.'
     },
+    'cliente.provinciaHelp': {
+      'es': 'Provincia o estado donde se encuentra el cliente.',
+      'en': 'Province or state where the customer is located.',
+      'fr': 'Province ou état où se trouve le client.'
+    },
+    'cliente.municipioHelp': {
+      'es': 'Municipio o localidad donde se encuentra el cliente.',
+      'en': 'Municipality or locality where the customer is located.',
+      'fr': 'Municipalité ou localité où se trouve le client.'
+    },
+    'cliente.codigoPostalHelp': {
+      'es': 'Código postal del cliente.',
+      'en': 'Customer postal code.',
+      'fr': 'Code postal du client.'
+    },
     'clientes.codigoHelp': {
       'es': 'Ingrese el código único del cliente (8 dígitos numéricos).',
       'en': 'Enter the unique customer code (8 numeric digits).',
@@ -929,6 +1019,46 @@ export class TranslationService {
       'es': 'Ej: +34 912 345 678',
       'en': 'Ex: +34 912 345 678',
       'fr': 'Ex: +33 1 23 45 67 89'
+    },
+    'clientes.identificadorFiscal': {
+      'es': 'Identificador Fiscal',
+      'en': 'Tax ID',
+      'fr': 'Identifiant Fiscal'
+    },
+    'clientes.identificadorFiscalHelp': {
+      'es': 'Número de identificación fiscal del cliente (NIF, CIF, VAT, etc.).',
+      'en': 'Customer tax identification number (NIF, CIF, VAT, etc.).',
+      'fr': 'Numéro d\'identification fiscale du client (NIF, CIF, TVA, etc.).'
+    },
+    'clientes.placeholderIdentificadorFiscal': {
+      'es': 'Ej: 12345678A',
+      'en': 'Ex: 12345678A',
+      'fr': 'Ex: 12345678A'
+    },
+    'clientes.tasaIva': {
+      'es': 'Tasa IVA (%)',
+      'en': 'VAT Rate (%)',
+      'fr': 'Taux TVA (%)'
+    },
+    'clientes.tasaIvaHelp': {
+      'es': 'Tasa de IVA aplicable al cliente (0-99.99%). Ej: 21 para 21%.',
+      'en': 'VAT rate applicable to the customer (0-99.99%). Ex: 21 for 21%.',
+      'fr': 'Taux de TVA applicable au client (0-99,99%). Ex: 21 pour 21%.'
+    },
+    'clientes.tasaIvaPlaceholder': {
+      'es': 'Ej: 21.00',
+      'en': 'Ex: 21.00',
+      'fr': 'Ex: 21.00'
+    },
+    'clientes.telefonoHelp': {
+      'es': 'Teléfono de contacto del cliente (incluya prefijo internacional si aplica).',
+      'en': 'Customer contact phone (include international prefix if applicable).',
+      'fr': 'Téléphone de contact du client (inclure l\'indicatif international si applicable).'
+    },
+    'clientes.emailHelp': {
+      'es': 'Email de contacto del cliente.',
+      'en': 'Customer contact email.',
+      'fr': 'Email de contact du client.'
     },
 
     // ═══════════════════════════════════════════════════════════
@@ -2707,26 +2837,6 @@ export class TranslationService {
       'en': 'Ex: 21.00',
       'fr': 'Ex: 21.00'
     },
-    'proveedores.infoContacto': {
-      'es': 'Información de Contacto',
-      'en': 'Contact Information',
-      'fr': 'Informations de Contact'
-    },
-    'proveedores.infoUbicacion': {
-      'es': 'Información de Ubicación',
-      'en': 'Location Information',
-      'fr': 'Informations de Localisation'
-    },
-    'proveedores.infoBancaria': {
-      'es': 'Información Bancaria',
-      'en': 'Banking Information',
-      'fr': 'Informations Bancaires'
-    },
-    'proveedores.mainInfo': {
-      'es': 'Información Principal',
-      'en': 'Main Information',
-      'fr': 'Informations Principales'
-    },
 
     'establecimiento.selectPaisToSeeProvincias': {
       'es': 'Seleccione un país para ver provincias.',
@@ -3467,25 +3577,50 @@ export class TranslationService {
       'en': 'VAT Exempt',
       'fr': 'Exempté de TVA'
     },
+    'fiscal.exentoIvaHelp': {
+      'es': 'Marque si está exento de IVA/TVA.',
+      'en': 'Check if exempt from VAT.',
+      'fr': 'Cochez si exempté de TVA.'
+    },
     'fiscal.extranjero': {
       'es': 'Extranjero',
       'en': 'Foreign',
       'fr': 'Étranger'
+    },
+    'fiscal.extranjeroHelp': {
+      'es': 'Marque si es una entidad extranjera.',
+      'en': 'Check if it is a foreign entity.',
+      'fr': 'Cochez s\'il s\'agit d\'une entité étrangère.'
     },
     'fiscal.codigoPaisIso': {
       'es': 'Código País ISO',
       'en': 'ISO Country Code',
       'fr': 'Code Pays ISO'
     },
+    'fiscal.codigoPaisIsoHelp': {
+      'es': 'Código ISO del país (ej: ES para España, FR para Francia, MX para México).',
+      'en': 'ISO country code (e.g., ES for Spain, FR for France, MX for Mexico).',
+      'fr': 'Code ISO du pays (par ex. ES pour Espagne, FR pour France, MX pour Mexique).'
+    },
     'fiscal.validarIdentificadorFiscal': {
       'es': 'Validar Identificador Fiscal',
       'en': 'Validate Tax ID',
       'fr': 'Valider Identifiant Fiscal'
     },
+    'fiscal.validarIdentificadorFiscalHelp': {
+      'es': 'Marque para validar el identificador fiscal automáticamente.',
+      'en': 'Check to automatically validate the tax ID.',
+      'fr': 'Cochez pour valider automatiquement l\'identifiant fiscal.'
+    },
     'fiscal.inversionSujetoPasivo': {
       'es': 'Inversión del Sujeto Pasivo',
       'en': 'Reverse Charge',
       'fr': 'Autoliquidation'
+    },
+    'fiscal.inversionSujetoPasivoHelp': {
+      'es': 'Marque si aplica inversión del sujeto pasivo en operaciones.',
+      'en': 'Check if reverse charge applies to operations.',
+      'fr': 'Cochez si l\'autoliquidation s\'applique aux opérations.'
     },
     'fiscal.identificadorFiscalHelp': {
       'es': 'Número de identificación fiscal del negocio (NIF, CIF, VAT, etc.). Opcional si no aplica.',
@@ -3516,6 +3651,31 @@ export class TranslationService {
       'es': 'Marque si el negocio realiza operaciones intracomunitarias o internacionales con IVA.',
       'en': 'Check if the business performs intra-community or international VAT operations.',
       'fr': 'Cochez si l\'entreprise effectue des opérations intracommunautaires ou internationales avec TVA.'
+    },
+    'fiscal.placeholderTipoIdentificadorFiscal': {
+      'es': 'Seleccione tipo',
+      'en': 'Select type',
+      'fr': 'Sélectionner type'
+    },
+    'fiscal.placeholderRegimenFiscal': {
+      'es': 'Seleccione régimen',
+      'en': 'Select regime',
+      'fr': 'Sélectionner régime'
+    },
+    'fiscal.placeholderCodigoPaisIso': {
+      'es': 'ES, FR, MX...',
+      'en': 'ES, FR, MX...',
+      'fr': 'ES, FR, MX...'
+    },
+    'fiscal.placeholderIdentificadorFiscal': {
+      'es': 'Ej: 12345678A, A12345678',
+      'en': 'Ex: 12345678A, A12345678',
+      'fr': 'Ex: 12345678A, A12345678'
+    },
+    'fiscal.placeholderTasaIva': {
+      'es': 'Ej: 21.00',
+      'en': 'Ex: 21.00',
+      'fr': 'Ex: 21.00'
     }
 
   };

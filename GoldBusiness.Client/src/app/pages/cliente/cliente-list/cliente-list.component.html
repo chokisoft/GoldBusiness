@@ -48,10 +48,10 @@
 				<table class="data-table">
 					<thead>
 						<tr>
-							<th>{{ 'proveedores.codigo' | translate }}</th>
-							<th>{{ 'proveedores.nombre' | translate }}</th>
-							<th>{{ 'proveedores.telefono' | translate }}</th>
-							<th>{{ 'proveedores.email' | translate }}</th>
+							<th>{{ 'clientes.codigo' | translate }}</th>
+							<th>{{ 'clientes.nombre' | translate }}</th>
+							<th>{{ 'clientes.telefono' | translate }}</th>
+							<th>{{ 'clientes.email' | translate }}</th>
 							<th class="actions-column">{{ 'common.actions' | translate }}</th>
 						</tr>
 					</thead>
@@ -59,8 +59,8 @@
 						<tr *ngFor="let item of clientes">
 							<td>{{ item.codigo }}</td>
 							<td>{{ item.descripcion }}</td>
-							<td>{{ item.telefono1 || '-' }}</td>
-							<td>{{ item.email1 || '-' }}</td>
+							<td>{{ item.telefono || '-' }}</td>
+							<td>{{ item.email || '-' }}</td>
 							<td class="actions-column">
 								<div class="action-buttons">
 									<button class="btn btn-sm btn-danger" (click)="delete(item.id, item.descripcion)" [title]="'common.delete' | translate"><span>🗑️</span></button>

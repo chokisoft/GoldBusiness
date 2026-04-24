@@ -370,7 +370,7 @@
             <select 
               id="tipoIdentificadorFiscal" 
               formControlName="tipoIdentificadorFiscal"
-              class="form-control">
+              class="form-control shared-select">
               <option [ngValue]="null">{{ 'common.select' | translate }}</option>
               <option *ngFor="let tipo of tiposIdentificacionFiscal" [ngValue]="tipo.value">
                 {{ tipo.label }}
@@ -383,7 +383,7 @@
             <label for="regimenFiscal" class="form-label">{{ 'fiscal.regimenFiscal' | translate }} *</label>
             <select id="regimenFiscal"
                     formControlName="regimenFiscal"
-                    class="form-control">
+                    class="form-control shared-select">
               <option [ngValue]="null">{{ 'common.select' | translate }}</option>
               <option *ngFor="let regimen of regimenesFiscales" [ngValue]="regimen.value">
                 {{ regimen.label }}

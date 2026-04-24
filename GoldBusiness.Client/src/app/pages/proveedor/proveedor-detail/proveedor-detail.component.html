@@ -32,7 +32,7 @@
           <strong>{{ 'proveedores.descripcion' | translate }}:</strong> {{ item.descripcion }}
         </div>
         <div class="info-row">
-          <strong>{{ 'proveedores.nif' | translate }}:</strong> {{ item.nif || '-' }}
+          <strong>{{ 'proveedores.identificadorFiscal' | translate }}:</strong> {{ item.identificadorFiscal || '-' }}
         </div>
         <div class="info-row">
           <strong>{{ 'proveedores.direccion' | translate }}:</strong> {{ item.direccion || '-' }}
@@ -48,11 +48,11 @@
         </div>
 
         <div class="info-row">
-          <strong>{{ 'proveedores.email1' | translate }}:</strong> {{ item.email1 || '-' }}
+          <strong>{{ 'proveedores.email' | translate }}:</strong> {{ item.email || '-' }}
         </div>
         <div class="info-row">
-          <strong>{{ 'proveedores.telefono1' | translate }}:</strong>
-          <span *ngIf="item.telefono1; else noPhone">{{ item.telefono1 | localizedPhone:selectedPais }}</span>
+          <strong>{{ 'proveedores.telefono' | translate }}:</strong>
+          <span *ngIf="item.telefono; else noPhone">{{ item.telefono | localizedPhone:selectedPais }}</span>
           <ng-template #noPhone>-</ng-template>
         </div>
       </div>

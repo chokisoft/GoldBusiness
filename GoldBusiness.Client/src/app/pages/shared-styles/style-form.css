@@ -101,6 +101,24 @@
   font-size: 1.25rem;
 }
 
+/* Section icon (SVG) placed before section titles for accessibility and consistent styling */
+.section-title .section-icon {
+  display: inline-block;
+  width: 1.1rem;
+  height: 1.1rem;
+  vertical-align: middle;
+  margin-right: 0.5rem;
+  /* Use theme primary for section icons to keep consistency across forms */
+  fill: var(--color-primary);
+  color: var(--color-primary);
+}
+
+/* Ensure any SVG path inside section-icon inherits the desired color
+   and override inline fills if present */
+.section-title .section-icon path {
+  fill: var(--color-primary) !important;
+}
+
 .section-subtitle {
   font-size: 1.1rem;
   padding-bottom: 0.75rem;
@@ -446,6 +464,15 @@
   color: #2c3e50;
   box-sizing: border-box;
   font-size: 1rem;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  /* Chevron SVG (mismo estilo que page-size-selector) */
+  background-image: var(--select-chevron);
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 10px;
+  padding-right: 2.25rem;
 }
 
   .shared-select:disabled,
@@ -519,15 +546,26 @@ textarea.form-control {
   height: auto;
 }
 
-/* Mejorar consistencia visual de selects en distintos navegadores */
-select.shared-select {
+/* Override compacto para formularios Cliente y Proveedor: limitar altura de textarea (2 líneas) */
+.cliente-form-page textarea.form-control,
+.proveedor-form-page textarea.form-control {
+  min-height: 70px;
+  max-height: 120px;
+  resize: vertical;
+  padding: 0.75rem;
+  box-sizing: border-box;
+  overflow: auto;
+}
+
+/* Fallback: apply same chevron to selects that use only .form-control */
+select.form-control:not(.shared-select) {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  background-image: linear-gradient(45deg, transparent 50%, #2c3e50 50%), linear-gradient(135deg, #2c3e50 50%, transparent 50%), linear-gradient(to right, #fff, #fff);
-  background-position: calc(100% - 18px) calc(50% - 6px), calc(100% - 12px) calc(50% - 6px), 100% 0;
-  background-size: 6px 6px, 6px 6px, 1px 100%;
+  background-image: var(--select-chevron);
   background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 10px;
   padding-right: 2.25rem;
 }
 
@@ -935,4 +973,11 @@ select.shared-select {
   .form-row-three.form-row-fiscal {
     grid-template-columns: 1fr;
   }
+}
+
+.form-row-clientProve {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)); /* 3 columnas iguales */
+  gap: 1.25rem;
+  align-items: start;
 }

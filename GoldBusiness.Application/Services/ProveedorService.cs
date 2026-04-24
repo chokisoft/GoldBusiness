@@ -59,32 +59,28 @@ namespace GoldBusiness.Application.Services
                 {
                     existingEntity.Reactivar(dto.Descripcion, creador);
                     existingEntity.Actualizar(
-                        dto.Descripcion,                        // 1
-                        dto.Nif,                                // 2
-                        dto.Iban,                               // 3
-                        dto.BicoSwift,                          // 4
-                        dto.Iva,                                // 5
-                        dto.Direccion,                          // 6
-                        dto.PaisId,                             // 7
-                        dto.ProvinciaId,                        // 8
-                        dto.MunicipioId,                        // 9
-                        dto.CodigoPostalId,                     // 10
-                        dto.Web,                                // 11
-                        dto.Email1,                             // 12
-                        dto.Email2,                             // 13
-                        dto.Telefono1,                          // 14
-                        dto.Telefono2,                          // 15
-                        dto.Fax1,                               // 16
-                        dto.Fax2,                               // 17
-                        null,                                   // 18 - Pais
-                        dto.TipoIdentificadorFiscal,            // 19
-                        dto.RegimenFiscal,                      // 20
-                        dto.ExentoIva,                          // 21
-                        dto.Extranjero,                         // 22
-                        dto.CodigoPaisIso,                      // 23
-                        dto.ValidarIdentificadorFiscal,         // 24
-                        dto.InversionSujetoPasivo,              // 25
-                        creador                                 // 26
+                        dto.Descripcion,
+                        dto.IdentificadorFiscal,
+                        dto.Iban,
+                        dto.BicoSwift,
+                        dto.TasaIva,
+                        dto.Direccion,
+                        dto.PaisId,
+                        dto.ProvinciaId,
+                        dto.MunicipioId,
+                        dto.CodigoPostalId,
+                        dto.Web,
+                        dto.Email,
+                        dto.Telefono,
+                        dto.TipoIdentificadorFiscal,
+                        dto.RegimenFiscal,
+                        dto.ExentoIva,
+                        dto.Extranjero,
+                        dto.CodigoPaisIso,
+                        dto.ValidarIdentificadorFiscal,
+                        dto.InversionSujetoPasivo,
+                        null,
+                        creador
                     );
 
                     // ✅ Generar traducciones automáticas
@@ -103,32 +99,28 @@ namespace GoldBusiness.Application.Services
 
             // ✅ Constructor correcto con 19 argumentos
             var entity = new Proveedor(
-                dto.Codigo,                             // 1
-                dto.Descripcion,                        // 2
-                dto.Nif,                                // 3
-                dto.Iban,                               // 4
-                dto.BicoSwift,                          // 5
-                dto.Iva,                                // 6
-                dto.Direccion,                          // 7
-                dto.PaisId,                             // 8
-                dto.ProvinciaId,                        // 9
-                dto.MunicipioId,                        // 10
-                dto.CodigoPostalId,                     // 11
-                dto.Web,                                // 12
-                dto.Email1,                             // 13
-                dto.Email2,                             // 14
-                dto.Telefono1,                          // 15
-                dto.Telefono2,                          // 16
-                dto.Fax1,                               // 17
-                dto.Fax2,                               // 18
-                dto.TipoIdentificadorFiscal,            // 19
-                dto.RegimenFiscal,                      // 20
-                dto.ExentoIva,                          // 21
-                dto.Extranjero,                         // 22
-                dto.CodigoPaisIso,                      // 23
-                dto.ValidarIdentificadorFiscal,         // 24
-                dto.InversionSujetoPasivo,              // 25
-                creador                                 // 26
+                dto.Codigo,
+                dto.Descripcion,
+                dto.IdentificadorFiscal,
+                dto.Iban,
+                dto.BicoSwift,
+                dto.TasaIva,
+                dto.Direccion,
+                dto.PaisId,
+                dto.ProvinciaId,
+                dto.MunicipioId,
+                dto.CodigoPostalId,
+                dto.Web,
+                dto.Email,
+                dto.Telefono,
+                dto.TipoIdentificadorFiscal,
+                dto.RegimenFiscal,
+                dto.ExentoIva,
+                dto.Extranjero,
+                dto.CodigoPaisIso,
+                dto.ValidarIdentificadorFiscal,
+                dto.InversionSujetoPasivo,
+                creador
             );
 
             await _repo.AddAsync(entity);
@@ -149,32 +141,28 @@ namespace GoldBusiness.Application.Services
                 throw new KeyNotFoundException($"Proveedor con ID {id} no encontrado");
 
             entity.Actualizar(
-                dto.Descripcion,                        // 1
-                dto.Nif,                                // 2
-                dto.Iban,                               // 3
-                dto.BicoSwift,                          // 4
-                dto.Iva,                                // 5
-                dto.Direccion,                          // 6
-                dto.PaisId,                             // 7
-                dto.ProvinciaId,                        // 8
-                dto.MunicipioId,                        // 9
-                dto.CodigoPostalId,                     // 10
-                dto.Web,                                // 11
-                dto.Email1,                             // 12
-                dto.Email2,                             // 13
-                dto.Telefono1,                          // 14
-                dto.Telefono2,                          // 15
-                dto.Fax1,                               // 16
-                dto.Fax2,                               // 17
-                null,                                   // 18 - Pais
-                dto.TipoIdentificadorFiscal,            // 19
-                dto.RegimenFiscal,                      // 20
-                dto.ExentoIva,                          // 21
-                dto.Extranjero,                         // 22
-                dto.CodigoPaisIso,                      // 23
-                dto.ValidarIdentificadorFiscal,         // 24
-                dto.InversionSujetoPasivo,              // 25
-                modificador                             // 26
+                dto.Descripcion,
+                dto.IdentificadorFiscal,
+                dto.Iban,
+                dto.BicoSwift,
+                dto.TasaIva,
+                dto.Direccion,
+                dto.PaisId,
+                dto.ProvinciaId,
+                dto.MunicipioId,
+                dto.CodigoPostalId,
+                dto.Web,
+                dto.Email,
+                dto.Telefono,
+                dto.TipoIdentificadorFiscal,
+                dto.RegimenFiscal,
+                dto.ExentoIva,
+                dto.Extranjero,
+                dto.CodigoPaisIso,
+                dto.ValidarIdentificadorFiscal,
+                dto.InversionSujetoPasivo,
+                null,
+                modificador
             );
 
             // ✅ Generar traducciones automáticas a es/en/fr
@@ -240,10 +228,10 @@ namespace GoldBusiness.Application.Services
                 Id = g.Id,
                 Codigo = g.Codigo,
                 Descripcion = g.GetDescripcion(lang),
-                Nif = g.Nif,
+                IdentificadorFiscal = g.IdentificadorFiscal,
                 Iban = g.Iban,
                 BicoSwift = g.BicoSwift,
-                Iva = g.Iva,
+                TasaIva = g.TasaIva,
                 Direccion = g.Direccion,
                 PaisId = g.PaisId,
                 PaisDescripcion = g.Pais?.GetDescripcion(lang),
@@ -254,14 +242,8 @@ namespace GoldBusiness.Application.Services
                 CodigoPostalId = g.CodigoPostalId,
                 CodigoPostalCodigo = g.CodigoPostal?.Codigo,
                 Web = g.Web,
-                Email1 = g.Email1,
-                Email2 = g.Email2,
-                Telefono1 = g.Telefono1,
-                Telefono2 = g.Telefono2,
-                Fax1 = g.Fax1,
-                Fax2 = g.Fax2,
-                
-                // Campos fiscales
+                Email = g.Email,
+                Telefono = g.Telefono,
                 TipoIdentificadorFiscal = g.TipoIdentificadorFiscal,
                 RegimenFiscal = g.RegimenFiscal,
                 ExentoIva = g.ExentoIva,
@@ -269,7 +251,6 @@ namespace GoldBusiness.Application.Services
                 CodigoPaisIso = g.CodigoPaisIso,
                 ValidarIdentificadorFiscal = g.ValidarIdentificadorFiscal,
                 InversionSujetoPasivo = g.InversionSujetoPasivo,
-                
                 Cancelado = g.Cancelado,
                 CreadoPor = g.CreadoPor,
                 FechaHoraCreado = g.FechaHoraCreado,
