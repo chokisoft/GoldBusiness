@@ -19,6 +19,7 @@ dotnet ef migrations remove --project .\GoldBusiness.Infrastructure\GoldBusiness
 
 * Generador de codigo 
 
+
 // Ejemplos
 # Ruta completa (larga)
 dotnet run -- "F:\Documents\Visual Studio 18\Projects\GoldBusiness\GoldBusiness.Domain\Entities\Producto.cs" Producto
