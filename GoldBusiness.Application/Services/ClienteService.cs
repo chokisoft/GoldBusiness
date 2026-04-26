@@ -188,21 +188,23 @@ namespace GoldBusiness.Application.Services
 
         private async Task GenerateAndSaveTranslationsAsync(Cliente entity, string descripcionBase, string user)
         {
-            try
-            {
-                var enTranslation = await _translatorService.TranslateAsync(descripcionBase, "es", "en");
-                var frTranslation = await _translatorService.TranslateAsync(descripcionBase, "es", "fr");
+            var supportedLanguages = new[] { "es", "en", "fr", "de", "pt" };
+            entity.AddOrUpdateTranslation("es", descripcionBase, user);
 
-                entity.AddOrUpdateTranslation("es", descripcionBase, user);
-                entity.AddOrUpdateTranslation("en", enTranslation, user);
-                entity.AddOrUpdateTranslation("fr", frTranslation, user);
-            }
-            catch (Exception ex)
+            foreach (var targetLang in supportedLanguages)
             {
-                Console.WriteLine($"⚠️ Error generando traducciones para Cliente {entity.Id}: {ex.Message}");
-                entity.AddOrUpdateTranslation("es", descripcionBase, user);
-                entity.AddOrUpdateTranslation("en", descripcionBase, user);
-                entity.AddOrUpdateTranslation("fr", descripcionBase, user);
+                if (targetLang == "es") continue;
+
+                try
+                {
+                    var translation = await _translatorService.TranslateAsync(descripcionBase, "es", targetLang);
+                    entity.AddOrUpdateTranslation(targetLang, string.IsNullOrWhiteSpace(translation) ? descripcionBase : translation, user);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"⚠️ Error generando traducción {targetLang} para Cliente {entity.Id}: {ex.Message}");
+                    entity.AddOrUpdateTranslation(targetLang, descripcionBase, user);
+                }
             }
         }
 

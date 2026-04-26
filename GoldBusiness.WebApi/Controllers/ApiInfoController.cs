@@ -63,7 +63,7 @@ namespace GoldBusiness.WebApi.Controllers
                 name = "GoldBusiness API",
                 version = _configuration["ApiVersion:Name"] ?? "v2.0",
                 description = descriptions[language],
-                supportedLanguages = new[] { "es", "en", "fr" },
+                supportedLanguages = new[] { "es", "en", "fr", "de", "pt" },
                 currentLanguage = language,
                 authentication = new
                 {

@@ -7,8 +7,10 @@ using GoldBusiness.Application.Interfaces;
 using GoldBusiness.Domain.DTOs;
 using GoldBusiness.Domain.Entities;
 using GoldBusiness.Domain.Enums;
+using GoldBusiness.Domain.Helpers;
 using GoldBusiness.Infrastructure.Repositories;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
 
 namespace GoldBusiness.Application.Services
 {
@@ -17,15 +19,21 @@ namespace GoldBusiness.Application.Services
         private readonly ISystemConfigurationRepository _repo;
         private readonly IPaisRepository _paisRepo;
         private readonly IStringLocalizer<GoldBusiness.Domain.Resources.ValidationMessages> _localizer;
+        private readonly ITranslatorService _translatorService;
+        private readonly ILogger<SystemConfigurationService> _logger;
 
         public SystemConfigurationService(
             ISystemConfigurationRepository repo,
             IPaisRepository paisRepo,
-            IStringLocalizer<GoldBusiness.Domain.Resources.ValidationMessages> localizer)
+            IStringLocalizer<GoldBusiness.Domain.Resources.ValidationMessages> localizer,
+            ITranslatorService translatorService,
+            ILogger<SystemConfigurationService> logger)
         {
             _repo = repo;
             _paisRepo = paisRepo;
             _localizer = localizer;
+            _translatorService = translatorService;
+            _logger = logger;
         }
 
         public async Task<IEnumerable<SystemConfigurationDTO>> GetAllAsync(string lang = "es")
@@ -60,7 +68,24 @@ namespace GoldBusiness.Application.Services
                 if (estaCancelado && existingEntity != null)
                 {
                     existingEntity.Reactivar(creador);
-                    existingEntity.AddOrUpdateTranslation(lang, dto.NombreNegocio, dto.Direccion ?? string.Empty, dto.Municipio ?? string.Empty, dto.Provincia ?? string.Empty, creador);
+                    
+                    // Guardar traducciones para todos los idiomas soportados
+                    var reactivateTranslations = await PrepareTranslationsAsync(
+                        dto.NombreNegocio, 
+                        dto.Direccion ?? string.Empty, 
+                        lang);
+                    
+                    foreach (var kv in reactivateTranslations)
+                    {
+                        existingEntity.AddOrUpdateTranslation(
+                            kv.Key, 
+                            kv.Value.NombreNegocio, 
+                            kv.Value.Direccion, 
+                            string.Empty, 
+                            string.Empty, 
+                            creador);
+                    }
+                    
                     await _repo.UpdateAsync(existingEntity);
                     return MapToDTO(existingEntity, lang)!;
                 }
@@ -87,7 +112,7 @@ namespace GoldBusiness.Application.Services
                 dto.Web,
                 dto.Email,
                 dto.Telefono ?? string.Empty,
-                dto.Caducidad == default ? DateTime.UtcNow.AddYears(1) : dto.Caducidad, // ⭐ CORREGIDO
+                dto.Caducidad == default ? DateTime.UtcNow.AddYears(1) : dto.Caducidad,
                 dto.IdentificadorFiscal,
                 dto.TipoIdentificadorFiscal ?? TipoIdentificacionFiscal.NIF,
                 dto.RegimenFiscal ?? RegimenFiscal.General,
@@ -99,13 +124,28 @@ namespace GoldBusiness.Application.Services
 
             await _repo.AddAsync(entity);
 
-            entity.AddOrUpdateTranslation(
-                lang,
-                dto.NombreNegocio,
-                dto.Direccion ?? string.Empty,
-                string.Empty,
-                string.Empty,
-                creador);
+            // Guardar traducciones para todos los idiomas soportados (es, en, fr, de, pt)
+            var translationsMap = await PrepareTranslationsAsync(
+                dto.NombreNegocio, 
+                dto.Direccion ?? string.Empty, 
+                lang);
+
+            foreach (var kv in translationsMap)
+            {
+                _logger.LogInformation(
+                    "Persisting translation (Create) -> SystemConfigurationId={Id}, Lang={Lang}, NombreNegocio={Nombre}", 
+                    entity.Id, 
+                    kv.Key, 
+                    kv.Value.NombreNegocio);
+                
+                entity.AddOrUpdateTranslation(
+                    kv.Key,
+                    kv.Value.NombreNegocio,
+                    kv.Value.Direccion,
+                    string.Empty,
+                    string.Empty,
+                    creador);
+            }
 
             await _repo.UpdateAsync(entity);
             return MapToDTO(entity, lang)!;
@@ -169,13 +209,28 @@ namespace GoldBusiness.Application.Services
 
             entity.ActualizarAuditoria(user ?? "system");
 
-            entity.AddOrUpdateTranslation(
-                lang,
-                dto.NombreNegocio,
-                dto.Direccion ?? string.Empty,
-                string.Empty,
-                string.Empty,
-                user ?? "system");
+            // Guardar traducciones para todos los idiomas soportados (es, en, fr, de, pt)
+            var translationsMap = await PrepareTranslationsAsync(
+                dto.NombreNegocio, 
+                dto.Direccion ?? string.Empty, 
+                lang);
+
+            foreach (var kv in translationsMap)
+            {
+                _logger.LogInformation(
+                    "Persisting translation (Update) -> SystemConfigurationId={Id}, Lang={Lang}, NombreNegocio={Nombre}", 
+                    entity.Id, 
+                    kv.Key, 
+                    kv.Value.NombreNegocio);
+                
+                entity.AddOrUpdateTranslation(
+                    kv.Key,
+                    kv.Value.NombreNegocio,
+                    kv.Value.Direccion,
+                    string.Empty,
+                    string.Empty,
+                    user ?? "system");
+            }
 
             await _repo.UpdateAsync(entity);
             return MapToDTO(entity, lang)!;
@@ -202,6 +257,57 @@ namespace GoldBusiness.Application.Services
             entity.AddOrUpdateTranslation(lang, nombreNegocio, direccion ?? string.Empty, municipio ?? string.Empty, provincia ?? string.Empty, user ?? "system");
             await _repo.UpdateAsync(entity);
         }
+
+        /// <summary>
+        /// Prepara las traducciones para todos los idiomas soportados (es, en, fr, de, pt)
+        /// </summary>
+        private async Task<Dictionary<string, (string NombreNegocio, string Direccion)>> PrepareTranslationsAsync(
+            string nombreNegocio, 
+            string direccion, 
+            string currentLang)
+        {
+            var supportedLanguages = new[] { "es", "en", "fr", "de", "pt" };
+            var normalizedLang = LanguageHelper.NormalizeLang(currentLang);
+            
+            var result = new Dictionary<string, (string NombreNegocio, string Direccion)>(StringComparer.OrdinalIgnoreCase)
+            {
+                [normalizedLang] = (nombreNegocio, direccion)
+            };
+
+            // Traducir a los demás idiomas
+            foreach (var targetLang in supportedLanguages)
+            {
+                if (string.Equals(targetLang, normalizedLang, StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                try
+                {
+                    var translatedNombre = await _translatorService.TranslateAsync(nombreNegocio, normalizedLang, targetLang);
+                    var translatedDireccion = string.IsNullOrWhiteSpace(direccion) 
+                        ? string.Empty 
+                        : await _translatorService.TranslateAsync(direccion, normalizedLang, targetLang);
+
+                    result[targetLang] = (
+                        string.IsNullOrWhiteSpace(translatedNombre) ? nombreNegocio : translatedNombre,
+                        string.IsNullOrWhiteSpace(translatedDireccion) ? direccion : translatedDireccion
+                    );
+
+                    _logger.LogInformation(
+                        "Translation successful: {SourceLang} -> {TargetLang}, NombreNegocio: '{Original}' -> '{Translated}'",
+                        normalizedLang, targetLang, nombreNegocio, translatedNombre);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, 
+                        "Translation failed for {TargetLang}, using original text", 
+                        targetLang);
+                    result[targetLang] = (nombreNegocio, direccion);
+                }
+            }
+
+            return result;
+        }
+
 
         private static SystemConfigurationDTO? MapToDTO(SystemConfiguration? s, string lang)
         {

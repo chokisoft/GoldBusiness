@@ -23,7 +23,7 @@ namespace GoldBusiness.WebApi.Controllers
         /// </summary>
         protected string GetCurrentLanguage()
         {
-            var supportedLanguages = new[] { "es", "en", "fr" };
+            var supportedLanguages = new[] { "es", "en", "fr", "de", "pt" };
 
             try
             {

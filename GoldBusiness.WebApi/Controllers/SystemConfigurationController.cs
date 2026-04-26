@@ -144,7 +144,7 @@ namespace GoldBusiness.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> AddOrUpdateTranslation(int id, [FromBody] TranslationRequest request)
         {
-            var supportedLanguages = new[] { "es", "en", "fr" };
+            var supportedLanguages = new[] { "es", "en", "fr", "de", "pt" };
 
             var lang = string.IsNullOrWhiteSpace(request.Language)
                 ? "es"

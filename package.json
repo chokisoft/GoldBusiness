@@ -5,5 +5,8 @@
     "glob": "^13.0.6",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.2"
+  },
+  "dependencies": {
+    "jest-editor-support": "^30.0.0"
   }
 }

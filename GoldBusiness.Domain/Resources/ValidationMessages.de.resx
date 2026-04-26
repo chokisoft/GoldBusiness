@@ -1,0 +1,630 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Required" xml:space="preserve">
+    <value>{0} ist erforderlich</value>
+  </data>
+  <data name="RequiredFemale" xml:space="preserve">
+    <value>{0} ist erforderlich</value>
+  </data>
+  <data name="StringLength" xml:space="preserve">
+    <value>{0} muss zwischen {2} und {1} Zeichen</value>
+  </data>
+  <data name="StringLengthMax" xml:space="preserve">
+    <value>{0} darf nicht überschreiten {1} Zeichen</value>
+  </data>
+  <data name="CodigoObligatorio" xml:space="preserve">
+    <value>Code ist erforderlich</value>
+  </data>
+  <data name="DescripcionObligatoria" xml:space="preserve">
+    <value>Beschreibung ist erforderlich</value>
+  </data>
+  <data name="DescripcionLongitud" xml:space="preserve">
+    <value>Beschreibung darf nicht überschreiten {1} Zeichen</value>
+  </data>
+  <data name="Field_Codigo" xml:space="preserve">
+    <value>Code</value>
+  </data>
+  <data name="Field_Descripcion" xml:space="preserve">
+    <value>Beschreibung</value>
+  </data>
+  <data name="Field_Cancelado" xml:space="preserve">
+    <value>Storniert</value>
+  </data>
+  <data name="Field_CreadoPor" xml:space="preserve">
+    <value>Erstellt von</value>
+  </data>
+  <data name="Field_FechaCreacion" xml:space="preserve">
+    <value>Erstellungsdatum</value>
+  </data>
+  <data name="Field_ModificadoPor" xml:space="preserve">
+    <value>Geändert von</value>
+  </data>
+  <data name="Field_FechaModificacion" xml:space="preserve">
+    <value>Änderungsdatum</value>
+  </data>
+  <data name="Field_Username" xml:space="preserve">
+    <value>Benutzername</value>
+  </data>
+  <data name="Field_Password" xml:space="preserve">
+    <value>Passwort</value>
+  </data>
+  <data name="Field_GrupoCuenta" xml:space="preserve">
+    <value>Kontengruppe</value>
+  </data>
+  <data name="Field_Deudora" xml:space="preserve">
+    <value>Soll</value>
+  </data>
+  <data name="Field_Cuentas" xml:space="preserve">
+    <value>Konten</value>
+  </data>
+  <data name="Field_Subgrupos" xml:space="preserve">
+    <value>Untergruppen</value>
+  </data>
+  <data name="Field_Sublineas" xml:space="preserve">
+    <value>SubZeiles</value>
+  </data>
+  <data name="CodigoLongitud" xml:space="preserve">
+    <value>Code muss genau {1} Zeichen</value>
+  </data>
+  <data name="CodigoFormato" xml:space="preserve">
+    <value>Code darf nur Zahlen enthalten (00-99)</value>
+  </data>
+  <data name="SubGrupoCuentaCodigoLongitud" xml:space="preserve">
+    <value>UntergruppenCode muss genau 5 Zeichen</value>
+  </data>
+  <data name="SubGrupoCuentaCodigoFormato" xml:space="preserve">
+    <value>Code muss numerisch sein mit 5 Ziffern (Beispiel: 01001)</value>
+  </data>
+  <data name="GrupoCuentaObligatorio" xml:space="preserve">
+    <value>Kontengruppe ist erforderlich</value>
+  </data>
+  <data name="GrupoCuentaSeleccion" xml:space="preserve">
+    <value>Sie müssen ein gültiges auswählen Kontengruppe</value>
+  </data>
+  <data name="LineaCodigoLongitud" xml:space="preserve">
+    <value>ZeilenCode muss genau 2 Zeichen</value>
+  </data>
+  <data name="InvalidCredentials" xml:space="preserve">
+    <value>Ungültige Anmeldedaten</value>
+  </data>
+  <data name="LoginFailed" xml:space="preserve">
+    <value>Anmeldefehler</value>
+  </data>
+  <data name="AccountLocked" xml:space="preserve">
+    <value>Konto gesperrt</value>
+  </data>
+  <data name="AccountDisabled" xml:space="preserve">
+    <value>Konto deaktiviert</value>
+  </data>
+  <data name="UnsupportedLanguage" xml:space="preserve">
+    <value>Nicht unterstützte Sprache. Verwenden Sie eine der zulässigen Sprachen</value>
+  </data>
+  <data name="TranslationUpdated" xml:space="preserve">
+    <value>Übersetzung erfolgreich aktualisiert</value>
+  </data>
+  <data name="GroupId" xml:space="preserve">
+    <value>Gruppen-ID</value>
+  </data>
+  <data name="SubGroupId" xml:space="preserve">
+    <value>Untergruppen-ID</value>
+  </data>
+  <data name="AccountId" xml:space="preserve">
+    <value>Konto-ID</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Sprache</value>
+  </data>
+  <data name="ProvidedLanguage" xml:space="preserve">
+    <value>Bereitgestellte Sprache</value>
+  </data>
+  <data name="SupportedLanguages" xml:space="preserve">
+    <value>Unterstützte Sprachen</value>
+  </data>
+	<data name="CuentaCodigoLongitud" xml:space="preserve">
+  <value>Account Code muss genau 8 Zeichen</value>
+</data>
+	<data name="CuentaCodigoFormato" xml:space="preserve">
+  <value>Code muss numerisch sein mit 8 Ziffern (Beispiel: 10000010)</value>
+</data>
+	<data name="SubGrupoCuentaObligatorio" xml:space="preserve">
+  <value>Konto-Untergruppe ist erforderlich</value>
+</data>
+	<data name="SubGrupoCuentaSeleccion" xml:space="preserve">
+  <value>Sie müssen ein gültiges auswählen Konto-Untergruppe</value>
+</data>
+	<data name="Field_SubGrupoCuenta" xml:space="preserve">
+  <value>Konto-Untergruppe</value>
+</data>
+	<data name="SubLineaCodigoLongitud" xml:space="preserve">
+  <value>SubZeilenCode muss genau 5 Zeichen</value>
+</data>
+	<data name="SubLineaCodigoFormato" xml:space="preserve">
+  <value>Code muss numerisch sein mit 5 Ziffern (Beispiel: 01100)</value>
+</data>
+	<data name="LineaObligatoria" xml:space="preserve">
+  <value>Zeile ist erforderlich</value>
+</data>
+	<data name="LineaSeleccion" xml:space="preserve">
+  <value>Sie müssen ein gültiges auswählen Zeile</value>
+</data>
+	<data name="Field_Linea" xml:space="preserve">
+  <value>Zeile</value>
+</data>
+	<data name="Field_Productos" xml:space="preserve">
+  <value>Produkte</value>
+</data>
+<data name="CodigoDuplicado" xml:space="preserve">
+	<value>Ein aktiver Datensatz mit Code '{0}' existiert bereits</value>
+</data>
+<data name="RegistroReactivado" xml:space="preserve">
+	<value>Der vorhandene Datensatz mit Code '{0}' has been reactiMwSted</value>
+</data>
+<data name="RegistroCanceladoExistente" xml:space="preserve">
+	<value>A Storniert record with Code '{0}' existiert bereits. Consider reactiMwSting the existing record (ID: {1})</value>
+</data>
+	<data name="ClienteCodigoLongitud" xml:space="preserve">
+  <value>Kunde Code muss genau 8 Zeichen</value>
+</data>
+	<data name="ClienteCodigoFormato" xml:space="preserve">
+  <value>Kunde Code muss alphanumerisch sein mit 8 Zeichen</value>
+</data>
+	<data name="Field_Cliente" xml:space="preserve">
+  <value>Kunde</value>
+</data>
+	<data name="Field_Nif" xml:space="preserve">
+  <value>Steuer-ID</value>
+</data>
+	<data name="Field_Iban" xml:space="preserve">
+  <value>IBAN</value>
+</data>
+	<data name="Field_BicoSwift" xml:space="preserve">
+  <value>BIC/SWIFT</value>
+</data>
+	<data name="Field_Iva" xml:space="preserve">
+  <value>MwSt (%)</value>
+</data>
+	<data name="Field_Direccion" xml:space="preserve">
+  <value>Adresse</value>
+</data>
+	<data name="Field_Municipio" xml:space="preserve">
+  <value>Stadt</value>
+</data>
+	<data name="Field_Provincia" xml:space="preserve">
+  <value>Provinz/Bundesland</value>
+</data>
+	<data name="Field_CodPostal" xml:space="preserve">
+  <value>Postleitzahl</value>
+</data>
+	<data name="Field_Web" xml:space="preserve">
+  <value>Webseite</value>
+</data>
+	<data name="Field_Email1" xml:space="preserve">
+  <value>Primäre E-Mail</value>
+</data>
+	<data name="Field_Email2" xml:space="preserve">
+  <value>Sekundäre E-Mail</value>
+</data>
+	<data name="Field_Telefono1" xml:space="preserve">
+  <value>Primäres Telefon</value>
+</data>
+	<data name="Field_Telefono2" xml:space="preserve">
+  <value>Sekundäres Telefon</value>
+</data>
+	<data name="Field_Fax1" xml:space="preserve">
+  <value>Primäres Fax</value>
+</data>
+	<data name="Field_Fax2" xml:space="preserve">
+  <value>Sekundäres Fax</value>
+</data>
+	<data name="NifLongitud" xml:space="preserve">
+  <value>Steuer-ID darf nicht überschreiten 11 Zeichen</value>
+</data>
+	<data name="IbanLongitud" xml:space="preserve">
+  <value>IBAN darf nicht überschreiten 27 Zeichen</value>
+</data>
+	<data name="BicoSwiftLongitud" xml:space="preserve">
+  <value>BIC/SWIFT darf nicht überschreiten 11 Zeichen</value>
+</data>
+	<data name="IvaRango" xml:space="preserve">
+  <value>MwSt muss zwischen -0.01 und 99.99</value>
+</data>
+	<data name="DireccionLongitud" xml:space="preserve">
+  <value>Adresse darf nicht überschreiten 256 Zeichen</value>
+</data>
+	<data name="MunicipioLongitud" xml:space="preserve">
+  <value>Stadt darf nicht überschreiten 50 Zeichen</value>
+</data>
+	<data name="ProvinciaLongitud" xml:space="preserve">
+  <value>Provinz/Bundesland darf nicht überschreiten 50 Zeichen</value>
+</data>
+	<data name="CodPostalLongitud" xml:space="preserve">
+  <value>Postleitzahl darf nicht überschreiten 5 Zeichen</value>
+</data>
+	<data name="WebFormato" xml:space="preserve">
+  <value>URL ist nicht gültig</value>
+</data>
+	<data name="WebLongitud" xml:space="preserve">
+  <value>URL darf nicht überschreiten 256 Zeichen</value>
+</data>
+	<data name="EmailFormato" xml:space="preserve">
+  <value>E-Mail ist nicht gültig</value>
+</data>
+	<data name="EmailLongitud" xml:space="preserve">
+  <value>Email darf nicht überschreiten 256 Zeichen</value>
+</data>
+	<data name="TelefonoFormato" xml:space="preserve">
+  <value>Format muss sein ####-####</value>
+</data>
+	<data name="TelefonoFormatoInvalido" xml:space="preserve">
+  <value>Telefonnummer ist nicht gültig</value>
+</data>
+	<data name="TelefonoLongitud" xml:space="preserve">
+  <value>Telefon darf nicht überschreiten 50 Zeichen</value>
+</data>
+	<data name="FaxLongitud" xml:space="preserve">
+  <value>Fax darf nicht überschreiten 50 Zeichen</value>
+</data>
+<data name="ProveedorCodigoLongitud" xml:space="preserve">
+  <value>Lieferant Code muss genau 5 Zeichen</value>
+</data>
+	<data name="ProveedorCodigoFormato" xml:space="preserve">
+  <value>Lieferant Code muss alphanumerisch sein mit 5 Zeichen</value>
+</data>
+	<data name="Field_Proveedor" xml:space="preserve">
+  <value>Lieferant</value>
+</data>
+	<data name="Field_CantidadProductos" xml:space="preserve">
+  <value>Number of Produkte</value>
+</data>
+	<!-- Establecimiento -->
+	<data name="EstablecimientoCodigoLongitud" xml:space="preserve">
+  <value>The Niederlassung Code muss genau 6 Zeichen.</value>
+</data>
+	<data name="NegocioIdObligatorio" xml:space="preserve">
+  <value>Die Geschäfts-ID ist erforderlich.</value>
+</data>
+
+	<!-- Localidad -->
+	<data name="LocalidadCodigoLongitud" xml:space="preserve">
+  <value>Der StundortCode muss genau 9 Zeichen.</value>
+</data>
+	<data name="EstablecimientoIdObligatorio" xml:space="preserve">
+  <value>Die Niederlassungs-ID ist erforderlich.</value>
+</data>
+	<data name="CuentaInventarioIdObligatorio" xml:space="preserve">
+  <value>The inventory Konto-ID ist erforderlich.</value>
+</data>
+	<data name="CuentaCostoIdObligatorio" xml:space="preserve">
+  <value>The cost Konto-ID ist erforderlich.</value>
+</data>
+	<data name="CuentaVentaIdObligatorio" xml:space="preserve">
+  <value>The Verkaufskonto ID ist erforderlich.</value>
+</data>
+	<data name="CuentaDevolucionIdObligatorio" xml:space="preserve">
+  <value>The return Konto-ID ist erforderlich.</value>
+</data>
+
+	<!-- Fields Display Names -->
+	<data name="Field_Establecimiento" xml:space="preserve">
+  <value>Niederlassung</value>
+</data>
+	<data name="Field_Localidad" xml:space="preserve">
+  <value>Stundort</value>
+</data>
+	<data name="Field_Negocio" xml:space="preserve">
+  <value>Geschäft</value>
+</data>
+	<data name="Field_CuentaInventario" xml:space="preserve">
+  <value>Bestandskonto</value>
+</data>
+	<data name="Field_CuentaCosto" xml:space="preserve">
+  <value>Kostenkonto</value>
+</data>
+	<data name="Field_CuentaVenta" xml:space="preserve">
+  <value>Verkaufskonto</value>
+</data>
+	<data name="Field_CuentaDevolucion" xml:space="preserve">
+  <value>Rückgabekonto</value>
+</data>
+	<data name="Field_Almacen" xml:space="preserve">
+  <value>Ist Lager</value>
+</data>
+	<!-- Transaccion -->
+	<data name="TransaccionCodigoLongitud" xml:space="preserve">
+  <value>Der TransaktionsCode darf nicht überschreiten 10 Zeichen.</value>
+</data>
+	<data name="Field_Transaccion" xml:space="preserve">
+  <value>Transaktion</value>
+</data>
+
+	<!-- Producto -->
+	<data name="ProductoCodigoLongitud" xml:space="preserve">
+  <value>The Produkt Code darf nicht überschreiten 13 Zeichen.</value>
+</data>
+	<data name="EstablecimientoObligatorio" xml:space="preserve">
+  <value>The Niederlassung ist erforderlich.</value>
+</data>
+	<data name="EstablecimientoSeleccion" xml:space="preserve">
+  <value>Sie müssen ein gültiges auswählen Niederlassung.</value>
+</data>
+	<data name="UnidadMedidaObligatoria" xml:space="preserve">
+  <value>The Maßeinheit ist erforderlich.</value>
+</data>
+	<data name="UnidadMedidaSeleccion" xml:space="preserve">
+  <value>Sie müssen ein gültiges auswählen Maßeinheit.</value>
+</data>
+	<data name="ProveedorObligatorio" xml:space="preserve">
+  <value>The Lieferant ist erforderlich.</value>
+</data>
+	<data name="ProveedorSeleccion" xml:space="preserve">
+  <value>Sie müssen ein gültiges auswählen Lieferant.</value>
+</data>
+	<data name="PrecioVentaObligatorio" xml:space="preserve">
+  <value>Der Verkaufspreis ist erforderlich.</value>
+</data>
+	<data name="PrecioVentaRango" xml:space="preserve">
+  <value>The Verkaufspreis muss größer oder gleich Null sein.</value>
+</data>
+	<data name="PrecioCostoObligatorio" xml:space="preserve">
+  <value>The Kostenpreis ist erforderlich.</value>
+</data>
+	<data name="PrecioCostoRango" xml:space="preserve">
+  <value>The Kostenpreis muss größer oder gleich Null sein.</value>
+</data>
+	<data name="CodigoReferenciaLongitud" xml:space="preserve">
+  <value>The ReferenzCode darf nicht überschreiten 50 Zeichen.</value>
+</data>
+	<data name="StockMinimoRango" xml:space="preserve">
+  <value>The Mindestbestund muss größer oder gleich Null sein.</value>
+</data>
+	<data name="SubLineaObligatoria" xml:space="preserve">
+  <value>The subZeile ist erforderlich.</value>
+</data>
+	<data name="SubLineaSeleccion" xml:space="preserve">
+  <value>Sie müssen ein gültiges auswählen subZeile.</value>
+</data>
+	<data name="CaracteristicasLongitud" xml:space="preserve">
+  <value>Die Eigenschaften dürfen nicht überschreiten 1024 Zeichen.</value>
+</data>
+	<data name="Field_Producto" xml:space="preserve">
+  <value>Produkt</value>
+</data>
+	<data name="Field_UnidadMedida" xml:space="preserve">
+  <value>Maßeinheit</value>
+</data>
+	<data name="Field_PrecioVenta" xml:space="preserve">
+  <value>Verkaufspreis</value>
+</data>
+	<data name="Field_PrecioCosto" xml:space="preserve">
+  <value>Kostenpreis</value>
+</data>
+	<data name="Field_CodigoReferencia" xml:space="preserve">
+  <value>ReferenzCode</value>
+</data>
+	<data name="Field_StockMinimo" xml:space="preserve">
+  <value>Mindestbestund</value>
+</data>
+	<data name="Field_Servicio" xml:space="preserve">
+  <value>Ist Service</value>
+</data>
+	<data name="Field_Imagen" xml:space="preserve">
+  <value>Bild</value>
+</data>
+	<data name="Field_Caracteristicas" xml:space="preserve">
+  <value>Eigenschaften</value>
+</data>
+
+	<!-- FichaProducto -->
+	<data name="ProductoIdObligatorio" xml:space="preserve">
+  <value>Die Produkt-ID ist erforderlich.</value>
+</data>
+	<data name="LocalidadObligatoria" xml:space="preserve">
+  <value>The Stundort ist erforderlich.</value>
+</data>
+	<data name="LocalidadSeleccion" xml:space="preserve">
+  <value>Sie müssen ein gültiges auswählen Stundort.</value>
+</data>
+	<data name="ComponenteIdObligatorio" xml:space="preserve">
+  <value>Die Komponenten-ID ist erforderlich.</value>
+</data>
+	<data name="ComponenteSeleccion" xml:space="preserve">
+  <value>Sie müssen ein gültiges auswählen Komponente.</value>
+</data>
+	<data name="CantidadObligatoria" xml:space="preserve">
+  <value>The Menge ist erforderlich.</value>
+</data>
+	<data name="CantidadRango" xml:space="preserve">
+  <value>Die Menge muss größer als Null sein.</value>
+</data>
+	<data name="Field_FichaProducto" xml:space="preserve">
+  <value>Produktblatt</value>
+</data>
+	<data name="Field_Componente" xml:space="preserve">
+  <value>Komponente</value>
+</data>
+	<data name="Field_Cantidad" xml:space="preserve">
+  <value>Menge</value>
+</data>
+	<!-- UnidadMedida -->
+	<data name="UnidadMedidaCodigoLongitud" xml:space="preserve">
+  <value>The Maßeinheit Code darf nicht überschreiten 3 Zeichen.</value>
+</data>
+	<data name="Field_UnidadMedida" xml:space="preserve">
+  <value>Maßeinheit</value>
+</data>
+	<data name="LogoFormatoInvalido" xml:space="preserve">
+  <value>Ungültiges Logo-Format. Verwenden Sie PNG, JPG, GIF oder WEBP.</value>
+</data>
+	<data name="LogoTamañoExcedido" xml:space="preserve">
+  <value>Logo file darf nicht überschreiten 2MB.</value>
+</data>
+	<data name="LogoNombreArchivoInvalido" xml:space="preserve">
+  <value>Logo file name contains invalid Zeichen.</value>
+</data>
+	<data name="LogoExtensionInvalida" xml:space="preserve">
+  <value>Ungültige Dateierweiterung. Verwenden Sie PNG, JPG, GIF oder WEBP.</value>
+</data>
+	<data name="LogoUrlInvalida" xml:space="preserve">
+  <value>Ungültige Logo-URL.</value>
+</data>
+	<data name="Field_Logo" xml:space="preserve">
+  <value>Logo</value>
+</data>
+	<data name="LineaCodigoFormato" xml:space="preserve">
+  <value>The ZeilenCode muss eine 2-stellige Zahl sein (Beispiel: 01, 02, 99)</value>
+</data>
+	<data name="UnidadMedidaCodigoLongitud" xml:space="preserve">
+  <value>The Maßeinheit Code muss genau 3 Zeichen</value>
+</data>
+	<data name="UnidadMedidaCodigoFormato" xml:space="preserve">
+  <value>The Code muss alphanumerisch sein mit 3 Zeichen (Beispiel: UND, KG, LTS)</value>
+</data>
+	<data name="Field_Telefono" xml:space="preserve">
+  <value>Telefon</value>
+</data>
+	<data name="TelefonoLongitud" xml:space="preserve">
+  <value>The Telefon darf nicht überschreiten {1} Zeichen.</value>
+</data>
+	<data name="TelefonoFormatoInvalido" xml:space="preserve">
+  <value>The Telefon does not have a valid format.</value>
+</data>
+	<data name="IvaObligatorio" xml:space="preserve">
+    <value>MwSt ist erforderlich</value>
+  </data>
+	<data name="IvaFormato" xml:space="preserve">
+    <value>MwSt must be an integer between 0 und 100</value>
+  </data>
+	<data name="Field_Iva" xml:space="preserve">
+    <value>MwSt</value>
+  </data>
+	<data name="IvaObligatorio" xml:space="preserve"><value>MwSt ist erforderlich</value></data>
+	<data name="IvaFormato" xml:space="preserve"><value>MwSt must be an integer between 0 und 100</value></data>
+	<data name="Field_Iva" xml:space="preserve"><value>MwSt</value></data>
+	<data name="Field_Codigo" xml:space="preserve"><value>Code</value></data>
+	<data name="Field_Descripcion" xml:space="preserve"><value>Beschreibung</value></data>
+	<data name="CodigoFormatoAlfanumerico" xml:space="preserve">
+    <value>The Code must be alphanumeric (letters und/or numbers) und exactly 3 Zeichen long</value>
+  </data>
+	<data name="Field_Licencia" xml:space="preserve">
+    <value>Lizenz</value>
+  </data>
+  <data name="Field_CuentaPagar" xml:space="preserve">
+    <value>Konten Payable</value>
+  </data>
+  <data name="Field_CuentaCobrar" xml:space="preserve">
+    <value>Konten Receivable</value>
+  </data>
+	<data name="CodigoPaisIsoLongitud" xml:space="preserve">
+  <value>The ISO country Code darf nicht überschreiten 3 Zeichen.</value>
+</data>
+
+	<data name="IdentificadorFiscalLongitud" xml:space="preserve">
+  <value>Die Steuer-ID darf nicht überschreiten 30 Zeichen.</value>
+</data>
+
+	<data name="TasaIvaRango" xml:space="preserve">
+  <value>Der MwSt-Satz muss zwischen 0 und 100.</value>
+</data>
+
+	<data name="Field_TipoIdentificadorFiscal" xml:space="preserve">
+  <value>Steuer-ID-Typ</value>
+</data>
+
+	<data name="Field_RegimenFiscal" xml:space="preserve">
+  <value>Steuerregime</value>
+</data>
+
+	<data name="Field_IdentificadorFiscal" xml:space="preserve">
+  <value>Steuer-ID</value>
+</data>
+
+	<data name="Field_TasaIvaDefecto" xml:space="preserve">
+  <value>Default MwSt Rate</value>
+</data>
+
+	<data name="Field_RegistradaIva" xml:space="preserve">
+  <value>Für MwSt registriert</value>
+</data>
+
+	<data name="Field_IvaInternacional" xml:space="preserve">
+  <value>International MwSt</value>
+</data>
+
+	<data name="Field_ExentoIva" xml:space="preserve">
+  <value>MwSt Exempt</value>
+</data>
+
+	<data name="Field_Extranjero" xml:space="preserve">
+  <value>Foreign</value>
+</data>
+
+	<data name="Field_CodigoPaisIso" xml:space="preserve">
+  <value>ISO Country Code</value>
+</data>
+
+	<data name="Field_ValidarIdentificadorFiscal" xml:space="preserve">
+  <value>Validate Steuer-ID</value>
+</data>
+
+	<data name="Field_InversionSujetoPasivo" xml:space="preserve">
+  <value>Reverse Charge</value>
+</data>
+</root>

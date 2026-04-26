@@ -32,42 +32,19 @@
 		</Compile>
 	</ItemGroup>
 
-	<!-- ✅ Configuración de archivos de recursos .resx -->
+	<!-- ✅ Solo archivos base de recursos con generadores -->
 	<ItemGroup>
-		<!-- ValidationMessages (Base - Español) -->
 		<EmbeddedResource Update="Resources\ValidationMessages.resx">
 			<Generator>PublicResXFileCodeGenerator</Generator>
 			<LastGenOutput>ValidationMessages.Designer.cs</LastGenOutput>
 		</EmbeddedResource>
-		<EmbeddedResource Update="Resources\ValidationMessages.en.resx">
-			<DependentUpon>ValidationMessages.resx</DependentUpon>
-		</EmbeddedResource>
-		<EmbeddedResource Update="Resources\ValidationMessages.fr.resx">
-			<DependentUpon>ValidationMessages.resx</DependentUpon>
-		</EmbeddedResource>
-
-		<!-- NomencladoresResources (Base - Español) -->
 		<EmbeddedResource Update="Resources\NomencladoresResources.resx">
 			<Generator>PublicResXFileCodeGenerator</Generator>
 			<LastGenOutput>NomencladoresResources.Designer.cs</LastGenOutput>
 		</EmbeddedResource>
-		<EmbeddedResource Update="Resources\NomencladoresResources.en.resx">
-			<DependentUpon>NomencladoresResources.resx</DependentUpon>
-		</EmbeddedResource>
-		<EmbeddedResource Update="Resources\NomencladoresResources.fr.resx">
-			<DependentUpon>NomencladoresResources.resx</DependentUpon>
-		</EmbeddedResource>
-
-		<!-- ConfiguracionResources (Base - Español) -->
 		<EmbeddedResource Update="Resources\ConfiguracionResources.resx">
 			<Generator>PublicResXFileCodeGenerator</Generator>
 			<LastGenOutput>ConfiguracionResources.Designer.cs</LastGenOutput>
-		</EmbeddedResource>
-		<EmbeddedResource Update="Resources\ConfiguracionResources.en.resx">
-			<DependentUpon>ConfiguracionResources.resx</DependentUpon>
-		</EmbeddedResource>
-		<EmbeddedResource Update="Resources\ConfiguracionResources.fr.resx">
-			<DependentUpon>ConfiguracionResources.resx</DependentUpon>
 		</EmbeddedResource>
 	</ItemGroup>
 

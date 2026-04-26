@@ -18,7 +18,9 @@ export class LanguageService {
   public readonly availableLanguages: Language[] = [
     { code: 'es', name: 'Español', flag: 'assets/flags/es.svg', emoji: '🇪🇸' },
     { code: 'en', name: 'English', flag: 'assets/flags/us.svg', emoji: '🇺🇸' },
-    { code: 'fr', name: 'Français', flag: 'assets/flags/fr.svg', emoji: '🇫🇷' }
+    { code: 'fr', name: 'Français', flag: 'assets/flags/fr.svg', emoji: '🇫🇷' },
+    { code: 'de', name: 'Deutsch', flag: 'assets/flags/de.svg', emoji: '🇩🇪' },
+    { code: 'pt', name: 'Português', flag: 'assets/flags/pt.svg', emoji: '🇵🇹' }
   ];
 
   // BehaviorSubject para el idioma actual

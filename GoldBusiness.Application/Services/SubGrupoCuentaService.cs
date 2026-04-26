@@ -69,8 +69,8 @@ namespace GoldBusiness.Application.Services
                 }
             }
 
-            // ✅ Preparar traducciones automáticas (es, en, fr)
-            var supportedLanguages = new[] { "es", "en", "fr" };
+            // ✅ Preparar traducciones automáticas (es, en, fr, de, pt)
+            var supportedLanguages = new[] { "es", "en", "fr", "de", "pt" };
             var provided = dto.Translations ?? new List<TranslationInputDTO>();
             if (!provided.Any())
             {
@@ -154,8 +154,8 @@ namespace GoldBusiness.Application.Services
 
             entity.Update(dto.Descripcion, dto.GrupoCuentaId, dto.Deudora, user);
 
-            // ✅ Preparar traducciones automáticas (es, en, fr)
-            var supportedLanguages = new[] { "es", "en", "fr" };
+            // ✅ Preparar traducciones automáticas (es, en, fr, de, pt)
+            var supportedLanguages = new[] { "es", "en", "fr", "de", "pt" };
             var provided = dto.Translations ?? new List<TranslationInputDTO>();
             if (!provided.Any())
             {

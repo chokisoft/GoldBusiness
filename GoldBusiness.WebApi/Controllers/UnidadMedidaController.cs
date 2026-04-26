@@ -137,7 +137,7 @@ namespace GoldBusiness.WebApi.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> AddOrUpdateTranslation(int id, [FromBody] TranslationInputDTO dto)
         {
-            var supportedLanguages = new[] { "es", "en", "fr" };
+            var supportedLanguages = new[] { "es", "en", "fr", "de", "pt" };
 
             var lang = string.IsNullOrWhiteSpace(dto.Language)
                 ? "es"

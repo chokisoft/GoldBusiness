@@ -125,7 +125,7 @@ namespace GoldBusiness.Application.Services
 
             await _repo.AddAsync(entity);
 
-            // ✅ Generar traducciones automáticas a es/en/fr
+            // ✅ Generar traducciones automáticas a es/en/fr/de/pt
             await GenerateAndSaveTranslationsAsync(entity, dto.Descripcion, creador);
 
             await _repo.UpdateAsync(entity);
@@ -165,7 +165,7 @@ namespace GoldBusiness.Application.Services
                 modificador
             );
 
-            // ✅ Generar traducciones automáticas a es/en/fr
+            // ✅ Generar traducciones automáticas a es/en/fr/de/pt
             await GenerateAndSaveTranslationsAsync(entity, dto.Descripcion, modificador);
 
             await _repo.UpdateAsync(entity);
@@ -194,28 +194,26 @@ namespace GoldBusiness.Application.Services
             await _repo.UpdateAsync(entity);
         }
 
-        // ✅ CORREGIDO: Usar TranslateAsync en lugar de TranslateToAllAsync
+        // ✅ CORREGIDO: Usar TranslateAsync con soporte para los 5 idiomas (es, en, fr, de, pt)
         private async Task GenerateAndSaveTranslationsAsync(Proveedor entity, string descripcionBase, string user)
         {
-            try
-            {
-                // Traducir a inglés
-                var enTranslation = await _translatorService.TranslateAsync(descripcionBase, "es", "en");
-                
-                // Traducir a francés
-                var frTranslation = await _translatorService.TranslateAsync(descripcionBase, "es", "fr");
+            var supportedLanguages = new[] { "es", "en", "fr", "de", "pt" };
+            entity.AddOrUpdateTranslation("es", descripcionBase, user);
 
-                entity.AddOrUpdateTranslation("es", descripcionBase, user);
-                entity.AddOrUpdateTranslation("en", enTranslation, user);
-                entity.AddOrUpdateTranslation("fr", frTranslation, user);
-            }
-            catch (Exception ex)
+            foreach (var targetLang in supportedLanguages)
             {
-                Console.WriteLine($"⚠️ Error generando traducciones para Proveedor {entity.Id}: {ex.Message}");
-                // Fallback: usar la descripción base para todos los idiomas
-                entity.AddOrUpdateTranslation("es", descripcionBase, user);
-                entity.AddOrUpdateTranslation("en", descripcionBase, user);
-                entity.AddOrUpdateTranslation("fr", descripcionBase, user);
+                if (targetLang == "es") continue;
+
+                try
+                {
+                    var translation = await _translatorService.TranslateAsync(descripcionBase, "es", targetLang);
+                    entity.AddOrUpdateTranslation(targetLang, string.IsNullOrWhiteSpace(translation) ? descripcionBase : translation, user);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"⚠️ Error generando traducción {targetLang} para Proveedor {entity.Id}: {ex.Message}");
+                    entity.AddOrUpdateTranslation(targetLang, descripcionBase, user);
+                }
             }
         }
 
