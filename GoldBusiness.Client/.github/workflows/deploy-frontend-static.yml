@@ -1,4 +1,4 @@
-﻿name: Deploy Angular Frontend to Azure Static Web Apps
+name: Deploy Angular Frontend to Azure Static Web Apps
 
 on:
   push:
@@ -21,7 +21,7 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
         working-directory: ./GoldBusiness.Client
 
       - name: Build (production)
