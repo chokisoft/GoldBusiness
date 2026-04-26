@@ -291,6 +291,11 @@ FakesAssemblies/
 .ntvs_analysis.dat
 node_modules/
 
+# Node.js - Ignorar archivos en la raíz del proyecto (NO en GoldBusiness.Client)
+/package.json
+/package-lock.json
+/node_modules/
+
 # Visual Studio 6 build log
 *.plg
 
