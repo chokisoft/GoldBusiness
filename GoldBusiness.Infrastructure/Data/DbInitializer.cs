@@ -387,7 +387,7 @@ namespace GoldBusiness.Infrastructure.Data
             using var reader = new StreamReader(stream, System.Text.Encoding.UTF8);
             await reader.ReadLineAsync(); // Saltar encabezado
 
-            // Formato: Codigo,ProvinciaCodigo,DescripcionES,DescripcionEN,DescripcionFR,DescripcionDE,DescripcionPT
+            // Formato: Codigo,ProvinciaCodigo,PaisCodigo,DescripcionES,DescripcionEN,DescripcionFR,DescripcionDE,DescripcionPT
             var datosParaTraducciones = new List<(string Codigo, string DescES, string DescEN, string DescFR, string DescDE, string DescPT)>();
             var municipios = new List<Municipio>();
 
@@ -397,15 +397,16 @@ namespace GoldBusiness.Infrastructure.Data
                 if (string.IsNullOrWhiteSpace(line)) continue;
 
                 var values = ParseCsvLine(line);
-                if (values.Length < 7) continue;
+                if (values.Length < 8) continue;
 
                 var codigo = values[0].Trim();
                 var provCodigo = values[1].Trim();
-                var descES = Truncar(values[2].Trim(), 150);
-                var descEN = Truncar(values[3].Trim(), 150);
-                var descFR = Truncar(values[4].Trim(), 150);
-                var descDE = Truncar(values[5].Trim(), 150);
-                var descPT = Truncar(values[6].Trim(), 150);
+                // var paisCodigo = values[2].Trim(); // No usado actualmente
+                var descES = Truncar(values[3].Trim(), 150);
+                var descEN = Truncar(values[4].Trim(), 150);
+                var descFR = Truncar(values[5].Trim(), 150);
+                var descDE = Truncar(values[6].Trim(), 150);
+                var descPT = Truncar(values[7].Trim(), 150);
 
                 if (codigo.Length > 25)
                 {
