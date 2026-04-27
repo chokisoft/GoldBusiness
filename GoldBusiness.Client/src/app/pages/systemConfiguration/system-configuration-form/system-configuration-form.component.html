@@ -12,7 +12,7 @@
 
   <div class="card">
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container system-config-form">
-      
+
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <!-- 📋 INFORMACIÓN BÁSICA - Layout de 2 columnas -->
       <!-- ═══════════════════════════════════════════════════════════════ -->
@@ -121,11 +121,11 @@
                 <small class="form-text">{{ 'systemConfig.logoFormatHint' | translate }}</small>
               </div>
 
-              <div *ngIf="form.get('imagen')?.value && !selectedLogoFile" class="current-logo-name" 
+              <div *ngIf="form.get('imagen')?.value && !selectedLogoFile" class="current-logo-name"
                    style="display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-top:0.5rem;">
                 <span class="file-icon">📎</span>
                 <span class="file-name">{{ form.get('imagen')?.value }}</span>
-                <button type="button" class="btn btn-sm btn-danger" (click)="removeLogo()" 
+                <button type="button" class="btn btn-sm btn-danger" (click)="removeLogo()"
                         style="margin-left: 0.5rem; min-width: 40px;">
                   ✕ {{ 'systemConfig.logoRemove' | translate }}
                 </button>
@@ -167,8 +167,8 @@
         <div class="personaContacto-full-width">
           <label for="personaContacto" class="form-label">{{ 'systemConfig.personaContacto' | translate }} *</label>
           <input type="text" id="personaContacto" formControlName="personaContacto" class="form-control"
-                [class.is-invalid]="form.get('personaContacto')?.invalid && form.get('personaContacto')?.touched"
-                placeholder="{{ 'systemConfig.placeholderPersonaContacto' | translate }}" />
+                 [class.is-invalid]="form.get('personaContacto')?.invalid && form.get('personaContacto')?.touched"
+                 placeholder="{{ 'systemConfig.placeholderPersonaContacto' | translate }}" />
           <div class="invalid-feedback" *ngIf="form.get('personaContacto')?.invalid && form.get('personaContacto')?.touched">
             {{ getErrorMessage('personaContacto') }}
           </div>
@@ -185,7 +185,7 @@
                     placeholder="{{ 'systemConfig.placeholderDireccion' | translate }}"></textarea>
           <small class="form-text text-muted">{{ 'systemConfig.direccionHelp' | translate }}</small>
         </div>
-        
+
         <!-- País + Provincia -->
         <div class="form-row">
           <div class="form-group">
@@ -295,7 +295,7 @@
         <!-- Web -->
         <div class="form-group">
           <label for="web" class="form-label">{{ 'systemConfig.web' | translate }}</label>
-          <input type="url" id="web" formControlName="web" class="form-control" 
+          <input type="url" id="web" formControlName="web" class="form-control"
                  placeholder="{{ 'common.webPlaceholder' | translate }}" />
           <small class="form-text text-muted">{{ 'systemConfig.webHelp' | translate }}</small>
         </div>
@@ -354,23 +354,21 @@
         <div class="form-row form-row-fiscal">
           <div class="form-group">
             <label for="identificadorFiscal" class="form-label">{{ 'fiscal.identificadorFiscal' | translate }}</label>
-            <input 
-              type="text" 
-              id="identificadorFiscal" 
-              formControlName="identificadorFiscal"
-              class="form-control"
-              maxlength="30"
-              [class.is-invalid]="form.get('identificadorFiscal')?.invalid && form.get('identificadorFiscal')?.touched"
-              placeholder="NIF/CIF/VAT...">
+            <input type="text"
+                   id="identificadorFiscal"
+                   formControlName="identificadorFiscal"
+                   class="form-control"
+                   maxlength="30"
+                   [class.is-invalid]="form.get('identificadorFiscal')?.invalid && form.get('identificadorFiscal')?.touched"
+                   placeholder="NIF/CIF/VAT...">
             <small class="form-text text-muted">{{ 'fiscal.identificadorFiscalHelp' | translate }}</small>
           </div>
 
           <div class="form-group">
             <label for="tipoIdentificadorFiscal" class="form-label">{{ 'fiscal.tipoIdentificadorFiscal' | translate }} *</label>
-            <select 
-              id="tipoIdentificadorFiscal" 
-              formControlName="tipoIdentificadorFiscal"
-              class="form-control shared-select">
+            <select id="tipoIdentificadorFiscal"
+                    formControlName="tipoIdentificadorFiscal"
+                    class="form-control shared-select">
               <option [ngValue]="null">{{ 'common.select' | translate }}</option>
               <option *ngFor="let tipo of tiposIdentificacionFiscal" [ngValue]="tipo.value">
                 {{ tipo.label }}
@@ -394,17 +392,17 @@
           <div class="form-group">
             <label for="tasaIvaDefecto" class="form-label">{{ 'fiscal.tasaIvaDefecto' | translate }}</label>
             <input class="form-control"
-              type="text"
-              inputmode="decimal" 
-              id="tasaIvaDefecto" 
-              formControlName="tasaIvaDefecto"
-              pattern="[0-9]+([\.,][0-9]{1,2})?" 
-              class="form-control"
-              [class.is-invalid]="form.get('tasaIvaDefecto')?.invalid && form.get('tasaIvaDefecto')?.touched"
-              step="0.01"
-              min="0"
-              max="99.99"
-              placeholder="21.00">
+                   type="text"
+                   inputmode="decimal"
+                   id="tasaIvaDefecto"
+                   formControlName="tasaIvaDefecto"
+                   pattern="[0-9]+([\.,][0-9]{1,2})?"
+                   class="form-control"
+                   [class.is-invalid]="form.get('tasaIvaDefecto')?.invalid && form.get('tasaIvaDefecto')?.touched"
+                   step="0.01"
+                   min="0"
+                   max="99.99"
+                   placeholder="21.00">
             <div class="invalid-feedback" *ngIf="form.get('tasaIvaDefecto')?.invalid && form.get('tasaIvaDefecto')?.touched">
               {{ getErrorMessage('tasaIvaDefecto') }}
             </div>
@@ -416,11 +414,10 @@
         <div class="form-row form-row-fiscal">
           <div class="form-group checkbox-group">
             <label class="checkbox-label">
-              <input 
-                type="checkbox" 
-                id="registradaIva" 
-                formControlName="registradaIva"
-                class="form-checkbox">
+              <input type="checkbox"
+                     id="registradaIva"
+                     formControlName="registradaIva"
+                     class="form-checkbox">
               <span>{{ 'fiscal.registradaIva' | translate }}</span>
             </label>
             <small class="form-text text-muted">{{ 'fiscal.registradaIvaHelp' | translate }}</small>
@@ -428,11 +425,10 @@
 
           <div class="form-group checkbox-group">
             <label class="checkbox-label">
-              <input 
-                type="checkbox" 
-                id="ivaInternacional" 
-                formControlName="ivaInternacional"
-                class="form-checkbox">
+              <input type="checkbox"
+                     id="ivaInternacional"
+                     formControlName="ivaInternacional"
+                     class="form-checkbox">
               <span>{{ 'fiscal.ivaInternacional' | translate }}</span>
             </label>
             <small class="form-text text-muted">{{ 'fiscal.ivaInternacionalHelp' | translate }}</small>
@@ -447,9 +443,9 @@
         <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="loading || saving">
           ❌ {{ 'common.cancel' | translate }}
         </button>
-        <button type="submit" class="btn btn-primary" [disabled]="loading || saving || form.invalid || loadingCuentas">
-          <span *ngIf="!loading && !saving">💾 {{ 'common.save' | translate }}</span>
-          <span *ngIf="loading || saving">⏳ {{ 'common.saving' | translate }}</span>
+        <button type="submit" class="btn btn-primary" [disabled]="saving || form.invalid">
+          <span *ngIf="!saving">💾 {{ 'common.save' | translate }}</span>
+          <span *ngIf="saving">⏳ {{ 'common.saving' | translate }}</span>
         </button>
       </div>
     </form>

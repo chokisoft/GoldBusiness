@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { skip } from 'rxjs/operators';
+import { skip, finalize } from 'rxjs/operators';
 import { CuentaService, CuentaDTO } from '../../../services/cuenta.service';
 import { LanguageService } from '../../../services/language.service';
 import { TranslationService } from '../../../services/translation.service';
@@ -442,7 +442,7 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
       return;
     }
     
-    this.loading = true;
+    this.saving = true; // ✅ Usar saving para guardado
     this.error = null;
     
     if (this.selectedLogoFile) {
@@ -454,7 +454,7 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
         },
         error: () => {
           this.error = 'Error al subir el logo';
-          this.loading = false;
+          this.saving = false; // ✅ Restablecer saving en error
         }
       });
     } else {
@@ -462,7 +462,7 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  // ⭐ MÉTODO CORREGIDO - LÍNEA 484
+  // ⭐ MÉTODO CORREGIDO - Usar saving con finalize
   private submitForm(): void {
     const dto: SystemConfigurationDTO = this.form.getRawValue();
     
@@ -476,21 +476,23 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
 
     if (this.isEditMode) {
       // ✅ CORRECTO: Solo pasar el DTO (que ya contiene el id)
-      this.systemConfigurationService.update(dto).subscribe({
-        next: () => this.router.navigate(['/configuracion/negocio']),
-        error: () => {
-          this.error = 'Error al guardar configuración';
-          this.loading = false;
-        }
-      });
+      this.systemConfigurationService.update(dto)
+        .pipe(finalize(() => this.saving = false)) // ✅ Usar finalize para saving
+        .subscribe({
+          next: () => this.router.navigate(['/configuracion/negocio']),
+          error: () => {
+            this.error = 'Error al guardar configuración';
+          }
+        });
     } else {
-      this.systemConfigurationService.create(dto).subscribe({
-        next: () => this.router.navigate(['/configuracion/negocio']),
-        error: () => {
-          this.error = 'Error al guardar configuración';
-          this.loading = false;
-        }
-      });
+      this.systemConfigurationService.create(dto)
+        .pipe(finalize(() => this.saving = false)) // ✅ Usar finalize para saving
+        .subscribe({
+          next: () => this.router.navigate(['/configuracion/negocio']),
+          error: () => {
+            this.error = 'Error al guardar configuración';
+          }
+        });
     }
   }
 
