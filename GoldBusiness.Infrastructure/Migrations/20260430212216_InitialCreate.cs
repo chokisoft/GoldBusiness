@@ -982,6 +982,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                     Automatico = table.Column<bool>(type: "bit", nullable: false),
                     Posteado = table.Column<bool>(type: "bit", nullable: false),
                     Cancelado = table.Column<bool>(type: "bit", nullable: false),
+                    EstablecimientoId1 = table.Column<int>(type: "int", nullable: true),
                     CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
                     ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
@@ -1089,6 +1090,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                     Debito = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     Credito = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     Parcial = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    EstablecimientoId1 = table.Column<int>(type: "int", nullable: true),
                     CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
                     ModificadoPor = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -1314,10 +1316,12 @@ namespace GoldBusiness.Infrastructure.Migrations
                     Descripcion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     Direccion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     Telefono = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Tipo = table.Column<int>(type: "int", nullable: false, defaultValue: 2),
                     PaisId = table.Column<int>(type: "int", nullable: true),
                     ProvinciaId = table.Column<int>(type: "int", nullable: true),
                     MunicipioId = table.Column<int>(type: "int", nullable: true),
                     CodigoPostalId = table.Column<int>(type: "int", nullable: true),
+                    OperativoActualmente = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
                     Activo = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
                     Cancelado = table.Column<bool>(type: "bit", nullable: false),
                     CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
@@ -1332,8 +1336,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                         name: "FK_Establecimiento_CodigoPostal",
                         column: x => x.CodigoPostalId,
                         principalTable: "CodigoPostal",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Establecimiento_Configuracion",
                         column: x => x.NegocioId,
@@ -1343,20 +1346,17 @@ namespace GoldBusiness.Infrastructure.Migrations
                         name: "FK_Establecimiento_Municipio",
                         column: x => x.MunicipioId,
                         principalTable: "Municipio",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Establecimiento_Pais",
                         column: x => x.PaisId,
                         principalTable: "Pais",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Establecimiento_Provincia",
                         column: x => x.ProvinciaId,
                         principalTable: "Provincia",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -1419,6 +1419,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                     CobroElectronicoParcialMlc = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     Contabilizada = table.Column<bool>(type: "bit", nullable: false),
                     Cancelado = table.Column<bool>(type: "bit", nullable: false),
+                    EstablecimientoId1 = table.Column<int>(type: "int", nullable: true),
                     CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
                     ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
@@ -1459,6 +1460,11 @@ namespace GoldBusiness.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_CuentaCobrarPagar_Establecimiento",
                         column: x => x.EstablecimientoId,
+                        principalTable: "Establecimiento",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CuentaCobrarPagar_Establecimiento_EstablecimientoId1",
+                        column: x => x.EstablecimientoId1,
                         principalTable: "Establecimiento",
                         principalColumn: "Id");
                     table.ForeignKey(
@@ -1511,6 +1517,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                     Credito = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Saldo = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Referencia = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    EstablecimientoId1 = table.Column<int>(type: "int", nullable: true),
                     CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
                     ModificadoPor = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -1530,6 +1537,11 @@ namespace GoldBusiness.Infrastructure.Migrations
                         column: x => x.EstablecimientoId,
                         principalTable: "Establecimiento",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_EstadoCuenta_Establecimiento_EstablecimientoId1",
+                        column: x => x.EstablecimientoId1,
+                        principalTable: "Establecimiento",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -1541,7 +1553,13 @@ namespace GoldBusiness.Infrastructure.Migrations
                     EstablecimientoId = table.Column<int>(type: "int", nullable: false),
                     Codigo = table.Column<string>(type: "nvarchar(9)", maxLength: 9, nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    Almacen = table.Column<bool>(type: "bit", nullable: false),
+                    Tipo = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
+                    PermiteVentas = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    PermiteCompras = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    PermiteTransferencias = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
+                    PermiteAjustes = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
+                    RequiereControlLotes = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    RequiereNumerosSerie = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     CuentaInventarioId = table.Column<int>(type: "int", nullable: false),
                     CuentaCostoId = table.Column<int>(type: "int", nullable: false),
                     CuentaVentaId = table.Column<int>(type: "int", nullable: false),
@@ -1607,6 +1625,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                     Efectivo = table.Column<bool>(type: "bit", nullable: false),
                     Contabilizada = table.Column<bool>(type: "bit", nullable: false),
                     Cancelado = table.Column<bool>(type: "bit", nullable: false),
+                    EstablecimientoId1 = table.Column<int>(type: "int", nullable: true),
                     CreadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     FechaHoraCreado = table.Column<DateTime>(type: "datetime", nullable: false),
                     ModificadoPor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
@@ -1630,6 +1649,11 @@ namespace GoldBusiness.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_OperacionesEncabezado_Establecimiento",
                         column: x => x.EstablecimientoId,
+                        principalTable: "Establecimiento",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_OperacionesEncabezado_Establecimiento_EstablecimientoId1",
+                        column: x => x.EstablecimientoId1,
                         principalTable: "Establecimiento",
                         principalColumn: "Id");
                     table.ForeignKey(
@@ -2093,6 +2117,11 @@ namespace GoldBusiness.Infrastructure.Migrations
                 column: "EstablecimientoId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Comprobante_EstablecimientoId1",
+                table: "Comprobante",
+                column: "EstablecimientoId1");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ComprobanteDetalle_ComprobanteId",
                 table: "ComprobanteDetalle",
                 column: "ComprobanteId");
@@ -2112,6 +2141,11 @@ namespace GoldBusiness.Infrastructure.Migrations
                 name: "IX_ComprobanteTemporal_EstablecimientoId",
                 table: "ComprobanteTemporal",
                 column: "EstablecimientoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ComprobanteTemporal_EstablecimientoId1",
+                table: "ComprobanteTemporal",
+                column: "EstablecimientoId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ComprobanteTemporalTranslation_ComprobanteTemporalId_Language",
@@ -2187,6 +2221,11 @@ namespace GoldBusiness.Infrastructure.Migrations
                 name: "IX_CuentaCobrarPagar_EstablecimientoId",
                 table: "CuentaCobrarPagar",
                 column: "EstablecimientoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CuentaCobrarPagar_EstablecimientoId1",
+                table: "CuentaCobrarPagar",
+                column: "EstablecimientoId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CuentaCobrarPagar_ProveedorId",
@@ -2265,6 +2304,11 @@ namespace GoldBusiness.Infrastructure.Migrations
                 name: "IX_EstadoCuenta_EstablecimientoId",
                 table: "EstadoCuenta",
                 column: "EstablecimientoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EstadoCuenta_EstablecimientoId1",
+                table: "EstadoCuenta",
+                column: "EstablecimientoId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FichaProducto_ComponenteId",
@@ -2412,6 +2456,11 @@ namespace GoldBusiness.Infrastructure.Migrations
                 name: "IX_OperacionesEncabezado_EstablecimientoId",
                 table: "OperacionesEncabezado",
                 column: "EstablecimientoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OperacionesEncabezado_EstablecimientoId1",
+                table: "OperacionesEncabezado",
+                column: "EstablecimientoId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OperacionesEncabezado_ProveedorId",
@@ -2699,6 +2748,13 @@ namespace GoldBusiness.Infrastructure.Migrations
                 principalColumn: "Id");
 
             migrationBuilder.AddForeignKey(
+                name: "FK_Comprobante_Establecimiento_EstablecimientoId1",
+                table: "Comprobante",
+                column: "EstablecimientoId1",
+                principalTable: "Establecimiento",
+                principalColumn: "Id");
+
+            migrationBuilder.AddForeignKey(
                 name: "FK_ComprobanteDetalle_Cuenta",
                 table: "ComprobanteDetalle",
                 column: "CuentaId",
@@ -2710,6 +2766,13 @@ namespace GoldBusiness.Infrastructure.Migrations
                 name: "FK_ComprobanteTemporal_Establecimiento",
                 table: "ComprobanteTemporal",
                 column: "EstablecimientoId",
+                principalTable: "Establecimiento",
+                principalColumn: "Id");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_ComprobanteTemporal_Establecimiento_EstablecimientoId1",
+                table: "ComprobanteTemporal",
+                column: "EstablecimientoId1",
                 principalTable: "Establecimiento",
                 principalColumn: "Id");
 
