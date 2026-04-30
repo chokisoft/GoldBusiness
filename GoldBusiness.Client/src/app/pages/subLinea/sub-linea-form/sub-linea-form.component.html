@@ -79,12 +79,13 @@
       </div>
 
       <div class="form-actions">
-        <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="loading">
+        <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="loading || saving">
           ❌ {{ 'common.cancel' | translate }}
         </button>
-        <button type="submit" class="btn btn-primary" [disabled]="loading || form.invalid || loadingLineas || !codigoCompleto">
-          <span *ngIf="!loading">💾 {{ 'common.save' | translate }}</span>
-          <span *ngIf="loading">⏳ {{ 'common.saving' | translate }}</span>
+        <button type="submit" class="btn btn-primary" [disabled]="loading || saving || form.invalid || loadingLineas || !codigoCompleto">
+          <span *ngIf="!loading && !saving">💾 {{ 'common.save' | translate }}</span>
+          <span *ngIf="loading && !saving">⏳ {{ 'common.loading' | translate }}</span>
+          <span *ngIf="saving">⏳ {{ 'common.saving' | translate }}</span>
         </button>
       </div>
     </form>

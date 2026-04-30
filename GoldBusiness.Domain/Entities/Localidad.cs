@@ -1,6 +1,7 @@
 ﻿using GoldBusiness.Domain.Exceptions;
 using GoldBusiness.Domain.Translation;
 using GoldBusiness.Domain.Helpers;
+using GoldBusiness.Domain.Enums;
 
 namespace GoldBusiness.Domain.Entities
 {
@@ -17,11 +18,55 @@ namespace GoldBusiness.Domain.Entities
         public int EstablecimientoId { get; private set; }
         public string Codigo { get; private set; } = string.Empty;
         public string Descripcion { get; private set; } = string.Empty;
-        public bool Almacen { get; private set; }
+
+        // ══════════════════════════════════════════════════════════════════
+        // 🏭 TIPO Y CAPACIDADES OPERATIVAS (Estándares ERP)
+        // ══════════════════════════════════════════════════════════════════
+        
+        /// <summary>
+        /// Tipo de localidad según función operativa (Almacén, PuntoVenta, etc.)
+        /// </summary>
+        public TipoLocalidad Tipo { get; private set; }
+
+        /// <summary>
+        /// Permite operaciones de venta
+        /// </summary>
+        public bool PermiteVentas { get; private set; }
+
+        /// <summary>
+        /// Permite operaciones de compra
+        /// </summary>
+        public bool PermiteCompras { get; private set; }
+
+        /// <summary>
+        /// Permite transferencias de inventario
+        /// </summary>
+        public bool PermiteTransferencias { get; private set; }
+
+        /// <summary>
+        /// Permite ajustes de inventario
+        /// </summary>
+        public bool PermiteAjustes { get; private set; }
+
+        /// <summary>
+        /// Requiere control de lotes
+        /// </summary>
+        public bool RequiereControlLotes { get; private set; }
+
+        /// <summary>
+        /// Requiere control de números de serie
+        /// </summary>
+        public bool RequiereNumerosSerie { get; private set; }
+
+        // ══════════════════════════════════════════════════════════════════
+        // 💰 CUENTAS CONTABLES (GL Accounts)
+        // ══════════════════════════════════════════════════════════════════
+
         public int CuentaInventarioId { get; private set; }
         public int CuentaCostoId { get; private set; }
         public int CuentaVentaId { get; private set; }
         public int CuentaDevolucionId { get; private set; }
+
         public bool Activo { get; private set; }
         public bool Cancelado { get; private set; }
 
@@ -43,24 +88,38 @@ namespace GoldBusiness.Domain.Entities
         // Constructor protegido para EF Core
         protected Localidad() { }
 
-        // Constructor con validaciones
+        // Constructor con validaciones (Estándares ERP)
         public Localidad(
             string codigo,
             string descripcion,
             int establecimientoId,
+            TipoLocalidad tipo,
             int cuentaInventarioId,
             int cuentaCostoId,
             int cuentaVentaId,
             int cuentaDevolucionId,
-            bool almacen,
+            bool permiteVentas,
+            bool permiteCompras,
+            bool permiteTransferencias,
+            bool permiteAjustes,
+            bool requiereControlLotes,
+            bool requiereNumerosSerie,
             string creadoPor)
         {
             EstablecimientoId = establecimientoId;
+            Tipo = tipo;
             CuentaInventarioId = cuentaInventarioId;
             CuentaCostoId = cuentaCostoId;
             CuentaVentaId = cuentaVentaId;
             CuentaDevolucionId = cuentaDevolucionId;
-            Almacen = almacen;
+            
+            // Capacidades operativas
+            PermiteVentas = permiteVentas;
+            PermiteCompras = permiteCompras;
+            PermiteTransferencias = permiteTransferencias;
+            PermiteAjustes = permiteAjustes;
+            RequiereControlLotes = requiereControlLotes;
+            RequiereNumerosSerie = requiereNumerosSerie;
 
             SetCodigo(codigo);
             SetDescripcion(descripcion);
@@ -80,6 +139,35 @@ namespace GoldBusiness.Domain.Entities
                 throw new DomainException("El código debe tener exactamente 9 caracteres.");
 
             Codigo = codigo.ToUpperInvariant();
+        }
+
+        /// <summary>
+        /// Establece el código validando que coincida con el código del establecimiento padre.
+        /// Valida jerarquía: Localidad.Codigo debe comenzar con Establecimiento.Codigo
+        /// </summary>
+        /// <param name="codigo">Código de 9 caracteres (Ej: CHK001001)</param>
+        /// <param name="codigoEstablecimiento">Código del establecimiento padre (Ej: CHK001)</param>
+        public void SetCodigoConValidacionJerarquica(string codigo, string codigoEstablecimiento)
+        {
+            if (string.IsNullOrWhiteSpace(codigo))
+                throw new DomainException("El código es obligatorio.");
+
+            if (codigo.Length != 9)
+                throw new DomainException("El código de la localidad debe tener exactamente 9 caracteres.");
+
+            if (string.IsNullOrWhiteSpace(codigoEstablecimiento))
+                throw new DomainException("El código del establecimiento es obligatorio para validación jerárquica.");
+
+            var codigoNormalizado = codigo.ToUpperInvariant();
+            var codigoEstabNormalizado = codigoEstablecimiento.ToUpperInvariant();
+
+            if (!codigoNormalizado.StartsWith(codigoEstabNormalizado))
+                throw new DomainException(
+                    $"El código de la localidad '{codigoNormalizado}' debe comenzar con el código del establecimiento '{codigoEstabNormalizado}'. " +
+                    $"Formato esperado: {codigoEstabNormalizado}XXX (donde XXX es el correlativo de 3 dígitos)."
+                );
+
+            Codigo = codigoNormalizado;
         }
 
         public void SetDescripcion(string descripcion)
@@ -105,9 +193,29 @@ namespace GoldBusiness.Domain.Entities
             CuentaDevolucionId = cuentaDevolucionId;
         }
 
-        public void SetAlmacen(bool almacen)
+        public void SetTipo(TipoLocalidad tipo)
         {
-            Almacen = almacen;
+            Tipo = tipo;
+        }
+
+        public void SetCapacidadesOperativas(
+            bool permiteVentas,
+            bool permiteCompras,
+            bool permiteTransferencias,
+            bool permiteAjustes)
+        {
+            PermiteVentas = permiteVentas;
+            PermiteCompras = permiteCompras;
+            PermiteTransferencias = permiteTransferencias;
+            PermiteAjustes = permiteAjustes;
+        }
+
+        public void SetControlInventario(
+            bool requiereControlLotes,
+            bool requiereNumerosSerie)
+        {
+            RequiereControlLotes = requiereControlLotes;
+            RequiereNumerosSerie = requiereNumerosSerie;
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -152,16 +260,24 @@ namespace GoldBusiness.Domain.Entities
 
         public void Update(
             string descripcion,
+            TipoLocalidad tipo,
             int cuentaInventarioId,
             int cuentaCostoId,
             int cuentaVentaId,
             int cuentaDevolucionId,
-            bool almacen,
+            bool permiteVentas,
+            bool permiteCompras,
+            bool permiteTransferencias,
+            bool permiteAjustes,
+            bool requiereControlLotes,
+            bool requiereNumerosSerie,
             string modificadoPor)
         {
             SetDescripcion(descripcion);
+            SetTipo(tipo);
             SetCuentas(cuentaInventarioId, cuentaCostoId, cuentaVentaId, cuentaDevolucionId);
-            SetAlmacen(almacen);
+            SetCapacidadesOperativas(permiteVentas, permiteCompras, permiteTransferencias, permiteAjustes);
+            SetControlInventario(requiereControlLotes, requiereNumerosSerie);
             ActualizarAuditoria(modificadoPor);
         }
 

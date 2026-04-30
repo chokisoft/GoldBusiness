@@ -17,6 +17,7 @@ export class LineaFormComponent implements OnInit, OnDestroy {
   isEditMode = false;
   lineaId: number | null = null;
   loading = false;
+  saving = false;
   error: string | null = null;
 
   private languageSubscription?: Subscription;
@@ -103,7 +104,7 @@ export class LineaFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.loading = true;
+    this.saving = true;
     this.error = null;
 
     const formData: LineaDTO = this.form.getRawValue(); // ✅ getRawValue() para incluir campos deshabilitados
@@ -114,7 +115,7 @@ export class LineaFormComponent implements OnInit, OnDestroy {
           this.router.navigate(['/nomencladores/linea']);
         },
         error: (err) => {
-          this.loading = false;
+          this.saving = false;
           this.error = 'Error al actualizar';
         }
       });
@@ -124,7 +125,7 @@ export class LineaFormComponent implements OnInit, OnDestroy {
           this.router.navigate(['/nomencladores/linea']);
         },
         error: (err) => {
-          this.loading = false;
+          this.saving = false;
           this.error = 'Error al crear';
         }
       });

@@ -76,11 +76,17 @@ namespace GoldBusiness.Application.Services
                 dto.Codigo,
                 dto.Descripcion,
                 dto.EstablecimientoId,
+                dto.Tipo,
                 dto.CuentaInventarioId,
                 dto.CuentaCostoId,
                 dto.CuentaVentaId,
                 dto.CuentaDevolucionId,
-                dto.Almacen,
+                dto.PermiteVentas,
+                dto.PermiteCompras,
+                dto.PermiteTransferencias,
+                dto.PermiteAjustes,
+                dto.RequiereControlLotes,
+                dto.RequiereNumerosSerie,
                 creador);
 
             await _repo.AddAsync(entity);
@@ -120,11 +126,17 @@ namespace GoldBusiness.Application.Services
 
             entity.Update(
                 dto.Descripcion,
+                dto.Tipo,
                 dto.CuentaInventarioId,
                 dto.CuentaCostoId,
                 dto.CuentaVentaId,
                 dto.CuentaDevolucionId,
-                dto.Almacen,
+                dto.PermiteVentas,
+                dto.PermiteCompras,
+                dto.PermiteTransferencias,
+                dto.PermiteAjustes,
+                dto.RequiereControlLotes,
+                dto.RequiereNumerosSerie,
                 user);
 
             entity.AddOrUpdateTranslation(lang, dto.Descripcion, user ?? "system");
@@ -169,7 +181,14 @@ namespace GoldBusiness.Application.Services
                 EstablecimientoDescripcion = l.Establecimiento?.GetDescripcion(lang) ?? string.Empty,
                 Codigo = l.Codigo,
                 Descripcion = l.GetDescripcion(lang),
-                Almacen = l.Almacen,
+                Tipo = l.Tipo,
+                TipoDescripcion = l.Tipo.ToString(),
+                PermiteVentas = l.PermiteVentas,
+                PermiteCompras = l.PermiteCompras,
+                PermiteTransferencias = l.PermiteTransferencias,
+                PermiteAjustes = l.PermiteAjustes,
+                RequiereControlLotes = l.RequiereControlLotes,
+                RequiereNumerosSerie = l.RequiereNumerosSerie,
                 CuentaInventarioId = l.CuentaInventarioId,
                 CuentaInventarioCodigo = l.CuentaInventario?.Codigo ?? string.Empty,
                 CuentaInventarioDescripcion = l.CuentaInventario?.GetDescripcion(lang) ?? string.Empty,

@@ -757,4 +757,77 @@
 	<data name="Field_InversionSujetoPasivo" xml:space="preserve">
   <value>Inversión del Sujeto Pasivo</value>
 </data>
+
+	<!-- ══════════════════════════════════════════════════════════════════ -->
+	<!-- LOCALIDAD - TIPO Y CAPACIDADES OPERATIVAS (ERP) -->
+	<!-- ══════════════════════════════════════════════════════════════════ -->
+	
+	<data name="TipoLocalidadObligatorio" xml:space="preserve">
+  <value>El tipo de localidad es obligatorio.</value>
+</data>
+
+	<data name="Field_TipoLocalidad" xml:space="preserve">
+  <value>Tipo de Localidad</value>
+</data>
+
+	<data name="TipoLocalidad_Almacen" xml:space="preserve">
+  <value>Almacén</value>
+</data>
+
+	<data name="TipoLocalidad_PuntoVenta" xml:space="preserve">
+  <value>Punto de Venta</value>
+</data>
+
+	<data name="TipoLocalidad_Facturacion" xml:space="preserve">
+  <value>Facturación</value>
+</data>
+
+	<data name="TipoLocalidad_Produccion" xml:space="preserve">
+  <value>Producción</value>
+</data>
+
+	<data name="TipoLocalidad_Transito" xml:space="preserve">
+  <value>Tránsito</value>
+</data>
+
+	<data name="TipoLocalidad_Consignacion" xml:space="preserve">
+  <value>Consignación</value>
+</data>
+
+	<data name="TipoLocalidad_Cuarentena" xml:space="preserve">
+  <value>Cuarentena</value>
+</data>
+
+	<data name="TipoLocalidad_Devoluciones" xml:space="preserve">
+  <value>Devoluciones</value>
+</data>
+
+	<data name="TipoLocalidad_Obsoletos" xml:space="preserve">
+  <value>Obsoletos</value>
+</data>
+
+	<data name="Field_PermiteVentas" xml:space="preserve">
+  <value>Permite Ventas</value>
+</data>
+
+	<data name="Field_PermiteCompras" xml:space="preserve">
+  <value>Permite Compras</value>
+</data>
+
+	<data name="Field_PermiteTransferencias" xml:space="preserve">
+  <value>Permite Transferencias</value>
+</data>
+
+	<data name="Field_PermiteAjustes" xml:space="preserve">
+  <value>Permite Ajustes</value>
+</data>
+
+	<data name="Field_RequiereControlLotes" xml:space="preserve">
+  <value>Requiere Control de Lotes</value>
+</data>
+
+	<data name="Field_RequiereNumerosSerie" xml:space="preserve">
+  <value>Requiere Números de Serie</value>
+</data>
+
 </root>

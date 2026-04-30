@@ -1,8 +1,11 @@
 <div class="page-container">
   <div class="page-header">
     <h1 class="page-title">
-      {{ isEditMode ? ('localidad.editTitle' | translate) : ('localidad.newTitle' | translate) }}
+      {{ isEditMode ? 'Editar Localidad' : 'Nueva Localidad' }}
     </h1>
+    <p class="page-subtitle">
+      {{ isEditMode ? 'Modifique los datos de la localidad operativa' : 'Cree una nueva ubicación operativa según estándares ERP' }}
+    </p>
   </div>
 
   <div class="alert alert-error" *ngIf="error">
@@ -12,76 +15,227 @@
 
   <div class="card">
     <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" class="form-container" *ngIf="!loading">
-      <div class="form-row">
-        <div class="form-group">
-          <label for="establecimientoId" class="form-label">{{ 'localidad.establecimiento' | translate }} *</label>
-          <select id="establecimientoId"
-                  formControlName="establecimientoId"
-                  class="form-control"
-                  [class.is-invalid]="itemForm.get('establecimientoId')?.invalid && itemForm.get('establecimientoId')?.touched">
-            <option value="">{{ 'common.select' | translate }}</option>
-            <option *ngFor="let establecimiento of establecimientos" [value]="establecimiento.id">
-              {{ establecimiento.descripcion }}
-            </option>
-          </select>
-          <small class="form-text text-muted">{{ 'localidad.establecimientoHelp' | translate }}</small>
-          <div class="invalid-feedback" *ngIf="itemForm.get('establecimientoId')?.hasError('required') && itemForm.get('establecimientoId')?.touched">
-            {{ 'validation.required' | translate }}
+      
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- SECCIÓN 1: Información Básica -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <div class="form-section">
+        <h3 class="section-title">📍 Información Básica</h3>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="establecimientoId" class="form-label">Establecimiento *</label>
+            <select id="establecimientoId"
+                    formControlName="establecimientoId"
+                    class="shared-select"
+                    [class.is-invalid]="itemForm.get('establecimientoId')?.invalid && itemForm.get('establecimientoId')?.touched">
+              <option value="">Seleccione un establecimiento</option>
+              <option *ngFor="let establecimiento of establecimientos" [value]="establecimiento.id">
+                {{ establecimiento.codigo }} - {{ establecimiento.descripcion }}
+              </option>
+            </select>
+            <small class="form-text text-muted">Establecimiento al que pertenece esta localidad</small>
+            <div class="invalid-feedback" *ngIf="itemForm.get('establecimientoId')?.hasError('required') && itemForm.get('establecimientoId')?.touched">
+              El establecimiento es obligatorio
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="codigo" class="form-label">Código *</label>
+            <input type="text"
+                   id="codigo"
+                   formControlName="codigo"
+                   class="form-control"
+                   [class.is-invalid]="itemForm.get('codigo')?.invalid && itemForm.get('codigo')?.touched"
+                   placeholder="Ej: 000000001"
+                   maxlength="9"
+                   [readonly]="isEditMode" />
+            <small class="form-text text-muted">Código único de 9 caracteres (solo lectura en edición)</small>
+            <div class="invalid-feedback" *ngIf="itemForm.get('codigo')?.hasError('required') && itemForm.get('codigo')?.touched">
+              El código es obligatorio
+            </div>
+            <div class="invalid-feedback" *ngIf="itemForm.get('codigo')?.hasError('minlength') || itemForm.get('codigo')?.hasError('maxlength')">
+              El código debe tener exactamente 9 caracteres
+            </div>
           </div>
         </div>
 
-        <div class="form-group">
-          <label for="codigo" class="form-label">{{ 'localidad.codigo' | translate }} *</label>
-          <input type="text"
-                 id="codigo"
-                 formControlName="codigo"
-                 class="form-control"
-                 [class.is-invalid]="itemForm.get('codigo')?.invalid && itemForm.get('codigo')?.touched"
-                 [placeholder]="'localidad.codigoPlaceholder' | translate"
-                 maxlength="10" />
-          <div class="invalid-feedback" *ngIf="itemForm.get('codigo')?.hasError('required') && itemForm.get('codigo')?.touched">
-            {{ 'validation.required' | translate }}
+        <div class="form-row">
+          <div class="form-group form-group-full">
+            <label for="descripcion" class="form-label">Descripción *</label>
+            <input type="text"
+                   id="descripcion"
+                   formControlName="descripcion"
+                   class="form-control"
+                   [class.is-invalid]="itemForm.get('descripcion')?.invalid && itemForm.get('descripcion')?.touched"
+                   placeholder="Ej: Almacén Central - Planta Baja"
+                   maxlength="256" />
+            <small class="form-text text-muted">Nombre descriptivo de la localidad</small>
+            <div class="invalid-feedback" *ngIf="itemForm.get('descripcion')?.hasError('required') && itemForm.get('descripcion')?.touched">
+              La descripción es obligatoria
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label class="checkbox-label">
-            <input type="checkbox" id="almacen" formControlName="almacen" class="form-checkbox" />
-            <span>{{ 'localidad.almacen' | translate }}</span>
-          </label>
-          <small class="form-text">No {{ 'common.ifNotChecked' | translate }}</small>
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- SECCIÓN 2: Tipo y Capacidades Operativas (ERP) -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <div class="form-section">
+        <h3 class="section-title">🏭 Tipo y Capacidades Operativas</h3>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="tipo" class="form-label">Tipo de Localidad *</label>
+            <select id="tipo"
+                    formControlName="tipo"
+                    class="shared-select"
+                    [class.is-invalid]="itemForm.get('tipo')?.invalid && itemForm.get('tipo')?.touched">
+              <option *ngFor="let tipo of tiposLocalidad" [value]="tipo.value">
+                {{ tipo.label }}
+              </option>
+            </select>
+            <small class="form-text text-muted">Define el propósito operativo de esta localidad</small>
+          </div>
         </div>
 
-        <div class="form-group">
-          <label for="descripcion" class="form-label">{{ 'localidad.descripcion' | translate }} *</label>
-          <input type="text"
-                 id="descripcion"
-                 formControlName="descripcion"
-                 class="form-control"
-                 [class.is-invalid]="itemForm.get('descripcion')?.invalid && itemForm.get('descripcion')?.touched"
-                 [placeholder]="'localidad.descripcionPlaceholder' | translate"
-                 maxlength="100" />
-          <div class="invalid-feedback" *ngIf="itemForm.get('descripcion')?.hasError('required') && itemForm.get('descripcion')?.touched">
-            {{ 'validation.required' | translate }}
+        <div class="form-row form-row-checkboxes">
+          <div class="checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" formControlName="permiteVentas" class="form-checkbox" />
+              <span> Permite Ventas</span>
+            </label>
+            <small class="form-text">Habilita operaciones de venta en esta localidad</small>
+          </div>
+
+          <div class="checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" formControlName="permiteCompras" class="form-checkbox" />
+              <span> Permite Compras</span>
+            </label>
+            <small class="form-text">Habilita recepción de mercancías/compras</small>
+          </div>
+
+          <div class="checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" formControlName="permiteTransferencias" class="form-checkbox" />
+              <span> Permite Transferencias</span>
+            </label>
+            <small class="form-text">Habilita transferencias de inventario</small>
+          </div>
+
+          <div class="checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" formControlName="permiteAjustes" class="form-checkbox" />
+              <span> Permite Ajustes</span>
+            </label>
+            <small class="form-text">Habilita ajustes de inventario</small>
+          </div>
+        </div>
+
+        <div class="form-row form-row-checkboxes">
+          <div class="checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" formControlName="requiereControlLotes" class="form-checkbox" />
+              <span> Requiere Control de Lotes</span>
+            </label>
+            <small class="form-text">Activa trazabilidad por lotes</small>
+          </div>
+
+          <div class="checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" formControlName="requiereNumerosSerie" class="form-checkbox" />
+              <span> Requiere Números de Serie</span>
+            </label>
+            <small class="form-text">Activa trazabilidad por número de serie</small>
           </div>
         </div>
       </div>
 
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- SECCIÓN 3: Cuentas Contables (GL Accounts) -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <div class="form-section">
+        <h3 class="section-title">💰 Cuentas Contables (GL Accounts)</h3>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="cuentaInventarioId" class="form-label">Cuenta Inventario *</label>
+            <select id="cuentaInventarioId"
+                    formControlName="cuentaInventarioId"
+                    class="shared-select"
+                    [class.is-invalid]="itemForm.get('cuentaInventarioId')?.invalid && itemForm.get('cuentaInventarioId')?.touched">
+              <option value="">Seleccione una cuenta</option>
+              <option *ngFor="let cuenta of cuentas" [value]="cuenta.id">
+                {{ cuenta.codigo }} - {{ cuenta.descripcion }}
+              </option>
+            </select>
+            <small class="form-text text-muted">Cuenta para valoración del inventario</small>
+          </div>
+
+          <div class="form-group">
+            <label for="cuentaCostoId" class="form-label">Cuenta Costo *</label>
+            <select id="cuentaCostoId"
+                    formControlName="cuentaCostoId"
+                    class="shared-select"
+                    [class.is-invalid]="itemForm.get('cuentaCostoId')?.invalid && itemForm.get('cuentaCostoId')?.touched">
+              <option value="">Seleccione una cuenta</option>
+              <option *ngFor="let cuenta of cuentas" [value]="cuenta.id">
+                {{ cuenta.codigo }} - {{ cuenta.descripcion }}
+              </option>
+            </select>
+            <small class="form-text text-muted">Cuenta para costo de ventas (COGS)</small>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="cuentaVentaId" class="form-label">Cuenta Venta *</label>
+            <select id="cuentaVentaId"
+                    formControlName="cuentaVentaId"
+                    class="shared-select"
+                    [class.is-invalid]="itemForm.get('cuentaVentaId')?.invalid && itemForm.get('cuentaVentaId')?.touched">
+              <option value="">Seleccione una cuenta</option>
+              <option *ngFor="let cuenta of cuentas" [value]="cuenta.id">
+                {{ cuenta.codigo }} - {{ cuenta.descripcion }}
+              </option>
+            </select>
+            <small class="form-text text-muted">Cuenta para ingresos por ventas</small>
+          </div>
+
+          <div class="form-group">
+            <label for="cuentaDevolucionId" class="form-label">Cuenta Devolución *</label>
+            <select id="cuentaDevolucionId"
+                    formControlName="cuentaDevolucionId"
+                    class="shared-select"
+                    [class.is-invalid]="itemForm.get('cuentaDevolucionId')?.invalid && itemForm.get('cuentaDevolucionId')?.touched">
+              <option value="">Seleccione una cuenta</option>
+              <option *ngFor="let cuenta of cuentas" [value]="cuenta.id">
+                {{ cuenta.codigo }} - {{ cuenta.descripcion }}
+              </option>
+            </select>
+            <small class="form-text text-muted">Cuenta para devoluciones de ventas</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- Botones de Acción -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
       <div class="form-actions">
         <button type="button" class="btn btn-secondary" (click)="onCancel()" [disabled]="saving">
-          ❌ {{ 'common.cancel' | translate }}
+          ❌ Cancelar
         </button>
         <button type="submit" class="btn btn-primary" [disabled]="saving || itemForm.invalid">
-          <span *ngIf="!saving">💾 {{ 'common.save' | translate }}</span>
-          <span *ngIf="saving">⏳ {{ 'common.saving' | translate }}</span>
+          <span *ngIf="!saving">💾 Guardar</span>
+          <span *ngIf="saving">⏳ Guardando...</span>
         </button>
       </div>
     </form>
   </div>
 
   <div *ngIf="loading" class="loading-container">
-    <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
+    <div class="spinner"></div>
+    <p>Cargando...</p>
   </div>
 </div>

@@ -1,1 +1,45 @@
-﻿@import "../../shared-styles/style-form.css";
+@import "../../shared-styles/style-form.css";
+
+/* ══════════════════════════════════════════════════════════════════
+   🎨 ESTILOS ESPECÍFICOS PARA ESTABLECIMIENTO
+   ══════════════════════════════════════════════════════════════════ */
+
+.alert-icon {
+  font-size: 1.2rem;
+  margin-right: 0.5rem;
+}
+
+/* Ajustes específicos para iconos en labels */
+.form-label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 500;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.checkbox-label span {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* Dirección al mismo ancho que SystemConfiguration */
+.establecimiento-form .direccion-full-width {
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+.establecimiento-form .direccion-full-width textarea#direccion.form-control {
+  width: 100%;
+  min-height: 70px;
+  max-height: 120px;
+  resize: vertical;
+}
+

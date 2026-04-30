@@ -2,6 +2,23 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
 
+// ═══════════════════════════════════════════════════════════════
+// ENUM TipoLocalidad (sincronizado con backend)
+// Basado en SAP Storage Location Types y Oracle Subinventory Types
+// ═══════════════════════════════════════════════════════════════
+export enum TipoLocalidad {
+  Almacen = 1,
+  PuntoVenta = 2,
+  AreaRecepcion = 3,
+  AreaDespacho = 4,
+  Produccion = 5,
+  Transito = 6,
+  Cuarentena = 7,
+  Consignacion = 8,
+  Devoluciones = 9,
+  Obsoletos = 10
+}
+
 export interface LocalidadDTO {
   id?: number;
   establecimientoId: number;
@@ -9,7 +26,18 @@ export interface LocalidadDTO {
   establecimientoDescripcion?: string;
   codigo: string;
   descripcion: string;
-  almacen?: boolean;
+  
+  // ══ Tipo y Capacidades Operativas (Estándares ERP) ══
+  tipo: TipoLocalidad;
+  tipoDescripcion?: string;
+  permiteVentas: boolean;
+  permiteCompras: boolean;
+  permiteTransferencias: boolean;
+  permiteAjustes: boolean;
+  requiereControlLotes: boolean;
+  requiereNumerosSerie: boolean;
+  
+  // ══ Cuentas Contables (GL Accounts) ══
   cuentaInventarioId?: number;
   cuentaInventarioCodigo?: string;
   cuentaInventarioDescripcion?: string;
@@ -22,6 +50,8 @@ export interface LocalidadDTO {
   cuentaDevolucionId?: number;
   cuentaDevolucionCodigo?: string;
   cuentaDevolucionDescripcion?: string;
+  
+  // ══ Metadatos ══
   activo?: boolean;
   cancelado?: boolean;
   creadoPor?: string;
@@ -40,6 +70,40 @@ export interface PagedResult<T> {
 })
 export class LocalidadService {
   constructor(private api: ApiService) {}
+
+  // ═══════════════════════════════════════════════════════════════
+  // Métodos Helper para TipoLocalidad
+  // ═══════════════════════════════════════════════════════════════
+
+  /**
+   * Obtiene todas las opciones de tipo de localidad
+   */
+  getTiposLocalidad(): { value: TipoLocalidad; label: string }[] {
+    return [
+      { value: TipoLocalidad.Almacen, label: 'Almacén' },
+      { value: TipoLocalidad.PuntoVenta, label: 'Punto de Venta' },
+      { value: TipoLocalidad.AreaRecepcion, label: 'Área de Recepción' },
+      { value: TipoLocalidad.AreaDespacho, label: 'Área de Despacho' },
+      { value: TipoLocalidad.Produccion, label: 'Producción' },
+      { value: TipoLocalidad.Transito, label: 'Tránsito' },
+      { value: TipoLocalidad.Cuarentena, label: 'Cuarentena' },
+      { value: TipoLocalidad.Consignacion, label: 'Consignación' },
+      { value: TipoLocalidad.Devoluciones, label: 'Devoluciones' },
+      { value: TipoLocalidad.Obsoletos, label: 'Obsoletos' }
+    ];
+  }
+
+  /**
+   * Obtiene la etiqueta de un tipo de localidad
+   */
+  getTipoLocalidadLabel(tipo: TipoLocalidad): string {
+    const tipos = this.getTiposLocalidad();
+    return tipos.find(t => t.value === tipo)?.label || 'Desconocido';
+  }
+
+  // ═══════════════════════════════════════════════════════════════
+  // Métodos API
+  // ═══════════════════════════════════════════════════════════════
 
   getPaged(page: number = 1, pageSize: number = 50, term?: string, establecimientoId?: number): Observable<PagedResult<LocalidadDTO>> {
     let url = `Localidad/paged?page=${page}&pageSize=${pageSize}`;

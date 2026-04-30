@@ -935,7 +935,7 @@ namespace GoldBusiness.Infrastructure.Data
 
             var establecimiento = new[]
             {
-        new Establecimiento("CHK001", "DESARROLLO DE SOFTWARE", 1, "CALLE 172 #17830 E/ 180 Y 182, REPARTO 1ERO DE MAYO", "+5355152424", 28, 420, 11093, 198950, "system"),
+        new Establecimiento("CHK001", "DESARROLLO DE SOFTWARE", 1, TipoEstablecimiento.SedeCentral, "CALLE 172 #17830 E/ 180 Y 182, REPARTO 1ERO DE MAYO", "+5355152424", 28, 420, 11093, 198950, "system"),
     };
 
             context.Establecimiento.AddRange(establecimiento);
@@ -968,15 +968,18 @@ namespace GoldBusiness.Infrastructure.Data
                 return;
             }
 
+
             var localidad = new[]
             {
-        new Localidad("CHK001001", "GERENCIA GENERAL", 1,  5, 25, 31, 23, false, "system"),
-        new Localidad("CHK001002", "ALMACÉN CENTRAL", 1,  5, 25, 31, 23, true, "system"),
-        new Localidad("CHK001003", "DESARROLLO SOFTWARE", 1,  5, 25, 31, 23, false, "system"),
+        // Localidad(codigo, descripcion, establecimientoId, tipo, cuentaInv, cuentaCosto, cuentaVenta, cuentaDev, permiteVentas, permiteCompras, permiteTransf, permiteAjustes, reqLotes, reqSeries, user)
+        new Localidad("CHK001001", "ÁREA ADMINISTRATIVA", 1, TipoLocalidad.AreaRecepcion, 5, 25, 31, 23, false, true, true, false, false, false, "system"),
+        new Localidad("CHK001002", "ALMACÉN CENTRAL", 1, TipoLocalidad.Almacen, 5, 25, 31, 23, false, true, true, true, false, false, "system"),
+        new Localidad("CHK001003", "PUNTO DE VENTA PRINCIPAL", 1, TipoLocalidad.PuntoVenta, 5, 25, 31, 23, true, false, true, true, false, false, "system"),
     };
 
             context.Localidad.AddRange(localidad);
             await context.SaveChangesAsync();
+
 
             var traducciones = new List<LocalidadTranslation>
     {

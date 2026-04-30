@@ -13,7 +13,7 @@ namespace GoldBusiness.Domain.Entities
     public class SystemConfiguration : BaseEntity
     {
         private readonly HashSet<SystemConfigurationTranslation> _translations = new();
-        private readonly HashSet<Establecimiento> _establecimiento = new();
+        private readonly HashSet<Establecimiento> _establecimientos = new();
 
         public int Id { get; private set; }
         public string CodigoSistema { get; private set; } = string.Empty;
@@ -58,11 +58,12 @@ namespace GoldBusiness.Domain.Entities
         public Cuenta? CuentaCobrar { get; private set; }
         public Cuenta? CuentaPagar { get; private set; }
 
+
         public bool Activo { get; private set; }
         public bool Cancelado { get; private set; }
 
         public IReadOnlyCollection<SystemConfigurationTranslation> Translations => _translations;
-        public IReadOnlyCollection<Establecimiento> Establecimiento => _establecimiento;
+        public IReadOnlyCollection<Establecimiento> Establecimientos => _establecimientos;
 
         protected SystemConfiguration() { }
 

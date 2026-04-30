@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { skip, finalize } from 'rxjs/operators';
-import { LocalidadService, LocalidadDTO } from '../../../services/localidad.service';
+import { LocalidadService, LocalidadDTO, TipoLocalidad } from '../../../services/localidad.service';
 import { LanguageService } from '../../../services/language.service';
 
 @Component({
@@ -22,6 +22,9 @@ export class LocalidadListComponent implements OnInit, OnDestroy {
   totalPages: number = 0;
 
   Math = Math;
+  
+  // Referencia al enum para usar en template
+  TipoLocalidad = TipoLocalidad;
 
   private languageSubscription?: Subscription;
   private searchDebounceTimer?: any;
@@ -146,6 +149,32 @@ export class LocalidadListComponent implements OnInit, OnDestroy {
           console.error('Error:', err);
         }
       });
+    }
+  }
+
+  /**
+   * Obtiene el label legible del tipo de localidad
+   */
+  getTipoLabel(tipo: TipoLocalidad): string {
+    return this.localidadService.getTipoLocalidadLabel(tipo);
+  }
+
+  /**
+   * Obtiene el icono para el tipo de localidad
+   */
+  getTipoIcon(tipo: TipoLocalidad): string {
+    switch (tipo) {
+      case TipoLocalidad.Almacen: return '📦';
+      case TipoLocalidad.PuntoVenta: return '🛒';
+      case TipoLocalidad.AreaRecepcion: return '📥';
+      case TipoLocalidad.AreaDespacho: return '📤';
+      case TipoLocalidad.Produccion: return '🏭';
+      case TipoLocalidad.Transito: return '🚚';
+      case TipoLocalidad.Cuarentena: return '🔒';
+      case TipoLocalidad.Consignacion: return '🤝';
+      case TipoLocalidad.Devoluciones: return '↩️';
+      case TipoLocalidad.Obsoletos: return '♻️';
+      default: return '❓';
     }
   }
 }

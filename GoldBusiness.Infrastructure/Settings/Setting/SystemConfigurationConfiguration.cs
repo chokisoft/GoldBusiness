@@ -30,7 +30,7 @@ namespace GoldBusiness.Infrastructure.Settings.Setting
             builder.Property(e => e.FechaHoraCreado).HasColumnType("datetime");
             builder.Property(e => e.FechaHoraModificado).HasColumnType("datetime");
             builder.Ignore(e => e.Translations);
-            builder.Ignore(e => e.Establecimiento);
+            builder.Ignore(e => e.Establecimientos);
             builder.HasOne(d => d.CuentaPagar).WithMany(p => p.ConfiguracionCuentaPagar).HasForeignKey(d => d.CuentaPagarId).OnDelete(DeleteBehavior.Restrict).IsRequired(false).HasConstraintName("FK_Configuracion_CuentaPagar");
             builder.HasOne(d => d.CuentaCobrar).WithMany(p => p.ConfiguracionCuentaCobrar).HasForeignKey(d => d.CuentaCobrarId).OnDelete(DeleteBehavior.Restrict).IsRequired(false).HasConstraintName("FK_Configuracion_CuentaCobrar");
             builder.Property(e => e.IdentificadorFiscal)

@@ -17,6 +17,7 @@ export class TransaccionFormComponent implements OnInit, OnDestroy {
   isEditMode = false;
   transaccionId: number | null = null;
   loading = false;
+  saving = false;
   error: string | null = null;
 
 
@@ -92,7 +93,7 @@ export class TransaccionFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.loading = true;
+    this.saving = true;
     this.error = null;
 
     const formData: TransaccionDTO = this.form.getRawValue();
@@ -103,7 +104,7 @@ export class TransaccionFormComponent implements OnInit, OnDestroy {
           this.router.navigate(['/nomencladores/transaccion']);
         },
         error: (err) => {
-          this.loading = false;
+          this.saving = false;
           this.error = 'Error al actualizar';
         }
       });
@@ -113,7 +114,7 @@ export class TransaccionFormComponent implements OnInit, OnDestroy {
           this.router.navigate(['/nomencladores/transaccion']);
         },
         error: (err) => {
-          this.loading = false;
+          this.saving = false;
           this.error = 'Error al crear';
         }
       });

@@ -86,6 +86,7 @@ namespace GoldBusiness.Application.Services
                 dto.Codigo,
                 dto.Descripcion,
                 dto.NegocioId,
+                dto.Tipo,
                 dto.Direccion,
                 dto.Telefono,
                 dto.PaisId,
@@ -154,6 +155,7 @@ namespace GoldBusiness.Application.Services
                 pais,
                 user);
 
+
             entity.AddOrUpdateTranslation(lang, dto.Descripcion, user ?? "system");
 
             await _repo.UpdateAsync(entity);
@@ -197,6 +199,11 @@ namespace GoldBusiness.Application.Services
                 Descripcion = e.GetDescripcion(lang),
                 Direccion = e.Direccion,
                 Telefono = e.Telefono,
+                
+                // Información Organizacional
+                Tipo = e.Tipo,
+                
+                // Información Geográfica
                 PaisId = e.PaisId,
                 PaisDescripcion = e.Pais?.GetDescripcion(lang),
                 ProvinciaId = e.ProvinciaId,
@@ -205,6 +212,9 @@ namespace GoldBusiness.Application.Services
                 MunicipioDescripcion = e.Municipio?.GetDescripcion(lang),
                 CodigoPostalId = e.CodigoPostalId,
                 CodigoPostalCodigo = e.CodigoPostal?.Codigo,
+                
+                // Control de Estado
+                OperativoActualmente = e.OperativoActualmente,
                 Activo = e.Activo,
                 Cancelado = e.Cancelado,
                 CreadoPor = e.CreadoPor,

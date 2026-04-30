@@ -18,6 +18,7 @@ export class ConceptoAjusteFormComponent implements OnInit, OnDestroy {
   isEditMode = false;
   conceptoAjusteId: number | null = null;
   loading = false;
+  saving = false;
   error: string | null = null;
 
   cuentas: CuentaDTO[] = [];
@@ -114,7 +115,7 @@ export class ConceptoAjusteFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.loading = true;
+    this.saving = true;
     this.error = null;
 
     const formData: ConceptoAjusteDTO = this.form.getRawValue();
@@ -125,7 +126,7 @@ export class ConceptoAjusteFormComponent implements OnInit, OnDestroy {
           this.router.navigate(['/nomencladores/concepto-ajuste']);
         },
         error: (err) => {
-          this.loading = false;
+          this.saving = false;
           this.error = 'Error al actualizar';
         }
       });
@@ -135,7 +136,7 @@ export class ConceptoAjusteFormComponent implements OnInit, OnDestroy {
           this.router.navigate(['/nomencladores/concepto-ajuste']);
         },
         error: (err) => {
-          this.loading = false;
+          this.saving = false;
           this.error = 'Error al crear';
         }
       });

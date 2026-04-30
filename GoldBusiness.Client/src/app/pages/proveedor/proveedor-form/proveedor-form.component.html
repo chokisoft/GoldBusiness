@@ -304,7 +304,8 @@
         </button>
         <button type="submit" class="btn btn-primary" [disabled]="loading || saving || form.invalid || loadingCuentas">
           <span *ngIf="!loading && !saving">💾 {{ 'common.save' | translate }}</span>
-          <span *ngIf="loading || saving">⏳ {{ 'common.saving' | translate }}</span>
+          <span *ngIf="loading && !saving">⏳ {{ 'common.loading' | translate }}</span>
+          <span *ngIf="saving">⏳ {{ 'common.saving' | translate }}</span>
         </button>
       </div>
     </form>

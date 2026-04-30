@@ -2,6 +2,26 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
 
+// ═══════════════════════════════════════════════════════════════
+// 🏢 ENUM: TIPO DE ESTABLECIMIENTO (sincronizado con backend)
+// Basado en SAP Plant Types y Oracle Organization Types
+// ═══════════════════════════════════════════════════════════════
+export enum TipoEstablecimiento {
+  SedeCentral = 1,
+  Sucursal = 2,
+  CentroDistribucion = 3,
+  PlantaProduccion = 4,
+  CentroServicios = 5,
+  OficinaComercial = 6,
+  CentroLogistico = 7,
+  PuntoAtencion = 8,
+  Franquicia = 9,
+  OficinaAdministrativa = 10
+}
+
+// ═══════════════════════════════════════════════════════════════
+// 🏢 INTERFACE: ESTABLECIMIENTO DTO (OPTIMIZADO)
+// ═══════════════════════════════════════════════════════════════
 export interface EstablecimientoDTO {
   id: number;
   codigo: string;
@@ -10,6 +30,15 @@ export interface EstablecimientoDTO {
   negocioDescripcion?: string;
   direccion?: string;
   telefono?: string;
+  
+  // ═══════════════════════════════════════════════════════════════
+  // 🏢 INFORMACIÓN ORGANIZACIONAL
+  // ═══════════════════════════════════════════════════════════════
+  tipo: TipoEstablecimiento;
+  
+  // ═══════════════════════════════════════════════════════════════
+  // 📍 INFORMACIÓN GEOGRÁFICA
+  // ═══════════════════════════════════════════════════════════════
   paisId?: number;
   paisDescripcion?: string;
   provinciaId?: number;
@@ -18,8 +47,17 @@ export interface EstablecimientoDTO {
   municipioDescripcion?: string;
   codigoPostalId?: number;
   codigoPostalCodigo?: string;
+  
+  // ═══════════════════════════════════════════════════════════════
+  // 📊 CONTROL DE ESTADO
+  // ═══════════════════════════════════════════════════════════════
+  operativoActualmente: boolean;
   activo: boolean;
   cancelado: boolean;
+  
+  // ═══════════════════════════════════════════════════════════════
+  // 🔧 AUDITORÍA
+  // ═══════════════════════════════════════════════════════════════
   creadoPor: string;
   fechaHoraCreado: Date;
   modificadoPor?: string;

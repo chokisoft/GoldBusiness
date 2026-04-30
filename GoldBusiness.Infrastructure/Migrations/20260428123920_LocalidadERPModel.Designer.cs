@@ -4,6 +4,7 @@ using GoldBusiness.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GoldBusiness.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260428123920_LocalidadERPModel")]
+    partial class LocalidadERPModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -127,7 +130,7 @@ namespace GoldBusiness.Infrastructure.Migrations
 
                     b.HasIndex("IdTurnoId");
 
-                    b.ToTable("CajaRegistradora", (string)null);
+                    b.ToTable("CajaRegistradora");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.CajaRegistradoraDetalle", b =>
@@ -179,7 +182,7 @@ namespace GoldBusiness.Infrastructure.Migrations
 
                     b.HasIndex("ProductoId");
 
-                    b.ToTable("CajaRegistradoraDetalle", (string)null);
+                    b.ToTable("CajaRegistradoraDetalle");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Cliente", b =>
@@ -313,7 +316,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_Cliente");
 
-                    b.ToTable("Cliente", (string)null);
+                    b.ToTable("Cliente");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.CodigoPostal", b =>
@@ -361,7 +364,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_CodigoPostal_Municipio_Codigo_Cancelado");
 
-                    b.ToTable("CodigoPostal", (string)null);
+                    b.ToTable("CodigoPostal");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Comprobante", b =>
@@ -417,7 +420,7 @@ namespace GoldBusiness.Infrastructure.Migrations
 
                     b.HasIndex("EstablecimientoId");
 
-                    b.ToTable("Comprobante", (string)null);
+                    b.ToTable("Comprobante");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.ComprobanteDetalle", b =>
@@ -478,7 +481,7 @@ namespace GoldBusiness.Infrastructure.Migrations
 
                     b.HasIndex("CuentaId");
 
-                    b.ToTable("ComprobanteDetalle", (string)null);
+                    b.ToTable("ComprobanteDetalle");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.ComprobanteTemporal", b =>
@@ -556,7 +559,7 @@ namespace GoldBusiness.Infrastructure.Migrations
 
                     b.HasIndex("EstablecimientoId");
 
-                    b.ToTable("ComprobanteTemporal", (string)null);
+                    b.ToTable("ComprobanteTemporal");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.ConceptoAjuste", b =>
@@ -607,7 +610,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_ConceptoAjuste");
 
-                    b.ToTable("ConceptoAjuste", (string)null);
+                    b.ToTable("ConceptoAjuste");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Cuenta", b =>
@@ -663,7 +666,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_Cuenta");
 
-                    b.ToTable("Cuenta", (string)null);
+                    b.ToTable("Cuenta");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.CuentaCobrarPagar", b =>
@@ -798,7 +801,7 @@ namespace GoldBusiness.Infrastructure.Migrations
 
                     b.HasIndex("TransaccionId");
 
-                    b.ToTable("CuentaCobrarPagar", (string)null);
+                    b.ToTable("CuentaCobrarPagar");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.ErroresVenta", b =>
@@ -857,7 +860,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.HasIndex("ProductoId")
                         .HasDatabaseName("IX_ErroresVenta_Producto");
 
-                    b.ToTable("ErroresVenta", (string)null);
+                    b.ToTable("ErroresVenta");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Establecimiento", b =>
@@ -1166,7 +1169,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_Establecimiento");
 
-                    b.ToTable("Establecimiento", (string)null);
+                    b.ToTable("Establecimiento");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.EstadoCuenta", b =>
@@ -1221,7 +1224,7 @@ namespace GoldBusiness.Infrastructure.Migrations
 
                     b.HasIndex("EstablecimientoId");
 
-                    b.ToTable("EstadoCuenta", (string)null);
+                    b.ToTable("EstadoCuenta");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.FichaProducto", b =>
@@ -1271,7 +1274,7 @@ namespace GoldBusiness.Infrastructure.Migrations
 
                     b.HasIndex("ProductoId");
 
-                    b.ToTable("FichaProducto", (string)null);
+                    b.ToTable("FichaProducto");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.FormaJuridica", b =>
@@ -1305,7 +1308,7 @@ namespace GoldBusiness.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FormaJuridica", (string)null);
+                    b.ToTable("FormaJuridica");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.GrupoCuenta", b =>
@@ -1351,7 +1354,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_GrupoCuenta");
 
-                    b.ToTable("GrupoCuenta", (string)null);
+                    b.ToTable("GrupoCuenta");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.IdTurno", b =>
@@ -1400,7 +1403,7 @@ namespace GoldBusiness.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("IdTurno", (string)null);
+                    b.ToTable("IdTurno");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Linea", b =>
@@ -1446,7 +1449,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_Linea");
 
-                    b.ToTable("Linea", (string)null);
+                    b.ToTable("Linea");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Localidad", b =>
@@ -1557,7 +1560,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_Localidad");
 
-                    b.ToTable("Localidad", (string)null);
+                    b.ToTable("Localidad");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Moneda", b =>
@@ -1607,7 +1610,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_FormaJuridica");
 
-                    b.ToTable("Moneda", (string)null);
+                    b.ToTable("Moneda");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Municipio", b =>
@@ -1661,7 +1664,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_Municipio");
 
-                    b.ToTable("Municipio", (string)null);
+                    b.ToTable("Municipio");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.OperacionesDetalle", b =>
@@ -1738,7 +1741,7 @@ namespace GoldBusiness.Infrastructure.Migrations
 
                     b.HasIndex("ProductoId");
 
-                    b.ToTable("OperacionesDetalle", (string)null);
+                    b.ToTable("OperacionesDetalle");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.OperacionesEncabezado", b =>
@@ -1827,7 +1830,7 @@ namespace GoldBusiness.Infrastructure.Migrations
 
                     b.HasIndex("TransaccionId");
 
-                    b.ToTable("OperacionesEncabezado", (string)null);
+                    b.ToTable("OperacionesEncabezado");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.OperacionesServicio", b =>
@@ -1894,7 +1897,7 @@ namespace GoldBusiness.Infrastructure.Migrations
 
                     b.HasIndex("ProductoId");
 
-                    b.ToTable("OperacionesServicio", (string)null);
+                    b.ToTable("OperacionesServicio");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Pais", b =>
@@ -1973,7 +1976,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_Pais");
 
-                    b.ToTable("Pais", (string)null);
+                    b.ToTable("Pais");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Producto", b =>
@@ -2072,7 +2075,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_Producto");
 
-                    b.ToTable("Producto", (string)null);
+                    b.ToTable("Producto");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Proveedor", b =>
@@ -2206,7 +2209,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_Proveedor");
 
-                    b.ToTable("Proveedor", (string)null);
+                    b.ToTable("Proveedor");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Provincia", b =>
@@ -2260,7 +2263,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_Provincia");
 
-                    b.ToTable("Provincia", (string)null);
+                    b.ToTable("Provincia");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.RefreshToken", b =>
@@ -2315,7 +2318,7 @@ namespace GoldBusiness.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("RefreshToken", (string)null);
+                    b.ToTable("RefreshToken");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Saldo", b =>
@@ -2364,7 +2367,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_Saldo_Localidad_Producto");
 
-                    b.ToTable("Saldo", (string)null);
+                    b.ToTable("Saldo");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.SaldoAnterior", b =>
@@ -2420,7 +2423,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.HasIndex("LocalidadId", "ProductoId", "Fecha")
                         .HasDatabaseName("IX_SaldoAnterior_Localidad_Producto_Fecha");
 
-                    b.ToTable("SaldoAnterior", (string)null);
+                    b.ToTable("SaldoAnterior");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.SubGrupoCuenta", b =>
@@ -2474,7 +2477,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_SubGrupoCuenta");
 
-                    b.ToTable("SubGrupoCuenta", (string)null);
+                    b.ToTable("SubGrupoCuenta");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.SubLinea", b =>
@@ -2525,7 +2528,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_SubLinea");
 
-                    b.ToTable("SubLinea", (string)null);
+                    b.ToTable("SubLinea");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.SystemConfiguration", b =>
@@ -2661,7 +2664,7 @@ namespace GoldBusiness.Infrastructure.Migrations
 
                     b.HasIndex("ProvinciaId");
 
-                    b.ToTable("SystemConfiguration", (string)null);
+                    b.ToTable("SystemConfiguration");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.Transaccion", b =>
@@ -2700,7 +2703,7 @@ namespace GoldBusiness.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Transaccion", (string)null);
+                    b.ToTable("Transaccion");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Entities.UnidadMedida", b =>
@@ -2746,7 +2749,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_UnidadMedida");
 
-                    b.ToTable("UnidadMedida", (string)null);
+                    b.ToTable("UnidadMedida");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.ClienteTranslation", b =>
@@ -2791,7 +2794,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.HasIndex("ClienteId", "Language")
                         .IsUnique();
 
-                    b.ToTable("ClienteTranslation", (string)null);
+                    b.ToTable("ClienteTranslation");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.ComprobanteDetalleTranslation", b =>
@@ -2836,7 +2839,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.HasIndex("ComprobanteDetalleId", "Language")
                         .IsUnique();
 
-                    b.ToTable("ComprobanteDetalleTranslation", (string)null);
+                    b.ToTable("ComprobanteDetalleTranslation");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.ComprobanteTemporalTranslation", b =>
@@ -2881,7 +2884,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.HasIndex("ComprobanteTemporalId", "Language")
                         .IsUnique();
 
-                    b.ToTable("ComprobanteTemporalTranslation", (string)null);
+                    b.ToTable("ComprobanteTemporalTranslation");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.ComprobanteTranslation", b =>
@@ -2926,7 +2929,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.HasIndex("ComprobanteId", "Language")
                         .IsUnique();
 
-                    b.ToTable("ComprobanteTranslation", (string)null);
+                    b.ToTable("ComprobanteTranslation");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.ConceptoAjusteTranslation", b =>
@@ -2971,7 +2974,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.HasIndex("ConceptoAjusteId", "Language")
                         .IsUnique();
 
-                    b.ToTable("ConceptoAjusteTranslation", (string)null);
+                    b.ToTable("ConceptoAjusteTranslation");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.CuentaTranslation", b =>
@@ -3016,7 +3019,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.HasIndex("CuentaId", "Language")
                         .IsUnique();
 
-                    b.ToTable("CuentaTranslation", (string)null);
+                    b.ToTable("CuentaTranslation");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.EstablecimientoTranslation", b =>
@@ -3061,7 +3064,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.HasIndex("EstablecimientoId", "Language")
                         .IsUnique();
 
-                    b.ToTable("EstablecimientoTranslation", (string)null);
+                    b.ToTable("EstablecimientoTranslation");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.FormaJuridicaTranslation", b =>
@@ -3106,7 +3109,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.HasIndex("FormaJuridicaId", "Language")
                         .IsUnique();
 
-                    b.ToTable("FormaJuridicaTranslation", (string)null);
+                    b.ToTable("FormaJuridicaTranslation");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.GrupoCuentaTranslation", b =>
@@ -3151,7 +3154,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.HasIndex("GrupoCuentaId", "Language")
                         .IsUnique();
 
-                    b.ToTable("GrupoCuentaTranslation", (string)null);
+                    b.ToTable("GrupoCuentaTranslation");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.LineaTranslation", b =>
@@ -3196,7 +3199,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.HasIndex("LineaId", "Language")
                         .IsUnique();
 
-                    b.ToTable("LineaTranslation", (string)null);
+                    b.ToTable("LineaTranslation");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.LocalidadTranslation", b =>
@@ -3241,7 +3244,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.HasIndex("LocalidadId", "Language")
                         .IsUnique();
 
-                    b.ToTable("LocalidadTranslation", (string)null);
+                    b.ToTable("LocalidadTranslation");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.MonedaTranslation", b =>
@@ -3286,7 +3289,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.HasIndex("MonedaId", "Language")
                         .IsUnique();
 
-                    b.ToTable("MonedaTranslation", (string)null);
+                    b.ToTable("MonedaTranslation");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.MunicipioTranslation", b =>
@@ -3332,7 +3335,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_MunicipioTranslation");
 
-                    b.ToTable("MunicipioTranslation", (string)null);
+                    b.ToTable("MunicipioTranslation");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.OperacionesEncabezadoTranslation", b =>
@@ -3382,7 +3385,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.HasIndex("OperacionesEncabezadoId", "Language")
                         .IsUnique();
 
-                    b.ToTable("OperacionesEncabezadoTranslation", (string)null);
+                    b.ToTable("OperacionesEncabezadoTranslation");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.PaisTranslation", b =>
@@ -3428,7 +3431,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_PaisTranslation_PaisId_Idioma");
 
-                    b.ToTable("PaisTranslation", (string)null);
+                    b.ToTable("PaisTranslation");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.ProductoTranslation", b =>
@@ -3478,7 +3481,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.HasIndex("ProductoId", "Language")
                         .IsUnique();
 
-                    b.ToTable("ProductoTranslation", (string)null);
+                    b.ToTable("ProductoTranslation");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.ProveedorTranslation", b =>
@@ -3523,7 +3526,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.HasIndex("ProveedorId", "Language")
                         .IsUnique();
 
-                    b.ToTable("ProveedorTranslation", (string)null);
+                    b.ToTable("ProveedorTranslation");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.ProvinciaTranslation", b =>
@@ -3569,7 +3572,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_ProvinciaTranslation");
 
-                    b.ToTable("ProvinciaTranslation", (string)null);
+                    b.ToTable("ProvinciaTranslation");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.SubGrupoCuentaTranslation", b =>
@@ -3614,7 +3617,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.HasIndex("SubGrupoCuentaId", "Language")
                         .IsUnique();
 
-                    b.ToTable("SubGrupoCuentaTranslation", (string)null);
+                    b.ToTable("SubGrupoCuentaTranslation");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.SubLineaTranslation", b =>
@@ -3659,7 +3662,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.HasIndex("SubLineaId", "Language")
                         .IsUnique();
 
-                    b.ToTable("SubLineaTranslation", (string)null);
+                    b.ToTable("SubLineaTranslation");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.SystemConfigurationTranslation", b =>
@@ -3719,7 +3722,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.HasIndex("ConfiguracionId", "Language")
                         .IsUnique();
 
-                    b.ToTable("SystemConfigurationTranslation", (string)null);
+                    b.ToTable("SystemConfigurationTranslation");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.TransaccionTranslation", b =>
@@ -3764,7 +3767,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.HasIndex("TransaccionId", "Language")
                         .IsUnique();
 
-                    b.ToTable("TransaccionTranslation", (string)null);
+                    b.ToTable("TransaccionTranslation");
                 });
 
             modelBuilder.Entity("GoldBusiness.Domain.Translation.UnidadMedidaTranslation", b =>
@@ -3809,7 +3812,7 @@ namespace GoldBusiness.Infrastructure.Migrations
                     b.HasIndex("UnidadMedidaId", "Language")
                         .IsUnique();
 
-                    b.ToTable("UnidadMedidaTranslation", (string)null);
+                    b.ToTable("UnidadMedidaTranslation");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

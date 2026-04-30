@@ -3,12 +3,13 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, of } from 'rxjs';
 import { switchMap, catchError } from 'rxjs/operators';
-import { EstablecimientoService, EstablecimientoDTO } from '../../../services/establecimiento.service';
-import { SystemConfigurationService, SystemConfigurationDTO } from '../../../services/system-configuration.service'; // ⭐ CORREGIDO
+import { EstablecimientoService, EstablecimientoDTO, TipoEstablecimiento } from '../../../services/establecimiento.service';
+import { SystemConfigurationService, SystemConfigurationDTO } from '../../../services/system-configuration.service';
 import { PaisService, PaisDTO } from '../../../services/pais.service';
 import { ProvinciaService, ProvinciaDTO } from '../../../services/provincia.service';
 import { MunicipioService, MunicipioDTO } from '../../../services/municipio.service';
 import { CodigoPostalService, CodigoPostalDTO } from '../../../services/codigo-postal.service';
+import { TranslationService } from '../../../services/translation.service';
 import { normalizePhone, phoneValidator, PHONE_MAX_LENGTH } from '../../shared/phone.util';
 
 @Component({
@@ -17,27 +18,31 @@ import { normalizePhone, phoneValidator, PHONE_MAX_LENGTH } from '../../shared/p
   styleUrls: ['./establecimiento-form.component.css']
 })
 export class EstablecimientoFormComponent implements OnInit, OnDestroy {
-  itemForm: FormGroup;
-  isEditMode = false;
-  itemId?: number;
-  loading = false;
-  saving = false;
-  error: string | null = null;
+itemForm: FormGroup;
+isEditMode = false;
+itemId?: number;
+loading = false;
+saving = false;
+error: string | null = null;
 
-  paises: PaisDTO[] = [];
-  provincias: ProvinciaDTO[] = [];
-  municipios: MunicipioDTO[] = [];
-  codigosPostales: CodigoPostalDTO[] = [];
-  negocios: SystemConfigurationDTO[] = [];
+paises: PaisDTO[] = [];
+provincias: ProvinciaDTO[] = [];
+municipios: MunicipioDTO[] = [];
+codigosPostales: CodigoPostalDTO[] = [];
+negocios: SystemConfigurationDTO[] = [];
+establecimientos: EstablecimientoDTO[] = []; // Para select de matriz
+  
+// Enum de tipos de establecimiento para el select
+tiposEstablecimiento = Object.values(TipoEstablecimiento).filter(v => typeof v === 'number') as number[];
 
-  selectedPais?: PaisDTO;
+selectedPais?: PaisDTO;
 
-  loadingSubGrupos = false;
-  loadingGrupos = false;
-  get form(): FormGroup { return this.itemForm; }
-  cancel(): void { this.onCancel(); }
+loadingSubGrupos = false;
+loadingGrupos = false;
+get form(): FormGroup { return this.itemForm; }
+cancel(): void { this.onCancel(); }
 
-  private subs: Subscription[] = [];
+private subs: Subscription[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -47,19 +52,29 @@ export class EstablecimientoFormComponent implements OnInit, OnDestroy {
     private provinciaService: ProvinciaService,
     private municipioService: MunicipioService,
     private codigoPostalService: CodigoPostalService,
+    private translationService: TranslationService,
     private router: Router,
     private route: ActivatedRoute
   ) {
     this.itemForm = this.fb.group({
+      // Campos básicos
       negocioId: [null, Validators.required],
       codigo: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6)]],
       descripcion: ['', [Validators.required, Validators.maxLength(256)]],
       direccion: ['', Validators.maxLength(256)],
       telefono: ['', Validators.maxLength(PHONE_MAX_LENGTH)],
+      
+      // Información Organizacional
+      tipo: [null, Validators.required],
+      
+      // Ubicación
       paisId: [null],
       provinciaId: [null],
       municipioId: [null],
       codigoPostalId: [null],
+      
+      // Estado
+      operativoActualmente: [true],
       activo: [true],
       cancelado: [false]
     });
@@ -215,6 +230,8 @@ export class EstablecimientoFormComponent implements OnInit, OnDestroy {
 
   private applyPhoneValidators(pais?: PaisDTO): void {
     this.selectedPais = pais;
+    
+    // Aplicar validadores al teléfono principal
     const telefono = this.itemForm.get('telefono')!;
     const validators = [Validators.maxLength(PHONE_MAX_LENGTH)];
 
@@ -239,6 +256,12 @@ export class EstablecimientoFormComponent implements OnInit, OnDestroy {
           descripcion: item.descripcion,
           direccion: item.direccion,
           telefono: item.telefono,
+          tipo: item.tipo,
+          operativoActualmente: item.operativoActualmente,
+          paisId: item.paisId,
+          provinciaId: item.provinciaId,
+          municipioId: item.municipioId,
+          codigoPostalId: item.codigoPostalId,
           activo: item.activo,
           cancelado: item.cancelado
         }, { emitEvent: false });
@@ -359,5 +382,24 @@ export class EstablecimientoFormComponent implements OnInit, OnDestroy {
 
   onCancel(): void {
     this.router.navigate(['/nomencladores/establecimiento']);
+  }
+
+  /**
+   * Obtiene la etiqueta traducida para un tipo de establecimiento
+   */
+  getTipoEstablecimientoLabel(tipo: number): string {
+    const keys: Record<number, string> = {
+      [TipoEstablecimiento.SedeCentral]: 'establecimiento.tipo.sedeCentral',
+      [TipoEstablecimiento.Sucursal]: 'establecimiento.tipo.sucursal',
+      [TipoEstablecimiento.CentroDistribucion]: 'establecimiento.tipo.centroDistribucion',
+      [TipoEstablecimiento.PlantaProduccion]: 'establecimiento.tipo.plantaProduccion',
+      [TipoEstablecimiento.CentroServicios]: 'establecimiento.tipo.centroServicios',
+      [TipoEstablecimiento.OficinaComercial]: 'establecimiento.tipo.oficinaComercial',
+      [TipoEstablecimiento.CentroLogistico]: 'establecimiento.tipo.centroLogistico',
+      [TipoEstablecimiento.PuntoAtencion]: 'establecimiento.tipo.puntoAtencion',
+      [TipoEstablecimiento.Franquicia]: 'establecimiento.tipo.franquicia',
+      [TipoEstablecimiento.OficinaAdministrativa]: 'establecimiento.tipo.oficinaAdministrativa'
+    };
+    return this.translationService?.translate(keys[tipo]) || '';
   }
 }

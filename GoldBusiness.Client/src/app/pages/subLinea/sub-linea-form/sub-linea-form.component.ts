@@ -18,6 +18,7 @@ export class SubLineaFormComponent implements OnInit, OnDestroy {
   isEditMode = false;
   subLineaId: number | null = null;
   loading = false;
+  saving = false;
   error: string | null = null;
 
   lineas: LineaDTO[] = [];
@@ -201,7 +202,7 @@ export class SubLineaFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.loading = true;
+    this.saving = true;
     this.error = null;
 
     const formData: SubLineaDTO = {
@@ -215,7 +216,7 @@ export class SubLineaFormComponent implements OnInit, OnDestroy {
           this.router.navigate(['/nomencladores/sub-linea']);
         },
         error: (err) => {
-          this.loading = false;
+          this.saving = false;
           this.error = 'Error al actualizar';
         }
       });
@@ -225,7 +226,7 @@ export class SubLineaFormComponent implements OnInit, OnDestroy {
           this.router.navigate(['/nomencladores/sub-linea']);
         },
         error: (err) => {
-          this.loading = false;
+          this.saving = false;
           this.error = 'Error al crear';
         }
       });

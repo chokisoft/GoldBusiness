@@ -178,392 +178,398 @@
   <data name="SupportedLanguages" xml:space="preserve">
     <value>Idiomas Suportados</value>
   </data>
-	<data name="CuentaCodigoLongitud" xml:space="preserve">
+  <data name="CuentaCodigoLongitud" xml:space="preserve">
   <value>Account Código deve ter exatamente 8 caracteres</value>
 </data>
-	<data name="CuentaCodigoFormato" xml:space="preserve">
+  <data name="CuentaCodigoFormato" xml:space="preserve">
   <value>Código deve ser numérico com 8 dígitos (Exemplo: 10000010)</value>
 </data>
-	<data name="SubGrupoCuentaObligatorio" xml:space="preserve">
+  <data name="SubGrupoCuentaObligatorio" xml:space="preserve">
   <value>Subgrupo de Contas é obrigatório</value>
 </data>
-	<data name="SubGrupoCuentaSeleccion" xml:space="preserve">
+  <data name="SubGrupoCuentaSeleccion" xml:space="preserve">
   <value>Você deve selecionar um válido Subgrupo de Contas</value>
 </data>
-	<data name="Field_SubGrupoCuenta" xml:space="preserve">
+  <data name="Field_SubGrupoCuenta" xml:space="preserve">
   <value>Subgrupo de Contas</value>
 </data>
-	<data name="SubLineaCodigoLongitud" xml:space="preserve">
+  <data name="SubLineaCodigoLongitud" xml:space="preserve">
   <value>SubCódigo da linha deve ter exatamente 5 caracteres</value>
 </data>
-	<data name="SubLineaCodigoFormato" xml:space="preserve">
+  <data name="SubLineaCodigoFormato" xml:space="preserve">
   <value>Código deve ser numérico com 5 dígitos (Exemplo: 01100)</value>
 </data>
-	<data name="LineaObligatoria" xml:space="preserve">
+  <data name="LineaObligatoria" xml:space="preserve">
   <value>Linha é obrigatória</value>
 </data>
-	<data name="LineaSeleccion" xml:space="preserve">
+  <data name="LineaSeleccion" xml:space="preserve">
   <value>Você deve selecionar um válido Linha</value>
 </data>
-	<data name="Field_Linea" xml:space="preserve">
+  <data name="Field_Linea" xml:space="preserve">
   <value>Linha</value>
 </data>
-	<data name="Field_Productos" xml:space="preserve">
+  <data name="Field_Productos" xml:space="preserve">
   <value>Produtos</value>
 </data>
-<data name="CodigoDuplicado" xml:space="preserve">
+  <data name="CodigoDuplicado" xml:space="preserve">
 	<value>Um registro ativo com código '{0}' já existe</value>
 </data>
-<data name="RegistroReactivado" xml:space="preserve">
+  <data name="RegistroReactivado" xml:space="preserve">
 	<value>The existing record with Código '{0}' has been reactiIVAed</value>
 </data>
-<data name="RegistroCanceladoExistente" xml:space="preserve">
+  <data name="RegistroCanceladoExistente" xml:space="preserve">
 	<value>A Cancelado record with Código '{0}' já existe. Consider reactiIVAing the existing record (ID: {1})</value>
 </data>
-	<data name="ClienteCodigoLongitud" xml:space="preserve">
+  <data name="ClienteCodigoLongitud" xml:space="preserve">
   <value>Cliente Código deve ter exatamente 8 caracteres</value>
 </data>
-	<data name="ClienteCodigoFormato" xml:space="preserve">
+  <data name="ClienteCodigoFormato" xml:space="preserve">
   <value>Cliente Código deve ser alfanumérico com 8 caracteres</value>
 </data>
-	<data name="Field_Cliente" xml:space="preserve">
+  <data name="Field_Cliente" xml:space="preserve">
   <value>Cliente</value>
 </data>
-	<data name="Field_Nif" xml:space="preserve">
+  <data name="Field_Nif" xml:space="preserve">
   <value>ID Fiscal</value>
 </data>
-	<data name="Field_Iban" xml:space="preserve">
+  <data name="Field_Iban" xml:space="preserve">
   <value>IBAN</value>
 </data>
-	<data name="Field_BicoSwift" xml:space="preserve">
+  <data name="Field_BicoSwift" xml:space="preserve">
   <value>BIC/SWIFT</value>
 </data>
-	<data name="Field_Iva" xml:space="preserve">
+  <data name="Field_Iva" xml:space="preserve">
   <value>IVA (%)</value>
 </data>
-	<data name="Field_Direccion" xml:space="preserve">
+  <data name="Field_Direccion" xml:space="preserve">
   <value>Endereço</value>
 </data>
-	<data name="Field_Municipio" xml:space="preserve">
+  <data name="Field_Municipio" xml:space="preserve">
   <value>Cidade</value>
 </data>
-	<data name="Field_Provincia" xml:space="preserve">
+  <data name="Field_Provincia" xml:space="preserve">
   <value>Província/Estado</value>
 </data>
-	<data name="Field_CodPostal" xml:space="preserve">
+  <data name="Field_CodPostal" xml:space="preserve">
   <value>Código Postal</value>
 </data>
-	<data name="Field_Web" xml:space="preserve">
+  <data name="Field_Web" xml:space="preserve">
   <value>Website</value>
 </data>
-	<data name="Field_Email1" xml:space="preserve">
+  <data name="Field_Email1" xml:space="preserve">
   <value>Email Principal</value>
 </data>
-	<data name="Field_Email2" xml:space="preserve">
+  <data name="Field_Email2" xml:space="preserve">
   <value>Email Secundário</value>
 </data>
-	<data name="Field_Telefono1" xml:space="preserve">
+  <data name="Field_Telefono1" xml:space="preserve">
   <value>Telefone Principal</value>
 </data>
-	<data name="Field_Telefono2" xml:space="preserve">
+  <data name="Field_Telefono2" xml:space="preserve">
   <value>Telefone Secundário</value>
 </data>
-	<data name="Field_Fax1" xml:space="preserve">
+  <data name="Field_Fax1" xml:space="preserve">
   <value>Fax Principal</value>
 </data>
-	<data name="Field_Fax2" xml:space="preserve">
+  <data name="Field_Fax2" xml:space="preserve">
   <value>Fax Secundário</value>
 </data>
-	<data name="NifLongitud" xml:space="preserve">
+  <data name="NifLongitud" xml:space="preserve">
   <value>ID Fiscal não pode exceder 11 caracteres</value>
 </data>
-	<data name="IbanLongitud" xml:space="preserve">
+  <data name="IbanLongitud" xml:space="preserve">
   <value>IBAN não pode exceder 27 caracteres</value>
 </data>
-	<data name="BicoSwiftLongitud" xml:space="preserve">
+  <data name="BicoSwiftLongitud" xml:space="preserve">
   <value>BIC/SWIFT não pode exceder 11 caracteres</value>
 </data>
-	<data name="IvaRango" xml:space="preserve">
+  <data name="IvaRango" xml:space="preserve">
   <value>IVA deve estar entre -0.01 e 99.99</value>
 </data>
-	<data name="DireccionLongitud" xml:space="preserve">
+  <data name="DireccionLongitud" xml:space="preserve">
   <value>Endereço não pode exceder 256 caracteres</value>
 </data>
-	<data name="MunicipioLongitud" xml:space="preserve">
+  <data name="MunicipioLongitud" xml:space="preserve">
   <value>Cidade não pode exceder 50 caracteres</value>
 </data>
-	<data name="ProvinciaLongitud" xml:space="preserve">
+  <data name="ProvinciaLongitud" xml:space="preserve">
   <value>Província/Estado não pode exceder 50 caracteres</value>
 </data>
-	<data name="CodPostalLongitud" xml:space="preserve">
+  <data name="CodPostalLongitud" xml:space="preserve">
   <value>Código Postal não pode exceder 5 caracteres</value>
 </data>
-	<data name="WebFormato" xml:space="preserve">
+  <data name="WebFormato" xml:space="preserve">
   <value>URL não é válido</value>
 </data>
-	<data name="WebLongitud" xml:space="preserve">
+  <data name="WebLongitud" xml:space="preserve">
   <value>URL não pode exceder 256 caracteres</value>
 </data>
-	<data name="EmailFormato" xml:space="preserve">
+  <data name="EmailFormato" xml:space="preserve">
   <value>Email não é válido</value>
 </data>
-	<data name="EmailLongitud" xml:space="preserve">
+  <data name="EmailLongitud" xml:space="preserve">
   <value>Email não pode exceder 256 caracteres</value>
 </data>
-	<data name="TelefonoFormato" xml:space="preserve">
+  <data name="TelefonoFormato" xml:space="preserve">
   <value>Formato deve ser ####-####</value>
 </data>
-	<data name="TelefonoFormatoInvalido" xml:space="preserve">
+  <data name="TelefonoFormatoInvalido" xml:space="preserve">
   <value>Número de telefone não é válido</value>
 </data>
-	<data name="TelefonoLongitud" xml:space="preserve">
+  <data name="TelefonoLongitud" xml:space="preserve">
   <value>Telefone não pode exceder 50 caracteres</value>
 </data>
-	<data name="FaxLongitud" xml:space="preserve">
+  <data name="FaxLongitud" xml:space="preserve">
   <value>Fax não pode exceder 50 caracteres</value>
 </data>
-<data name="ProveedorCodigoLongitud" xml:space="preserve">
+  <data name="ProveedorCodigoLongitud" xml:space="preserve">
   <value>Fornecedor Código deve ter exatamente 5 caracteres</value>
 </data>
-	<data name="ProveedorCodigoFormato" xml:space="preserve">
+  <data name="ProveedorCodigoFormato" xml:space="preserve">
   <value>Fornecedor Código deve ser alfanumérico com 5 caracteres</value>
 </data>
-	<data name="Field_Proveedor" xml:space="preserve">
+  <data name="Field_Proveedor" xml:space="preserve">
   <value>Fornecedor</value>
 </data>
-	<data name="Field_CantidadProductos" xml:space="preserve">
+  <data name="Field_CantidadProductos" xml:space="preserve">
   <value>Number of Produtos</value>
 </data>
-	<!-- Establecimiento -->
-	<data name="EstablecimientoCodigoLongitud" xml:space="preserve">
+  <!-- Establecimiento -->
+  <data name="EstablecimientoCodigoLongitud" xml:space="preserve">
   <value>The Estabelecimento Código deve ter exatamente 6 caracteres.</value>
 </data>
-	<data name="NegocioIdObligatorio" xml:space="preserve">
+  <data name="NegocioIdObligatorio" xml:space="preserve">
   <value>O ID do negócio é obrigatório.</value>
 </data>
-
-	<!-- Localidad -->
-	<data name="LocalidadCodigoLongitud" xml:space="preserve">
+  <!-- Localidad -->
+  <data name="LocalidadCodigoLongitud" xml:space="preserve">
   <value>O código da localidade deve ter exatamente 9 caracteres.</value>
 </data>
-	<data name="EstablecimientoIdObligatorio" xml:space="preserve">
+  <data name="EstablecimientoIdObligatorio" xml:space="preserve">
   <value>O ID do estabelecimento é obrigatório.</value>
 </data>
-	<data name="CuentaInventarioIdObligatorio" xml:space="preserve">
+  <data name="CuentaInventarioIdObligatorio" xml:space="preserve">
   <value>The inventory ID da Conta é obrigatório.</value>
 </data>
-	<data name="CuentaCostoIdObligatorio" xml:space="preserve">
+  <data name="CuentaCostoIdObligatorio" xml:space="preserve">
   <value>The cost ID da Conta é obrigatório.</value>
 </data>
-	<data name="CuentaVentaIdObligatorio" xml:space="preserve">
+  <data name="CuentaVentaIdObligatorio" xml:space="preserve">
   <value>The Conta de Vendas ID é obrigatório.</value>
 </data>
-	<data name="CuentaDevolucionIdObligatorio" xml:space="preserve">
+  <data name="CuentaDevolucionIdObligatorio" xml:space="preserve">
   <value>The return ID da Conta é obrigatório.</value>
 </data>
-
-	<!-- Fields Display Names -->
-	<data name="Field_Establecimiento" xml:space="preserve">
+  <!-- Fields Display Names -->
+  <data name="Field_Establecimiento" xml:space="preserve">
   <value>Estabelecimento</value>
 </data>
-	<data name="Field_Localidad" xml:space="preserve">
+  <data name="Field_Localidad" xml:space="preserve">
   <value>Localidade</value>
 </data>
-	<data name="Field_Negocio" xml:space="preserve">
+  <data name="Field_Negocio" xml:space="preserve">
   <value>Negócio</value>
 </data>
-	<data name="Field_CuentaInventario" xml:space="preserve">
+  <data name="Field_CuentaInventario" xml:space="preserve">
   <value>Conta de Inventário</value>
 </data>
-	<data name="Field_CuentaCosto" xml:space="preserve">
+  <data name="Field_CuentaCosto" xml:space="preserve">
   <value>Conta de Custo</value>
 </data>
-	<data name="Field_CuentaVenta" xml:space="preserve">
+  <data name="Field_CuentaVenta" xml:space="preserve">
   <value>Conta de Vendas</value>
 </data>
-	<data name="Field_CuentaDevolucion" xml:space="preserve">
+  <data name="Field_CuentaDevolucion" xml:space="preserve">
   <value>Conta de Devolução</value>
 </data>
-	<data name="Field_Almacen" xml:space="preserve">
+  <data name="Field_Almacen" xml:space="preserve">
   <value>É Armazém</value>
 </data>
-	<!-- Transaccion -->
-	<data name="TransaccionCodigoLongitud" xml:space="preserve">
+  <!-- Transaccion -->
+  <data name="TransaccionCodigoLongitud" xml:space="preserve">
   <value>O código da transação não pode exceder 10 caracteres.</value>
 </data>
-	<data name="Field_Transaccion" xml:space="preserve">
+  <data name="Field_Transaccion" xml:space="preserve">
   <value>Transação</value>
 </data>
-
-	<!-- Producto -->
-	<data name="ProductoCodigoLongitud" xml:space="preserve">
+  <!-- Producto -->
+  <data name="ProductoCodigoLongitud" xml:space="preserve">
   <value>The Produto Código não pode exceder 13 caracteres.</value>
 </data>
-	<data name="EstablecimientoObligatorio" xml:space="preserve">
+  <data name="EstablecimientoObligatorio" xml:space="preserve">
   <value>The Estabelecimento é obrigatório.</value>
 </data>
-	<data name="EstablecimientoSeleccion" xml:space="preserve">
+  <data name="EstablecimientoSeleccion" xml:space="preserve">
   <value>Você deve selecionar um válido Estabelecimento.</value>
 </data>
-	<data name="UnidadMedidaObligatoria" xml:space="preserve">
+  <data name="UnidadMedidaObligatoria" xml:space="preserve">
   <value>The Unidade de Medida é obrigatório.</value>
 </data>
-	<data name="UnidadMedidaSeleccion" xml:space="preserve">
+  <data name="UnidadMedidaSeleccion" xml:space="preserve">
   <value>Você deve selecionar um válido Unidade de Medida.</value>
 </data>
-	<data name="ProveedorObligatorio" xml:space="preserve">
+  <data name="ProveedorObligatorio" xml:space="preserve">
   <value>The Fornecedor é obrigatório.</value>
 </data>
-	<data name="ProveedorSeleccion" xml:space="preserve">
+  <data name="ProveedorSeleccion" xml:space="preserve">
   <value>Você deve selecionar um válido Fornecedor.</value>
 </data>
-	<data name="PrecioVentaObligatorio" xml:space="preserve">
+  <data name="PrecioVentaObligatorio" xml:space="preserve">
   <value>O preço de venda é obrigatório.</value>
 </data>
-	<data name="PrecioVentaRango" xml:space="preserve">
+  <data name="PrecioVentaRango" xml:space="preserve">
   <value>The Preço de Venda deve ser maior ou igual a zero.</value>
 </data>
-	<data name="PrecioCostoObligatorio" xml:space="preserve">
+  <data name="PrecioCostoObligatorio" xml:space="preserve">
   <value>The Preço de Custo é obrigatório.</value>
 </data>
-	<data name="PrecioCostoRango" xml:space="preserve">
+  <data name="PrecioCostoRango" xml:space="preserve">
   <value>The Preço de Custo deve ser maior ou igual a zero.</value>
 </data>
-	<data name="CodigoReferenciaLongitud" xml:space="preserve">
+  <data name="CodigoReferenciaLongitud" xml:space="preserve">
   <value>The Código de Referência não pode exceder 50 caracteres.</value>
 </data>
-	<data name="StockMinimoRango" xml:space="preserve">
+  <data name="StockMinimoRango" xml:space="preserve">
   <value>The Estoque Mínimo deve ser maior ou igual a zero.</value>
 </data>
-	<data name="SubLineaObligatoria" xml:space="preserve">
+  <data name="SubLineaObligatoria" xml:space="preserve">
   <value>The subLinha é obrigatória.</value>
 </data>
-	<data name="SubLineaSeleccion" xml:space="preserve">
+  <data name="SubLineaSeleccion" xml:space="preserve">
   <value>Você deve selecionar um válido subLinha.</value>
 </data>
-	<data name="CaracteristicasLongitud" xml:space="preserve">
+  <data name="CaracteristicasLongitud" xml:space="preserve">
   <value>As características não podem exceder 1024 caracteres.</value>
 </data>
-	<data name="Field_Producto" xml:space="preserve">
+  <data name="Field_Producto" xml:space="preserve">
   <value>Produto</value>
 </data>
-	<data name="Field_UnidadMedida" xml:space="preserve">
+  <data name="Field_UnidadMedida" xml:space="preserve">
   <value>Unidade de Medida</value>
 </data>
-	<data name="Field_PrecioVenta" xml:space="preserve">
+  <data name="Field_PrecioVenta" xml:space="preserve">
   <value>Preço de Venda</value>
 </data>
-	<data name="Field_PrecioCosto" xml:space="preserve">
+  <data name="Field_PrecioCosto" xml:space="preserve">
   <value>Preço de Custo</value>
 </data>
-	<data name="Field_CodigoReferencia" xml:space="preserve">
+  <data name="Field_CodigoReferencia" xml:space="preserve">
   <value>Código de Referência</value>
 </data>
-	<data name="Field_StockMinimo" xml:space="preserve">
+  <data name="Field_StockMinimo" xml:space="preserve">
   <value>Estoque Mínimo</value>
 </data>
-	<data name="Field_Servicio" xml:space="preserve">
+  <data name="Field_Servicio" xml:space="preserve">
   <value>É Serviço</value>
 </data>
-	<data name="Field_Imagen" xml:space="preserve">
+  <data name="Field_Imagen" xml:space="preserve">
   <value>Imagem</value>
 </data>
-	<data name="Field_Caracteristicas" xml:space="preserve">
+  <data name="Field_Caracteristicas" xml:space="preserve">
   <value>Características</value>
 </data>
-
-	<!-- FichaProducto -->
-	<data name="ProductoIdObligatorio" xml:space="preserve">
+  <!-- FichaProducto -->
+  <data name="ProductoIdObligatorio" xml:space="preserve">
   <value>O ID do produto é obrigatório.</value>
 </data>
-	<data name="LocalidadObligatoria" xml:space="preserve">
+  <data name="LocalidadObligatoria" xml:space="preserve">
   <value>The Localidade é obrigatório.</value>
 </data>
-	<data name="LocalidadSeleccion" xml:space="preserve">
+  <data name="LocalidadSeleccion" xml:space="preserve">
   <value>Você deve selecionar um válido Localidade.</value>
 </data>
-	<data name="ComponenteIdObligatorio" xml:space="preserve">
+  <data name="ComponenteIdObligatorio" xml:space="preserve">
   <value>O ID do Componentee é obrigatório.</value>
 </data>
-	<data name="ComponenteSeleccion" xml:space="preserve">
+  <data name="ComponenteSeleccion" xml:space="preserve">
   <value>Você deve selecionar um válido Componente.</value>
 </data>
-	<data name="CantidadObligatoria" xml:space="preserve">
+  <data name="CantidadObligatoria" xml:space="preserve">
   <value>The Quantidade é obrigatório.</value>
 </data>
-	<data name="CantidadRango" xml:space="preserve">
+  <data name="CantidadRango" xml:space="preserve">
   <value>A quantidade deve ser maior que zero.</value>
 </data>
-	<data name="Field_FichaProducto" xml:space="preserve">
+  <data name="Field_FichaProducto" xml:space="preserve">
   <value>Ficha do Produto</value>
 </data>
-	<data name="Field_Componente" xml:space="preserve">
+  <data name="Field_Componente" xml:space="preserve">
   <value>Componente</value>
 </data>
-	<data name="Field_Cantidad" xml:space="preserve">
+  <data name="Field_Cantidad" xml:space="preserve">
   <value>Quantidade</value>
 </data>
-	<!-- UnidadMedida -->
-	<data name="UnidadMedidaCodigoLongitud" xml:space="preserve">
+  <!-- UnidadMedida -->
+  <data name="UnidadMedidaCodigoLongitud" xml:space="preserve">
   <value>The Unidade de Medida Código não pode exceder 3 caracteres.</value>
 </data>
-	<data name="Field_UnidadMedida" xml:space="preserve">
+  <data name="Field_UnidadMedida" xml:space="preserve">
   <value>Unidade de Medida</value>
 </data>
-	<data name="LogoFormatoInvalido" xml:space="preserve">
+  <data name="LogoFormatoInvalido" xml:space="preserve">
   <value>Formato de logo inválido. Use PNG, JPG, GIF ou WEBP.</value>
 </data>
-	<data name="LogoTamañoExcedido" xml:space="preserve">
+  <data name="LogoTamañoExcedido" xml:space="preserve">
   <value>Logo file não pode exceder 2MB.</value>
 </data>
-	<data name="LogoNombreArchivoInvalido" xml:space="preserve">
+  <data name="LogoNombreArchivoInvalido" xml:space="preserve">
   <value>Logo file name contains invalid caracteres.</value>
 </data>
-	<data name="LogoExtensionInvalida" xml:space="preserve">
+  <data name="LogoExtensionInvalida" xml:space="preserve">
   <value>Extensão de arquivo inválida. Use PNG, JPG, GIF ou WEBP.</value>
 </data>
-	<data name="LogoUrlInvalida" xml:space="preserve">
+  <data name="LogoUrlInvalida" xml:space="preserve">
   <value>URL de logo inválida.</value>
 </data>
-	<data name="Field_Logo" xml:space="preserve">
+  <data name="Field_Logo" xml:space="preserve">
   <value>Logo</value>
 </data>
-	<data name="LineaCodigoFormato" xml:space="preserve">
+  <data name="LineaCodigoFormato" xml:space="preserve">
   <value>The Código da linha deve ser um número de 2 dígitos (Exemplo: 01, 02, 99)</value>
 </data>
-	<data name="UnidadMedidaCodigoLongitud" xml:space="preserve">
+  <data name="UnidadMedidaCodigoLongitud" xml:space="preserve">
   <value>The Unidade de Medida Código deve ter exatamente 3 caracteres</value>
 </data>
-	<data name="UnidadMedidaCodigoFormato" xml:space="preserve">
+  <data name="UnidadMedidaCodigoFormato" xml:space="preserve">
   <value>The Código deve ser alfanumérico com 3 caracteres (Exemplo: UND, KG, LTS)</value>
 </data>
-	<data name="Field_Telefono" xml:space="preserve">
+  <data name="Field_Telefono" xml:space="preserve">
   <value>Telefone</value>
 </data>
-	<data name="TelefonoLongitud" xml:space="preserve">
+  <data name="TelefonoLongitud" xml:space="preserve">
   <value>The Telefone não pode exceder {1} caracteres.</value>
 </data>
-	<data name="TelefonoFormatoInvalido" xml:space="preserve">
+  <data name="TelefonoFormatoInvalido" xml:space="preserve">
   <value>The Telefone does not have a valid format.</value>
 </data>
-	<data name="IvaObligatorio" xml:space="preserve">
+  <data name="IvaObligatorio" xml:space="preserve">
     <value>IVA é obrigatório</value>
   </data>
-	<data name="IvaFormato" xml:space="preserve">
+  <data name="IvaFormato" xml:space="preserve">
     <value>IVA must be an integer between 0 e 100</value>
   </data>
-	<data name="Field_Iva" xml:space="preserve">
+  <data name="Field_Iva" xml:space="preserve">
     <value>IVA</value>
   </data>
-	<data name="IvaObligatorio" xml:space="preserve"><value>IVA é obrigatório</value></data>
-	<data name="IvaFormato" xml:space="preserve"><value>IVA must be an integer between 0 e 100</value></data>
-	<data name="Field_Iva" xml:space="preserve"><value>IVA</value></data>
-	<data name="Field_Codigo" xml:space="preserve"><value>Código</value></data>
-	<data name="Field_Descripcion" xml:space="preserve"><value>Descrição</value></data>
-	<data name="CodigoFormatoAlfanumerico" xml:space="preserve">
+  <data name="IvaObligatorio" xml:space="preserve">
+    <value>IVA é obrigatório</value>
+  </data>
+  <data name="IvaFormato" xml:space="preserve">
+    <value>IVA must be an integer between 0 e 100</value>
+  </data>
+  <data name="Field_Iva" xml:space="preserve">
+    <value>IVA</value>
+  </data>
+  <data name="Field_Codigo" xml:space="preserve">
+    <value>Código</value>
+  </data>
+  <data name="Field_Descripcion" xml:space="preserve">
+    <value>Descrição</value>
+  </data>
+  <data name="CodigoFormatoAlfanumerico" xml:space="preserve">
     <value>The Código must be alphanumeric (letters e/or numbers) e exactly 3 caracteres long</value>
   </data>
-	<data name="Field_Licencia" xml:space="preserve">
+  <data name="Field_Licencia" xml:space="preserve">
     <value>Licença</value>
   </data>
   <data name="Field_CuentaPagar" xml:space="preserve">
@@ -572,59 +578,114 @@
   <data name="Field_CuentaCobrar" xml:space="preserve">
     <value>Contas Receivable</value>
   </data>
-	<data name="CodigoPaisIsoLongitud" xml:space="preserve">
+  <data name="CodigoPaisIsoLongitud" xml:space="preserve">
   <value>The ISO country Código não pode exceder 3 caracteres.</value>
 </data>
-
-	<data name="IdentificadorFiscalLongitud" xml:space="preserve">
+  <data name="IdentificadorFiscalLongitud" xml:space="preserve">
   <value>O ID fiscal não pode exceder 30 caracteres.</value>
 </data>
-
-	<data name="TasaIvaRango" xml:space="preserve">
+  <data name="TasaIvaRango" xml:space="preserve">
   <value>A taxa de IVA deve estar entre 0 e 100.</value>
 </data>
-
-	<data name="Field_TipoIdentificadorFiscal" xml:space="preserve">
+  <data name="Field_TipoIdentificadorFiscal" xml:space="preserve">
   <value>Tipo de ID Fiscal</value>
 </data>
-
-	<data name="Field_RegimenFiscal" xml:space="preserve">
+  <data name="Field_RegimenFiscal" xml:space="preserve">
   <value>Regime Fiscal</value>
 </data>
-
-	<data name="Field_IdentificadorFiscal" xml:space="preserve">
+  <data name="Field_IdentificadorFiscal" xml:space="preserve">
   <value>ID Fiscal</value>
 </data>
-
-	<data name="Field_TasaIvaDefecto" xml:space="preserve">
+  <data name="Field_TasaIvaDefecto" xml:space="preserve">
   <value>Default IVA Rate</value>
 </data>
-
-	<data name="Field_RegistradaIva" xml:space="preserve">
+  <data name="Field_RegistradaIva" xml:space="preserve">
   <value>Registrado para IVA</value>
 </data>
-
-	<data name="Field_IvaInternacional" xml:space="preserve">
+  <data name="Field_IvaInternacional" xml:space="preserve">
   <value>International IVA</value>
 </data>
-
-	<data name="Field_ExentoIva" xml:space="preserve">
+  <data name="Field_ExentoIva" xml:space="preserve">
   <value>IVA Exempt</value>
 </data>
-
-	<data name="Field_Extranjero" xml:space="preserve">
+  <data name="Field_Extranjero" xml:space="preserve">
   <value>Foreign</value>
 </data>
-
-	<data name="Field_CodigoPaisIso" xml:space="preserve">
+  <data name="Field_CodigoPaisIso" xml:space="preserve">
   <value>ISO Country Código</value>
 </data>
-
-	<data name="Field_ValidarIdentificadorFiscal" xml:space="preserve">
+  <data name="Field_ValidarIdentificadorFiscal" xml:space="preserve">
   <value>Validate ID Fiscal</value>
 </data>
-
-	<data name="Field_InversionSujetoPasivo" xml:space="preserve">
+  <data name="Field_InversionSujetoPasivo" xml:space="preserve">
   <value>Reverse Charge</value>
 </data>
+  <data name="TipoLocalidad_Cuarentena" xml:space="preserve">
+    <value>Cuarentena</value>
+    <comment>TODO: translate</comment>
+  </data>
+  <data name="Field_RequiereControlLotes" xml:space="preserve">
+    <value>Requiere Control de Lotes</value>
+    <comment>TODO: translate</comment>
+  </data>
+  <data name="Field_TipoLocalidad" xml:space="preserve">
+    <value>Tipo de Localidad</value>
+    <comment>TODO: translate</comment>
+  </data>
+  <data name="TipoLocalidad_Almacen" xml:space="preserve">
+    <value>Almacén</value>
+    <comment>TODO: translate</comment>
+  </data>
+  <data name="TipoLocalidad_Transito" xml:space="preserve">
+    <value>Tránsito</value>
+    <comment>TODO: translate</comment>
+  </data>
+  <data name="TipoLocalidad_Obsoletos" xml:space="preserve">
+    <value>Obsoletos</value>
+    <comment>TODO: translate</comment>
+  </data>
+  <data name="TipoLocalidad_Facturacion" xml:space="preserve">
+    <value>Facturación</value>
+    <comment>TODO: translate</comment>
+  </data>
+  <data name="Field_PermiteAjustes" xml:space="preserve">
+    <value>Permite Ajustes</value>
+    <comment>TODO: translate</comment>
+  </data>
+  <data name="TipoLocalidad_Consignacion" xml:space="preserve">
+    <value>Consignación</value>
+    <comment>TODO: translate</comment>
+  </data>
+  <data name="Field_PermiteVentas" xml:space="preserve">
+    <value>Permite Ventas</value>
+    <comment>TODO: translate</comment>
+  </data>
+  <data name="Field_PermiteCompras" xml:space="preserve">
+    <value>Permite Compras</value>
+    <comment>TODO: translate</comment>
+  </data>
+  <data name="TipoLocalidadObligatorio" xml:space="preserve">
+    <value>El tipo de localidad es obligatorio.</value>
+    <comment>TODO: translate</comment>
+  </data>
+  <data name="TipoLocalidad_Devoluciones" xml:space="preserve">
+    <value>Devoluciones</value>
+    <comment>TODO: translate</comment>
+  </data>
+  <data name="Field_RequiereNumerosSerie" xml:space="preserve">
+    <value>Requiere Números de Serie</value>
+    <comment>TODO: translate</comment>
+  </data>
+  <data name="TipoLocalidad_Produccion" xml:space="preserve">
+    <value>Producción</value>
+    <comment>TODO: translate</comment>
+  </data>
+  <data name="Field_PermiteTransferencias" xml:space="preserve">
+    <value>Permite Transferencias</value>
+    <comment>TODO: translate</comment>
+  </data>
+  <data name="TipoLocalidad_PuntoVenta" xml:space="preserve">
+    <value>Punto de Venta</value>
+    <comment>TODO: translate</comment>
+  </data>
 </root>

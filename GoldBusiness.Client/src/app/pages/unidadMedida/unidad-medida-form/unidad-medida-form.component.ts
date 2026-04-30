@@ -17,6 +17,7 @@ export class UnidadMedidaFormComponent implements OnInit, OnDestroy {
   isEditMode = false;
   unidadMedidaId: number | null = null;
   loading = false;
+  saving = false;
   error: string | null = null;
 
   private languageSubscription?: Subscription;
@@ -110,7 +111,7 @@ export class UnidadMedidaFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.loading = true;
+    this.saving = true;
     this.error = null;
 
     const formData: UnidadMedidaDTO = this.form.getRawValue(); // ✅ getRawValue() para incluir campos deshabilitados
@@ -121,7 +122,7 @@ export class UnidadMedidaFormComponent implements OnInit, OnDestroy {
           this.router.navigate(['/nomencladores/unidad-medida']);
         },
         error: (err) => {
-          this.loading = false;
+          this.saving = false;
           this.error = 'Error al actualizar';
         }
       });
@@ -131,7 +132,7 @@ export class UnidadMedidaFormComponent implements OnInit, OnDestroy {
           this.router.navigate(['/nomencladores/unidad-medida']);
         },
         error: (err) => {
-          this.loading = false;
+          this.saving = false;
           this.error = 'Error al crear';
         }
       });

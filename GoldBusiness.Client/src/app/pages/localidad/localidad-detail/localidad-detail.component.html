@@ -25,64 +25,121 @@
 
   <div class="card" *ngIf="!loading && item">
     <div class="card-header">
-      📊 {{ 'common.information' | translate }}
+      📊 Información de la Localidad
       </div>
       <div class="card-body">
         <div class="info-section">
         <h3 class="section-title">
-          🔑 {{ 'localidad.mainInfo' | translate }}
+          🔑 Información Principal
         </h3>
 
         <div class="info-grid info-grid-main">
           <div class="info-item">
-            <span class="info-label">{{ 'localidad.codigo' | translate }}</span>
-            <span class="info-value-large">{{ item.codigo }}</span>
+            <span class="info-label">Código</span>
+            <span class="info-value-large"><code>{{ item.codigo }}</code></span>
           </div>
           <div class="info-item">
-            <span class="info-label">{{ 'localidad.descripcion' | translate }}</span>
+            <span class="info-label">Descripción</span>
             <span class="info-value">{{ item.descripcion }}</span>
           </div>
           <div class="info-item">
-            <span class="info-label">{{ 'localidad.establecimiento' | translate }}</span>
-            <span class="info-value">{{ item.establecimientoDescripcion || '-' }}</span>
+            <span class="info-label">Establecimiento</span>
+            <span class="info-value">
+              <small class="text-muted">{{ item.establecimientoCodigo }}</small><br>
+              {{ item.establecimientoDescripcion || '-' }}
+            </span>
           </div>
           <div class="info-item">
-            <span class="info-label">{{ 'localidad.almacen' | translate }}</span>
-            <span class="badge badge-success" *ngIf="item.almacen">
-              <span class="badge-icon">💰</span>
-              Sí
-            </span>
-            <span class="badge badge-info" *ngIf="!item.almacen">
-              <span class="badge-icon">💵</span>
-              No
+            <span class="info-label">Tipo de Localidad</span>
+            <span class="badge badge-tipo">
+              {{ getTipoIcon(item.tipo) }} {{ getTipoLabel(item.tipo) }}
             </span>
           </div>
         </div>
+
+        <!-- Capacidades Operativas (ERP) -->
+        <div class="info-section">
+          <h3 class="section-title">🏭 Capacidades Operativas</h3>
+          
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Permite Ventas</span>
+              <span class="badge" [class.badge-success]="item.permiteVentas" [class.badge-secondary]="!item.permiteVentas">
+                <span class="badge-icon">{{ item.permiteVentas ? '✅' : '❌' }}</span>
+                {{ item.permiteVentas ? 'Sí' : 'No' }}
+              </span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Permite Compras</span>
+              <span class="badge" [class.badge-success]="item.permiteCompras" [class.badge-secondary]="!item.permiteCompras">
+                <span class="badge-icon">{{ item.permiteCompras ? '🛒' : '❌' }}</span>
+                {{ item.permiteCompras ? 'Sí' : 'No' }}
+              </span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Permite Transferencias</span>
+              <span class="badge" [class.badge-success]="item.permiteTransferencias" [class.badge-secondary]="!item.permiteTransferencias">
+                <span class="badge-icon">{{ item.permiteTransferencias ? '🔄' : '❌' }}</span>
+                {{ item.permiteTransferencias ? 'Sí' : 'No' }}
+              </span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Permite Ajustes</span>
+              <span class="badge" [class.badge-success]="item.permiteAjustes" [class.badge-secondary]="!item.permiteAjustes">
+                <span class="badge-icon">{{ item.permiteAjustes ? '⚙️' : '❌' }}</span>
+                {{ item.permiteAjustes ? 'Sí' : 'No' }}
+              </span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Requiere Control de Lotes</span>
+              <span class="badge" [class.badge-primary]="item.requiereControlLotes" [class.badge-secondary]="!item.requiereControlLotes">
+                <span class="badge-icon">{{ item.requiereControlLotes ? '📦' : '❌' }}</span>
+                {{ item.requiereControlLotes ? 'Sí' : 'No' }}
+              </span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Requiere Números de Serie</span>
+              <span class="badge" [class.badge-primary]="item.requiereNumerosSerie" [class.badge-secondary]="!item.requiereNumerosSerie">
+                <span class="badge-icon">{{ item.requiereNumerosSerie ? '🔢' : '❌' }}</span>
+                {{ item.requiereNumerosSerie ? 'Sí' : 'No' }}
+              </span>
+            </div>
+          </div>
+        </div>
+
         <!-- Cuentas Contables -->
         <div class="cuentas-section cuentas-section-box">
-          <h3 class="cuentas-section-title">💰 {{ 'localidad.cuentasContables' | translate }}</h3>
-          <p class="cuentas-subtitle">{{ 'localidad.cuentasContablesSubtitle' | translate }}</p>
+          <h3 class="cuentas-section-title">💰 Cuentas Contables (GL Accounts)</h3>
+          <p class="cuentas-subtitle">Cuentas asociadas a esta localidad para registros contables</p>
 
           <div class="form-group-cuentas">
             <div class="accounts-row">
               <div class="form-group">
-                <label class="form-label">{{ 'localidad.cuentaInventario' | translate }}</label>
-                <div class="form-value">{{ item.cuentaInventarioDescripcion || '-' }}</div>
+                <label class="form-label">Cuenta Inventario</label>
+                <div class="form-value">
+                  <code>{{ item.cuentaInventarioCodigo }}</code> - {{ item.cuentaInventarioDescripcion || '-' }}
+                </div>
               </div>
               <div class="form-group">
-                <label class="form-label">{{ 'localidad.cuentaCosto' | translate }}</label>
-                <div class="form-value">{{ item.cuentaCostoDescripcion || '-' }}</div>
+                <label class="form-label">Cuenta Costo</label>
+                <div class="form-value">
+                  <code>{{ item.cuentaCostoCodigo }}</code> - {{ item.cuentaCostoDescripcion || '-' }}
+                </div>
               </div>
             </div>
 
             <div class="accounts-row">
               <div class="form-group">
-                <label class="form-label">{{ 'localidad.cuentaVenta' | translate }}</label>
-                <div class="form-value">{{ item.cuentaVentaDescripcion || '-' }}</div>
+                <label class="form-label">Cuenta Venta</label>
+                <div class="form-value">
+                  <code>{{ item.cuentaVentaCodigo }}</code> - {{ item.cuentaVentaDescripcion || '-' }}
+                </div>
               </div>
               <div class="form-group">
-                <label class="form-label">{{ 'localidad.cuentaDevolucion' | translate }}</label>
-                <div class="form-value">{{ item.cuentaDevolucionDescripcion || '-' }}</div>
+                <label class="form-label">Cuenta Devolución</label>
+                <div class="form-value">
+                  <code>{{ item.cuentaDevolucionCodigo }}</code> - {{ item.cuentaDevolucionDescripcion || '-' }}
+                </div>
               </div>
             </div>
           </div>

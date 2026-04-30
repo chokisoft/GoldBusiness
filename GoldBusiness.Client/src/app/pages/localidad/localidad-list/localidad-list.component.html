@@ -48,32 +48,52 @@
         <table class="data-table">
           <thead>
             <tr>
-              <th>{{ 'localidad.codigo' | translate }}</th>
-              <th>{{ 'localidad.nombre' | translate }}</th>
-              <th>{{ 'localidad.establecimiento' | translate }}</th>
-              <th class="actions-column">{{ 'common.actions' | translate }}</th>
+              <th>Código</th>
+              <th>Descripción</th>
+              <th>Establecimiento</th>
+              <th>Tipo</th>
+              <th>Capacidades</th>
+              <th class="actions-column">Acciones</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let item of localidades">
-              <td>{{ item.codigo }}</td>
+              <td><code>{{ item.codigo }}</code></td>
               <td>{{ item.descripcion }}</td>
-              <td>{{ item.establecimientoDescripcion || '-' }}</td>
+              <td>
+                <small class="text-muted">{{ item.establecimientoCodigo }}</small><br>
+                {{ item.establecimientoDescripcion }}
+              </td>
+              <td>
+                <span class="badge badge-tipo">
+                  {{ getTipoIcon(item.tipo) }} {{ getTipoLabel(item.tipo) }}
+                </span>
+              </td>
+              <td>
+                <div class="capacidades-icons">
+                  <span *ngIf="item.permiteVentas" title="Permite Ventas" class="icon-success">✅</span>
+                  <span *ngIf="item.permiteCompras" title="Permite Compras" class="icon-primary">🛒</span>
+                  <span *ngIf="item.permiteTransferencias" title="Permite Transferencias" class="icon-info">🔄</span>
+                  <span *ngIf="item.permiteAjustes" title="Permite Ajustes" class="icon-warning">⚙️</span>
+                  <span *ngIf="item.requiereControlLotes" title="Control de Lotes" class="icon-secondary">📦</span>
+                  <span *ngIf="item.requiereNumerosSerie" title="Números de Serie" class="icon-secondary">🔢</span>
+                </div>
+              </td>
               <td class="actions-column">
                 <div class="action-buttons">
                   <button class="btn btn-sm btn-info"
                           [routerLink]="[item.id]"
-                          [title]="'common.view' | translate">
+                          title="Ver detalles">
                     <span>👁️</span>
                   </button>
                   <button class="btn btn-sm btn-warning"
                           [routerLink]="['editar', item.id]"
-                          [title]="'common.edit' | translate">
+                          title="Editar">
                     <span>✏️</span>
                   </button>
                   <button class="btn btn-sm btn-danger"
                           (click)="delete(item.id!, item.descripcion)"
-                          [title]="'common.delete' | translate">
+                          title="Eliminar">
                     <span>🗑️</span>
                   </button>
                 </div>
