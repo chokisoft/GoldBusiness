@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
+import { TranslationService } from './translation.service';
 
 // ═══════════════════════════════════════════════════════════════
 // ENUM TipoLocalidad (sincronizado con backend)
@@ -16,7 +17,9 @@ export enum TipoLocalidad {
   Cuarentena = 7,
   Consignacion = 8,
   Devoluciones = 9,
-  Obsoletos = 10
+  Obsoletos = 10,
+  Gerencia = 11,
+  Administrativa = 12
 }
 
 export interface LocalidadDTO {
@@ -69,7 +72,10 @@ export interface PagedResult<T> {
   providedIn: 'root'
 })
 export class LocalidadService {
-  constructor(private api: ApiService) {}
+  constructor(
+    private api: ApiService,
+    private translationService: TranslationService
+  ) {}
 
   // ═══════════════════════════════════════════════════════════════
   // Métodos Helper para TipoLocalidad
@@ -80,16 +86,18 @@ export class LocalidadService {
    */
   getTiposLocalidad(): { value: TipoLocalidad; label: string }[] {
     return [
-      { value: TipoLocalidad.Almacen, label: 'Almacén' },
-      { value: TipoLocalidad.PuntoVenta, label: 'Punto de Venta' },
-      { value: TipoLocalidad.AreaRecepcion, label: 'Área de Recepción' },
-      { value: TipoLocalidad.AreaDespacho, label: 'Área de Despacho' },
-      { value: TipoLocalidad.Produccion, label: 'Producción' },
-      { value: TipoLocalidad.Transito, label: 'Tránsito' },
-      { value: TipoLocalidad.Cuarentena, label: 'Cuarentena' },
-      { value: TipoLocalidad.Consignacion, label: 'Consignación' },
-      { value: TipoLocalidad.Devoluciones, label: 'Devoluciones' },
-      { value: TipoLocalidad.Obsoletos, label: 'Obsoletos' }
+      { value: TipoLocalidad.Almacen, label: this.translationService.translate('localidad.tipo.almacen') },
+      { value: TipoLocalidad.PuntoVenta, label: this.translationService.translate('localidad.tipo.puntoVenta') },
+      { value: TipoLocalidad.AreaRecepcion, label: this.translationService.translate('localidad.tipo.areaRecepcion') },
+      { value: TipoLocalidad.AreaDespacho, label: this.translationService.translate('localidad.tipo.areaDespacho') },
+      { value: TipoLocalidad.Produccion, label: this.translationService.translate('localidad.tipo.produccion') },
+      { value: TipoLocalidad.Transito, label: this.translationService.translate('localidad.tipo.transito') },
+      { value: TipoLocalidad.Cuarentena, label: this.translationService.translate('localidad.tipo.cuarentena') },
+      { value: TipoLocalidad.Consignacion, label: this.translationService.translate('localidad.tipo.consignacion') },
+      { value: TipoLocalidad.Devoluciones, label: this.translationService.translate('localidad.tipo.devoluciones') },
+      { value: TipoLocalidad.Obsoletos, label: this.translationService.translate('localidad.tipo.obsoletos') },
+      { value: TipoLocalidad.Gerencia, label: this.translationService.translate('localidad.tipo.gerencia') },
+      { value: TipoLocalidad.Administrativa, label: this.translationService.translate('localidad.tipo.administrativa') }
     ];
   }
 

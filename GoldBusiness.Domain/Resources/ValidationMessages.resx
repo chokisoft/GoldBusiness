@@ -806,6 +806,14 @@
   <value>Obsoletos</value>
 </data>
 
+	<data name="TipoLocalidad_Gerencia" xml:space="preserve">
+  <value>Gerencia</value>
+</data>
+
+	<data name="TipoLocalidad_Administrativa" xml:space="preserve">
+  <value>Administrativa</value>
+</data>
+
 	<data name="Field_PermiteVentas" xml:space="preserve">
   <value>Permite Ventas</value>
 </data>

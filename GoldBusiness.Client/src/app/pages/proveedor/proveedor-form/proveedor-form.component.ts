@@ -1,17 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { skip } from 'rxjs/operators';
 import { ProveedorService } from '../../../services/proveedor.service';
 import { PaisService, PaisDTO } from '../../../services/pais.service';
 import { ProvinciaService } from '../../../services/provincia.service';
 import { MunicipioService } from '../../../services/municipio.service';
 import { CodigoPostalService } from '../../../services/codigo-postal.service';
 import { TranslationService } from '../../../services/translation.service';
+import { LanguageService } from '../../../services/language.service';
 import { 
-  TipoIdentificacionFiscal, 
+  FiscalOption,
+  TipoIdentificacionFiscal,
   RegimenFiscal,
-  TIPO_IDENTIFICACION_FISCAL_OPTIONS,
-  REGIMEN_FISCAL_OPTIONS 
+  getTipoIdentificacionFiscalOptions,
+  getRegimenFiscalOptions
 } from '../../../services/fiscal.types';
 
 @Component({
@@ -19,7 +23,7 @@ import {
   templateUrl: './proveedor-form.component.html',
   styleUrls: ['./proveedor-form.component.css']
 })
-export class ProveedorFormComponent implements OnInit {
+export class ProveedorFormComponent implements OnInit, OnDestroy {
   itemForm!: FormGroup; // ⭐ RENOMBRADO
   proveedorId?: number;
   isEditMode = false;
@@ -36,8 +40,9 @@ export class ProveedorFormComponent implements OnInit {
   municipios: any[] = [];
   codigosPostales: any[] = [];
 
-  tiposIdentificacionFiscal = TIPO_IDENTIFICACION_FISCAL_OPTIONS;
-  regimenesFiscales = REGIMEN_FISCAL_OPTIONS;
+  tiposIdentificacionFiscal: FiscalOption<TipoIdentificacionFiscal>[] = [];
+  regimenesFiscales: FiscalOption<RegimenFiscal>[] = [];
+  private languageSubscription?: Subscription;
 
   constructor(
     private fb: FormBuilder,
@@ -48,16 +53,59 @@ export class ProveedorFormComponent implements OnInit {
     private codigoPostalService: CodigoPostalService,
     private route: ActivatedRoute,
     private router: Router,
-    public translationService: TranslationService
+    public translationService: TranslationService,
+    private languageService: LanguageService
   ) {}
 
   ngOnInit(): void {
     this.initForm();
+    this.refreshLocalizedOptions();
     this.loadPaises();
 
     this.proveedorId = Number(this.route.snapshot.paramMap.get('id'));
     if (this.proveedorId) {
       this.isEditMode = true;
+      this.loadProveedor(this.proveedorId);
+    }
+
+    this.languageSubscription = this.languageService.currentLanguage$
+      .pipe(skip(1))
+      .subscribe(() => {
+        this.refreshLocalizedOptions();
+        this.reloadLocalizedData();
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.languageSubscription?.unsubscribe();
+  }
+
+  private refreshLocalizedOptions(): void {
+    this.tiposIdentificacionFiscal = getTipoIdentificacionFiscalOptions((key) => this.translationService.translate(key));
+    this.regimenesFiscales = getRegimenFiscalOptions((key) => this.translationService.translate(key));
+  }
+
+  private reloadLocalizedData(): void {
+    this.loadPaises();
+
+    const paisId = this.itemForm.get('paisId')?.value;
+    const provinciaId = this.itemForm.get('provinciaId')?.value;
+    const municipioId = this.itemForm.get('municipioId')?.value;
+
+    if (paisId) {
+      this.loadProvincias(Number(paisId));
+      this.loadPaisDetails(Number(paisId));
+    }
+
+    if (provinciaId) {
+      this.loadMunicipios(Number(provinciaId));
+    }
+
+    if (municipioId) {
+      this.loadCodigosPostales(Number(municipioId));
+    }
+
+    if (this.isEditMode && this.proveedorId) {
       this.loadProveedor(this.proveedorId);
     }
   }

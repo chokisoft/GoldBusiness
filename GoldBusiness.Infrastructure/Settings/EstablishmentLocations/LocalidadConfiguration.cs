@@ -34,7 +34,6 @@ namespace GoldBusiness.Infrastructure.Settings.EstablishmentLocations
             builder.Property(e => e.RequiereControlLotes).HasDefaultValue(false);
             builder.Property(e => e.RequiereNumerosSerie).HasDefaultValue(false);
             
-            builder.Ignore(e => e.Translations);
             builder.Ignore(e => e.ErroresVenta);
             builder.Ignore(e => e.FichaProductos);
             builder.Ignore(e => e.OperacionesDetalle);

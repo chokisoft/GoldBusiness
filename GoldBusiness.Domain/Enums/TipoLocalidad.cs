@@ -1,63 +1,63 @@
 namespace GoldBusiness.Domain.Enums
 {
     /// <summary>
-    /// Tipo de localidad según función operativa de control de inventario.
+    /// Tipo de localidad segï¿½n funciï¿½n operativa de control de inventario.
     /// Basado en SAP Storage Location Types y Oracle EBS Subinventory Types.
-    /// Define el PROPÓSITO OPERATIVO de la ubicación de inventario, NO su naturaleza organizacional.
+    /// Define el PROPï¿½SITO OPERATIVO de la ubicaciï¿½n de inventario, NO su naturaleza organizacional.
     /// </summary>
     public enum TipoLocalidad
     {
         /// <summary>
-        /// Almacén / Warehouse - Almacenamiento general de inventario.
+        /// Almacï¿½n / Warehouse - Almacenamiento general de inventario.
         /// SAP: Storage Location Type '0001' / Oracle: Subinventory Type 'STORES'
-        /// Ubicación principal de almacenamiento de productos.
+        /// Ubicaciï¿½n principal de almacenamiento de productos.
         /// </summary>
         Almacen = 1,
 
         /// <summary>
-        /// Punto de Venta / Retail Point - Inventario destinado a venta al público.
+        /// Punto de Venta / Retail Point - Inventario destinado a venta al pï¿½blico.
         /// SAP: Storage Location Type '0002' / Oracle: Subinventory Type 'RETAIL'
         /// Inventario expuesto para venta directa al consumidor final.
         /// </summary>
         PuntoVenta = 2,
 
         /// <summary>
-        /// Área de Recepción / Receiving Area - Zona de recepción de mercancía entrante.
+        /// ï¿½rea de Recepciï¿½n / Receiving Area - Zona de recepciï¿½n de mercancï¿½a entrante.
         /// SAP: Storage Location Type '0101' / Oracle: Subinventory Type 'RECEIVING'
-        /// Ubicación temporal para inspección y procesamiento de entradas.
+        /// Ubicaciï¿½n temporal para inspecciï¿½n y procesamiento de entradas.
         /// </summary>
         AreaRecepcion = 3,
 
         /// <summary>
-        /// Área de Despacho / Shipping Area - Zona de preparación de mercancía saliente.
+        /// ï¿½rea de Despacho / Shipping Area - Zona de preparaciï¿½n de mercancï¿½a saliente.
         /// SAP: Storage Location Type '0102' / Oracle: Subinventory Type 'SHIPPING'
-        /// Ubicación temporal para preparación de pedidos y despachos.
+        /// Ubicaciï¿½n temporal para preparaciï¿½n de pedidos y despachos.
         /// </summary>
         AreaDespacho = 4,
 
         /// <summary>
-        /// Producción / Manufacturing Floor - Inventario en proceso de manufactura (WIP).
+        /// Producciï¿½n / Manufacturing Floor - Inventario en proceso de manufactura (WIP).
         /// SAP: Storage Location Type '0201' / Oracle: Subinventory Type 'WIP'
-        /// Materiales en línea de producción, trabajo en proceso.
+        /// Materiales en lï¿½nea de producciï¿½n, trabajo en proceso.
         /// </summary>
         Produccion = 5,
 
         /// <summary>
-        /// Tránsito / In-Transit - Inventario en movimiento entre ubicaciones.
+        /// Trï¿½nsito / In-Transit - Inventario en movimiento entre ubicaciones.
         /// SAP: Storage Location Type '0301' / Oracle: Subinventory Type 'INTRANSIT'
-        /// Mercancía que está siendo transportada, no disponible físicamente.
+        /// Mercancï¿½a que estï¿½ siendo transportada, no disponible fï¿½sicamente.
         /// </summary>
         Transito = 6,
 
         /// <summary>
         /// Cuarentena / Quarantine - Inventario bloqueado para control de calidad.
         /// SAP: Storage Location Type '0401' / Oracle: Subinventory Type 'QUARANTINE'
-        /// Productos en evaluación, inspección o que no cumplen estándares.
+        /// Productos en evaluaciï¿½n, inspecciï¿½n o que no cumplen estï¿½ndares.
         /// </summary>
         Cuarentena = 7,
 
         /// <summary>
-        /// Consignación / Consignment - Inventario de propiedad de terceros.
+        /// Consignaciï¿½n / Consignment - Inventario de propiedad de terceros.
         /// SAP: Storage Location Type '0501' / Oracle: Subinventory Type 'CONSIGNMENT'
         /// Productos de proveedores almacenados en nuestras instalaciones.
         /// </summary>
@@ -66,15 +66,27 @@ namespace GoldBusiness.Domain.Enums
         /// <summary>
         /// Devoluciones / Returns - Inventario devuelto por clientes.
         /// SAP: Storage Location Type '0601' / Oracle: Subinventory Type 'RETURNS'
-        /// Productos retornados para procesamiento (reingreso, reparación, desecho).
+        /// Productos retornados para procesamiento (reingreso, reparaciï¿½n, desecho).
         /// </summary>
         Devoluciones = 9,
 
         /// <summary>
-        /// Obsoletos / Obsolete Stock - Inventario obsoleto, dañado o de baja rotación.
+        /// Obsoletos / Obsolete Stock - Inventario obsoleto, daï¿½ado o de baja rotaciï¿½n.
         /// SAP: Storage Location Type '0701' / Oracle: Subinventory Type 'OBSOLETE'
-        /// Productos que serán desechados, donados o vendidos como scrap.
+        /// Productos que serï¿½n desechados, donados o vendidos como scrap.
         /// </summary>
-        Obsoletos = 10
+        Obsoletos = 10,
+
+        /// <summary>
+        /// Gerencia / Management - ï¿½rea destinada a funciones gerenciales y de direcciï¿½n.
+        /// Ubicaciï¿½n reservada para uso de gerencia y toma de decisiones.
+        /// </summary>
+        Gerencia = 11,
+
+        /// <summary>
+        /// Administrativa / Administrative - ï¿½rea destinada a funciones administrativas.
+        /// Ubicaciï¿½n reservada para operaciones administrativas y de gestiï¿½n interna.
+        /// </summary>
+        Administrativa = 12
     }
 }

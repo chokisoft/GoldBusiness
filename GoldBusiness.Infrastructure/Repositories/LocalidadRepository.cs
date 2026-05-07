@@ -15,6 +15,8 @@ namespace GoldBusiness.Infrastructure.Repositories
 
         public async Task<IEnumerable<Localidad>> GetAllAsync()
             => await _context.Localidad
+                .AsNoTracking()
+                .AsSplitQuery()
                 .Where(l => !l.Cancelado)
                 .Include(l => l.Translations)
                 .Include(l => l.Establecimiento)
@@ -53,6 +55,7 @@ namespace GoldBusiness.Infrastructure.Repositories
             var total = await query.CountAsync();
 
             var items = await query
+                .AsSplitQuery()
                 .Include(e => e.Translations)
                 .Include(e => e.Establecimiento)
                     .ThenInclude(n => n!.Translations)
@@ -66,6 +69,8 @@ namespace GoldBusiness.Infrastructure.Repositories
 
         public async Task<IEnumerable<Localidad>> GetByEstablecimientoIdAsync(int establecimientoId)
             => await _context.Localidad
+                .AsNoTracking()
+                .AsSplitQuery()
                 .Where(l => l.EstablecimientoId == establecimientoId && !l.Cancelado)
                 .Include(l => l.Translations)
                 .Include(l => l.Establecimiento)
@@ -82,6 +87,7 @@ namespace GoldBusiness.Infrastructure.Repositories
 
         public async Task<Localidad?> GetByIdAsync(int id)
             => await _context.Localidad
+                .AsSplitQuery()
                 .Include(l => l.Translations)
                 .Include(l => l.Establecimiento)
                     .ThenInclude(e => e.Translations)
@@ -98,6 +104,7 @@ namespace GoldBusiness.Infrastructure.Repositories
         public async Task<Localidad?> GetByCodigoAsync(string codigo, bool includeCanceled = false)
         {
             var query = _context.Localidad
+                .AsSplitQuery()
                 .Include(l => l.Translations)
                 .Include(l => l.Establecimiento)
                     .ThenInclude(e => e.Translations)
@@ -139,7 +146,11 @@ namespace GoldBusiness.Infrastructure.Repositories
 
         public async Task UpdateAsync(Localidad entity)
         {
-            _context.Localidad.Update(entity);
+            if (_context.Entry(entity).State == EntityState.Detached)
+            {
+                _context.Localidad.Attach(entity);
+            }
+
             await _context.SaveChangesAsync();
         }
     }

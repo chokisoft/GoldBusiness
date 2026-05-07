@@ -2,8 +2,11 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { skip } from 'rxjs/operators';
 import { ClienteDTO, ClienteService } from '../../../services/cliente.service';
 import { PaisService, PaisDTO } from '../../../services/pais.service';
+import { LanguageService } from '../../../services/language.service';
+import { TranslationService } from '../../../services/translation.service';
 
 @Component({
   selector: 'app-cliente-detail',
@@ -20,12 +23,15 @@ export class ClienteDetailComponent implements OnInit, OnDestroy {
   postalCode?: string;
   private sub?: Subscription;
   private paisSub?: Subscription;
+  private languageSubscription?: Subscription;
 
   constructor(
     private clienteService: ClienteService,
     private route: ActivatedRoute,
     private router: Router,
-    private paisService: PaisService
+    private paisService: PaisService,
+    private languageService: LanguageService,
+    private translationService: TranslationService
   ) {}
 
   ngOnInit(): void {
@@ -33,11 +39,21 @@ export class ClienteDetailComponent implements OnInit, OnDestroy {
       const id = +params['id'];
       if (id) this.loadItem(id);
     });
+
+    this.languageSubscription = this.languageService.currentLanguage$
+      .pipe(skip(1))
+      .subscribe(() => {
+        const id = Number(this.route.snapshot.paramMap.get('id'));
+        if (id) {
+          this.loadItem(id);
+        }
+      });
   }
 
   ngOnDestroy(): void {
     this.sub?.unsubscribe();
     this.paisSub?.unsubscribe();
+    this.languageSubscription?.unsubscribe();
   }
 
   loadItem(id: number): void {
@@ -72,7 +88,7 @@ export class ClienteDetailComponent implements OnInit, OnDestroy {
         this.loading = false;
       },
       error: err => {
-        this.error = err?.message || 'Error al cargar el cliente';
+        this.error = err?.message || this.translationService.translate('error.loading');
         this.loading = false;
       }
     });

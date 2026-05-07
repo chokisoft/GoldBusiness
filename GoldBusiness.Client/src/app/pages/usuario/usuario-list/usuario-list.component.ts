@@ -1,6 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { skip } from 'rxjs/operators';
 import { UsuarioDTO, UsuarioService } from '../../../services/usuario.service';
+import { LanguageService } from '../../../services/language.service';
+import { TranslationService } from '../../../services/translation.service';
 
 @Component({
   selector: 'app-usuario-list',
@@ -21,17 +25,27 @@ export class UsuarioListComponent implements OnInit, OnDestroy {
   readonly Math = Math;
 
   private searchTimer: ReturnType<typeof setTimeout> | null = null;
+  private languageSubscription?: Subscription;
 
   constructor(
     private usuarioService: UsuarioService,
-    private router: Router
+    private router: Router,
+    private languageService: LanguageService,
+    private translationService: TranslationService
   ) {}
 
   ngOnInit(): void {
     this.loadData();
+
+    this.languageSubscription = this.languageService.currentLanguage$
+      .pipe(skip(1))
+      .subscribe(() => {
+        this.loadData();
+      });
   }
 
   ngOnDestroy(): void {
+    this.languageSubscription?.unsubscribe();
     if (this.searchTimer) {
       clearTimeout(this.searchTimer);
       this.searchTimer = null;
@@ -44,14 +58,25 @@ export class UsuarioListComponent implements OnInit, OnDestroy {
 
     this.usuarioService.getPaged(this.currentPage, this.pageSize, this.searchTerm).subscribe({
       next: (res) => {
+        const calculatedTotalPages = Math.ceil(res.total / this.pageSize);
+
+        if (calculatedTotalPages > 0 && this.currentPage > calculatedTotalPages) {
+          this.currentPage = calculatedTotalPages;
+          this.loadData();
+          return;
+        }
+
         this.items = res.items;
         this.totalItems = res.total;
-        this.totalPages = Math.ceil(this.totalItems / this.pageSize);
+        this.totalPages = calculatedTotalPages;
+        if (this.totalPages === 0) {
+          this.currentPage = 1;
+        }
         this.loading = false;
         this.searching = false;
       },
       error: (err: Error) => {
-        this.error = err.message || 'Error al cargar usuarios';
+        this.error = err.message || this.translationService.translate('error.loading');
         this.loading = false;
         this.searching = false;
       }
@@ -126,12 +151,12 @@ export class UsuarioListComponent implements OnInit, OnDestroy {
   delete(id: string | undefined, name: string): void {
     if (!id) return;
 
-    const confirmDelete = confirm(`¿Eliminar el usuario ${name}?`);
+    const confirmDelete = confirm(this.translationService.translate('usuario.confirmDelete', [name]));
     if (!confirmDelete) return;
 
     this.usuarioService.delete(id).subscribe({
       next: () => this.loadData(),
-      error: (err: Error) => this.error = err.message || 'Error al eliminar usuario'
+      error: (err: Error) => this.error = err.message || this.translationService.translate('error.deleting')
     });
   }
 }

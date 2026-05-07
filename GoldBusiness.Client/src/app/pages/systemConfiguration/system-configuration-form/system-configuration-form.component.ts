@@ -14,10 +14,11 @@ import { CodigoPostalService, CodigoPostalDTO } from '../../../services/codigo-p
 import { FormaJuridicaService } from '../../../services/forma-juridica.service';
 import { normalizePhone, phoneValidator, PHONE_MAX_LENGTH } from '../../shared/phone.util';
 import { 
+  FiscalOption,
   TipoIdentificacionFiscal, 
   RegimenFiscal,
-  TIPO_IDENTIFICACION_FISCAL_OPTIONS,
-  REGIMEN_FISCAL_OPTIONS 
+  getTipoIdentificacionFiscalOptions,
+  getRegimenFiscalOptions 
 } from '../../../services/fiscal.types';
 
 @Component({
@@ -45,8 +46,8 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
   codigosPostales: CodigoPostalDTO[] = [];
   formasJuridicas: any[] = [];
 
-  tiposIdentificacionFiscal = TIPO_IDENTIFICACION_FISCAL_OPTIONS;
-  regimenesFiscales = REGIMEN_FISCAL_OPTIONS;
+  tiposIdentificacionFiscal: FiscalOption<TipoIdentificacionFiscal>[] = [];
+  regimenesFiscales: FiscalOption<RegimenFiscal>[] = [];
 
   private languageSubscription?: Subscription;
   private paisSub?: Subscription;
@@ -108,6 +109,7 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.refreshLocalizedOptions();
     this.setupFormSubscriptions();
     this.loadFormasJuridicas();
     this.loadPaises();
@@ -123,11 +125,17 @@ export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
     this.languageSubscription = this.languageService.currentLanguage$
       .pipe(skip(1))
       .subscribe(() => {
+        this.refreshLocalizedOptions();
         this.loadCuentas();
         this.loadPaises();
         this.loadFormasJuridicas();
         if (this.isEditMode) this.loadConfiguration();
       });
+  }
+
+  private refreshLocalizedOptions(): void {
+    this.tiposIdentificacionFiscal = getTipoIdentificacionFiscalOptions((key) => this.translationService.translate(key));
+    this.regimenesFiscales = getRegimenFiscalOptions((key) => this.translationService.translate(key));
   }
 
   ngOnDestroy(): void {

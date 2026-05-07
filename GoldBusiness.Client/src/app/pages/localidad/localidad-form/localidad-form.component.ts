@@ -1,16 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { skip } from 'rxjs/operators';
 import { LocalidadService, LocalidadDTO, TipoLocalidad } from '../../../services/localidad.service';
 import { EstablecimientoDTO, EstablecimientoService } from '../../../services/establecimiento.service';
 import { CuentaDTO, CuentaService } from '../../../services/cuenta.service';
+import { LanguageService } from '../../../services/language.service';
+import { TranslationService } from '../../../services/translation.service';
 
 @Component({
   selector: 'app-localidad-form',
   templateUrl: './localidad-form.component.html',
   styleUrls: ['./localidad-form.component.css']
 })
-export class LocalidadFormComponent implements OnInit {
+export class LocalidadFormComponent implements OnInit, OnDestroy {
   itemForm: FormGroup;
   isEditMode = false;
   itemId?: number;
@@ -21,12 +25,15 @@ export class LocalidadFormComponent implements OnInit {
   establecimientos: EstablecimientoDTO[] = [];
   cuentas: CuentaDTO[] = [];
   tiposLocalidad: { value: TipoLocalidad; label: string }[] = [];
+  private languageSubscription?: Subscription;
 
   constructor(
     private fb: FormBuilder,
     private localidadService: LocalidadService,
     private establecimientoService: EstablecimientoService,
     private cuentaService: CuentaService,
+    private languageService: LanguageService,
+    public translationService: TranslationService,
     private router: Router,
     private route: ActivatedRoute
   ) {
@@ -54,6 +61,19 @@ export class LocalidadFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.tiposLocalidad = this.localidadService.getTiposLocalidad();
+
+    this.languageSubscription = this.languageService.currentLanguage$
+      .pipe(skip(1))
+      .subscribe(() => {
+        this.tiposLocalidad = this.localidadService.getTiposLocalidad();
+        this.loadEstablecimientos();
+        this.loadCuentas();
+
+        if (this.isEditMode && this.itemId) {
+          this.loadItem();
+        }
+      });
+
     this.loadEstablecimientos();
     this.loadCuentas();
     
@@ -61,6 +81,10 @@ export class LocalidadFormComponent implements OnInit {
       if (params['id']) {
         this.itemId = +params['id'];
         this.isEditMode = true;
+        // Cuando estamos en modo edición, algunas propiedades no deben cambiarse
+        this.itemForm.get('establecimientoId')?.disable({ emitEvent: false });
+        // El código es inmutable una vez creado; deshabilitar para evitar modificaciones
+        this.itemForm.get('codigo')?.disable({ emitEvent: false });
         this.loadItem();
       }
     });
@@ -71,6 +95,10 @@ export class LocalidadFormComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    this.languageSubscription?.unsubscribe();
+  }
+
   loadEstablecimientos(): void {
     this.establecimientoService.getAll().subscribe({
       next: (establecimientos) => {
@@ -78,7 +106,7 @@ export class LocalidadFormComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading establecimientos:', error);
-        this.error = 'Error al cargar los establecimientos';
+        this.error = this.translationService.translate('error.loading');
       }
     });
   }
@@ -90,7 +118,7 @@ export class LocalidadFormComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading cuentas:', error);
-        this.error = 'Error al cargar las cuentas contables';
+        this.error = this.translationService.translate('error.loading');
       }
     });
   }
@@ -203,7 +231,7 @@ export class LocalidadFormComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading localidad:', error);
-        this.error = error.message || 'Error al cargar la localidad';
+        this.error = error.message || this.translationService.translate('error.loading');
         this.loading = false;
       }
     });
@@ -218,8 +246,16 @@ export class LocalidadFormComponent implements OnInit {
     this.saving = true;
     this.error = null;
 
+    const rawValue = this.itemForm.getRawValue();
+
     const formData: LocalidadDTO = {
-      ...this.itemForm.value,
+      ...rawValue,
+      establecimientoId: Number(rawValue.establecimientoId),
+      tipo: Number(rawValue.tipo) as TipoLocalidad,
+      cuentaInventarioId: Number(rawValue.cuentaInventarioId),
+      cuentaCostoId: Number(rawValue.cuentaCostoId),
+      cuentaVentaId: Number(rawValue.cuentaVentaId),
+      cuentaDevolucionId: Number(rawValue.cuentaDevolucionId),
       id: this.itemId
     };
 
@@ -230,17 +266,17 @@ export class LocalidadFormComponent implements OnInit {
     request.subscribe({
       next: () => {
         this.saving = false;
-        this.router.navigate(['/organizacion/localidad']);
+        this.router.navigate(['/nomencladores/localidad']);
       },
       error: (error) => {
         console.error('Error saving localidad:', error);
-        this.error = error.message || 'Error al guardar la localidad';
+        this.error = error.message || this.translationService.translate('error.saving');
         this.saving = false;
       }
     });
   }
 
   onCancel(): void {
-    this.router.navigate(['/organizacion/localidad']);
+    this.router.navigate(['/nomencladores/localidad']);
   }
 }

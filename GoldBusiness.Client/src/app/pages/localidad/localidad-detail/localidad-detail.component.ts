@@ -1,17 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
+import { Subscription } from 'rxjs';
+import { skip } from 'rxjs/operators';
 import { LocalidadService, LocalidadDTO, TipoLocalidad } from '../../../services/localidad.service';
+import { LanguageService } from '../../../services/language.service';
+import { TranslationService } from '../../../services/translation.service';
 
 @Component({
   selector: 'app-localidad-detail',
   templateUrl: './localidad-detail.component.html',
   styleUrls: ['./localidad-detail.component.css']
 })
-export class LocalidadDetailComponent implements OnInit {
+export class LocalidadDetailComponent implements OnInit, OnDestroy {
   item?: LocalidadDTO;
   loading = false;
   error: string | null = null;
+  private languageSubscription?: Subscription;
 
   // Referencia al enum para usar en template
   TipoLocalidad = TipoLocalidad;
@@ -20,7 +25,9 @@ export class LocalidadDetailComponent implements OnInit {
     private localidadService: LocalidadService,
     private route: ActivatedRoute,
     private router: Router,
-    private location: Location
+    private location: Location,
+    private languageService: LanguageService,
+    private translationService: TranslationService
   ) {}
 
   ngOnInit(): void {
@@ -30,6 +37,19 @@ export class LocalidadDetailComponent implements OnInit {
         this.loadItem(id);
       }
     });
+
+    this.languageSubscription = this.languageService.currentLanguage$
+      .pipe(skip(1))
+      .subscribe(() => {
+        const id = Number(this.route.snapshot.paramMap.get('id'));
+        if (id) {
+          this.loadItem(id);
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.languageSubscription?.unsubscribe();
   }
 
   loadItem(id: number): void {
@@ -43,7 +63,7 @@ export class LocalidadDetailComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading localidad:', error);
-        this.error = error.message || 'Error al cargar la localidad';
+        this.error = error.message || this.translationService.translate('error.loading');
         this.loading = false;
       }
     });

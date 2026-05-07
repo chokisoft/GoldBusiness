@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { ApiService } from './api.service';
 
@@ -71,9 +71,9 @@ export class UsuarioService {
         }
         return response as UsuarioDTO;
       }),
-      catchError(() => {
+      catchError((error) => {
         const item = this.getLocalItems().find(u => u.id === id);
-        return of(item ?? this.emptyUser());
+        return item ? of(item) : throwError(() => error);
       })
     );
   }

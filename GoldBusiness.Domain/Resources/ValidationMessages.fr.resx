@@ -639,6 +639,14 @@
     <value>Tránsito</value>
     <comment>TODO: translate</comment>
   </data>
+  <data name="TipoLocalidad_Gerencia" xml:space="preserve">
+  <value>Direction</value>
+</data>
+
+  <data name="TipoLocalidad_Administrativa" xml:space="preserve">
+  <value>Administrative</value>
+</data>
+
   <data name="TipoLocalidad_Obsoletos" xml:space="preserve">
     <value>Obsoletos</value>
     <comment>TODO: translate</comment>

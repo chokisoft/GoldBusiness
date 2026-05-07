@@ -48,12 +48,12 @@
         <table class="data-table">
           <thead>
             <tr>
-              <th>Código</th>
-              <th>Descripción</th>
-              <th>Establecimiento</th>
-              <th>Tipo</th>
-              <th>Capacidades</th>
-              <th class="actions-column">Acciones</th>
+              <th>{{ 'localidad.codigo' | translate }}</th>
+              <th>{{ 'localidad.descripcion' | translate }}</th>
+              <th>{{ 'localidad.establecimiento' | translate }}</th>
+              <th>{{ 'localidad.tipo' | translate }}</th>
+              <th>{{ 'localidad.capacidades' | translate }}</th>
+              <th class="actions-column">{{ 'common.actions' | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -61,7 +61,6 @@
               <td><code>{{ item.codigo }}</code></td>
               <td>{{ item.descripcion }}</td>
               <td>
-                <small class="text-muted">{{ item.establecimientoCodigo }}</small><br>
                 {{ item.establecimientoDescripcion }}
               </td>
               <td>
@@ -71,29 +70,29 @@
               </td>
               <td>
                 <div class="capacidades-icons">
-                  <span *ngIf="item.permiteVentas" title="Permite Ventas" class="icon-success">✅</span>
-                  <span *ngIf="item.permiteCompras" title="Permite Compras" class="icon-primary">🛒</span>
-                  <span *ngIf="item.permiteTransferencias" title="Permite Transferencias" class="icon-info">🔄</span>
-                  <span *ngIf="item.permiteAjustes" title="Permite Ajustes" class="icon-warning">⚙️</span>
-                  <span *ngIf="item.requiereControlLotes" title="Control de Lotes" class="icon-secondary">📦</span>
-                  <span *ngIf="item.requiereNumerosSerie" title="Números de Serie" class="icon-secondary">🔢</span>
+                  <span *ngIf="item.permiteVentas" [title]="'localidad.permiteVentas' | translate" class="icon-success">✅</span>
+                  <span *ngIf="item.permiteCompras" [title]="'localidad.permiteCompras' | translate" class="icon-primary">🛒</span>
+                  <span *ngIf="item.permiteTransferencias" [title]="'localidad.permiteTransferencias' | translate" class="icon-info">🔄</span>
+                  <span *ngIf="item.permiteAjustes" [title]="'localidad.permiteAjustes' | translate" class="icon-warning">⚙️</span>
+                  <span *ngIf="item.requiereControlLotes" [title]="'localidad.requiereControlLotes' | translate" class="icon-secondary">📦</span>
+                  <span *ngIf="item.requiereNumerosSerie" [title]="'localidad.requiereNumerosSerie' | translate" class="icon-secondary">🔢</span>
                 </div>
               </td>
               <td class="actions-column">
                 <div class="action-buttons">
                   <button class="btn btn-sm btn-info"
                           [routerLink]="[item.id]"
-                          title="Ver detalles">
+                          [title]="'common.view' | translate">
                     <span>👁️</span>
                   </button>
                   <button class="btn btn-sm btn-warning"
                           [routerLink]="['editar', item.id]"
-                          title="Editar">
+                          [title]="'common.edit' | translate">
                     <span>✏️</span>
                   </button>
                   <button class="btn btn-sm btn-danger"
                           (click)="delete(item.id!, item.descripcion)"
-                          title="Eliminar">
+                          [title]="'common.delete' | translate">
                     <span>🗑️</span>
                   </button>
                 </div>

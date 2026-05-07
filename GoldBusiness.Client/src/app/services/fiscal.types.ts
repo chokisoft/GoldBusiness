@@ -35,39 +35,46 @@ export enum RegimenFiscal {
   ONG = 12
 }
 
-/**
- * Opciones para dropdowns de tipo de identificación fiscal
- */
-export const TIPO_IDENTIFICACION_FISCAL_OPTIONS = [
-  { value: TipoIdentificacionFiscal.NIF, label: 'NIF - Número de Identificación Fiscal' },
-  { value: TipoIdentificacionFiscal.CIF, label: 'CIF - Código de Identificación Fiscal' },
-  { value: TipoIdentificacionFiscal.DNI, label: 'DNI - Documento Nacional de Identidad' },
-  { value: TipoIdentificacionFiscal.NIE, label: 'NIE - Número de Identidad de Extranjero' },
-  { value: TipoIdentificacionFiscal.VAT, label: 'VAT - Value Added Tax ID' },
-  { value: TipoIdentificacionFiscal.RFC, label: 'RFC - Registro Federal de Contribuyentes' },
-  { value: TipoIdentificacionFiscal.RUC, label: 'RUC - Registro Único de Contribuyentes' },
-  { value: TipoIdentificacionFiscal.RUT, label: 'RUT - Rol Único Tributario' },
-  { value: TipoIdentificacionFiscal.CUIT, label: 'CUIT - Clave Única de Identificación Tributaria' },
-  { value: TipoIdentificacionFiscal.SSN, label: 'SSN - Social Security Number' },
-  { value: TipoIdentificacionFiscal.EIN, label: 'EIN - Employer Identification Number' },
-  { value: TipoIdentificacionFiscal.Pasaporte, label: 'Pasaporte' },
-  { value: TipoIdentificacionFiscal.Otro, label: 'Otro' }
-];
+export interface FiscalOption<T extends number> {
+  value: T;
+  label: string;
+}
 
-/**
- * Opciones para dropdowns de régimen fiscal
- */
-export const REGIMEN_FISCAL_OPTIONS = [
-  { value: RegimenFiscal.General, label: 'Régimen General' },
-  { value: RegimenFiscal.Simplificado, label: 'Régimen Simplificado' },
-  { value: RegimenFiscal.Autonomo, label: 'Autónomo / Profesional' },
-  { value: RegimenFiscal.Exento, label: 'Exento de IVA' },
-  { value: RegimenFiscal.Exportador, label: 'Exportador' },
-  { value: RegimenFiscal.Intracomunitario, label: 'Intracomunitario (UE)' },
-  { value: RegimenFiscal.PequenoContribuyente, label: 'Pequeño Contribuyente (PYME)' },
-  { value: RegimenFiscal.GranContribuyente, label: 'Gran Contribuyente' },
-  { value: RegimenFiscal.PersonaFisica, label: 'Persona Física' },
-  { value: RegimenFiscal.PersonaJuridica, label: 'Persona Jurídica' },
-  { value: RegimenFiscal.Gobierno, label: 'Gobierno' },
-  { value: RegimenFiscal.ONG, label: 'ONG / Sin Fines de Lucro' }
-];
+export function getTipoIdentificacionFiscalOptions(
+  translate: (key: string) => string
+): FiscalOption<TipoIdentificacionFiscal>[] {
+  return [
+    { value: TipoIdentificacionFiscal.NIF, label: translate('fiscal.option.tipoIdentificadorFiscal.nif') },
+    { value: TipoIdentificacionFiscal.CIF, label: translate('fiscal.option.tipoIdentificadorFiscal.cif') },
+    { value: TipoIdentificacionFiscal.DNI, label: translate('fiscal.option.tipoIdentificadorFiscal.dni') },
+    { value: TipoIdentificacionFiscal.NIE, label: translate('fiscal.option.tipoIdentificadorFiscal.nie') },
+    { value: TipoIdentificacionFiscal.VAT, label: translate('fiscal.option.tipoIdentificadorFiscal.vat') },
+    { value: TipoIdentificacionFiscal.RFC, label: translate('fiscal.option.tipoIdentificadorFiscal.rfc') },
+    { value: TipoIdentificacionFiscal.RUC, label: translate('fiscal.option.tipoIdentificadorFiscal.ruc') },
+    { value: TipoIdentificacionFiscal.RUT, label: translate('fiscal.option.tipoIdentificadorFiscal.rut') },
+    { value: TipoIdentificacionFiscal.CUIT, label: translate('fiscal.option.tipoIdentificadorFiscal.cuit') },
+    { value: TipoIdentificacionFiscal.SSN, label: translate('fiscal.option.tipoIdentificadorFiscal.ssn') },
+    { value: TipoIdentificacionFiscal.EIN, label: translate('fiscal.option.tipoIdentificadorFiscal.ein') },
+    { value: TipoIdentificacionFiscal.Pasaporte, label: translate('fiscal.option.tipoIdentificadorFiscal.pasaporte') },
+    { value: TipoIdentificacionFiscal.Otro, label: translate('fiscal.option.tipoIdentificadorFiscal.otro') }
+  ];
+}
+
+export function getRegimenFiscalOptions(
+  translate: (key: string) => string
+): FiscalOption<RegimenFiscal>[] {
+  return [
+    { value: RegimenFiscal.General, label: translate('fiscal.option.regimenFiscal.general') },
+    { value: RegimenFiscal.Simplificado, label: translate('fiscal.option.regimenFiscal.simplificado') },
+    { value: RegimenFiscal.Autonomo, label: translate('fiscal.option.regimenFiscal.autonomo') },
+    { value: RegimenFiscal.Exento, label: translate('fiscal.option.regimenFiscal.exento') },
+    { value: RegimenFiscal.Exportador, label: translate('fiscal.option.regimenFiscal.exportador') },
+    { value: RegimenFiscal.Intracomunitario, label: translate('fiscal.option.regimenFiscal.intracomunitario') },
+    { value: RegimenFiscal.PequenoContribuyente, label: translate('fiscal.option.regimenFiscal.pequenoContribuyente') },
+    { value: RegimenFiscal.GranContribuyente, label: translate('fiscal.option.regimenFiscal.granContribuyente') },
+    { value: RegimenFiscal.PersonaFisica, label: translate('fiscal.option.regimenFiscal.personaFisica') },
+    { value: RegimenFiscal.PersonaJuridica, label: translate('fiscal.option.regimenFiscal.personaJuridica') },
+    { value: RegimenFiscal.Gobierno, label: translate('fiscal.option.regimenFiscal.gobierno') },
+    { value: RegimenFiscal.ONG, label: translate('fiscal.option.regimenFiscal.ong') }
+  ];
+}

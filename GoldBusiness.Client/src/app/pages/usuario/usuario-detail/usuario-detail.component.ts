@@ -1,22 +1,26 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Location } from '@angular/common';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { skip } from 'rxjs/operators';
 import { UsuarioDTO, UsuarioService } from '../../../services/usuario.service';
+import { LanguageService } from '../../../services/language.service';
 
 @Component({
   selector: 'app-usuario-detail',
   templateUrl: './usuario-detail.component.html',
   styleUrls: ['./usuario-detail.component.css']
 })
-export class UsuarioDetailComponent implements OnInit {
+export class UsuarioDetailComponent implements OnInit, OnDestroy {
   item: UsuarioDTO | null = null;
   loading = false;
   error: string | null = null;
+  private languageSubscription?: Subscription;
 
   constructor(
     private route: ActivatedRoute,
     private usuarioService: UsuarioService,
-    private location: Location
+    private router: Router,
+    private languageService: LanguageService
   ) {}
 
   ngOnInit(): void {
@@ -24,6 +28,19 @@ export class UsuarioDetailComponent implements OnInit {
     if (id) {
       this.loadItem(id);
     }
+
+    this.languageSubscription = this.languageService.currentLanguage$
+      .pipe(skip(1))
+      .subscribe(() => {
+        const itemId = this.route.snapshot.paramMap.get('id');
+        if (itemId) {
+          this.loadItem(itemId);
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.languageSubscription?.unsubscribe();
   }
 
   loadItem(id: string): void {
@@ -43,6 +60,6 @@ export class UsuarioDetailComponent implements OnInit {
   }
 
   goBack(): void {
-    this.location.back();
+    this.router.navigate(['/configuracion/usuarios']);
   }
 }

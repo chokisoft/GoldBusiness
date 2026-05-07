@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, of } from 'rxjs';
-import { switchMap, catchError } from 'rxjs/operators';
+import { switchMap, catchError, skip } from 'rxjs/operators';
 import { EstablecimientoService, EstablecimientoDTO, TipoEstablecimiento } from '../../../services/establecimiento.service';
 import { SystemConfigurationService, SystemConfigurationDTO } from '../../../services/system-configuration.service';
 import { PaisService, PaisDTO } from '../../../services/pais.service';
@@ -10,6 +10,7 @@ import { ProvinciaService, ProvinciaDTO } from '../../../services/provincia.serv
 import { MunicipioService, MunicipioDTO } from '../../../services/municipio.service';
 import { CodigoPostalService, CodigoPostalDTO } from '../../../services/codigo-postal.service';
 import { TranslationService } from '../../../services/translation.service';
+import { LanguageService } from '../../../services/language.service';
 import { normalizePhone, phoneValidator, PHONE_MAX_LENGTH } from '../../shared/phone.util';
 
 @Component({
@@ -53,6 +54,7 @@ private subs: Subscription[] = [];
     private municipioService: MunicipioService,
     private codigoPostalService: CodigoPostalService,
     private translationService: TranslationService,
+    private languageService: LanguageService,
     private router: Router,
     private route: ActivatedRoute
   ) {
@@ -87,6 +89,36 @@ private subs: Subscription[] = [];
   ngOnInit(): void {
     this.loadPaises();
     this.loadNegocios();
+
+    this.subs.push(
+      this.languageService.currentLanguage$
+        .pipe(skip(1))
+        .subscribe(() => {
+          this.loadPaises();
+          this.loadNegocios();
+
+          if (this.isEditMode && this.itemId) {
+            this.loadItem();
+            return;
+          }
+
+          const paisId = this.itemForm.get('paisId')?.value;
+          const provinciaId = this.itemForm.get('provinciaId')?.value;
+          const municipioId = this.itemForm.get('municipioId')?.value;
+
+          if (paisId) {
+            this.loadProvincias(Number(paisId));
+          }
+
+          if (provinciaId) {
+            this.loadMunicipios(Number(provinciaId));
+          }
+
+          if (municipioId) {
+            this.loadCodigoPostales(Number(municipioId));
+          }
+        })
+    );
 
     this.subs.push(
       this.itemForm.get('paisId')!.valueChanges.pipe(

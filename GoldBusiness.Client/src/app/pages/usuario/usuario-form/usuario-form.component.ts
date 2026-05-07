@@ -1,14 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { skip } from 'rxjs/operators';
 import { UsuarioDTO, UsuarioService } from '../../../services/usuario.service';
+import { LanguageService } from '../../../services/language.service';
+import { TranslationService } from '../../../services/translation.service';
 
 @Component({
   selector: 'app-usuario-form',
   templateUrl: './usuario-form.component.html',
   styleUrls: ['./usuario-form.component.css']
 })
-export class UsuarioFormComponent implements OnInit {
+export class UsuarioFormComponent implements OnInit, OnDestroy {
   form: FormGroup;
   isEditMode = false;
   itemId?: string;
@@ -18,12 +22,19 @@ export class UsuarioFormComponent implements OnInit {
 
   availableRoles: string[] = [];
   availablePermissions: string[] = [];
+  private routeParamsSubscription?: Subscription;
+  private authProviderSubscription?: Subscription;
+  private useEmailSubscription?: Subscription;
+  private emailSubscription?: Subscription;
+  private languageSubscription?: Subscription;
 
   constructor(
     private fb: FormBuilder,
     private usuarioService: UsuarioService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private languageService: LanguageService,
+    private translate: TranslationService
   ) {
     this.form = this.fb.group({
       userName: ['', [Validators.required, Validators.maxLength(50)]],
@@ -41,6 +52,47 @@ export class UsuarioFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadRoles();
+    this.loadPermissions();
+
+    this.setupUserNameMode();
+
+    this.routeParamsSubscription = this.route.params.subscribe(params => {
+      if (params['id']) {
+        this.itemId = params['id'];
+        this.isEditMode = true;
+        this.applyPasswordValidators(this.form.get('authProvider')?.value);
+        this.loadItem();
+      } else {
+        this.applyPasswordValidators(this.form.get('authProvider')?.value);
+      }
+    });
+
+    this.authProviderSubscription = this.form.get('authProvider')?.valueChanges.subscribe((provider: string) => {
+      this.applyPasswordValidators(provider);
+    });
+
+    this.languageSubscription = this.languageService.currentLanguage$
+      .pipe(skip(1))
+      .subscribe(() => {
+        this.loadRoles();
+        this.loadPermissions();
+
+        if (this.itemId) {
+          this.loadItem();
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.routeParamsSubscription?.unsubscribe();
+    this.authProviderSubscription?.unsubscribe();
+    this.useEmailSubscription?.unsubscribe();
+    this.emailSubscription?.unsubscribe();
+    this.languageSubscription?.unsubscribe();
+  }
+
+  private loadRoles(): void {
     this.usuarioService.getRoles().subscribe({
       next: (roles) => {
         this.availableRoles = roles;
@@ -52,7 +104,9 @@ export class UsuarioFormComponent implements OnInit {
         this.availableRoles = ['ADMINISTRADOR', 'DESARROLLADOR', 'ECONOMICO', 'CONTADOR'];
       }
     });
+  }
 
+  private loadPermissions(): void {
     this.usuarioService.getPermissions().subscribe({
       next: (permissions) => {
         this.availablePermissions = permissions;
@@ -63,23 +117,6 @@ export class UsuarioFormComponent implements OnInit {
       error: () => {
         this.availablePermissions = ['ERP:FullAccess', 'ERP:AdminAccess', 'ERP:FinanceAccess', 'ERP:AccountingAccess'];
       }
-    });
-
-    this.setupUserNameMode();
-
-    this.route.params.subscribe(params => {
-      if (params['id']) {
-        this.itemId = params['id'];
-        this.isEditMode = true;
-        this.applyPasswordValidators(this.form.get('authProvider')?.value);
-        this.loadItem();
-      } else {
-        this.applyPasswordValidators(this.form.get('authProvider')?.value);
-      }
-    });
-
-    this.form.get('authProvider')?.valueChanges.subscribe((provider: string) => {
-      this.applyPasswordValidators(provider);
     });
   }
 
@@ -118,7 +155,7 @@ export class UsuarioFormComponent implements OnInit {
         this.loading = false;
       },
       error: (err: Error) => {
-        this.error = err.message || 'Error al cargar usuario';
+        this.error = err.message || this.translate.translate('usuario.errorLoading');
         this.loading = false;
       }
     });
@@ -207,7 +244,7 @@ export class UsuarioFormComponent implements OnInit {
         this.router.navigate(['/configuracion/usuarios']);
       },
       error: (err: Error) => {
-        this.error = err.message || 'Error al guardar usuario';
+        this.error = err.message || this.translate.translate('usuario.errorSaving');
         this.saving = false;
       }
     });
@@ -239,11 +276,11 @@ export class UsuarioFormComponent implements OnInit {
   }
 
   private setupUserNameMode(): void {
-    this.form.get('useEmailAsUsername')?.valueChanges.subscribe((useEmail: boolean) => {
+    this.useEmailSubscription = this.form.get('useEmailAsUsername')?.valueChanges.subscribe((useEmail: boolean) => {
       this.applyUserNameMode(useEmail);
     });
 
-    this.form.get('email')?.valueChanges.subscribe((email: string) => {
+    this.emailSubscription = this.form.get('email')?.valueChanges.subscribe((email: string) => {
       if (this.form.get('useEmailAsUsername')?.value === true) {
         this.form.get('userName')?.setValue((email ?? '').trim(), { emitEvent: false });
       }

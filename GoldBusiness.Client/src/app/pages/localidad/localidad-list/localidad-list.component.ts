@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs';
 import { skip, finalize } from 'rxjs/operators';
 import { LocalidadService, LocalidadDTO, TipoLocalidad } from '../../../services/localidad.service';
 import { LanguageService } from '../../../services/language.service';
+import { TranslationService } from '../../../services/translation.service';
 
 @Component({
   selector: 'app-localidad-list',
@@ -31,7 +32,8 @@ export class LocalidadListComponent implements OnInit, OnDestroy {
 
   constructor(
     private localidadService: LocalidadService,
-    private languageService: LanguageService
+    private languageService: LanguageService,
+    private translationService: TranslationService
   ) { }
 
   ngOnInit(): void {
@@ -40,7 +42,6 @@ export class LocalidadListComponent implements OnInit, OnDestroy {
     this.languageSubscription = this.languageService.currentLanguage$
       .pipe(skip(1))
       .subscribe(() => {
-        console.log('🔄 LocalidadList: Idioma cambiado, recargando datos...');
         this.loadData(true);
       });
   }
@@ -64,14 +65,12 @@ export class LocalidadListComponent implements OnInit, OnDestroy {
       }))
       .subscribe({
         next: (response) => {
-          console.log('✅ GET /Localidad/paged response:', response);
           this.localidades = response.items;
           this.totalItems = response.total;
           this.totalPages = Math.ceil(this.totalItems / this.pageSize);
         },
         error: (err) => {
-          console.error('❌ Error:', err);
-          this.error = `Error al cargar las localidades: ${err?.message ?? err.statusText}`;
+          this.error = err?.message || this.translationService.translate('error.loading');
         }
       });
   }
@@ -135,7 +134,7 @@ export class LocalidadListComponent implements OnInit, OnDestroy {
   }
 
   delete(id: number, descripcion: string): void {
-    if (confirm(`¿Estás seguro de eliminar la localidad "${descripcion}"?`)) {
+    if (confirm(this.translationService.translate('localidad.confirmDelete', [descripcion]))) {
       this.localidadService.delete(id).subscribe({
         next: () => {
           // Si eliminamos el último item de la página actual y no es la primera, retroceder
@@ -145,7 +144,7 @@ export class LocalidadListComponent implements OnInit, OnDestroy {
           this.loadData(false);
         },
         error: (err) => {
-          this.error = 'Error al eliminar la localidad';
+          this.error = err?.message || this.translationService.translate('error.deleting');
           console.error('Error:', err);
         }
       });

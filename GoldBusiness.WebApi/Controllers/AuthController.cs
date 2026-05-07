@@ -390,7 +390,7 @@ namespace GoldBusiness.WebApi.Controllers
         }
 
         [HttpGet("users/{id}")]
-        [Authorize(Policy = "ERPAdminAccess")]
+        [Authorize(Policy = "ERPAdminOrFullAccess")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetUserById(string id)
