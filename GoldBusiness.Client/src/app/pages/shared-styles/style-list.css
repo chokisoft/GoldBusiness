@@ -29,14 +29,14 @@
 
 .page-title {
   margin: 0 0 0.5rem;
-  font-size: 2rem;
+  font-size: var(--font-size-3xl);
   font-weight: 700;
   color: #2c3e50;
 }
 
 .page-subtitle {
   margin: 0;
-  font-size: 1rem;
+  font-size: var(--font-size-md);
   color: #7f8c8d;
 }
 
@@ -56,7 +56,7 @@
   border: none;
   border-radius: 8px;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: var(--font-size-md);
   line-height: 1.2;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, opacity 0.2s ease;
@@ -112,11 +112,11 @@
 
 .btn-sm {
   padding: 0.4rem 0.8rem;
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
 }
 
 .btn-icon {
-  font-size: 1rem;
+  font-size: var(--font-size-md);
 }
 
 .card {
@@ -163,7 +163,7 @@
   padding: 0.75rem;
   border: 2px solid #e9ecef;
   border-radius: 8px;
-  font-size: 0.95rem;
+  font-size: var(--font-size-base);
   background: #fff;
   color: #2c3e50;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -189,7 +189,7 @@
   transform: translateY(-50%);
   color: #95a5a6;
   pointer-events: none;
-  font-size: 1.1rem;
+  font-size: calc(var(--font-size-md) * 1.1);
 }
 
 .page-size-selector {
@@ -245,16 +245,82 @@
   }
 
 .actions-column {
-  width: 180px;
+  width: 120px; /* más compacto para acciones */
   text-align: center;
 }
 
 .action-buttons {
   display: flex;
   justify-content: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
+  gap: 0.45rem;
+  flex-wrap: nowrap; /* evitar que los botones salten a la siguiente línea */
+  align-items: center;
 }
+
+/* Estilo de botones de acción (iconos) en listas - diseño más compacto y consistente */
+.action-buttons .btn {
+  width: 40px;
+  height: 40px;
+  padding: 0; /* centrar el icono */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px; /* caja ligeramente redondeada */
+  background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%); /* sutil gradiente para profundidad */
+  border: 1px solid rgba(16,24,32,0.06);
+  box-shadow: 0 4px 14px rgba(16,24,32,0.06);
+  transition: transform 0.15s ease, box-shadow 0.18s ease, background-color 0.12s ease;
+  font-size: 1.05rem;
+  flex: 0 0 auto; /* evitar que el botón crezca/colapse y forzar que ocupen su ancho fijo */
+}
+
+.action-buttons .btn span {
+  line-height: 1;
+  font-size: 1.15rem; /* tamaño del icono/emoji */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.action-buttons .btn:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 14px 36px rgba(16,24,32,0.12);
+  background: linear-gradient(180deg, #ffffff 0%, #eef6ff 100%);
+}
+
+.action-buttons .btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(102,126,234,0.12);
+}
+
+/* Forzar que la celda de acciones no permita saltos de línea internos */
+.actions-column, .actions-column .action-buttons {
+  white-space: nowrap;
+}
+
+/* En pantallas pequeñas permitir wrapping para evitar overflow */
+@media (max-width: 520px) {
+  .action-buttons {
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    justify-content: flex-start;
+  }
+  .actions-column { width: auto; min-width: 120px; }
+}
+
+/* Asegurar consistencia en variantes pequeñas */
+.action-buttons .btn.btn-sm {
+  width: 36px;
+  height: 36px;
+}
+
+/* Opcional: estilos más suaves para los botones de acción cuando usan variantes de color */
+.action-buttons .btn.btn-info { background-color: rgba(52,152,219,0.12); color: #3498db; border: 1px solid rgba(52,152,219,0.18); }
+.action-buttons .btn.btn-warning { background-color: rgba(243,156,18,0.10); color: #f39c12; border: 1px solid rgba(243,156,18,0.14); }
+.action-buttons .btn.btn-danger { background-color: rgba(231,76,60,0.08); color: #e74c3c; border: 1px solid rgba(231,76,60,0.12); }
+
 
 .badge {
   display: inline-flex;

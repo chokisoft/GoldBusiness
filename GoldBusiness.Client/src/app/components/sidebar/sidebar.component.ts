@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Router } from '@angular/router';
 import { TranslationService } from '../../services/translation.service';
 import { SidebarService } from '../../services/sidebar.service';
 import { Subscription } from 'rxjs';
@@ -26,7 +27,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   constructor(
     public translationService: TranslationService,
-    private sidebarService: SidebarService
+    private sidebarService: SidebarService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -41,7 +43,10 @@ export class SidebarComponent implements OnInit, OnDestroy {
       this.isOpen = open;
     });
 
+    // Reordenamiento sugerido: inicio, nomencladores, compras, ventas, inventario, contabilidad, activos fijos, consultas, nómina, configuración
     this.menuItems = [
+      { title: 'Inicio', titleKey: 'header.inicio', icon: '🏠', route: '/inicio' },
+
       {
         title: 'Nomencladores',
         titleKey: 'sidebar.nomencladores',
@@ -59,186 +64,149 @@ export class SidebarComponent implements OnInit, OnDestroy {
               { title: 'Cuentas', titleKey: 'cuenta.title', icon: '📄', route: '/nomencladores/cuenta' }
             ]
           },
-
-          // ============================================
-          // 👥 TERCEROS
-          // ============================================
           {
             title: 'Terceros',
             titleKey: 'sidebar.terceros',
             icon: '👥',
             expanded: false,
             children: [
-              {
-                title: 'Proveedores',
-                titleKey: 'proveedores.title',
-                icon: '🏭',
-                route: '/nomencladores/proveedores'
-              },
-              {
-                title: 'Clientes',
-                titleKey: 'clientes.title',
-                icon: '👤',
-                route: '/nomencladores/clientes'
-              }
+              { title: 'Proveedores', titleKey: 'proveedores.title', icon: '🏭', route: '/nomencladores/proveedores' },
+              { title: 'Clientes', titleKey: 'clientes.title', icon: '👤', route: '/nomencladores/clientes' }
             ]
           },
-
-          // ============================================
-          // 🏢 ORGANIZACIÓN
-          // ============================================
           {
             title: 'Organización',
             titleKey: 'sidebar.organizacion',
             icon: '🏢',
             expanded: false,
             children: [
-              {
-                title: 'Establecimiento',
-                titleKey: 'establecimiento.title',
-                icon: '🏛️',
-                route: '/nomencladores/establecimiento'
-              },
-              {
-                title: 'Localidad',
-                titleKey: 'localidad.title',
-                icon: '📍',
-                route: '/nomencladores/localidad'
-              },
-              {
-                title: 'Moneda',
-                titleKey: 'moneda.title',
-                icon: '💱',
-                route: '/nomencladores/moneda'
-              },
-              {
-                title: 'País',
-                titleKey: 'pais.title',
-                icon: '🌍',
-                route: '/nomencladores/pais'
-              },
-              {
-                title: 'Provincia',
-                titleKey: 'provincia.title',
-                icon: '🗺️',
-                route: '/nomencladores/provincia'
-              },
-              {
-                title: 'Municipio',
-                titleKey: 'municipio.title',
-                icon: '🏘️',
-                route: '/nomencladores/municipio'
-              },
-              {
-                title: 'Código Postal',
-                titleKey: 'codigoPostal.title',
-                icon: '📮',
-                route: '/nomencladores/codigo-postal'
-              }
+              { title: 'Establecimiento', titleKey: 'establecimiento.title', icon: '🏛️', route: '/nomencladores/establecimiento' },
+              { title: 'Localidad', titleKey: 'localidad.title', icon: '📍', route: '/nomencladores/localidad' },
+              { title: 'Moneda', titleKey: 'moneda.title', icon: '💱', route: '/nomencladores/moneda' },
+              { title: 'País', titleKey: 'pais.title', icon: '🌍', route: '/nomencladores/pais' },
+              { title: 'Provincia', titleKey: 'provincia.title', icon: '🗺️', route: '/nomencladores/provincia' },
+              { title: 'Municipio', titleKey: 'municipio.title', icon: '🏘️', route: '/nomencladores/municipio' },
+              { title: 'Código Postal', titleKey: 'codigoPostal.title', icon: '📮', route: '/nomencladores/codigo-postal' }
             ]
           },
-
-          // ============================================
-          // 📋 CLASIFICADOR
-          // ============================================
           {
             title: 'Clasificador',
             titleKey: 'sidebar.clasificador',
             icon: '📋',
             expanded: false,
             children: [
-              {
-                title: 'Línea',
-                titleKey: 'linea.title',
-                icon: '📏',
-                route: '/nomencladores/linea'
-              },
-              {
-                title: 'Sublínea',
-                titleKey: 'subLinea.title',
-                icon: '📐',
-                route: '/nomencladores/sublinea'
-              },
-              {
-                title: 'Unidad Medida',
-                titleKey: 'unidadMedida.title',
-                icon: '⚖️',
-                route: '/nomencladores/unidad-medida'
-              }
-            ]
-          },
-
-          // ============================================
-          // 🔄 OPERACIONES
-          // ============================================
-          {
-            title: 'Operaciones',
-            titleKey: 'sidebar.operaciones',
-            icon: '🔄',
-            expanded: false,
-            children: [
-              {
-                title: 'Transacción',
-                titleKey: 'transaccion.title',
-                icon: '💹',
-                route: '/nomencladores/transaccion'
-              },
-              {
-                title: 'Concepto Ajuste',
-                titleKey: 'conceptoAjuste.title',
-                icon: '⚙️',
-                route: '/nomencladores/concepto-ajuste'
-              }
-            ]
-          },
-
-          // ============================================
-          // 📦 PRODUCTO
-          // ============================================
-          {
-            title: 'Producto',
-            titleKey: 'sidebar.producto',
-            icon: '📦',
-            expanded: false,
-            children: [
-              {
-                title: 'Productos',
-                titleKey: 'producto.title',
-                icon: '🏷️',
-                route: '/nomencladores/producto'
-              }
+              { title: 'Línea', titleKey: 'linea.title', icon: '📏', route: '/nomencladores/linea' },
+              { title: 'Sublínea', titleKey: 'subLinea.title', icon: '📐', route: '/nomencladores/sublinea' },
+              { title: 'Unidad Medida', titleKey: 'unidadMedida.title', icon: '⚖️', route: '/nomencladores/unidad-medida' }
             ]
           }
         ]
       },
 
-      // ============================================
-      // ⚙️ CONFIGURACIÓN
-      // ============================================
+      // Compras
+      {
+        title: 'Compras',
+        titleKey: 'sidebar.compras',
+        icon: '🛒',
+        expanded: false,
+        children: [
+          { title: 'Informe de Recepción', titleKey: 'compras.informeRecepcion', icon: '📥', route: '/compras/informe-recepcion' },
+          { title: 'Nota de Crédito', titleKey: 'compras.notaCreditoCompras', icon: '🧾', route: '/compras/nota-credito' },
+          { title: 'Nota de Débito', titleKey: 'compras.notaDebitoCompras', icon: '🧾', route: '/compras/nota-debito' },
+          { title: 'Devolución', titleKey: 'compras.devolucionCompra', icon: '↩️', route: '/compras/devolucion' },
+          { title: 'Transferencias Entrada', titleKey: 'compras.transferenciasEntrada', icon: '🔁', route: '/compras/transferencias-entrada' },
+          { title: 'Vales Entrada', titleKey: 'compras.valesEntrada', icon: '🎫', route: '/compras/vales-entrada' }
+        ]
+      },
+
+      // Ventas
+      {
+        title: 'Ventas',
+        titleKey: 'sidebar.ventas',
+        icon: '🧾',
+        expanded: false,
+        children: [
+          { title: 'Factura', titleKey: 'ventas.factura', icon: '🧾', route: '/ventas/factura' },
+          { title: 'Nota de Crédito', titleKey: 'ventas.notaCreditoVentas', icon: '🧾', route: '/ventas/nota-credito' },
+          { title: 'Nota de Débito', titleKey: 'ventas.notaDebitoVentas', icon: '🧾', route: '/ventas/nota-debito' },
+          { title: 'Devolución', titleKey: 'ventas.devolucionVenta', icon: '↩️', route: '/ventas/devolucion' },
+          { title: 'Caja', titleKey: 'ventas.cajaRegistradora', icon: '💳', route: '/ventas/caja' }
+        ]
+      },
+
+      // Inventario
+      {
+        title: 'Inventario',
+        titleKey: 'sidebar.inventario',
+        icon: '📦',
+        expanded: false,
+        children: [
+          { title: 'Productos', titleKey: 'producto.title', icon: '🏷️', route: '/nomencladores/producto' },
+          { title: 'Movimientos', titleKey: 'sidebar.movimientos', icon: '🔄', route: '/movimientos' }
+        ]
+      },
+
+      // Contabilidad
+      {
+        title: 'Contabilidad',
+        titleKey: 'sidebar.contabilidad',
+        icon: '💼',
+        expanded: false,
+        children: [
+          { title: 'Generar Comprobante', titleKey: 'contabilidad.generarComprobante', icon: '🧾', route: '/contabilidad/generar-comprobante' },
+          { title: 'Comprobante', titleKey: 'contabilidad.comprobante', icon: '📄', route: '/contabilidad/comprobante' },
+          { title: 'Cuenta x Pagar', titleKey: 'contabilidad.cuentasPorPagar', icon: '📉', route: '/contabilidad/cuentas-por-pagar' },
+          { title: 'Cuenta x Cobrar', titleKey: 'contabilidad.cuentasPorCobrar', icon: '📈', route: '/contabilidad/cuentas-por-cobrar' },
+          { title: 'Balance General', titleKey: 'contabilidad.balanceGeneral', icon: '📊', route: '/contabilidad/balance-general' }
+        ]
+      },
+
+      // Activos Fijos
+      {
+        title: 'Activos Fijos',
+        titleKey: 'sidebar.activosFijos',
+        icon: '🏛️',
+        expanded: false,
+        children: [
+          { title: 'Catálogo de Activos', titleKey: 'activos.catalogo', icon: '📚', route: '/activos/catalogo' },
+          { title: 'Mantenimientos', titleKey: 'activos.mantenimientos', icon: '🛠️', route: '/activos/mantenimientos' }
+        ]
+      },
+
+      // Consultas / Reportes
+      {
+        title: 'Consultas',
+        titleKey: 'sidebar.consultas',
+        icon: '🔍',
+        expanded: false,
+        children: [
+          { title: 'Consulta General', titleKey: 'consultas.consultaGeneral', icon: '📋', route: '/consultas/general' },
+          { title: 'Histórico Producto', titleKey: 'consultas.historicoProducto', icon: '📜', route: '/consultas/historico-producto' }
+        ]
+      },
+
+      // Nómina
+      {
+        title: 'Nómina',
+        titleKey: 'sidebar.nomina',
+        icon: '👥',
+        expanded: false,
+        children: [
+          { title: 'Entrada de registros', titleKey: 'nomina.entradaRegistros', icon: '📝', route: '/nomina/entrada-registros' },
+          { title: 'Cálculo de Nómina', titleKey: 'nomina.calculoNomina', icon: '🧮', route: '/nomina/calculo' }
+        ]
+      },
+
+      // Configuración
       {
         title: 'Configuración',
         titleKey: 'sidebar.configuracion',
         icon: '⚙️',
         expanded: false,
         children: [
-          {
-            title: 'Negocio',
-            titleKey: 'sidebar.negocio',
-            icon: '🏢',
-            route: '/configuracion/negocio'  // Actualizado según el routing
-          },
-          {
-            title: 'Usuarios',
-            titleKey: 'sidebar.usuarios',
-            icon: '👥',
-            route: '/configuracion/usuarios'  // Actualizado según el routing
-          },
-          {
-            title: 'Prueba de Conexión',
-            titleKey: 'sidebar.testConnection',
-            icon: '🔌',
-            route: '/configuracion/test-conexion'  // Actualizado según el routing
-          }
+          { title: 'Negocio', titleKey: 'sidebar.negocio', icon: '🏢', route: '/configuracion/negocio' },
+          { title: 'Usuarios', titleKey: 'sidebar.usuarios', icon: '👥', route: '/configuracion/usuarios' },
+          { title: 'Prueba de Conexión', titleKey: 'sidebar.testConnection', icon: '🔌', route: '/configuracion/test-conexion' }
         ]
       }
     ];
@@ -256,6 +224,18 @@ export class SidebarComponent implements OnInit, OnDestroy {
   toggleItem(item: MenuItem): void {
     if (item.children) {
       item.expanded = !item.expanded;
+    }
+  }
+
+  onHeaderClick(item: MenuItem): void {
+    if (item.children) {
+      this.toggleItem(item);
+      return;
+    }
+    if (item.route) {
+      // navigate to route and close mobile overlay if open
+      this.router.navigate([item.route]);
+      this.closeMobile();
     }
   }
 

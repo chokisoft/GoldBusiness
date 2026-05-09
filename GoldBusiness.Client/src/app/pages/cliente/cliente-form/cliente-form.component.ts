@@ -10,6 +10,7 @@ import { MunicipioService } from '../../../services/municipio.service';
 import { CodigoPostalService } from '../../../services/codigo-postal.service';
 import { TranslationService } from '../../../services/translation.service';
 import { LanguageService } from '../../../services/language.service';
+import { normalizePhone, phoneValidator, PHONE_MAX_LENGTH } from '../../shared/phone.util';
 import { 
   FiscalOption,
   TipoIdentificacionFiscal,
@@ -74,6 +75,15 @@ export class ClienteFormComponent implements OnInit, OnDestroy {
         this.refreshLocalizedOptions();
         this.reloadLocalizedData();
       });
+
+    // Apply phone validators depending on selected country
+    this.itemForm.get('paisId')?.valueChanges.subscribe((paisId: number | null) => {
+      if (paisId) {
+        this.paisService.getById(paisId).subscribe({ next: (p: PaisDTO) => this.applyPhoneValidators(p), error: () => this.applyPhoneValidators(undefined) });
+      } else {
+        this.applyPhoneValidators(undefined);
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -195,6 +205,16 @@ export class ClienteFormComponent implements OnInit, OnDestroy {
     });
   }
 
+  private applyPhoneValidators(pais?: PaisDTO): void {
+    const telefono = this.itemForm.get('telefono')!;
+    const validators: any[] = [Validators.maxLength(PHONE_MAX_LENGTH)];
+    if (pais && (pais as any).regexTelefono) {
+      validators.push(phoneValidator((pais as any).regexTelefono));
+    }
+    telefono.setValidators(validators);
+    telefono.updateValueAndValidity({ emitEvent: false });
+  }
+
   private loadProvincias(paisId: number): void {
     this.provinciaService.getByPaisId(paisId).subscribe({
       next: (data: any) => this.provincias = data,
@@ -262,6 +282,7 @@ export class ClienteFormComponent implements OnInit, OnDestroy {
 
     this.saving = true;
     const formValue = this.itemForm.getRawValue();
+    formValue.telefono = normalizePhone(formValue.telefono);
 
     if (this.isEditMode && this.clienteId) {
       this.clienteService.update(this.clienteId, formValue).subscribe({

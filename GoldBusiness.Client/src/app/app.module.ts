@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { provideHttpClient, withInterceptorsFromDi, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -145,6 +146,7 @@ import { UsuarioDetailComponent } from './pages/usuario/usuario-detail/usuario-d
     TranslatePipe,
     LocalizedDatePipe,
     LocalizedPhonePipe,
+    // Feature placeholders (declare modules' components used in eager module if any)
     MonedaListComponent,
     MonedaDetailComponent,
     MonedaFormComponent,

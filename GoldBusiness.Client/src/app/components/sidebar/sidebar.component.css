@@ -12,6 +12,7 @@
   z-index: 999;
   box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
   border-right: 1px solid rgba(255, 255, 255, 0.05);
+  /* El tamaño base de fuente se hereda desde :root (--sidebar-font-size) en src/styles.css */
 }
 
 .sidebar.collapsed {
@@ -52,7 +53,8 @@
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
-  font-size: 1rem;
+  /* Tamaño relativo al base del sidebar para mantener concordancia */
+  font-size: calc(var(--sidebar-font-size) * 1.05);
   position: relative;
   overflow: hidden;
 }
@@ -112,7 +114,7 @@
               0 0 0 4px rgba(26, 38, 52, 0.8); /* Sombra adicional para evitar que se vea cortado */
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   z-index: 9999; /* Z-index muy alto para estar encima de todo */
-  font-size: 1.2rem;
+  font-size: calc(var(--sidebar-font-size) * 1.4);
   font-weight: bold;
 }
 
@@ -165,7 +167,8 @@
 }
 
 .menu-icon {
-  font-size: 1.4rem;
+  /* Tamaño del icono relativo a la fuente base */
+  font-size: calc(var(--sidebar-font-size) * 1.5);
   min-width: 30px;
   text-align: center;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
@@ -174,11 +177,12 @@
 .menu-text {
   font-weight: 500;
   white-space: nowrap;
-  font-size: 0.95rem;
+  /* Tamaño ligeramente superior al base para títulos */
+  font-size: calc(var(--sidebar-font-size) * 1.05);
 }
 
 .expand-icon {
-  font-size: 0.8rem;
+  font-size: calc(var(--sidebar-font-size) * 0.95);
   transition: transform 0.3s ease;
   color: rgba(255, 255, 255, 0.5);
 }
@@ -225,7 +229,8 @@
   text-decoration: none;
   transition: all 0.3s ease;
   border-left: 4px solid transparent;
-  font-size: 0.9rem;
+  /* Fuente base para las opciones del menú (controlada por la variable) */
+  font-size: var(--sidebar-font-size);
 }
 
 .menu-link:hover {
@@ -250,7 +255,8 @@
 }
 
 .sidebar.collapsed .menu-icon {
-  font-size: 1.6rem;
+  /* Icono un poco mayor cuando está colapsado para compensar la ausencia de texto */
+  font-size: calc(var(--sidebar-font-size) * 1.8);
 }
 
 .sidebar.collapsed .menu-header {

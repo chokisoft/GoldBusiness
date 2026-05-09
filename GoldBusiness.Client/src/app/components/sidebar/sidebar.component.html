@@ -2,9 +2,9 @@
   <nav class="sidebar-nav">
     <ng-container *ngFor="let item of menuItems">
       <div class="menu-item" [class.has-children]="item.children">
-        <div class="menu-header" (click)="toggleItem(item)" [class.expanded]="item.expanded" role="button" tabindex="0">
+        <div class="menu-header" (click)="onHeaderClick(item)" (keydown.enter)="onHeaderClick(item)" [class.expanded]="item.expanded" role="button" tabindex="0">
           <div class="menu-title">
-            <span class="menu-icon">{{ item.icon }}</span>
+            <span class="menu-icon" [attr.aria-label]="getTitle(item)" [title]="getTitle(item)">{{ item.icon }}</span>
             <span class="menu-text" *ngIf="!isCollapsed">{{ getTitle(item) }}</span>
           </div>
           <span class="expand-icon" *ngIf="item.children && !isCollapsed">
@@ -18,7 +18,7 @@
             <div class="menu-item submenu-item" *ngIf="!subItem.route">
               <div class="menu-header" (click)="toggleItem(subItem)" [class.expanded]="subItem.expanded">
                 <div class="menu-title">
-                  <span class="menu-icon">{{ subItem.icon }}</span>
+                  <span class="menu-icon" [attr.aria-label]="getTitle(subItem)" [title]="getTitle(subItem)">{{ subItem.icon }}</span>
                   <span class="menu-text">{{ getTitle(subItem) }}</span>
                 </div>
                 <span class="expand-icon" *ngIf="subItem.children">
@@ -33,7 +33,7 @@
                    routerLinkActive="active"
                    class="menu-link"
                    (click)="closeMobile()">
-                  <span class="menu-icon">{{ childItem.icon }}</span>
+                  <span class="menu-icon" [attr.aria-label]="getTitle(childItem)" [title]="getTitle(childItem)">{{ childItem.icon }}</span>
                   <span class="menu-text">{{ getTitle(childItem) }}</span>
                 </a>
               </div>
@@ -45,7 +45,7 @@
                routerLinkActive="active"
                class="menu-link submenu-item"
                (click)="closeMobile()">
-              <span class="menu-icon">{{ subItem.icon }}</span>
+              <span class="menu-icon" [attr.aria-label]="getTitle(subItem)" [title]="getTitle(subItem)">{{ subItem.icon }}</span>
               <span class="menu-text">{{ getTitle(subItem) }}</span>
             </a>
           </ng-container>

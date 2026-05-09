@@ -346,6 +346,17 @@ const routes: Routes = [
       },
 
       // ============================================
+      // Módulos principales (lazy-loaded)
+      // ============================================
+      { path: 'contabilidad', loadChildren: () => import('./pages/contabilidad/contabilidad.module').then(m => m.ContabilidadModule) },
+      { path: 'compras', loadChildren: () => import('./pages/compras/compras.module').then(m => m.ComprasModule) },
+      { path: 'movimientos', loadChildren: () => import('./pages/movimientos/movimientos.module').then(m => m.MovimientosModule) },
+      { path: 'ventas', loadChildren: () => import('./pages/ventas/ventas.module').then(m => m.VentasModule) },
+      { path: 'consultas', loadChildren: () => import('./pages/consultas/consultas.module').then(m => m.ConsultasModule) },
+      { path: 'nomina', loadChildren: () => import('./pages/nomina/nomina.module').then(m => m.NominaModule) },
+      { path: 'activos', loadChildren: () => import('./pages/activos/activos.module').then(m => m.ActivosModule) },
+
+      // ============================================
       // ⚙️ CONFIGURACIÓN
       // ============================================
       {

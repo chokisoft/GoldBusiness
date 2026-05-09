@@ -16,15 +16,17 @@
    ═══════════════════════════════════════════════════════════ */
 
 :root {
+  /* Base de tamaño de fuente del sidebar que controla escala tipográfica global */
+  --sidebar-font-size: 0.78rem;
   /* 📏 Escala tipográfica profesional para ERP - OPTIMIZADA */
-  --font-size-xs: 0.75rem; /* 12px - Metadatos, etiquetas auxiliares */
-  --font-size-sm: 0.813rem; /* 13px - Texto secundario, tablas densas */
-  --font-size-base: 0.875rem; /* 14px - Tamaño base IDEAL para ERP */
-  --font-size-md: 1rem; /* 16px - Botones, textos destacados */
-  --font-size-lg: 1.125rem; /* 18px - Subtítulos */
-  --font-size-xl: 1.25rem; /* 20px - Títulos pequeños */
-  --font-size-2xl: 1.5rem; /* 24px - Títulos medios */
-  --font-size-3xl: 1.875rem; /* 30px - Títulos principales */
+  --font-size-xs: calc(var(--sidebar-font-size) * 1); /* 12px - Metadatos, etiquetas auxiliares */
+  --font-size-sm: calc(var(--sidebar-font-size) * 1.084); /* 13px - Texto secundario, tablas densas */
+  --font-size-base: calc(var(--sidebar-font-size) * 1.1666667); /* 14px - Tamaño base IDEAL para ERP */
+  --font-size-md: calc(var(--sidebar-font-size) * 1.3333333); /* 16px - Botones, textos destacados */
+  --font-size-lg: calc(var(--sidebar-font-size) * 1.5); /* 18px - Subtítulos */
+  --font-size-xl: calc(var(--sidebar-font-size) * 1.6666667); /* 20px - Títulos pequeños */
+  --font-size-2xl: calc(var(--sidebar-font-size) * 2); /* 24px - Títulos medios */
+  --font-size-3xl: calc(var(--sidebar-font-size) * 2.5); /* 30px - Títulos principales */
   /* 📏 Alturas de línea proporcionales */
   --line-height-tight: 1.2; /* Títulos */
   --line-height-base: 1.5; /* Texto normal */
