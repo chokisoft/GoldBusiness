@@ -112,7 +112,7 @@ export class LineaFormComponent implements OnInit, OnDestroy {
     if (this.isEditMode) {
       this.lineaService.update(this.lineaId!, formData).subscribe({
         next: () => {
-          this.router.navigate(['/nomencladores/linea']);
+          this.router.navigate(['/inventario/linea']);
         },
         error: (err) => {
           this.saving = false;
@@ -122,7 +122,7 @@ export class LineaFormComponent implements OnInit, OnDestroy {
     } else {
       this.lineaService.create(formData).subscribe({
         next: () => {
-          this.router.navigate(['/nomencladores/linea']);
+          this.router.navigate(['/inventario/linea']);
         },
         error: (err) => {
           this.saving = false;
@@ -133,7 +133,7 @@ export class LineaFormComponent implements OnInit, OnDestroy {
   }
 
   cancel(): void {
-    this.router.navigate(['/nomencladores/linea']);
+    this.router.navigate(['/inventario/linea']);
   }
 
   getErrorMessage(fieldName: string): string {

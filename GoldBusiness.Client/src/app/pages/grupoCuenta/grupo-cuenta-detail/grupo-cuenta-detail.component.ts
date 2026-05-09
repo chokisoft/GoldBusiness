@@ -62,11 +62,11 @@ export class GrupoCuentaDetailComponent implements OnInit, OnDestroy {
   }
 
   goToEdit(): void {
-    this.router.navigate(['/nomencladores/grupo-cuenta/editar', this.id]);
+    this.router.navigate(['/plan-cuentas/grupo-cuenta/editar', this.id]);
   }
 
   goBack(): void {
-    this.router.navigate(['/nomencladores/grupo-cuenta']);
+    this.router.navigate(['/plan-cuentas/grupo-cuenta']);
   }
 
   delete(): void {
@@ -76,7 +76,7 @@ export class GrupoCuentaDetailComponent implements OnInit, OnDestroy {
 
     this.grupoCuentaService.delete(this.id!).subscribe({
       next: () => {
-        this.router.navigate(['/nomencladores/grupo-cuenta']);
+        this.router.navigate(['/plan-cuentas/grupo-cuenta']);
       },
       error: (err) => {
         this.error = err.error?.message || 'Error al eliminar el grupo de cuenta';

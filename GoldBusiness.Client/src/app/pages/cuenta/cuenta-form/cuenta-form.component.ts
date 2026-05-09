@@ -300,7 +300,7 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
         .pipe(finalize(() => this.saving = false)) // ✅ Usar finalize para saving
         .subscribe({
           next: () => {
-            this.router.navigate(['/nomencladores/cuenta']);
+            this.router.navigate(['/plan-cuentas/cuenta']);
           },
           error: (err: any) => {
             this.error = 'Error al guardar la cuenta';
@@ -312,7 +312,7 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
         .pipe(finalize(() => this.saving = false)) // ✅ Usar finalize para saving
         .subscribe({
           next: () => {
-            this.router.navigate(['/nomencladores/cuenta']);
+            this.router.navigate(['/plan-cuentas/cuenta']);
           },
           error: (err: any) => {
             this.error = 'Error al guardar la cuenta';
@@ -323,7 +323,7 @@ export class CuentaFormComponent implements OnInit, OnDestroy {
   }
 
   cancel(): void {
-    this.router.navigate(['/nomencladores/cuenta']);
+    this.router.navigate(['/plan-cuentas/cuenta']);
   }
 
   getErrorMessage(fieldName: string): string {

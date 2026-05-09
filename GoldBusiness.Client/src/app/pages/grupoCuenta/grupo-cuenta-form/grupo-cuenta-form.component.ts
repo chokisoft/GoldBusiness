@@ -121,7 +121,7 @@ export class GrupoCuentaFormComponent implements OnInit, OnDestroy {
         .pipe(finalize(() => this.saving = false))
         .subscribe({
           next: () => {
-            this.router.navigate(['/nomencladores/grupo-cuenta']);
+            this.router.navigate(['/plan-cuentas/grupo-cuenta']);
           },
           error: (err: any) => {
             this.error = this.translate.translate('error.saving');
@@ -133,7 +133,7 @@ export class GrupoCuentaFormComponent implements OnInit, OnDestroy {
         .pipe(finalize(() => this.saving = false))
         .subscribe({
           next: () => {
-            this.router.navigate(['/nomencladores/grupo-cuenta']);
+            this.router.navigate(['/plan-cuentas/grupo-cuenta']);
           },
           error: (err: any) => {
             this.error = this.translate.translate('error.saving');
@@ -144,7 +144,7 @@ export class GrupoCuentaFormComponent implements OnInit, OnDestroy {
   }
 
   cancel(): void {
-    this.router.navigate(['/nomencladores/grupo-cuenta']);
+    this.router.navigate(['/plan-cuentas/grupo-cuenta']);
   }
 
   getErrorMessage(fieldName: string): string {

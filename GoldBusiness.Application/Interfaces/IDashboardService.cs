@@ -7,5 +7,7 @@ namespace GoldBusiness.Application.Interfaces
         Task<DashboardDataDTO> GetDashboardDataAsync(string language);
         Task<DashboardStatsDTO> GetStatsAsync();
         Task<List<RecentActivityDTO>> GetRecentActivitiesAsync(string language);
+        Task<DashboardChartDataDTO> GetChartDataAsync(string language);
+        Task<DashboardAlertsDTO> GetAlertsAsync(string language);
     }
 }

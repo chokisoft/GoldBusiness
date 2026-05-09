@@ -21,7 +21,7 @@ namespace GoldBusiness.WebApi.Controllers
         private readonly ILogger<DashboardController> _logger = logger;
 
         /// <summary>
-        /// Obtener todos los datos del dashboard.
+        /// Obtener todos los datos del dashboard (stats, actividades, gráficas, alertas).
         /// El idioma se detecta automáticamente del header Accept-Language.
         /// </summary>
         [HttpGet]
@@ -80,6 +80,48 @@ namespace GoldBusiness.WebApi.Controllers
             {
                 _logger.LogError(ex, "❌ Error al obtener actividades recientes");
                 return StatusCode(500, new { message = "Error al obtener actividades recientes", error = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Obtener datos para gráficas del dashboard
+        /// </summary>
+        [HttpGet("charts")]
+        public async Task<ActionResult<DashboardChartDataDTO>> GetCharts()
+        {
+            try
+            {
+                var lang = GetCurrentLanguage();
+                _logger.LogInformation($"📊 GET /api/dashboard/charts - Idioma: {lang}");
+
+                var charts = await _service.GetChartDataAsync(lang);
+                return Ok(charts);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "❌ Error al obtener datos de gráficas");
+                return StatusCode(500, new { message = "Error al obtener datos de gráficas", error = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Obtener alertas y notificaciones del dashboard
+        /// </summary>
+        [HttpGet("alerts")]
+        public async Task<ActionResult<DashboardAlertsDTO>> GetAlerts()
+        {
+            try
+            {
+                var lang = GetCurrentLanguage();
+                _logger.LogInformation($"📊 GET /api/dashboard/alerts - Idioma: {lang}");
+
+                var alerts = await _service.GetAlertsAsync(lang);
+                return Ok(alerts);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "❌ Error al obtener alertas");
+                return StatusCode(500, new { message = "Error al obtener alertas", error = ex.Message });
             }
         }
     }

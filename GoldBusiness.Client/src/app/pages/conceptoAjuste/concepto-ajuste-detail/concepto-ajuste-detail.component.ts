@@ -63,6 +63,6 @@ export class ConceptoAjusteDetailComponent implements OnInit, OnDestroy {
   }
 
   goBack(): void {
-    this.router.navigate(['/nomencladores/concepto-ajuste']);
+    this.router.navigate(['/inventario/concepto-ajuste']);
   }
 }

@@ -63,6 +63,6 @@ export class TransaccionDetailComponent implements OnInit, OnDestroy {
   }
 
   goBack(): void {
-    this.router.navigate(['/nomencladores/transaccion']);
+    this.router.navigate(['/inventario/transacciones']);
   }
 }

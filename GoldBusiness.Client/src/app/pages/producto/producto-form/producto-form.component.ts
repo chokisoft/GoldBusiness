@@ -83,7 +83,7 @@ export class ProductoFormComponent implements OnInit {
     request.subscribe({
       next: () => {
         this.saving = false;
-        this.router.navigate(['/nomencladores/producto']);
+        this.router.navigate(['/inventario/productos']);
       },
       error: (error) => {
         this.error = error.message || 'Error al guardar el producto';
@@ -93,7 +93,7 @@ export class ProductoFormComponent implements OnInit {
   }
 
   onCancel(): void {
-    this.router.navigate(['/nomencladores/producto']);
+    this.router.navigate(['/inventario/productos']);
   }
 
 }

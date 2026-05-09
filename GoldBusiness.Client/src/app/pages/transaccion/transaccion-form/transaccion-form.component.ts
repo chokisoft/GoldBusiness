@@ -101,7 +101,7 @@ export class TransaccionFormComponent implements OnInit, OnDestroy {
     if (this.isEditMode) {
       this.transaccionService.update(this.transaccionId!, formData).subscribe({
         next: () => {
-          this.router.navigate(['/nomencladores/transaccion']);
+          this.router.navigate(['/inventario/transacciones']);
         },
         error: (err) => {
           this.saving = false;
@@ -111,7 +111,7 @@ export class TransaccionFormComponent implements OnInit, OnDestroy {
     } else {
       this.transaccionService.create(formData).subscribe({
         next: () => {
-          this.router.navigate(['/nomencladores/transaccion']);
+          this.router.navigate(['/inventario/transacciones']);
         },
         error: (err) => {
           this.saving = false;
@@ -122,7 +122,7 @@ export class TransaccionFormComponent implements OnInit, OnDestroy {
   }
 
   cancel(): void {
-    this.router.navigate(['/nomencladores/transaccion']);
+    this.router.navigate(['/inventario/transacciones']);
   }
 
   getErrorMessage(fieldName: string): string {

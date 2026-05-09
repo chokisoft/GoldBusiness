@@ -213,7 +213,7 @@ export class SubLineaFormComponent implements OnInit, OnDestroy {
     if (this.isEditMode) {
       this.subLineaService.update(this.subLineaId!, formData).subscribe({
         next: () => {
-          this.router.navigate(['/nomencladores/sub-linea']);
+          this.router.navigate(['/inventario/sublinea']);
         },
         error: (err) => {
           this.saving = false;
@@ -223,7 +223,7 @@ export class SubLineaFormComponent implements OnInit, OnDestroy {
     } else {
       this.subLineaService.create(formData).subscribe({
         next: () => {
-          this.router.navigate(['/nomencladores/sub-linea']);
+          this.router.navigate(['/inventario/sublinea']);
         },
         error: (err) => {
           this.saving = false;
@@ -234,7 +234,7 @@ export class SubLineaFormComponent implements OnInit, OnDestroy {
   }
 
   cancel(): void {
-    this.router.navigate(['/nomencladores/sub-linea']);
+    this.router.navigate(['/inventario/sublinea']);
   }
 
   getErrorMessage(fieldName: string): string {

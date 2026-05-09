@@ -266,7 +266,7 @@ export class LocalidadFormComponent implements OnInit, OnDestroy {
     request.subscribe({
       next: () => {
         this.saving = false;
-        this.router.navigate(['/nomencladores/localidad']);
+        this.router.navigate(['/configuracion/localidad']);
       },
       error: (error) => {
         console.error('Error saving localidad:', error);
@@ -277,6 +277,6 @@ export class LocalidadFormComponent implements OnInit, OnDestroy {
   }
 
   onCancel(): void {
-    this.router.navigate(['/nomencladores/localidad']);
+    this.router.navigate(['/configuracion/localidad']);
   }
 }

@@ -63,6 +63,6 @@ export class UnidadMedidaDetailComponent implements OnInit, OnDestroy {
   }
 
   goBack(): void {
-    this.router.navigate(['/nomencladores/unidad-medida']);
+    this.router.navigate(['/inventario/unidad-medida']);
   }
 }

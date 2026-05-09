@@ -63,6 +63,6 @@ export class SubLineaDetailComponent implements OnInit, OnDestroy {
   }
 
   goBack(): void {
-    this.router.navigate(['/nomencladores/sub-linea']);
+    this.router.navigate(['/inventario/sublinea']);
   }
 }

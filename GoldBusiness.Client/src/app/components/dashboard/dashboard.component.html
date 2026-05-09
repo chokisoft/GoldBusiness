@@ -22,14 +22,29 @@
         <p class="dashboard-subtitle">{{ getTranslation('dashboard.subtitle') }}</p>
       </div>
       <div class="dashboard-actions">
-        <button class="btn-primary">
-          <span>📊</span>
-          {{ getTranslation('dashboard.viewReports') }}
+        <button class="btn-primary" (click)="loadDashboardData()">
+          <span>🔄</span>
+          {{ getTranslation('common.retry') }}
         </button>
       </div>
     </div>
 
-    <!-- Stats Cards -->
+    <!-- Alerts Section (si hay alertas) -->
+    <div class="alerts-section" *ngIf="alerts && alerts.length > 0">
+      <div *ngFor="let alert of alerts" 
+           class="alert-card" 
+           [ngClass]="getAlertClass(alert.type)">
+        <span class="alert-icon">{{ alert.icon }}</span>
+        <div class="alert-content">
+          <strong>{{ alert.count }}</strong> {{ alert.message }}
+        </div>
+        <a *ngIf="alert.actionRoute" [routerLink]="alert.actionRoute" class="alert-action">
+          Ver detalles →
+        </a>
+      </div>
+    </div>
+
+    <!-- Stats Cards Grid (2 filas x 4 columnas = 8 cards) -->
     <div class="stats-grid">
       <div *ngFor="let stat of stats" class="stat-card" [style.border-left-color]="stat.color">
         <div class="stat-icon" [style.background]="stat.color + '20'">
@@ -39,7 +54,8 @@
           <h3 class="stat-title">{{ stat.title }}</h3>
           <div class="stat-value-row">
             <p class="stat-value">{{ stat.value }}</p>
-            <span class="stat-change" [class.positive]="stat.changeType === 'positive'"
+            <span class="stat-change" 
+                  [class.positive]="stat.changeType === 'positive'"
                   [class.negative]="stat.changeType === 'negative'"
                   [class.neutral]="stat.changeType === 'neutral'">
               {{ stat.change }}
@@ -70,6 +86,9 @@
                 <p class="activity-action">
                   {{ getTranslation(activity.actionKey) }}
                   <strong>{{ activity.target }}</strong>
+                  <span *ngIf="activity.amount" class="activity-amount">
+                    ({{ formatCurrency(activity.amount) }})
+                  </span>
                 </p>
                 <p class="activity-meta">
                   <span>{{ activity.user }}</span>
@@ -106,16 +125,17 @@
       </div>
     </div>
 
-    <!-- Charts Section -->
+    <!-- Charts Section (Placeholder para futuras gráficas) -->
     <div class="charts-grid">
       <div class="card">
         <div class="card-header">
           <h2 class="card-title">
             <span>📈</span>
-            {{ getTranslation('dashboard.monthlyTrends') }}
+            {{ getTranslation('dashboard.salesVsPurchases') }}
           </h2>
         </div>
         <div class="card-body chart-placeholder">
+          <div class="chart-icon">📊</div>
           <p>{{ getTranslation('dashboard.chartComingSoon') }}</p>
         </div>
       </div>
@@ -124,13 +144,41 @@
         <div class="card-header">
           <h2 class="card-title">
             <span>🎯</span>
-            {{ getTranslation('dashboard.accountsDistribution') }}
+            {{ getTranslation('dashboard.topProducts') }}
           </h2>
         </div>
         <div class="card-body chart-placeholder">
+          <div class="chart-icon">📦</div>
+          <p>{{ getTranslation('dashboard.chartComingSoon') }}</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">
+            <span>💸</span>
+            {{ getTranslation('dashboard.receivablePayable') }}
+          </h2>
+        </div>
+        <div class="card-body chart-placeholder">
+          <div class="chart-icon">💰</div>
+          <p>{{ getTranslation('dashboard.chartComingSoon') }}</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">
+            <span>📦</span>
+            {{ getTranslation('dashboard.inventoryStatus') }}
+          </h2>
+        </div>
+        <div class="card-body chart-placeholder">
+          <div class="chart-icon">📊</div>
           <p>{{ getTranslation('dashboard.chartComingSoon') }}</p>
         </div>
       </div>
     </div>
   </div>
 </div>
+

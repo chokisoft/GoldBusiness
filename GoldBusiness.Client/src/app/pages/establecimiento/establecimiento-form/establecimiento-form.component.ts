@@ -403,7 +403,7 @@ private subs: Subscription[] = [];
     request.subscribe({
       next: () => {
         this.saving = false;
-        this.router.navigate(['/nomencladores/establecimiento']);
+        this.router.navigate(['/configuracion/establecimiento']);
       },
       error: (err: any) => {
         this.error = err.message || 'Error al guardar el establecimiento';
@@ -413,7 +413,7 @@ private subs: Subscription[] = [];
   }
 
   onCancel(): void {
-    this.router.navigate(['/nomencladores/establecimiento']);
+    this.router.navigate(['/configuracion/establecimiento']);
   }
 
   /**

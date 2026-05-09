@@ -65,6 +65,6 @@ export class CuentaDetailComponent implements OnInit, OnDestroy {
   }
 
   goBack(): void {
-    this.router.navigate(['/nomencladores/cuenta']);
+    this.router.navigate(['/plan-cuentas/cuenta']);
   }
 }

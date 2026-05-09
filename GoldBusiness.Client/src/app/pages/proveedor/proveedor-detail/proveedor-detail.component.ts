@@ -94,6 +94,6 @@ export class ProveedorDetailComponent implements OnInit, OnDestroy {
   }
 
   goBack(): void {
-    this.router.navigate(['/nomencladores/proveedores']);
+    this.router.navigate(['/nomencladores/proveedor']);
   }
 }

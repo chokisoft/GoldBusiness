@@ -94,6 +94,6 @@ export class EstablecimientoDetailComponent implements OnInit, OnDestroy {
   }
 
   goBack(): void {
-    this.router.navigate(['/nomencladores/establecimiento']);
+    this.router.navigate(['/configuracion/establecimiento']);
   }
 }

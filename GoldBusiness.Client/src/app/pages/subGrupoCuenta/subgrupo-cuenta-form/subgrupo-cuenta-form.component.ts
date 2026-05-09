@@ -235,7 +235,7 @@ export class SubGrupoCuentaFormComponent implements OnInit, OnDestroy {
         .pipe(finalize(() => this.saving = false)) // ✅ Usar finalize para saving
         .subscribe({
           next: () => {
-            this.router.navigate(['/nomencladores/subgrupo-cuenta']);
+            this.router.navigate(['/plan-cuentas/subgrupo-cuenta']);
           },
           error: (err: any) => {
             this.error = this.translate.translate('error.saving');
@@ -247,7 +247,7 @@ export class SubGrupoCuentaFormComponent implements OnInit, OnDestroy {
         .pipe(finalize(() => this.saving = false)) // ✅ Usar finalize para saving
         .subscribe({
           next: () => {
-            this.router.navigate(['/nomencladores/subgrupo-cuenta']);
+            this.router.navigate(['/plan-cuentas/subgrupo-cuenta']);
           },
           error: (err: any) => {
             this.error = this.translate.translate('error.saving');
@@ -258,7 +258,7 @@ export class SubGrupoCuentaFormComponent implements OnInit, OnDestroy {
   }
 
   cancel(): void {
-    this.router.navigate(['/nomencladores/subgrupo-cuenta']);
+    this.router.navigate(['/plan-cuentas/subgrupo-cuenta']);
   }
 
   getErrorMessage(fieldName: string): string {

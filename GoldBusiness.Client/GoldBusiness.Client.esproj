@@ -5,7 +5,4 @@
     <ShouldRunBuildScript>false</ShouldRunBuildScript>
     <BuildOutputFolder>$(MSBuildProjectDirectory)\dist\GoldBusiness.Client\browser\</BuildOutputFolder>
   </PropertyGroup>
-  <ItemGroup>
-    <Folder Include="src\app\models\" />
-  </ItemGroup>
 </Project>

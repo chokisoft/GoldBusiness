@@ -63,6 +63,6 @@ export class LineaDetailComponent implements OnInit, OnDestroy {
   }
 
   goBack(): void {
-    this.router.navigate(['/nomencladores/linea']);
+    this.router.navigate(['/inventario/linea']);
   }
 }

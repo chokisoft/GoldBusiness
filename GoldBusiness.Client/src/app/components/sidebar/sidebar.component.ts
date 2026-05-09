@@ -59,9 +59,9 @@ export class SidebarComponent implements OnInit, OnDestroy {
             icon: '📊',
             expanded: false,
             children: [
-              { title: 'Grupos de Cuenta', titleKey: 'grupoCuenta.title', icon: '📁', route: '/nomencladores/grupo-cuenta' },
-              { title: 'SubGrupos de Cuenta', titleKey: 'subGrupoCuenta.title', icon: '📂', route: '/nomencladores/subgrupo-cuenta' },
-              { title: 'Cuentas', titleKey: 'cuenta.title', icon: '📄', route: '/nomencladores/cuenta' }
+              { title: 'Grupos de Cuenta', titleKey: 'grupoCuenta.title', icon: '📁', route: '/plan-cuentas/grupo-cuenta' },
+              { title: 'SubGrupos de Cuenta', titleKey: 'subGrupoCuenta.title', icon: '📂', route: '/plan-cuentas/subgrupo-cuenta' },
+              { title: 'Cuentas', titleKey: 'cuenta.title', icon: '📄', route: '/plan-cuentas/cuenta' }
             ]
           },
           {
@@ -70,7 +70,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
             icon: '👥',
             expanded: false,
             children: [
-              { title: 'Proveedores', titleKey: 'proveedores.title', icon: '🏭', route: '/nomencladores/proveedores' },
+              { title: 'Proveedores', titleKey: 'proveedores.title', icon: '🏭', route: '/nomencladores/proveedor' },
               { title: 'Clientes', titleKey: 'clientes.title', icon: '👤', route: '/nomencladores/clientes' }
             ]
           },
@@ -80,8 +80,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
             icon: '🏢',
             expanded: false,
             children: [
-              { title: 'Establecimiento', titleKey: 'establecimiento.title', icon: '🏛️', route: '/nomencladores/establecimiento' },
-              { title: 'Localidad', titleKey: 'localidad.title', icon: '📍', route: '/nomencladores/localidad' },
+              { title: 'Establecimiento', titleKey: 'establecimiento.title', icon: '🏛️', route: '/configuracion/establecimiento' },
+              { title: 'Localidad', titleKey: 'localidad.title', icon: '📍', route: '/configuracion/localidad' },
               { title: 'Moneda', titleKey: 'moneda.title', icon: '💱', route: '/nomencladores/moneda' },
               { title: 'País', titleKey: 'pais.title', icon: '🌍', route: '/nomencladores/pais' },
               { title: 'Provincia', titleKey: 'provincia.title', icon: '🗺️', route: '/nomencladores/provincia' },
@@ -95,9 +95,9 @@ export class SidebarComponent implements OnInit, OnDestroy {
             icon: '📋',
             expanded: false,
             children: [
-              { title: 'Línea', titleKey: 'linea.title', icon: '📏', route: '/nomencladores/linea' },
-              { title: 'Sublínea', titleKey: 'subLinea.title', icon: '📐', route: '/nomencladores/sublinea' },
-              { title: 'Unidad Medida', titleKey: 'unidadMedida.title', icon: '⚖️', route: '/nomencladores/unidad-medida' }
+              { title: 'Línea', titleKey: 'linea.title', icon: '📏', route: '/inventario/linea' },
+              { title: 'Sublínea', titleKey: 'subLinea.title', icon: '📐', route: '/inventario/sublinea' },
+              { title: 'Unidad Medida', titleKey: 'unidadMedida.title', icon: '⚖️', route: '/inventario/unidad-medida' }
             ]
           }
         ]
@@ -141,7 +141,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         icon: '📦',
         expanded: false,
         children: [
-          { title: 'Productos', titleKey: 'producto.title', icon: '🏷️', route: '/nomencladores/producto' },
+          { title: 'Productos', titleKey: 'producto.title', icon: '🏷️', route: '/inventario/productos' },
           { title: 'Movimientos', titleKey: 'sidebar.movimientos', icon: '🔄', route: '/movimientos' }
         ]
       },

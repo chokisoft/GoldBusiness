@@ -123,7 +123,7 @@ export class ConceptoAjusteFormComponent implements OnInit, OnDestroy {
     if (this.isEditMode) {
       this.conceptoAjusteService.update(this.conceptoAjusteId!, formData).subscribe({
         next: () => {
-          this.router.navigate(['/nomencladores/concepto-ajuste']);
+          this.router.navigate(['/inventario/concepto-ajuste']);
         },
         error: (err) => {
           this.saving = false;
@@ -133,7 +133,7 @@ export class ConceptoAjusteFormComponent implements OnInit, OnDestroy {
     } else {
       this.conceptoAjusteService.create(formData).subscribe({
         next: () => {
-          this.router.navigate(['/nomencladores/concepto-ajuste']);
+          this.router.navigate(['/inventario/concepto-ajuste']);
         },
         error: (err) => {
           this.saving = false;
@@ -144,7 +144,7 @@ export class ConceptoAjusteFormComponent implements OnInit, OnDestroy {
   }
 
   cancel(): void {
-    this.router.navigate(['/nomencladores/concepto-ajuste']);
+    this.router.navigate(['/inventario/concepto-ajuste']);
   }
 
   getErrorMessage(fieldName: string): string {

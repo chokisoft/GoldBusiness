@@ -62,11 +62,11 @@ export class SubGrupoCuentaDetailComponent implements OnInit, OnDestroy {
   }
 
   goToEdit(): void {
-    this.router.navigate(['/nomencladores/subgrupo-cuenta/editar', this.id]);
+    this.router.navigate(['/plan-cuentas/subgrupo-cuenta/editar', this.id]);
   }
 
   goBack(): void {
-    this.router.navigate(['/nomencladores/subgrupo-cuenta']);
+    this.router.navigate(['/plan-cuentas/subgrupo-cuenta']);
   }
 
   delete(): void {
@@ -76,7 +76,7 @@ export class SubGrupoCuentaDetailComponent implements OnInit, OnDestroy {
 
     this.subGrupoCuentaService.delete(this.id!).subscribe({
       next: () => {
-        this.router.navigate(['/nomencladores/subgrupo-cuenta']);
+        this.router.navigate(['/plan-cuentas/subgrupo-cuenta']);
       },
       error: (err) => {
         this.error = err.error?.message || 'Error al eliminar el subgrupo de cuenta';

@@ -49,7 +49,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   loginForm!: FormGroup;
   isLoading = false;
   errorMessage: string | null = null;
-  returnUrl: string = '/dashboard';
+  returnUrl: string = '/inicio';
   showPassword: boolean = false; // Inicializado explícitamente
   readonly googleAuthEnabled = environment.googleAuthEnabled;
 
@@ -75,7 +75,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.initializeForm();
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
+    this.returnUrl = this.normalizeReturnUrl(this.route.snapshot.queryParams['returnUrl']);
     console.log('📍 URL de retorno configurada:', this.returnUrl);
 
     this.loadTranslations();
@@ -87,7 +87,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     if (this.authService.isAuthenticated()) {
       console.log('✅ Usuario ya autenticado, redirigiendo al dashboard...');
-      this.router.navigate(['/dashboard']);
+      this.router.navigate(['/inicio']);
     }
   }
 
@@ -240,7 +240,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    const callbackReturnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
+    const callbackReturnUrl = this.normalizeReturnUrl(this.route.snapshot.queryParams['returnUrl']);
     const completed = this.authService.completeExternalLogin({ token, refreshToken, expiresAt });
 
     this.cleanUrlHash();
@@ -257,5 +257,25 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   private cleanUrlHash(): void {
     window.history.replaceState({}, document.title, window.location.pathname + window.location.search);
+  }
+
+  private normalizeReturnUrl(returnUrl: string | null | undefined): string {
+    const fallbackUrl = '/inicio';
+    const candidate = (returnUrl || '').trim();
+
+    if (!candidate) {
+      return fallbackUrl;
+    }
+
+    if (!candidate.startsWith('/')) {
+      return fallbackUrl;
+    }
+
+    // Compatibilidad con enlaces antiguos
+    if (candidate === '/dashboard') {
+      return fallbackUrl;
+    }
+
+    return candidate;
   }
 }

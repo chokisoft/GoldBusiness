@@ -280,7 +280,7 @@ export class AuthService {
   /**
    * Iniciar autenticación con Google (flujo externo)
    */
-  startGoogleLogin(returnUrl: string = '/dashboard'): void {
+  startGoogleLogin(returnUrl: string = '/inicio'): void {
     const callbackUrl = `${window.location.origin}/login?returnUrl=${encodeURIComponent(returnUrl)}`;
     const endpoint = `${environment.apiUrl}/${environment.googleAuthEndpoint}`;
     const url = `${endpoint}?returnUrl=${encodeURIComponent(callbackUrl)}`;

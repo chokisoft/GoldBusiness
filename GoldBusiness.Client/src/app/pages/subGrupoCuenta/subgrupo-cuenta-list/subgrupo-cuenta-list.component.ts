@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { skip, finalize } from 'rxjs/operators';
-import { SubGrupoCuentaService, SubGrupoCuentaDTO } from '../../../services/sub-grupo-cuenta.service';
+import { SubGrupoCuentaService, SubGrupoCuentaDTO } from '../../../services/subgrupo-cuenta.service';
 import { LanguageService } from '../../../services/language.service';
 
 @Component({

@@ -119,7 +119,7 @@ export class UnidadMedidaFormComponent implements OnInit, OnDestroy {
     if (this.isEditMode) {
       this.unidadMedidaService.update(this.unidadMedidaId!, formData).subscribe({
         next: () => {
-          this.router.navigate(['/nomencladores/unidad-medida']);
+          this.router.navigate(['/inventario/unidad-medida']);
         },
         error: (err) => {
           this.saving = false;
@@ -129,7 +129,7 @@ export class UnidadMedidaFormComponent implements OnInit, OnDestroy {
     } else {
       this.unidadMedidaService.create(formData).subscribe({
         next: () => {
-          this.router.navigate(['/nomencladores/unidad-medida']);
+          this.router.navigate(['/inventario/unidad-medida']);
         },
         error: (err) => {
           this.saving = false;
@@ -140,7 +140,7 @@ export class UnidadMedidaFormComponent implements OnInit, OnDestroy {
   }
 
   cancel(): void {
-    this.router.navigate(['/nomencladores/unidad-medida']);
+    this.router.navigate(['/inventario/unidad-medida']);
   }
 
   getErrorMessage(fieldName: string): string {
