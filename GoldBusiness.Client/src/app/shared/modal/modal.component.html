@@ -1,0 +1,14 @@
+<div class="modal-backdrop" (click)="onBackdropClick()"></div>
+<div class="modal-window">
+  <div class="modal-header">
+    <h3>{{ title }}</h3>
+    <button class="close" (click)="close()">✖</button>
+  </div>
+  <div class="modal-body">
+    <ng-content></ng-content>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-secondary" (click)="close()">{{ cancelText }}</button>
+    <button class="btn btn-primary" (click)="requestConfirm()">{{ confirmText }}</button>
+  </div>
+</div>

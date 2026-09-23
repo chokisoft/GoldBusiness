@@ -1,13 +1,15 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { skip, finalize } from 'rxjs/operators';
 import { TransaccionService, TransaccionDTO } from '../../../services/transaccion.service';
 import { LanguageService } from '../../../services/language.service';
 
 @Component({
-  selector: 'app-transaccion-list',
-  templateUrl: './transaccion-list.component.html',
-  styleUrls: ['./transaccion-list.component.css']
+    selector: 'app-transaccion-list',
+    templateUrl: './transaccion-list.component.html',
+    styleUrls: ['./transaccion-list.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class TransaccionListComponent implements OnInit, OnDestroy {
   transaccions: TransaccionDTO[] = [];

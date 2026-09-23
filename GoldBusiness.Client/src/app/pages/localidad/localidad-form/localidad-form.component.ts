@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -10,9 +10,11 @@ import { LanguageService } from '../../../services/language.service';
 import { TranslationService } from '../../../services/translation.service';
 
 @Component({
-  selector: 'app-localidad-form',
-  templateUrl: './localidad-form.component.html',
-  styleUrls: ['./localidad-form.component.css']
+    selector: 'app-localidad-form',
+    templateUrl: './localidad-form.component.html',
+    styleUrls: ['./localidad-form.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class LocalidadFormComponent implements OnInit, OnDestroy {
   itemForm: FormGroup;

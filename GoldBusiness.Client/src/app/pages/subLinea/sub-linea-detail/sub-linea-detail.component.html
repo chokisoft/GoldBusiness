@@ -18,40 +18,50 @@
     </div>
   </div>
 
-  <div class="alert alert-error" *ngIf="error">
-    <span class="alert-icon">⚠️</span>
-    {{ error }}
-  </div>
-
-  <div class="card" *ngIf="!loading && subLinea">
-    <div class="card-header">
-      📊 {{ 'common.information' | translate }}
+  @if (error) {
+    <div class="alert alert-error">
+      <span class="alert-icon">⚠️</span>
+      {{ error }}
     </div>
-    <div class="card-body">
-      <div class="info-section">
-        <h3 class="section-title">
-          🔑 {{ 'sub-linea.mainInfo' | translate }}
-        </h3>
-        <div class="info-grid">
-          <div class="info-item">
-            <span class="info-label">{{ 'sub-linea.codigo' | translate }}</span>
-            <span class="info-value-large">{{ subLinea.codigo }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'sub-linea.descripcion' | translate }}</span>
-            <span class="info-value">{{ subLinea.descripcion }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'sub-linea.linea' | translate }}</span>
-            <span class="badge badge-info" *ngIf="subLinea.lineaDescripcion">{{ subLinea.lineaDescripcion }}</span>
-            <span class="info-value" *ngIf="!subLinea.lineaDescripcion">-</span>
+  }
+
+  @if (!loading && subLinea) {
+    <div class="card">
+      <div class="card-header">
+        📊 {{ 'common.information' | translate }}
+      </div>
+      <div class="card-body">
+        <div class="info-section">
+          <h3 class="section-title">
+            🔑 {{ 'sub-linea.mainInfo' | translate }}
+          </h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">{{ 'sub-linea.codigo' | translate }}</span>
+              <span class="info-value-large">{{ subLinea.codigo }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">{{ 'sub-linea.descripcion' | translate }}</span>
+              <span class="info-value">{{ subLinea.descripcion }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">{{ 'sub-linea.linea' | translate }}</span>
+              @if (subLinea.lineaDescripcion) {
+                <span class="badge badge-info">{{ subLinea.lineaDescripcion }}</span>
+              }
+              @if (!subLinea.lineaDescripcion) {
+                <span class="info-value">-</span>
+              }
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  }
 
-  <div *ngIf="loading" class="loading-container">
-    <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
-  </div>
+  @if (loading) {
+    <div class="loading-container">
+      <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
+    </div>
+  }
 </div>

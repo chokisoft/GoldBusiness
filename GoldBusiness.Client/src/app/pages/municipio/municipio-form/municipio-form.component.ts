@@ -1,13 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MunicipioService, MunicipioDTO } from '../../../services/municipio.service';
 import { ProvinciaService, ProvinciaDTO } from '../../../services/provincia.service';
 
 @Component({
-  selector: 'app-municipio-form',
-  templateUrl: './municipio-form.component.html',
-  styleUrls: ['./municipio-form.component.css']
+    selector: 'app-municipio-form',
+    templateUrl: './municipio-form.component.html',
+    styleUrls: ['./municipio-form.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class MunicipioFormComponent implements OnInit {
   itemForm: FormGroup;

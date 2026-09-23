@@ -10,6 +10,7 @@ import { LocalizedPhonePipe } from '../pipes/localized-phone.pipe';
 // Componentes compartidos
 import { LoaderComponent } from '../components/loader/loader.component';
 import { LanguageSelectorComponent } from '../components/language-selector/language-selector.component';
+import { ModalComponent } from './modal/modal.component';
 
 /**
  * SharedModule - Módulo compartido entre todos los módulos lazy-loaded
@@ -24,6 +25,8 @@ import { LanguageSelectorComponent } from '../components/language-selector/langu
     // Componentes compartidos
     LoaderComponent,
     LanguageSelectorComponent
+    ,
+    ModalComponent
   ],
   imports: [
     CommonModule,
@@ -42,6 +45,8 @@ import { LanguageSelectorComponent } from '../components/language-selector/langu
     // Re-exportar componentes compartidos
     LoaderComponent,
     LanguageSelectorComponent
+    ,
+    ModalComponent
   ]
 })
 export class SharedModule { }

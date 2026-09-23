@@ -20,39 +20,44 @@
   </div>
 
   <!-- ✅ Alert de error -->
-  <div class="alert alert-error" *ngIf="error">
-    <span class="alert-icon">⚠️</span>
-    {{ error }}
-  </div>
+  @if (error) {
+    <div class="alert alert-error">
+      <span class="alert-icon">⚠️</span>
+      {{ error }}
+    </div>
+  }
 
   <!-- ✅ Contenido principal -->
-  <div class="card" *ngIf="!loading && grupo">
-    <div class="card-header">
-      📊 {{ 'common.information' | translate }}
-    </div>
-    <div class="card-body">
-      <!-- Información principal -->
-      <div class="info-section">
-        <h3 class="section-title">
-          🔑 {{ 'grupoCuenta.mainInfo' | translate }}
-        </h3>
-        <div class="info-grid">
-          <div class="info-item">
-            <span class="info-label">{{ 'grupoCuenta.codigo' | translate }}</span>
-            <span class="info-value-large">{{ grupo.codigo }}</span>
-          </div>
-          <div class="info-item info-item-full">
-            <span class="info-label">{{ 'grupoCuenta.descripcion' | translate }}</span>
-            <span class="info-value">{{ grupo.descripcion }}</span>
+  @if (!loading && grupo) {
+    <div class="card">
+      <div class="card-header">
+        📊 {{ 'common.information' | translate }}
+      </div>
+      <div class="card-body">
+        <!-- Información principal -->
+        <div class="info-section">
+          <h3 class="section-title">
+            🔑 {{ 'grupoCuenta.mainInfo' | translate }}
+          </h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">{{ 'grupoCuenta.codigo' | translate }}</span>
+              <span class="info-value-large">{{ grupo.codigo }}</span>
+            </div>
+            <div class="info-item info-item-full">
+              <span class="info-label">{{ 'grupoCuenta.descripcion' | translate }}</span>
+              <span class="info-value">{{ grupo.descripcion }}</span>
+            </div>
           </div>
         </div>
       </div>
-
     </div>
-  </div>
+  }
 
   <!-- ✅ Loading -->
-  <div *ngIf="loading" class="loading-container">
-    <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
-  </div>
+  @if (loading) {
+    <div class="loading-container">
+      <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
+    </div>
+  }
 </div>

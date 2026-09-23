@@ -1,13 +1,15 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { skip, finalize } from 'rxjs/operators';
 import { ProvinciaService, ProvinciaDTO } from '../../../services/provincia.service';
 import { LanguageService } from '../../../services/language.service';
 
 @Component({
-  selector: 'app-provincia-list',
-  templateUrl: './provincia-list.component.html',
-  styleUrls: ['./provincia-list.component.css']
+    selector: 'app-provincia-list',
+    templateUrl: './provincia-list.component.html',
+    styleUrls: ['./provincia-list.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ProvinciaListComponent implements OnInit, OnDestroy {
   provincias: ProvinciaDTO[] = [];

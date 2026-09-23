@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CodigoPostalService, CodigoPostalDTO } from '../../../services/codigo-postal.service';
@@ -7,9 +7,11 @@ import { ProvinciaService, ProvinciaDTO } from '../../../services/provincia.serv
 import { MunicipioService, MunicipioDTO } from '../../../services/municipio.service';
 
 @Component({
-  selector: 'app-codigo-postal-form',
-  templateUrl: './codigo-postal-form.component.html',
-  styleUrls: ['./codigo-postal-form.component.css']
+    selector: 'app-codigo-postal-form',
+    templateUrl: './codigo-postal-form.component.html',
+    styleUrls: ['./codigo-postal-form.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class CodigoPostalFormComponent implements OnInit {
   itemForm: FormGroup;

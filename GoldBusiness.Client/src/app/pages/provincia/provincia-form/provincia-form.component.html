@@ -5,74 +5,93 @@
     </h1>
   </div>
 
-  <div class="alert alert-error" *ngIf="error">
-    <span class="alert-icon">⚠️</span>
-    {{ error }}
-  </div>
+  @if (error) {
+    <div class="alert alert-error">
+      <span class="alert-icon">⚠️</span>
+      {{ error }}
+    </div>
+  }
 
   <div class="card">
-    <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" class="form-container" *ngIf="!loading">
-      <div class="form-row">
-        <div class="form-group">
-          <label for="paisId" class="form-label">{{ 'provincia.pais' | translate }} *</label>
-          <select id="paisId"
-                  formControlName="paisId"
-                  class="form-control"
-                  [class.is-invalid]="itemForm.get('paisId')?.invalid && itemForm.get('paisId')?.touched">
-            <option value="">{{ 'common.select' | translate }}</option>
-            <option *ngFor="let pais of paises" [value]="pais.id">
-              {{ pais.descripcion }}
-            </option>
-          </select>
-            <small class="form-text" *ngIf="paises.length === 0">{{ 'provincia.noPaisesDisponibles' | translate }}</small>
-            <small class="form-text" *ngIf="paises?.length === 0">{{ 'provincia.selectPaisToSeeProvincias' | translate }}</small>
-          <div class="invalid-feedback" *ngIf="itemForm.get('paisId')?.hasError('required') && itemForm.get('paisId')?.touched">
-            {{ 'validation.required' | translate }}
+    @if (!loading) {
+      <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" class="form-container">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="paisId" class="form-label">{{ 'provincia.pais' | translate }} *</label>
+            <select id="paisId"
+              formControlName="paisId"
+              class="form-control"
+              [class.is-invalid]="itemForm.get('paisId')?.invalid && itemForm.get('paisId')?.touched">
+              <option value="">{{ 'common.select' | translate }}</option>
+              @for (pais of paises; track pais) {
+                <option [value]="pais.id">
+                  {{ pais.descripcion }}
+                </option>
+              }
+            </select>
+            @if (paises.length === 0) {
+              <small class="form-text">{{ 'provincia.noPaisesDisponibles' | translate }}</small>
+            }
+            @if (paises?.length === 0) {
+              <small class="form-text">{{ 'provincia.selectPaisToSeeProvincias' | translate }}</small>
+            }
+            @if (itemForm.get('paisId')?.hasError('required') && itemForm.get('paisId')?.touched) {
+              <div class="invalid-feedback">
+                {{ 'validation.required' | translate }}
+              </div>
+            }
           </div>
-        </div>
-
-        <div class="form-group">
-          <label for="codigo" class="form-label">{{ 'provincia.codigo' | translate }} *</label>
-          <input type="text"
-                 id="codigo"
-                 formControlName="codigo"
-                 class="form-control"
-                 [class.is-invalid]="itemForm.get('codigo')?.invalid && itemForm.get('codigo')?.touched"
-                 [placeholder]="'provincia.codigoPlaceholder' | translate"
-                 maxlength="10" />
-          <div class="invalid-feedback" *ngIf="itemForm.get('codigo')?.hasError('required') && itemForm.get('codigo')?.touched">
-            {{ 'validation.required' | translate }}
+          <div class="form-group">
+            <label for="codigo" class="form-label">{{ 'provincia.codigo' | translate }} *</label>
+            <input type="text"
+              id="codigo"
+              formControlName="codigo"
+              class="form-control"
+              [class.is-invalid]="itemForm.get('codigo')?.invalid && itemForm.get('codigo')?.touched"
+              [placeholder]="'provincia.codigoPlaceholder' | translate"
+              maxlength="10" />
+              @if (itemForm.get('codigo')?.hasError('required') && itemForm.get('codigo')?.touched) {
+                <div class="invalid-feedback">
+                  {{ 'validation.required' | translate }}
+                </div>
+              }
+            </div>
           </div>
+          <div class="form-group">
+            <label for="descripcion" class="form-label">{{ 'provincia.nombre' | translate }} *</label>
+            <input type="text"
+              id="descripcion"
+              formControlName="descripcion"
+              class="form-control"
+              [class.is-invalid]="itemForm.get('descripcion')?.invalid && itemForm.get('descripcion')?.touched"
+              [placeholder]="'provincia.nombrePlaceholder' | translate"
+              maxlength="100" />
+              @if (itemForm.get('descripcion')?.hasError('required') && itemForm.get('descripcion')?.touched) {
+                <div class="invalid-feedback">
+                  {{ 'validation.required' | translate }}
+                </div>
+              }
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn btn-secondary" (click)="onCancel()" [disabled]="saving">
+                ❌ {{ 'common.cancel' | translate }}
+              </button>
+              <button type="submit" class="btn btn-primary" [disabled]="saving || itemForm.invalid">
+                @if (!saving) {
+                  <span>💾 {{ 'common.save' | translate }}</span>
+                }
+                @if (saving) {
+                  <span>⏳ {{ 'common.saving' | translate }}</span>
+                }
+              </button>
+            </div>
+          </form>
+        }
+      </div>
+
+      @if (loading) {
+        <div class="loading-container">
+          <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
         </div>
-      </div>
-
-      <div class="form-group">
-        <label for="descripcion" class="form-label">{{ 'provincia.nombre' | translate }} *</label>
-        <input type="text"
-               id="descripcion"
-               formControlName="descripcion"
-               class="form-control"
-               [class.is-invalid]="itemForm.get('descripcion')?.invalid && itemForm.get('descripcion')?.touched"
-               [placeholder]="'provincia.nombrePlaceholder' | translate"
-               maxlength="100" />
-        <div class="invalid-feedback" *ngIf="itemForm.get('descripcion')?.hasError('required') && itemForm.get('descripcion')?.touched">
-          {{ 'validation.required' | translate }}
-        </div>
-      </div>
-
-      <div class="form-actions">
-        <button type="button" class="btn btn-secondary" (click)="onCancel()" [disabled]="saving">
-          ❌ {{ 'common.cancel' | translate }}
-        </button>
-        <button type="submit" class="btn btn-primary" [disabled]="saving || itemForm.invalid">
-          <span *ngIf="!saving">💾 {{ 'common.save' | translate }}</span>
-          <span *ngIf="saving">⏳ {{ 'common.saving' | translate }}</span>
-        </button>
-      </div>
-    </form>
-  </div>
-
-  <div *ngIf="loading" class="loading-container">
-    <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
-  </div>
-</div>
+      }
+    </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -8,9 +8,11 @@ import { LanguageService } from '../../../services/language.service';
 import { TranslationService } from '../../../services/translation.service';
 
 @Component({
-  selector: 'app-unidad-medida-form',
-  templateUrl: './unidad-medida-form.component.html',
-  styleUrls: ['./unidad-medida-form.component.css']
+    selector: 'app-unidad-medida-form',
+    templateUrl: './unidad-medida-form.component.html',
+    styleUrls: ['./unidad-medida-form.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class UnidadMedidaFormComponent implements OnInit, OnDestroy {
   form: FormGroup;

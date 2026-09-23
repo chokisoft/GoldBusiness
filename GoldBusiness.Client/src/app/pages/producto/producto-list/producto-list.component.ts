@@ -1,13 +1,15 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { finalize, skip } from 'rxjs/operators';
 import { LanguageService } from '../../../services/language.service';
 import { ProductoDTO, ProductoService } from '../../../services/producto.service';
 
 @Component({
-  selector: 'app-producto-list',
-  templateUrl: './producto-list.component.html',
-  styleUrl: './producto-list.component.css'
+    selector: 'app-producto-list',
+    templateUrl: './producto-list.component.html',
+    styleUrl: './producto-list.component.css',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ProductoListComponent implements OnInit, OnDestroy {
   productos: ProductoDTO[] = [];

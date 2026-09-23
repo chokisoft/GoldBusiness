@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { Subscription } from 'rxjs';
@@ -8,9 +8,11 @@ import { LanguageService } from '../../../services/language.service';
 import { TranslationService } from '../../../services/translation.service';
 
 @Component({
-  selector: 'app-producto-detail',
-  templateUrl: './producto-detail.component.html',
-  styleUrl: './producto-detail.component.css'
+    selector: 'app-producto-detail',
+    templateUrl: './producto-detail.component.html',
+    styleUrl: './producto-detail.component.css',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ProductoDetailComponent implements OnInit, OnDestroy {
   item?: ProductoDTO;

@@ -1,13 +1,15 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { skip, finalize } from 'rxjs/operators';
 import { SystemConfigurationService, SystemConfigurationDTO } from '../../../services/system-configuration.service';
 import { LanguageService } from '../../../services/language.service';
 
 @Component({
-  selector: 'app-system-configuration-list',
-  templateUrl: './system-configuration-list.component.html',
-  styleUrls: ['./system-configuration-list.component.css']
+    selector: 'app-system-configuration-list',
+    templateUrl: './system-configuration-list.component.html',
+    styleUrls: ['./system-configuration-list.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SystemConfigurationListComponent implements OnInit, OnDestroy {
   configurations: SystemConfigurationDTO[] = [];

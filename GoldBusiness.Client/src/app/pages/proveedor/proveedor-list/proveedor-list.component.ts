@@ -1,13 +1,15 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { finalize, skip } from 'rxjs/operators';
 import { LanguageService } from '../../../services/language.service';
 import { ProveedorDTO, ProveedorService } from '../../../services/proveedor.service';
 
 @Component({
-  selector: 'app-proveedor-list',
-  templateUrl: './proveedor-list.component.html',
-  styleUrl: './proveedor-list.component.css'
+    selector: 'app-proveedor-list',
+    templateUrl: './proveedor-list.component.html',
+    styleUrl: './proveedor-list.component.css',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ProveedorListComponent implements OnInit, OnDestroy {
   proveedores: ProveedorDTO[] = [];

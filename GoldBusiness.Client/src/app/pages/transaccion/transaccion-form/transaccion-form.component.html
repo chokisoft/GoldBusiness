@@ -5,10 +5,12 @@
     </h1>
   </div>
 
-  <div class="alert alert-error" *ngIf="error">
-    <span class="alert-icon">⚠️</span>
-    {{ error }}
-  </div>
+  @if (error) {
+    <div class="alert alert-error">
+      <span class="alert-icon">⚠️</span>
+      {{ error }}
+    </div>
+  }
 
   <div class="card">
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
@@ -17,33 +19,43 @@
           {{ 'transaccion.codigo' | translate }} *
         </label>
         <input type="text" id="codigo" formControlName="codigo" class="form-control"
-               [class.is-invalid]="form.get('codigo')?.invalid && form.get('codigo')?.touched" />
-        <div class="invalid-feedback" *ngIf="form.get('codigo')?.invalid && form.get('codigo')?.touched">
-          {{ getErrorMessage('codigo') }}
+          [class.is-invalid]="form.get('codigo')?.invalid && form.get('codigo')?.touched" />
+          @if (form.get('codigo')?.invalid && form.get('codigo')?.touched) {
+            <div class="invalid-feedback">
+              {{ getErrorMessage('codigo') }}
+            </div>
+          }
         </div>
-      </div>
 
-      <div class="form-group">
-        <label for="descripcion" class="form-label">
-          {{ 'transaccion.descripcion' | translate }} *
-        </label>
-        <input type="text" id="descripcion" formControlName="descripcion" class="form-control"
-               [class.is-invalid]="form.get('descripcion')?.invalid && form.get('descripcion')?.touched" />
-        <div class="invalid-feedback" *ngIf="form.get('descripcion')?.invalid && form.get('descripcion')?.touched">
-          {{ getErrorMessage('descripcion') }}
-        </div>
-      </div>
+        <div class="form-group">
+          <label for="descripcion" class="form-label">
+            {{ 'transaccion.descripcion' | translate }} *
+          </label>
+          <input type="text" id="descripcion" formControlName="descripcion" class="form-control"
+            [class.is-invalid]="form.get('descripcion')?.invalid && form.get('descripcion')?.touched" />
+            @if (form.get('descripcion')?.invalid && form.get('descripcion')?.touched) {
+              <div class="invalid-feedback">
+                {{ getErrorMessage('descripcion') }}
+              </div>
+            }
+          </div>
 
-      <div class="form-actions">
-        <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="loading || saving">
-          ❌ {{ 'common.cancel' | translate }}
-        </button>
-        <button type="submit" class="btn btn-primary" [disabled]="loading || saving || form.invalid">
-          <span *ngIf="!loading && !saving">💾 {{ 'common.save' | translate }}</span>
-          <span *ngIf="loading && !saving">⏳ {{ 'common.loading' | translate }}</span>
-          <span *ngIf="saving">⏳ {{ 'common.saving' | translate }}</span>
-        </button>
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="loading || saving">
+              ❌ {{ 'common.cancel' | translate }}
+            </button>
+            <button type="submit" class="btn btn-primary" [disabled]="loading || saving || form.invalid">
+              @if (!loading && !saving) {
+                <span>💾 {{ 'common.save' | translate }}</span>
+              }
+              @if (loading && !saving) {
+                <span>⏳ {{ 'common.loading' | translate }}</span>
+              }
+              @if (saving) {
+                <span>⏳ {{ 'common.saving' | translate }}</span>
+              }
+            </button>
+          </div>
+        </form>
       </div>
-    </form>
-  </div>
-</div>
+    </div>

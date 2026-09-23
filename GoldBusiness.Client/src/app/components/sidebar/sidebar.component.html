@@ -1,60 +1,75 @@
 <aside class="sidebar" [class.collapsed]="isCollapsed" [class.open]="isOpen" role="navigation" aria-label="Main sidebar">
   <nav class="sidebar-nav">
-    <ng-container *ngFor="let item of menuItems">
+    @for (item of menuItems; track item) {
       <div class="menu-item" [class.has-children]="item.children">
         <div class="menu-header" (click)="onHeaderClick(item)" (keydown.enter)="onHeaderClick(item)" [class.expanded]="item.expanded" role="button" tabindex="0">
           <div class="menu-title">
             <span class="menu-icon" [attr.aria-label]="getTitle(item)" [title]="getTitle(item)">{{ item.icon }}</span>
-            <span class="menu-text" *ngIf="!isCollapsed">{{ getTitle(item) }}</span>
+            @if (!isCollapsed) {
+              <span class="menu-text">{{ getTitle(item) }}</span>
+            }
           </div>
-          <span class="expand-icon" *ngIf="item.children && !isCollapsed">
-            {{ item.expanded ? '▼' : '▶' }}
-          </span>
+          @if (item.children && !isCollapsed) {
+            <span class="expand-icon">
+              {{ item.expanded ? '▼' : '▶' }}
+            </span>
+          }
         </div>
-
-        <div class="submenu" *ngIf="item.children && item.expanded && !isCollapsed">
-          <ng-container *ngFor="let subItem of item.children">
-            <!-- Nivel 2 -->
-            <div class="menu-item submenu-item" *ngIf="!subItem.route">
-              <div class="menu-header" (click)="toggleItem(subItem)" [class.expanded]="subItem.expanded">
-                <div class="menu-title">
+        @if (item.children && item.expanded && !isCollapsed) {
+          <div class="submenu">
+            @for (subItem of item.children; track subItem) {
+              <!-- Nivel 2 -->
+              @if (!subItem.route) {
+                <div class="menu-item submenu-item">
+                  <div class="menu-header" (click)="toggleItem(subItem)" [class.expanded]="subItem.expanded">
+                    <div class="menu-title">
+                      <span class="menu-icon" [attr.aria-label]="getTitle(subItem)" [title]="getTitle(subItem)">{{ subItem.icon }}</span>
+                      <span class="menu-text">{{ getTitle(subItem) }}</span>
+                    </div>
+                    @if (subItem.children) {
+                      <span class="expand-icon">
+                        {{ subItem.expanded ? '▼' : '▶' }}
+                      </span>
+                    }
+                  </div>
+                  <!-- Nivel 3 -->
+                  @if (subItem.children && subItem.expanded) {
+                    <div class="submenu submenu-level-2">
+                      @for (childItem of subItem.children; track childItem) {
+                        <a
+                          [routerLink]="childItem.route"
+                          routerLinkActive="active"
+                          class="menu-link"
+                          (click)="closeMobile()">
+                          <span class="menu-icon" [attr.aria-label]="getTitle(childItem)" [title]="getTitle(childItem)">{{ childItem.icon }}</span>
+                          <span class="menu-text">{{ getTitle(childItem) }}</span>
+                        </a>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+              <!-- Item con ruta directa -->
+              @if (subItem.route) {
+                <a
+                  [routerLink]="subItem.route"
+                  routerLinkActive="active"
+                  class="menu-link submenu-item"
+                  (click)="closeMobile()">
                   <span class="menu-icon" [attr.aria-label]="getTitle(subItem)" [title]="getTitle(subItem)">{{ subItem.icon }}</span>
                   <span class="menu-text">{{ getTitle(subItem) }}</span>
-                </div>
-                <span class="expand-icon" *ngIf="subItem.children">
-                  {{ subItem.expanded ? '▼' : '▶' }}
-                </span>
-              </div>
-
-              <!-- Nivel 3 -->
-              <div class="submenu submenu-level-2" *ngIf="subItem.children && subItem.expanded">
-                <a *ngFor="let childItem of subItem.children"
-                   [routerLink]="childItem.route"
-                   routerLinkActive="active"
-                   class="menu-link"
-                   (click)="closeMobile()">
-                  <span class="menu-icon" [attr.aria-label]="getTitle(childItem)" [title]="getTitle(childItem)">{{ childItem.icon }}</span>
-                  <span class="menu-text">{{ getTitle(childItem) }}</span>
                 </a>
-              </div>
-            </div>
-
-            <!-- Item con ruta directa -->
-            <a *ngIf="subItem.route"
-               [routerLink]="subItem.route"
-               routerLinkActive="active"
-               class="menu-link submenu-item"
-               (click)="closeMobile()">
-              <span class="menu-icon" [attr.aria-label]="getTitle(subItem)" [title]="getTitle(subItem)">{{ subItem.icon }}</span>
-              <span class="menu-text">{{ getTitle(subItem) }}</span>
-            </a>
-          </ng-container>
-        </div>
+              }
+            }
+          </div>
+        }
       </div>
-    </ng-container>
+    }
   </nav>
 </aside>
 
 <!-- Backdrop móvil (se muestra solo cuando isOpen = true) -->
-<div class="sidebar-backdrop" *ngIf="isOpen" (click)="closeMobile()" aria-hidden="true"></div>
+@if (isOpen) {
+  <div class="sidebar-backdrop" (click)="closeMobile()" aria-hidden="true"></div>
+}
 

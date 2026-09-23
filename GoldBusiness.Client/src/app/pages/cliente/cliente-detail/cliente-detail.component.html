@@ -5,7 +5,7 @@
       <p class="page-subtitle">{{ 'common.information' | translate }}</p>
     </div>
     <div class="header-actions">
-      <button class="btn btn-warning" [routerLink]="['../editar', item?.id]">
+      <button class="btn btn-warning" [routerLink]="['../editar', $safeNavigationMigration(item?.id)]">
         <span class="btn-icon">✏️</span>
         {{ 'common.edit' | translate }}
       </button>
@@ -16,60 +16,66 @@
     </div>
   </div>
 
-  <div class="alert alert-error" *ngIf="error">
-    <span class="alert-icon">⚠️</span>
-    {{ error }}
-  </div>
+  @if (error) {
+    <div class="alert alert-error">
+      <span class="alert-icon">⚠️</span>
+      {{ error }}
+    </div>
+  }
 
-  <div class="card" *ngIf="!loading && item">
-    <div class="card-header">📊 {{ 'common.information' | translate }}</div>
-    <div class="card-body">
-      <div class="info-section">
-        <div class="info-row">
-          <strong>{{ 'clientes.codigo' | translate }}:</strong> {{ item.codigo }}
-        </div>
-        <div class="info-row">
-          <strong>{{ 'clientes.descripcion' | translate }}:</strong> {{ item.descripcion }}
-        </div>
-        <div class="info-row">
-          <strong>{{ 'clientes.identificadorFiscal' | translate }}:</strong> {{ item.identificadorFiscal || '-' }}
-        </div>
-        <div class="info-row">
-          <strong>{{ 'clientes.tasaIva' | translate }}:</strong> {{ item.tasaIva }}%
-        </div>
-        <div class="info-row">
-          <strong>{{ 'clientes.direccion' | translate }}:</strong> {{ item.direccion || '-' }}
-        </div>
-
-        <!-- País y Código Postal en la misma línea -->
-        <div class="info-row">
-          <strong>{{ 'clientes.pais' | translate }}:</strong>
-          {{ selectedPais?.descripcion || paisDescripcion || item.paisDescripcion || '-' }}
-          &nbsp;&nbsp;&nbsp;
-          <strong>{{ 'clientes.codigoPostal' | translate }}:</strong>
-          {{ postalCode || '-' }}
-        </div>
-
-        <div class="info-row">
-          <strong>{{ 'clientes.provincia' | translate }}:</strong> {{ item.provinciaDescripcion || '-' }}
-        </div>
-        <div class="info-row">
-          <strong>{{ 'clientes.municipio' | translate }}:</strong> {{ item.municipioDescripcion || '-' }}
-        </div>
-
-        <div class="info-row">
-          <strong>{{ 'clientes.email' | translate }}:</strong> {{ item.email || '-' }}
-        </div>
-        <div class="info-row">
-          <strong>{{ 'clientes.telefono' | translate }}:</strong>
-          <span *ngIf="item.telefono; else noPhone">{{ item.telefono | localizedPhone:selectedPais }}</span>
-          <ng-template #noPhone>-</ng-template>
+  @if (!loading && item) {
+    <div class="card">
+      <div class="card-header">📊 {{ 'common.information' | translate }}</div>
+      <div class="card-body">
+        <div class="info-section">
+          <div class="info-row">
+            <strong>{{ 'clientes.codigo' | translate }}:</strong> {{ item.codigo }}
+          </div>
+          <div class="info-row">
+            <strong>{{ 'clientes.descripcion' | translate }}:</strong> {{ item.descripcion }}
+          </div>
+          <div class="info-row">
+            <strong>{{ 'clientes.identificadorFiscal' | translate }}:</strong> {{ item.identificadorFiscal || '-' }}
+          </div>
+          <div class="info-row">
+            <strong>{{ 'clientes.tasaIva' | translate }}:</strong> {{ item.tasaIva }}%
+          </div>
+          <div class="info-row">
+            <strong>{{ 'clientes.direccion' | translate }}:</strong> {{ item.direccion || '-' }}
+          </div>
+          <!-- País y Código Postal en la misma línea -->
+          <div class="info-row">
+            <strong>{{ 'clientes.pais' | translate }}:</strong>
+            {{ selectedPais?.descripcion || paisDescripcion || item.paisDescripcion || '-' }}
+            &nbsp;&nbsp;&nbsp;
+            <strong>{{ 'clientes.codigoPostal' | translate }}:</strong>
+            {{ postalCode || '-' }}
+          </div>
+          <div class="info-row">
+            <strong>{{ 'clientes.provincia' | translate }}:</strong> {{ item.provinciaDescripcion || '-' }}
+          </div>
+          <div class="info-row">
+            <strong>{{ 'clientes.municipio' | translate }}:</strong> {{ item.municipioDescripcion || '-' }}
+          </div>
+          <div class="info-row">
+            <strong>{{ 'clientes.email' | translate }}:</strong> {{ item.email || '-' }}
+          </div>
+          <div class="info-row">
+            <strong>{{ 'clientes.telefono' | translate }}:</strong>
+            @if (item.telefono) {
+              <span>{{ item.telefono | localizedPhone:selectedPais }}</span>
+            } @else {
+              -
+            }
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  }
 
-  <div *ngIf="loading" class="loading-container">
-    <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
-  </div>
+  @if (loading) {
+    <div class="loading-container">
+      <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
+    </div>
+  }
 </div>

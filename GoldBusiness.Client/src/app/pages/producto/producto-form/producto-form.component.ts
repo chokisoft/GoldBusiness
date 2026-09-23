@@ -1,12 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductoDTO, ProductoService } from '../../../services/producto.service';
 
 @Component({
-  selector: 'app-producto-form',
-  templateUrl: './producto-form.component.html',
-  styleUrl: './producto-form.component.css'
+    selector: 'app-producto-form',
+    templateUrl: './producto-form.component.html',
+    styleUrl: './producto-form.component.css',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ProductoFormComponent implements OnInit {
   itemForm: FormGroup;

@@ -1,12 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MonedaService, MonedaDTO } from '../../../services/moneda.service';
 
 @Component({
-  selector: 'app-moneda-form',
-  templateUrl: './moneda-form.component.html',
-  styleUrls: ['./moneda-form.component.css']
+    selector: 'app-moneda-form',
+    templateUrl: './moneda-form.component.html',
+    styleUrls: ['./moneda-form.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class MonedaFormComponent implements OnInit {
   itemForm: FormGroup;

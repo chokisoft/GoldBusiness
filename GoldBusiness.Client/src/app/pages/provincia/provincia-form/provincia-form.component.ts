@@ -1,13 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProvinciaService, ProvinciaDTO } from '../../../services/provincia.service';
 import { PaisService, PaisDTO } from '../../../services/pais.service';
 
 @Component({
-  selector: 'app-provincia-form',
-  templateUrl: './provincia-form.component.html',
-  styleUrls: ['./provincia-form.component.css']
+    selector: 'app-provincia-form',
+    templateUrl: './provincia-form.component.html',
+    styleUrls: ['./provincia-form.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ProvinciaFormComponent implements OnInit {
   itemForm: FormGroup;

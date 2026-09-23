@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, of } from 'rxjs';
@@ -14,11 +14,17 @@ import { LanguageService } from '../../../services/language.service';
 import { normalizePhone, phoneValidator, PHONE_MAX_LENGTH } from '../../shared/phone.util';
 
 @Component({
-  selector: 'app-establecimiento-form',
-  templateUrl: './establecimiento-form.component.html',
-  styleUrls: ['./establecimiento-form.component.css']
+    selector: 'app-establecimiento-form',
+    templateUrl: './establecimiento-form.component.html',
+    styleUrls: ['./establecimiento-form.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class EstablecimientoFormComponent implements OnInit, OnDestroy {
+  @Input() modalMode: boolean = false;
+  @Input() modalItemId?: number;
+  @Output() saved = new EventEmitter<void>();
+  @Output() canceled = new EventEmitter<void>();
 itemForm: FormGroup;
 isEditMode = false;
 itemId?: number;
@@ -41,7 +47,18 @@ selectedPais?: PaisDTO;
 loadingSubGrupos = false;
 loadingGrupos = false;
 get form(): FormGroup { return this.itemForm; }
-cancel(): void { this.onCancel(); }
+cancel(): void {
+  if (this.modalMode) {
+    this.canceled.emit();
+  } else {
+    this.onCancel();
+  }
+}
+
+// Método público para disparar submit desde fuera (ej. botón del modal)
+triggerSubmit(): void {
+  this.onSubmit();
+}
 
 private subs: Subscription[] = [];
 
@@ -90,6 +107,15 @@ private subs: Subscription[] = [];
     this.loadPaises();
     this.loadNegocios();
 
+    // Si se abre en modo modal con un itemId proporcionado, cargarlo
+    if (this.modalMode && this.modalItemId) {
+      this.itemId = this.modalItemId;
+      this.isEditMode = true;
+      this.loadItem();
+      this.itemForm.get('negocioId')?.disable();
+      this.itemForm.get('codigo')?.disable();
+    }
+
     this.subs.push(
       this.languageService.currentLanguage$
         .pipe(skip(1))
@@ -101,7 +127,6 @@ private subs: Subscription[] = [];
             this.loadItem();
             return;
           }
-
           const paisId = this.itemForm.get('paisId')?.value;
           const provinciaId = this.itemForm.get('provinciaId')?.value;
           const municipioId = this.itemForm.get('municipioId')?.value;
@@ -403,7 +428,11 @@ private subs: Subscription[] = [];
     request.subscribe({
       next: () => {
         this.saving = false;
-        this.router.navigate(['/configuracion/establecimiento']);
+        if (this.modalMode) {
+          this.saved.emit();
+        } else {
+          this.router.navigate(['/configuracion/establecimiento']);
+        }
       },
       error: (err: any) => {
         this.error = err.message || 'Error al guardar el establecimiento';

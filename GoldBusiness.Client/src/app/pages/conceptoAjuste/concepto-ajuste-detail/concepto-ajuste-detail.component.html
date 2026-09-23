@@ -18,40 +18,50 @@
     </div>
   </div>
 
-  <div class="alert alert-error" *ngIf="error">
-    <span class="alert-icon">⚠️</span>
-    {{ error }}
-  </div>
-
-  <div class="card" *ngIf="!loading && conceptoAjuste">
-    <div class="card-header">
-      📊 {{ 'common.information' | translate }}
+  @if (error) {
+    <div class="alert alert-error">
+      <span class="alert-icon">⚠️</span>
+      {{ error }}
     </div>
-    <div class="card-body">
-      <div class="info-section">
-        <h3 class="section-title">
-          🔑 {{ 'concepto-ajuste.mainInfo' | translate }}
-        </h3>
-        <div class="info-grid">
-          <div class="info-item">
-            <span class="info-label">{{ 'concepto-ajuste.codigo' | translate }}</span>
-            <span class="info-value-large">{{ conceptoAjuste.codigo }}</span>
-          </div>
-          <div class="info-item info-item-full">
-            <span class="info-label">{{ 'concepto-ajuste.descripcion' | translate }}</span>
-            <span class="info-value">{{ conceptoAjuste.descripcion }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'concepto-ajuste.cuenta' | translate }}</span>
-            <span class="badge badge-info" *ngIf="conceptoAjuste.cuenta">{{ conceptoAjuste.cuenta }}</span>
-            <span class="info-value" *ngIf="!conceptoAjuste.cuenta">-</span>
+  }
+
+  @if (!loading && conceptoAjuste) {
+    <div class="card">
+      <div class="card-header">
+        📊 {{ 'common.information' | translate }}
+      </div>
+      <div class="card-body">
+        <div class="info-section">
+          <h3 class="section-title">
+            🔑 {{ 'concepto-ajuste.mainInfo' | translate }}
+          </h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">{{ 'concepto-ajuste.codigo' | translate }}</span>
+              <span class="info-value-large">{{ conceptoAjuste.codigo }}</span>
+            </div>
+            <div class="info-item info-item-full">
+              <span class="info-label">{{ 'concepto-ajuste.descripcion' | translate }}</span>
+              <span class="info-value">{{ conceptoAjuste.descripcion }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">{{ 'concepto-ajuste.cuenta' | translate }}</span>
+              @if (conceptoAjuste.cuenta) {
+                <span class="badge badge-info">{{ conceptoAjuste.cuenta }}</span>
+              }
+              @if (!conceptoAjuste.cuenta) {
+                <span class="info-value">-</span>
+              }
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  }
 
-  <div *ngIf="loading" class="loading-container">
-    <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
-  </div>
+  @if (loading) {
+    <div class="loading-container">
+      <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
+    </div>
+  }
 </div>

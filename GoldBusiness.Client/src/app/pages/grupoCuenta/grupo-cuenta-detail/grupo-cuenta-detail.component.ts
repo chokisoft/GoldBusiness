@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { skip } from 'rxjs/operators';
@@ -6,9 +6,11 @@ import { GrupoCuentaService, GrupoCuentaDTO } from '../../../services/grupo-cuen
 import { LanguageService } from '../../../services/language.service';
 
 @Component({
-  selector: 'app-grupo-cuenta-detail',
-  templateUrl: './grupo-cuenta-detail.component.html',
-  styleUrls: ['./grupo-cuenta-detail.component.css']
+    selector: 'app-grupo-cuenta-detail',
+    templateUrl: './grupo-cuenta-detail.component.html',
+    styleUrls: ['./grupo-cuenta-detail.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class GrupoCuentaDetailComponent implements OnInit, OnDestroy {
   grupo: GrupoCuentaDTO | null = null;

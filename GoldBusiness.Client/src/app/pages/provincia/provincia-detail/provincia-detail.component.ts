@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { Subscription } from 'rxjs';
@@ -8,9 +8,11 @@ import { LanguageService } from '../../../services/language.service';
 import { TranslationService } from '../../../services/translation.service';
 
 @Component({
-  selector: 'app-provincia-detail',
-  templateUrl: './provincia-detail.component.html',
-  styleUrls: ['./provincia-detail.component.css']
+    selector: 'app-provincia-detail',
+    templateUrl: './provincia-detail.component.html',
+    styleUrls: ['./provincia-detail.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ProvinciaDetailComponent implements OnInit, OnDestroy {
   item?: ProvinciaDTO;

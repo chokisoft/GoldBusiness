@@ -1,13 +1,13 @@
 <div class="page-container">
   <div class="page-header">
     <div class="header-content">
-        <h1 class="page-title">
+      <h1 class="page-title">
         📍 {{ 'localidad.detailTitle' | translate }}
       </h1>
       <p class="page-subtitle">{{ 'localidad.detailSubtitle' | translate }}</p>
     </div>
     <div class="header-actions">
-      <button class="btn btn-warning" [routerLink]="['../editar', item?.id]">
+      <button class="btn btn-warning" [routerLink]="['../editar', $safeNavigationMigration(item?.id)]">
         <span class="btn-icon">✏️</span>
         {{ 'common.edit' | translate }}
       </button>
@@ -18,126 +18,124 @@
     </div>
   </div>
 
-  <div class="alert alert-error" *ngIf="error">
-    <span class="alert-icon">⚠️</span>
-    {{ error }}
-  </div>
+  @if (error) {
+    <div class="alert alert-error">
+      <span class="alert-icon">⚠️</span>
+      {{ error }}
+    </div>
+  }
 
-  <div class="card" *ngIf="!loading && item">
-    <div class="card-header">
-      📊 {{ 'common.information' | translate }}
+  @if (!loading && item) {
+    <div class="card">
+      <div class="card-header">
+        📊 {{ 'common.information' | translate }}
       </div>
       <div class="card-body">
         <div class="info-section">
-        <h3 class="section-title">
-          🔑 {{ 'localidad.mainInfo' | translate }}
-        </h3>
-
-        <div class="info-grid info-grid-main">
-          <div class="info-item">
-            <span class="info-label">{{ 'localidad.codigo' | translate }}</span>
-            <span class="info-value-large"><code>{{ item.codigo }}</code></span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'localidad.descripcion' | translate }}</span>
-            <span class="info-value">{{ item.descripcion }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'localidad.establecimiento' | translate }}</span>
-            <span class="info-value">
-              {{ item.establecimientoDescripcion || '-' }}
-            </span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'localidad.tipo' | translate }}</span>
-            <span class="badge badge-tipo">
-              {{ getTipoIcon(item.tipo) }} {{ getTipoLabel(item.tipo) }}
-            </span>
-          </div>
-        </div>
-
-        <!-- Capacidades Operativas (ERP) -->
-        <div class="info-section">
-          <h3 class="section-title">🏭 {{ 'localidad.capacidades' | translate }}</h3>
-          
-          <div class="info-grid">
+          <h3 class="section-title">
+            🔑 {{ 'localidad.mainInfo' | translate }}
+          </h3>
+          <div class="info-grid info-grid-main">
             <div class="info-item">
-              <span class="info-label">{{ 'localidad.permiteVentas' | translate }}</span>
-              <span class="badge" [class.badge-success]="item.permiteVentas" [class.badge-secondary]="!item.permiteVentas">
-                <span class="badge-icon">{{ item.permiteVentas ? '✅' : '❌' }}</span>
-                {{ item.permiteVentas ? ('common.yes' | translate) : ('common.no' | translate) }}
+              <span class="info-label">{{ 'localidad.codigo' | translate }}</span>
+              <span class="info-value-large"><code>{{ item.codigo }}</code></span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">{{ 'localidad.descripcion' | translate }}</span>
+              <span class="info-value">{{ item.descripcion }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">{{ 'localidad.establecimiento' | translate }}</span>
+              <span class="info-value">
+                {{ item.establecimientoDescripcion || '-' }}
               </span>
             </div>
             <div class="info-item">
-              <span class="info-label">{{ 'localidad.permiteCompras' | translate }}</span>
-              <span class="badge" [class.badge-success]="item.permiteCompras" [class.badge-secondary]="!item.permiteCompras">
-                <span class="badge-icon">{{ item.permiteCompras ? '🛒' : '❌' }}</span>
-                {{ item.permiteCompras ? ('common.yes' | translate) : ('common.no' | translate) }}
-              </span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">{{ 'localidad.permiteTransferencias' | translate }}</span>
-              <span class="badge" [class.badge-success]="item.permiteTransferencias" [class.badge-secondary]="!item.permiteTransferencias">
-                <span class="badge-icon">{{ item.permiteTransferencias ? '🔄' : '❌' }}</span>
-                {{ item.permiteTransferencias ? ('common.yes' | translate) : ('common.no' | translate) }}
-              </span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">{{ 'localidad.permiteAjustes' | translate }}</span>
-              <span class="badge" [class.badge-success]="item.permiteAjustes" [class.badge-secondary]="!item.permiteAjustes">
-                <span class="badge-icon">{{ item.permiteAjustes ? '⚙️' : '❌' }}</span>
-                {{ item.permiteAjustes ? ('common.yes' | translate) : ('common.no' | translate) }}
-              </span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">{{ 'localidad.requiereControlLotes' | translate }}</span>
-              <span class="badge" [class.badge-primary]="item.requiereControlLotes" [class.badge-secondary]="!item.requiereControlLotes">
-                <span class="badge-icon">{{ item.requiereControlLotes ? '📦' : '❌' }}</span>
-                {{ item.requiereControlLotes ? ('common.yes' | translate) : ('common.no' | translate) }}
-              </span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">{{ 'localidad.requiereNumerosSerie' | translate }}</span>
-              <span class="badge" [class.badge-primary]="item.requiereNumerosSerie" [class.badge-secondary]="!item.requiereNumerosSerie">
-                <span class="badge-icon">{{ item.requiereNumerosSerie ? '🔢' : '❌' }}</span>
-                {{ item.requiereNumerosSerie ? ('common.yes' | translate) : ('common.no' | translate) }}
+              <span class="info-label">{{ 'localidad.tipo' | translate }}</span>
+              <span class="badge badge-tipo">
+                {{ getTipoIcon(item.tipo) }} {{ getTipoLabel(item.tipo) }}
               </span>
             </div>
           </div>
-        </div>
-
-        <!-- Cuentas Contables -->
-        <div class="cuentas-section cuentas-section-box">
-          <h3 class="cuentas-section-title">💰 {{ 'localidad.cuentasContables' | translate }}</h3>
-          <p class="cuentas-subtitle">{{ 'localidad.cuentasContablesHelp' | translate }}</p>
-
-          <div class="form-group-cuentas">
-            <div class="accounts-row">
-              <div class="form-group">
-                <label class="form-label">{{ 'localidad.cuentaInventario' | translate }}</label>
-                <div class="form-value">
-                  <code>{{ item.cuentaInventarioCodigo }}</code> - {{ item.cuentaInventarioDescripcion || '-' }}
-                </div>
+          <!-- Capacidades Operativas (ERP) -->
+          <div class="info-section">
+            <h3 class="section-title">🏭 {{ 'localidad.capacidades' | translate }}</h3>
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="info-label">{{ 'localidad.permiteVentas' | translate }}</span>
+                <span class="badge" [class.badge-success]="item.permiteVentas" [class.badge-secondary]="!item.permiteVentas">
+                  <span class="badge-icon">{{ item.permiteVentas ? '✅' : '❌' }}</span>
+                  {{ item.permiteVentas ? ('common.yes' | translate) : ('common.no' | translate) }}
+                </span>
               </div>
-              <div class="form-group">
-                <label class="form-label">{{ 'localidad.cuentaCosto' | translate }}</label>
-                <div class="form-value">
-                  <code>{{ item.cuentaCostoCodigo }}</code> - {{ item.cuentaCostoDescripcion || '-' }}
-                </div>
+              <div class="info-item">
+                <span class="info-label">{{ 'localidad.permiteCompras' | translate }}</span>
+                <span class="badge" [class.badge-success]="item.permiteCompras" [class.badge-secondary]="!item.permiteCompras">
+                  <span class="badge-icon">{{ item.permiteCompras ? '🛒' : '❌' }}</span>
+                  {{ item.permiteCompras ? ('common.yes' | translate) : ('common.no' | translate) }}
+                </span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">{{ 'localidad.permiteTransferencias' | translate }}</span>
+                <span class="badge" [class.badge-success]="item.permiteTransferencias" [class.badge-secondary]="!item.permiteTransferencias">
+                  <span class="badge-icon">{{ item.permiteTransferencias ? '🔄' : '❌' }}</span>
+                  {{ item.permiteTransferencias ? ('common.yes' | translate) : ('common.no' | translate) }}
+                </span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">{{ 'localidad.permiteAjustes' | translate }}</span>
+                <span class="badge" [class.badge-success]="item.permiteAjustes" [class.badge-secondary]="!item.permiteAjustes">
+                  <span class="badge-icon">{{ item.permiteAjustes ? '⚙️' : '❌' }}</span>
+                  {{ item.permiteAjustes ? ('common.yes' | translate) : ('common.no' | translate) }}
+                </span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">{{ 'localidad.requiereControlLotes' | translate }}</span>
+                <span class="badge" [class.badge-primary]="item.requiereControlLotes" [class.badge-secondary]="!item.requiereControlLotes">
+                  <span class="badge-icon">{{ item.requiereControlLotes ? '📦' : '❌' }}</span>
+                  {{ item.requiereControlLotes ? ('common.yes' | translate) : ('common.no' | translate) }}
+                </span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">{{ 'localidad.requiereNumerosSerie' | translate }}</span>
+                <span class="badge" [class.badge-primary]="item.requiereNumerosSerie" [class.badge-secondary]="!item.requiereNumerosSerie">
+                  <span class="badge-icon">{{ item.requiereNumerosSerie ? '🔢' : '❌' }}</span>
+                  {{ item.requiereNumerosSerie ? ('common.yes' | translate) : ('common.no' | translate) }}
+                </span>
               </div>
             </div>
-
-            <div class="accounts-row">
-              <div class="form-group">
-                <label class="form-label">{{ 'localidad.cuentaVenta' | translate }}</label>
-                <div class="form-value">
-                  <code>{{ item.cuentaVentaCodigo }}</code> - {{ item.cuentaVentaDescripcion || '-' }}
+          </div>
+          <!-- Cuentas Contables -->
+          <div class="cuentas-section cuentas-section-box">
+            <h3 class="cuentas-section-title">💰 {{ 'localidad.cuentasContables' | translate }}</h3>
+            <p class="cuentas-subtitle">{{ 'localidad.cuentasContablesHelp' | translate }}</p>
+            <div class="form-group-cuentas">
+              <div class="accounts-row">
+                <div class="form-group">
+                  <label class="form-label">{{ 'localidad.cuentaInventario' | translate }}</label>
+                  <div class="form-value">
+                    <code>{{ item.cuentaInventarioCodigo }}</code> - {{ item.cuentaInventarioDescripcion || '-' }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">{{ 'localidad.cuentaCosto' | translate }}</label>
+                  <div class="form-value">
+                    <code>{{ item.cuentaCostoCodigo }}</code> - {{ item.cuentaCostoDescripcion || '-' }}
+                  </div>
                 </div>
               </div>
-              <div class="form-group">
-                <label class="form-label">{{ 'localidad.cuentaDevolucion' | translate }}</label>
-                <div class="form-value">
-                  <code>{{ item.cuentaDevolucionCodigo }}</code> - {{ item.cuentaDevolucionDescripcion || '-' }}
+              <div class="accounts-row">
+                <div class="form-group">
+                  <label class="form-label">{{ 'localidad.cuentaVenta' | translate }}</label>
+                  <div class="form-value">
+                    <code>{{ item.cuentaVentaCodigo }}</code> - {{ item.cuentaVentaDescripcion || '-' }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">{{ 'localidad.cuentaDevolucion' | translate }}</label>
+                  <div class="form-value">
+                    <code>{{ item.cuentaDevolucionCodigo }}</code> - {{ item.cuentaDevolucionDescripcion || '-' }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -145,9 +143,11 @@
         </div>
       </div>
     </div>
-  </div>
+  }
 
-  <div *ngIf="loading" class="loading-container">
-    <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
-  </div>
+  @if (loading) {
+    <div class="loading-container">
+      <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
+    </div>
+  }
 </div>

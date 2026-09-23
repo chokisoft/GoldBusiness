@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { skip } from 'rxjs/operators';
@@ -6,9 +6,11 @@ import { UnidadMedidaService, UnidadMedidaDTO } from '../../../services/unidad-m
 import { LanguageService } from '../../../services/language.service';
 
 @Component({
-  selector: 'app-unidad-medida-detail',
-  templateUrl: './unidad-medida-detail.component.html',
-  styleUrls: ['./unidad-medida-detail.component.css']
+    selector: 'app-unidad-medida-detail',
+    templateUrl: './unidad-medida-detail.component.html',
+    styleUrls: ['./unidad-medida-detail.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class UnidadMedidaDetailComponent implements OnInit, OnDestroy {
   unidadMedida: UnidadMedidaDTO | null = null;

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -9,9 +9,11 @@ import { LanguageService } from '../../../services/language.service';
 import { TranslationService } from '../../../services/translation.service';
 
 @Component({
-  selector: 'app-proveedor-detail',
-  templateUrl: './proveedor-detail.component.html',
-  styleUrls: ['./proveedor-detail.component.css']
+    selector: 'app-proveedor-detail',
+    templateUrl: './proveedor-detail.component.html',
+    styleUrls: ['./proveedor-detail.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ProveedorDetailComponent implements OnInit, OnDestroy {
   item?: ProveedorDTO;

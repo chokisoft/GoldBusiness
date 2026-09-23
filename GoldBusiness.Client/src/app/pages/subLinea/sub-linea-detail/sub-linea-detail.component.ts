@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { skip } from 'rxjs/operators';
@@ -6,9 +6,11 @@ import { SubLineaService, SubLineaDTO } from '../../../services/sub-linea.servic
 import { LanguageService } from '../../../services/language.service';
 
 @Component({
-  selector: 'app-sub-linea-detail',
-  templateUrl: './sub-linea-detail.component.html',
-  styleUrls: ['./sub-linea-detail.component.css']
+    selector: 'app-sub-linea-detail',
+    templateUrl: './sub-linea-detail.component.html',
+    styleUrls: ['./sub-linea-detail.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SubLineaDetailComponent implements OnInit, OnDestroy {
   subLinea: SubLineaDTO | null = null;

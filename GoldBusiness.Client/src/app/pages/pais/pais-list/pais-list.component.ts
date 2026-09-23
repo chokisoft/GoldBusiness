@@ -1,13 +1,15 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { skip, finalize } from 'rxjs/operators';
 import { PaisService, PaisDTO } from '../../../services/pais.service';
 import { LanguageService } from '../../../services/language.service';
 
 @Component({
-  selector: 'app-pais-list',
-  templateUrl: './pais-list.component.html',
-  styleUrls: ['./pais-list.component.css']
+    selector: 'app-pais-list',
+    templateUrl: './pais-list.component.html',
+    styleUrls: ['./pais-list.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class PaisListComponent implements OnInit, OnDestroy {
   paises: PaisDTO[] = [];

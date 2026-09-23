@@ -1,13 +1,15 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { finalize, skip } from 'rxjs/operators';
 import { ClienteDTO, ClienteService } from '../../../services/cliente.service';
 import { LanguageService } from '../../../services/language.service';
 
 @Component({
-  selector: 'app-cliente-list',
-  templateUrl: './cliente-list.component.html',
-  styleUrl: './cliente-list.component.css'
+    selector: 'app-cliente-list',
+    templateUrl: './cliente-list.component.html',
+    styleUrl: './cliente-list.component.css',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ClienteListComponent implements OnInit, OnDestroy {
   clientes: ClienteDTO[] = [];

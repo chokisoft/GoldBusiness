@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -9,9 +9,11 @@ import { TranslationService } from '../../../services/translation.service';
 import { LineaService, LineaDTO } from '../../../services/linea.service';
 
 @Component({
-  selector: 'app-sub-linea-form',
-  templateUrl: './sub-linea-form.component.html',
-  styleUrls: ['./sub-linea-form.component.css']
+    selector: 'app-sub-linea-form',
+    templateUrl: './sub-linea-form.component.html',
+    styleUrls: ['./sub-linea-form.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SubLineaFormComponent implements OnInit, OnDestroy {
   form: FormGroup;

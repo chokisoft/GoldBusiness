@@ -5,7 +5,7 @@
       <p class="page-subtitle">{{ 'common.information' | translate }}</p>
     </div>
     <div class="header-actions">
-      <button class="btn btn-warning" [routerLink]="['../editar', item?.id]">
+      <button class="btn btn-warning" [routerLink]="['../editar', $safeNavigationMigration(item?.id)]">
         <span class="btn-icon">✏️</span>
         {{ 'common.edit' | translate }}
       </button>
@@ -16,50 +16,57 @@
     </div>
   </div>
 
-  <div class="alert alert-error" *ngIf="error">
-    <span class="alert-icon">⚠️</span>
-    {{ error }}
-  </div>
+  @if (error) {
+    <div class="alert alert-error">
+      <span class="alert-icon">⚠️</span>
+      {{ error }}
+    </div>
+  }
 
-  <div class="card" *ngIf="!loading && item">
-    <div class="card-header">📊 {{ 'common.information' | translate }}</div>
-    <div class="card-body">
-      <div class="info-section">
-        <div class="info-row">
-          <strong>{{ 'proveedores.codigo' | translate }}:</strong> {{ item.codigo }}
-        </div>
-        <div class="info-row">
-          <strong>{{ 'proveedores.descripcion' | translate }}:</strong> {{ item.descripcion }}
-        </div>
-        <div class="info-row">
-          <strong>{{ 'proveedores.identificadorFiscal' | translate }}:</strong> {{ item.identificadorFiscal || '-' }}
-        </div>
-        <div class="info-row">
-          <strong>{{ 'proveedores.direccion' | translate }}:</strong> {{ item.direccion || '-' }}
-        </div>
-
-        <!-- País y Código Postal -->
-        <div class="info-row">
-          <strong>{{ 'proveedores.pais' | translate }}:</strong>
-          {{ selectedPais?.descripcion || paisDescripcion || item.paisDescripcion || '-' }}
-          &nbsp;&nbsp;&nbsp;
-          <strong>{{ 'proveedores.codigoPostal' | translate }}:</strong>
-          {{ postalCode || '-' }}
-        </div>
-
-        <div class="info-row">
-          <strong>{{ 'proveedores.email' | translate }}:</strong> {{ item.email || '-' }}
-        </div>
-        <div class="info-row">
-          <strong>{{ 'proveedores.telefono' | translate }}:</strong>
-          <span *ngIf="item.telefono; else noPhone">{{ item.telefono | localizedPhone:selectedPais }}</span>
-          <ng-template #noPhone>-</ng-template>
+  @if (!loading && item) {
+    <div class="card">
+      <div class="card-header">📊 {{ 'common.information' | translate }}</div>
+      <div class="card-body">
+        <div class="info-section">
+          <div class="info-row">
+            <strong>{{ 'proveedores.codigo' | translate }}:</strong> {{ item.codigo }}
+          </div>
+          <div class="info-row">
+            <strong>{{ 'proveedores.descripcion' | translate }}:</strong> {{ item.descripcion }}
+          </div>
+          <div class="info-row">
+            <strong>{{ 'proveedores.identificadorFiscal' | translate }}:</strong> {{ item.identificadorFiscal || '-' }}
+          </div>
+          <div class="info-row">
+            <strong>{{ 'proveedores.direccion' | translate }}:</strong> {{ item.direccion || '-' }}
+          </div>
+          <!-- País y Código Postal -->
+          <div class="info-row">
+            <strong>{{ 'proveedores.pais' | translate }}:</strong>
+            {{ selectedPais?.descripcion || paisDescripcion || item.paisDescripcion || '-' }}
+            &nbsp;&nbsp;&nbsp;
+            <strong>{{ 'proveedores.codigoPostal' | translate }}:</strong>
+            {{ postalCode || '-' }}
+          </div>
+          <div class="info-row">
+            <strong>{{ 'proveedores.email' | translate }}:</strong> {{ item.email || '-' }}
+          </div>
+          <div class="info-row">
+            <strong>{{ 'proveedores.telefono' | translate }}:</strong>
+            @if (item.telefono) {
+              <span>{{ item.telefono | localizedPhone:selectedPais }}</span>
+            } @else {
+              -
+            }
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  }
 
-  <div *ngIf="loading" class="loading-container">
-    <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
-  </div>
+  @if (loading) {
+    <div class="loading-container">
+      <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
+    </div>
+  }
 </div>

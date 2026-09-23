@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { skip, finalize } from 'rxjs/operators';
 import { LocalidadService, LocalidadDTO, TipoLocalidad } from '../../../services/localidad.service';
@@ -6,9 +6,11 @@ import { LanguageService } from '../../../services/language.service';
 import { TranslationService } from '../../../services/translation.service';
 
 @Component({
-  selector: 'app-localidad-list',
-  templateUrl: './localidad-list.component.html',
-  styleUrls: ['./localidad-list.component.css']
+    selector: 'app-localidad-list',
+    templateUrl: './localidad-list.component.html',
+    styleUrls: ['./localidad-list.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class LocalidadListComponent implements OnInit, OnDestroy {
   localidades: LocalidadDTO[] = [];

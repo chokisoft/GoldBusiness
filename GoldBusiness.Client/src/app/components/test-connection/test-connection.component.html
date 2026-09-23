@@ -11,20 +11,28 @@
   <div class="test-section">
     <h3>{{ translations.connectionTitle }}</h3>
     <button (click)="testConnection()" [disabled]="isLoading" class="btn-primary">
-      <span *ngIf="!isLoading">{{ translations.testButton }}</span>
-      <span *ngIf="isLoading">
-        <app-loader [message]="translations.testing" [size]="14" [inline]="true" [color]="'#fff'"></app-loader>
-      </span>
+      @if (!isLoading) {
+        <span>{{ translations.testButton }}</span>
+      }
+      @if (isLoading) {
+        <span>
+          <app-loader [message]="translations.testing" [size]="14" [inline]="true" [color]="'#fff'"></app-loader>
+        </span>
+      }
     </button>
   </div>
 
   <!-- Resultados -->
-  <div *ngIf="error" class="error">
-    {{ translations.errorLabel }}: {{ error }}
-  </div>
+  @if (error) {
+    <div class="error">
+      {{ translations.errorLabel }}: {{ error }}
+    </div>
+  }
 
-  <div *ngIf="apiResponse" class="success">
-    <h3>{{ translations.successTitle }}</h3>
-    <pre>{{ apiResponse | json }}</pre>
-  </div>
+  @if (apiResponse) {
+    <div class="success">
+      <h3>{{ translations.successTitle }}</h3>
+      <pre>{{ apiResponse | json }}</pre>
+    </div>
+  }
 </div>

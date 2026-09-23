@@ -1,41 +1,44 @@
 <div class="language-selector" [attr.aria-label]="label">
   <!-- Desktop / regular: select con banderas SVG -->
-  <ng-container *ngIf="!compact">
+  @if (!compact) {
     <label for="language-select" class="sr-only">{{ label }}</label>
     <select id="language-select"
-            [(ngModel)]="selectedLanguageCode"
-            (ngModelChange)="changeLanguage($event)"
-            class="language-dropdown">
-      <option *ngFor="let lang of availableLanguages"
-              [value]="lang.code">
-        {{ lang.code.toUpperCase() }} - {{ lang.name }}
-      </option>
-    </select>
-    <!-- Bandera al lado del select (opcional) -->
-    <img [src]="getCurrentLanguageFlag()" 
-         [alt]="selectedLanguageCode" 
-         class="flag-icon" />
-  </ng-container>
-
-  <!-- Mobile compact: wrapper con bandera visible como imagen -->
-  <ng-container *ngIf="compact">
-    <div class="compact-wrapper">
-      <!-- Bandera visible como imagen SVG -->
-      <img [src]="getCurrentLanguageFlag()" 
-           [alt]="selectedLanguageCode" 
-           class="compact-flag-display" />
-      
-      <!-- Select oculto pero funcional -->
-      <label for="language-select-compact" class="sr-only">{{ label }}</label>
-      <select id="language-select-compact"
-              [(ngModel)]="selectedLanguageCode"
-              (ngModelChange)="changeLanguage($event)"
-              class="language-dropdown compact">
-        <option *ngFor="let lang of availableLanguages"
-                [value]="lang.code">
+      [(ngModel)]="selectedLanguageCode"
+      (ngModelChange)="changeLanguage($event)"
+      class="language-dropdown">
+      @for (lang of availableLanguages; track lang) {
+        <option
+          [value]="lang.code">
           {{ lang.code.toUpperCase() }} - {{ lang.name }}
         </option>
-      </select>
+      }
+    </select>
+    <!-- Bandera al lado del select (opcional) -->
+    <img [src]="getCurrentLanguageFlag()"
+      [alt]="selectedLanguageCode"
+      class="flag-icon" />
+    }
+
+    <!-- Mobile compact: wrapper con bandera visible como imagen -->
+    @if (compact) {
+      <div class="compact-wrapper">
+        <!-- Bandera visible como imagen SVG -->
+        <img [src]="getCurrentLanguageFlag()"
+          [alt]="selectedLanguageCode"
+          class="compact-flag-display" />
+          <!-- Select oculto pero funcional -->
+          <label for="language-select-compact" class="sr-only">{{ label }}</label>
+          <select id="language-select-compact"
+            [(ngModel)]="selectedLanguageCode"
+            (ngModelChange)="changeLanguage($event)"
+            class="language-dropdown compact">
+            @for (lang of availableLanguages; track lang) {
+              <option
+                [value]="lang.code">
+                {{ lang.code.toUpperCase() }} - {{ lang.name }}
+              </option>
+            }
+          </select>
+        </div>
+      }
     </div>
-  </ng-container>
-</div>

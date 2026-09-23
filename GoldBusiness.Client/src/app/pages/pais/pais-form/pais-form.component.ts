@@ -1,12 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PaisService, PaisDTO } from '../../../services/pais.service';
 
 @Component({
-  selector: 'app-pais-form',
-  templateUrl: './pais-form.component.html',
-  styleUrls: ['./pais-form.component.css']
+    selector: 'app-pais-form',
+    templateUrl: './pais-form.component.html',
+    styleUrls: ['./pais-form.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class PaisFormComponent implements OnInit {
   itemForm: FormGroup;

@@ -1,13 +1,15 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { skip, finalize } from 'rxjs/operators';
 import { ConceptoAjusteService, ConceptoAjusteDTO } from '../../../services/concepto-ajuste.service';
 import { LanguageService } from '../../../services/language.service';
 
 @Component({
-  selector: 'app-concepto-ajuste-list',
-  templateUrl: './concepto-ajuste-list.component.html',
-  styleUrls: ['./concepto-ajuste-list.component.css']
+    selector: 'app-concepto-ajuste-list',
+    templateUrl: './concepto-ajuste-list.component.html',
+    styleUrls: ['./concepto-ajuste-list.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ConceptoAjusteListComponent implements OnInit, OnDestroy {
   conceptoAjustes: ConceptoAjusteDTO[] = [];

@@ -1,4 +1,4 @@
-<div class="page-container">
+<div class="page-container" [class.modal-mode]="modalMode">
   <div class="page-header">
     <div class="header-content">
       <h1 class="page-title">
@@ -8,30 +8,34 @@
     </div>
   </div>
 
-  <div class="alert alert-error" *ngIf="error">
-    <span class="alert-icon">⚠️</span>
-    {{ error }}
-  </div>
+  @if (error) {
+    <div class="alert alert-error">
+      <span class="alert-icon">⚠️</span>
+      {{ error }}
+    </div>
+  }
 
   <div class="card">
     <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" class="form-container establecimiento-form">
-      
+
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <!-- 📋 INFORMACIÓN BÁSICA -->
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <div class="form-section">
         <h3 class="section-title">📋 {{ 'establecimiento.mainInfo' | translate }}</h3>
-        
+
         <div class="form-row">
           <div class="form-group">
             <label class="form-label"> {{ 'establecimiento.negocio' | translate }} *</label>
             <select class="form-control shared-select" formControlName="negocioId">
               <option [ngValue]="null">{{ 'common.select' | translate }}</option>
-              <option *ngFor="let n of negocios" [ngValue]="n.id">{{ n.nombreNegocio }}</option>
+              @for (n of negocios; track n) {
+                <option [ngValue]="n.id">{{ n.nombreNegocio }}</option>
+              }
             </select>
             <small class="form-text text-muted">{{ 'establecimiento.negocioHelp' | translate }}</small>
           </div>
-          
+
           <div class="form-group">
             <label class="form-label"> {{ 'establecimiento.codigo' | translate }} *</label>
             <input class="form-control" formControlName="codigo" maxlength="6" placeholder="{{ 'establecimiento.placeholderCodigo' | translate }}" />
@@ -63,15 +67,17 @@
       <!-- ══════════════════════════════════════════════════════════ -->
       <div class="form-section">
         <h3 class="section-title">🏢 {{ 'establecimiento.seccion.informacionGeneral' | translate }}</h3>
-      
+
         <div class="form-row">
           <div class="form-group">
             <label class="form-label"> {{ 'establecimiento.tipo' | translate }} *</label>
             <select class="form-control shared-select" formControlName="tipo">
               <option [ngValue]="null">{{ 'common.select' | translate }}</option>
-              <option *ngFor="let tipo of tiposEstablecimiento" [value]="tipo">
-                {{ getTipoEstablecimientoLabel(tipo) }}
-              </option>
+              @for (tipo of tiposEstablecimiento; track tipo) {
+                <option [value]="tipo">
+                  {{ getTipoEstablecimientoLabel(tipo) }}
+                </option>
+              }
             </select>
             <small class="form-text text-muted">{{ 'establecimiento.tipoHelp' | translate }}</small>
           </div>
@@ -91,14 +97,14 @@
       <!-- ══════════════════════════════════════════════════════════ -->
       <div class="form-section">
         <h3 class="section-title">📍 {{ 'establecimiento.seccion.ubicacion' | translate }}</h3>
-        
+
         <div class="direccion-full-width">
           <label for="direccion" class="form-label">{{ 'establecimiento.direccion' | translate }}</label>
           <textarea id="direccion"
-                    formControlName="direccion"
-                    class="form-control"
-                    rows="2"
-                    placeholder="{{ 'establecimiento.placeholderDireccion' | translate }}"></textarea>
+            formControlName="direccion"
+            class="form-control"
+            rows="2"
+          placeholder="{{ 'establecimiento.placeholderDireccion' | translate }}"></textarea>
           <small class="form-text text-muted">{{ 'establecimiento.direccionHelp' | translate }}</small>
         </div>
 
@@ -107,40 +113,40 @@
             <label class="form-label"> {{ 'establecimiento.pais' | translate }}</label>
             <select class="form-control shared-select" formControlName="paisId" [attr.aria-disabled]="itemForm.get('paisId')?.disabled">
               <option [ngValue]="null">{{ 'common.select' | translate }}</option>
-              <option *ngFor="let p of paises" [ngValue]="p.id">{{ p.descripcion }}</option>
+              @for (p of paises; track p) {
+                <option [ngValue]="p.id">{{ p.descripcion }}</option>
+              }
             </select>
 
-            <ng-container *ngIf="paises.length === 0; else paisesLoaded">
+            @if (paises.length === 0) {
               <small class="form-text text-muted">{{ 'establecimiento.noPaisesDisponibles' | translate }}</small>
-            </ng-container>
-            <ng-template #paisesLoaded>
-              <ng-container *ngIf="!itemForm.get('paisId')?.value; else paisHelp">
+            } @else {
+              @if (!itemForm.get('paisId')?.value) {
                 <small class="form-text text-muted">{{ 'establecimiento.selectPaisToSeeProvincias' | translate }}</small>
-              </ng-container>
-              <ng-template #paisHelp>
+              } @else {
                 <small class="form-text text-muted">{{ 'establecimiento.paisHelp' | translate }}</small>
-              </ng-template>
-            </ng-template>
+              }
+            }
           </div>
 
           <div class="form-group">
             <label class="form-label"> {{ 'establecimiento.provincia' | translate }}</label>
             <select class="form-control shared-select" formControlName="provinciaId" [attr.aria-disabled]="itemForm.get('provinciaId')?.disabled">
               <option [ngValue]="null">{{ 'common.select' | translate }}</option>
-              <option *ngFor="let prov of provincias" [ngValue]="prov.id">{{ prov.descripcion }}</option>
+              @for (prov of provincias; track prov) {
+                <option [ngValue]="prov.id">{{ prov.descripcion }}</option>
+              }
             </select>
 
-            <ng-container *ngIf="provincias.length === 0; else provinciasLoaded">
+            @if (provincias.length === 0) {
               <small class="form-text text-muted">{{ 'establecimiento.selectPaisToSeeProvincias' | translate }}</small>
-            </ng-container>
-            <ng-template #provinciasLoaded>
-              <ng-container *ngIf="!itemForm.get('provinciaId')?.value; else provinciaHelp">
+            } @else {
+              @if (!itemForm.get('provinciaId')?.value) {
                 <small class="form-text text-muted">{{ 'establecimiento.selectProvinciaToSeeMunicipios' | translate }}</small>
-              </ng-container>
-              <ng-template #provinciaHelp>
+              } @else {
                 <small class="form-text text-muted">{{ 'establecimiento.provinciaHelp' | translate }}</small>
-              </ng-template>
-            </ng-template>
+              }
+            }
           </div>
         </div>
 
@@ -149,40 +155,40 @@
             <label class="form-label"> {{ 'establecimiento.municipio' | translate }}</label>
             <select class="form-control shared-select" formControlName="municipioId" [attr.aria-disabled]="itemForm.get('municipioId')?.disabled">
               <option [ngValue]="null">{{ 'common.select' | translate }}</option>
-              <option *ngFor="let mun of municipios" [ngValue]="mun.id">{{ mun.descripcion }}</option>
+              @for (mun of municipios; track mun) {
+                <option [ngValue]="mun.id">{{ mun.descripcion }}</option>
+              }
             </select>
 
-            <ng-container *ngIf="municipios.length === 0; else municipiosLoaded">
+            @if (municipios.length === 0) {
               <small class="form-text text-muted">{{ 'establecimiento.selectProvinciaToSeeMunicipios' | translate }}</small>
-            </ng-container>
-            <ng-template #municipiosLoaded>
-              <ng-container *ngIf="!itemForm.get('municipioId')?.value; else municipioHelp">
+            } @else {
+              @if (!itemForm.get('municipioId')?.value) {
                 <small class="form-text text-muted">{{ 'establecimiento.selectMunicipioToSeeCodigosPostales' | translate }}</small>
-              </ng-container>
-              <ng-template #municipioHelp>
+              } @else {
                 <small class="form-text text-muted">{{ 'establecimiento.municipioHelp' | translate }}</small>
-              </ng-template>
-            </ng-template>
+              }
+            }
           </div>
 
           <div class="form-group">
             <label class="form-label"> {{ 'establecimiento.codigoPostal' | translate }}</label>
             <select class="form-control shared-select" formControlName="codigoPostalId" [attr.aria-disabled]="itemForm.get('codigoPostalId')?.disabled">
               <option [ngValue]="null">{{ 'common.select' | translate }}</option>
-              <option *ngFor="let cp of codigosPostales" [ngValue]="cp.id">{{ cp.codigo }}</option>
+              @for (cp of codigosPostales; track cp) {
+                <option [ngValue]="cp.id">{{ cp.codigo }}</option>
+              }
             </select>
 
-            <ng-container *ngIf="codigosPostales.length === 0; else cpsLoaded">
+            @if (codigosPostales.length === 0) {
               <small class="form-text text-muted">{{ 'establecimiento.selectMunicipioToSeeCodigosPostales' | translate }}</small>
-            </ng-container>
-            <ng-template #cpsLoaded>
-              <ng-container *ngIf="!itemForm.get('codigoPostalId')?.value; else cpHelp">
+            } @else {
+              @if (!itemForm.get('codigoPostalId')?.value) {
                 <small class="form-text text-muted">{{ 'establecimiento.selectCodigoPostalHelp' | translate }}</small>
-              </ng-container>
-              <ng-template #cpHelp>
+              } @else {
                 <small class="form-text text-muted">{{ 'establecimiento.codigoPostalHelp' | translate }}</small>
-              </ng-template>
-            </ng-template>
+              }
+            }
           </div>
         </div>
 
@@ -190,33 +196,47 @@
           <div class="form-group form-group-full">
             <label class="form-label"> {{ 'establecimiento.telefono' | translate }}</label>
             <input id="telefono" type="tel" class="form-control"
-                   formControlName="telefono"
-                   maxlength="50"
-                   [class.is-invalid]="itemForm.get('telefono')?.invalid && itemForm.get('telefono')?.touched"
-                   placeholder="{{ 'establecimiento.placeholderTelefono' | translate }}" />
-            <small class="form-text text-muted">{{ 'establecimiento.telefonoHelp' | translate }}</small>
-            <div class="form-text" *ngIf="selectedPais">{{ selectedPais.formatoEjemplo }} <small>({{ selectedPais.formatoTelefono }})</small></div>
-            <div class="invalid-feedback" *ngIf="itemForm.get('telefono')?.touched">
-              <div *ngIf="itemForm.get('telefono')?.hasError('telefonoInvalid')">Teléfono no válido para el país seleccionado</div>
-              <div *ngIf="itemForm.get('telefono')?.hasError('maxlength')">Máximo 50 caracteres</div>
+              formControlName="telefono"
+              maxlength="50"
+              [class.is-invalid]="itemForm.get('telefono')?.invalid && itemForm.get('telefono')?.touched"
+              placeholder="{{ 'establecimiento.placeholderTelefono' | translate }}" />
+              <small class="form-text text-muted">{{ 'establecimiento.telefonoHelp' | translate }}</small>
+              @if (selectedPais) {
+                <div class="form-text">{{ selectedPais.formatoEjemplo }} <small>({{ selectedPais.formatoTelefono }})</small></div>
+              }
+              @if (itemForm.get('telefono')?.touched) {
+                <div class="invalid-feedback">
+                  @if (itemForm.get('telefono')?.hasError('telefonoInvalid')) {
+                    <div>Teléfono no válido para el país seleccionado</div>
+                  }
+                  @if (itemForm.get('telefono')?.hasError('maxlength')) {
+                    <div>Máximo 50 caracteres</div>
+                  }
+                </div>
+              }
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- ══════════════════════════════════════════════════════════ -->
-      <!-- 💾 ACCIONES -->
-      <!-- ══════════════════════════════════════════════════════════ -->
-      <div class="form-actions">
-        <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="loading || saving">
-          ❌ {{ 'common.cancel' | translate }}
-        </button>
-        <button type="submit" class="btn btn-primary" [disabled]="loading || saving || itemForm.invalid">
-          <span *ngIf="!loading && !saving">💾 {{ 'common.save' | translate }}</span>
-          <span *ngIf="loading && !saving">⏳ {{ 'common.loading' | translate }}</span>
-          <span *ngIf="saving">⏳ {{ 'common.saving' | translate }}</span>
-        </button>
-      </div>
-    </form>
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <!-- 💾 ACCIONES -->
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="loading || saving">
+            ❌ {{ 'common.cancel' | translate }}
+          </button>
+          <button type="submit" class="btn btn-primary" [disabled]="loading || saving || itemForm.invalid">
+            @if (!loading && !saving) {
+              <span>💾 {{ 'common.save' | translate }}</span>
+            }
+            @if (loading && !saving) {
+              <span>⏳ {{ 'common.loading' | translate }}</span>
+            }
+            @if (saving) {
+              <span>⏳ {{ 'common.saving' | translate }}</span>
+            }
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
-</div>

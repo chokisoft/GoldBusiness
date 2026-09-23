@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -9,9 +9,11 @@ import { TranslationService } from '../../../services/translation.service';
 import { CuentaService, CuentaDTO } from '../../../services/cuenta.service';
 
 @Component({
-  selector: 'app-concepto-ajuste-form',
-  templateUrl: './concepto-ajuste-form.component.html',
-  styleUrls: ['./concepto-ajuste-form.component.css']
+    selector: 'app-concepto-ajuste-form',
+    templateUrl: './concepto-ajuste-form.component.html',
+    styleUrls: ['./concepto-ajuste-form.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ConceptoAjusteFormComponent implements OnInit, OnDestroy {
   form: FormGroup;

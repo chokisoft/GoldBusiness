@@ -6,148 +6,170 @@
     </div>
   </div>
 
-  <div class="alert alert-error" *ngIf="error">
-    <span class="alert-icon">⚠️</span>
-    {{ error }}
-  </div>
+  @if (error) {
+    <div class="alert alert-error">
+      <span class="alert-icon">⚠️</span>
+      {{ error }}
+    </div>
+  }
 
   <div class="card">
-    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container" *ngIf="!loading">
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label" for="userName">{{ 'usuario.userName' | translate }} *</label>
-          <label class="role-option inline-option">
-            <input type="checkbox" formControlName="useEmailAsUsername" />
-            <span>{{ 'usuario.useEmailAsUsername' | translate }}</span>
-          </label>
-          <input id="userName" type="text" class="form-control" formControlName="userName"
-                 [class.is-invalid]="form.get('userName')?.invalid && form.get('userName')?.touched" maxlength="50"
-                 placeholder="{{ 'usuario.placeholderUserName' | translate }}" />
-          <div class="invalid-feedback" *ngIf="form.get('userName')?.hasError('required') && form.get('userName')?.touched">
-            {{ 'validation.required' | translate }}
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="fullName">{{ 'usuario.fullName' | translate }} *</label>
-          <input id="fullName" type="text" class="form-control" formControlName="fullName"
-                 [class.is-invalid]="form.get('fullName')?.invalid && form.get('fullName')?.touched" maxlength="120"
-                 placeholder="{{ 'usuario.placeholderFullName' | translate }}" />
-          <div class="invalid-feedback" *ngIf="form.get('fullName')?.hasError('required') && form.get('fullName')?.touched">
-            {{ 'validation.required' | translate }}
-          </div>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label" for="email">{{ 'usuario.email' | translate }} *</label>
-          <input id="email" type="email" class="form-control" formControlName="email"
-                 [class.is-invalid]="form.get('email')?.invalid && form.get('email')?.touched" maxlength="120"
-                 placeholder="{{ 'usuario.placeholderEmail' | translate }}" />
-          <div class="invalid-feedback" *ngIf="form.get('email')?.hasError('required') && form.get('email')?.touched">
-            {{ 'validation.required' | translate }}
-          </div>
-          <div class="invalid-feedback" *ngIf="form.get('email')?.hasError('email') && form.get('email')?.touched">
-            {{ 'validation.email' | translate }}
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="authProvider">{{ 'usuario.authProvider' | translate }} *</label>
-          <select id="authProvider" class="form-control shared-select" formControlName="authProvider">
-            <option value="Local">{{ 'usuario.localProvider' | translate }}</option>
-            <option value="Google">Google</option>
-          </select>
-          <small class="form-text text-muted">{{ 'usuario.authProviderHelp' | translate }}</small>
-        </div>
-
-        <div class="form-group checkbox-group">
-          <label class="checkbox-label">
-            <input type="checkbox" formControlName="isActive" class="form-checkbox" />
-            <span>{{ 'common.active' | translate }}</span>
-          </label>
-          <small class="form-text text-muted">{{ 'usuario.isActiveHelp' | translate }}</small>
-        </div>
-      </div>
-
-      <div class="form-row" *ngIf="isLocalProvider; else googlePasswordInfo">
-        <div class="form-group">
-          <label class="form-label" for="password">{{ isEditMode ? ('usuario.newPassword' | translate) : ('usuario.password' | translate) }}{{ isEditMode ? '' : ' *' }}</label>
-          <input id="password" type="password" class="form-control" formControlName="password"
-                 [class.is-invalid]="(form.get('password')?.invalid && form.get('password')?.touched) || (form.errors?.['passwordMismatch'] && form.get('confirmPassword')?.touched)" />
-          <div class="invalid-feedback" *ngIf="form.get('password')?.hasError('required') && form.get('password')?.touched">
-            {{ 'validation.required' | translate }}
-          </div>
-          <div class="invalid-feedback" *ngIf="form.get('password')?.hasError('minlength') && form.get('password')?.touched">
-            {{ 'usuario.passwordMinLength' | translate }}
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="confirmPassword">{{ 'usuario.confirmPassword' | translate }}{{ isEditMode ? '' : ' *' }}</label>
-          <input id="confirmPassword" type="password" class="form-control" formControlName="confirmPassword"
-                 [class.is-invalid]="form.errors?.['passwordMismatch'] && form.get('confirmPassword')?.touched" />
-          <div class="invalid-feedback" *ngIf="form.errors?.['passwordMismatch'] && form.get('confirmPassword')?.touched">
-            {{ 'usuario.passwordsDoNotMatch' | translate }}
-          </div>
-        </div>
-      </div>
-
-      <ng-template #googlePasswordInfo>
-        <div class="form-group provider-hint">
-          <small>{{ 'usuario.googlePasswordInfo' | translate }}</small>
-        </div>
-      </ng-template>
-
-      <div class="form-group">
-        <label class="form-label">{{ 'usuario.roles' | translate }} *</label>
-        <div class="roles-grid">
-          <label class="role-option" *ngFor="let role of availableRoles">
-            <input type="checkbox" [checked]="hasRole(role)" (change)="onRoleChange(role, $any($event.target).checked)" />
-            <span>{{ role }}</span>
-          </label>
-        </div>
-        <div class="invalid-feedback" style="display:block" *ngIf="form.get('roles')?.invalid && form.get('roles')?.touched">
-          {{ 'usuario.selectAtLeastOneRole' | translate }}
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">{{ 'usuario.permissions' | translate }} *</label>
-          <div class="roles-grid permissions-grid">
-            <label class="role-option" *ngFor="let permission of availablePermissions">
-              <input type="checkbox" [checked]="hasPermission(permission)" (change)="onPermissionChange(permission, $any($event.target).checked)" />
-              <span>{{ permission }}</span>
+    @if (!loading) {
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="userName">{{ 'usuario.userName' | translate }} *</label>
+            <label class="role-option inline-option">
+              <input type="checkbox" formControlName="useEmailAsUsername" />
+              <span>{{ 'usuario.useEmailAsUsername' | translate }}</span>
             </label>
-          </div>
-          <div class="invalid-feedback" style="display:block" *ngIf="form.get('permissions')?.invalid && form.get('permissions')?.touched">
-            {{ 'usuario.selectAtLeastOnePermission' | translate }}
-          </div>
-        </div>
+            <input id="userName" type="text" class="form-control" formControlName="userName"
+              [class.is-invalid]="form.get('userName')?.invalid && form.get('userName')?.touched" maxlength="50"
+              placeholder="{{ 'usuario.placeholderUserName' | translate }}" />
+              @if (form.get('userName')?.hasError('required') && form.get('userName')?.touched) {
+                <div class="invalid-feedback">
+                  {{ 'validation.required' | translate }}
+                </div>
+              }
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="fullName">{{ 'usuario.fullName' | translate }} *</label>
+              <input id="fullName" type="text" class="form-control" formControlName="fullName"
+                [class.is-invalid]="form.get('fullName')?.invalid && form.get('fullName')?.touched" maxlength="120"
+                placeholder="{{ 'usuario.placeholderFullName' | translate }}" />
+                @if (form.get('fullName')?.hasError('required') && form.get('fullName')?.touched) {
+                  <div class="invalid-feedback">
+                    {{ 'validation.required' | translate }}
+                  </div>
+                }
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="email">{{ 'usuario.email' | translate }} *</label>
+                <input id="email" type="email" class="form-control" formControlName="email"
+                  [class.is-invalid]="form.get('email')?.invalid && form.get('email')?.touched" maxlength="120"
+                  placeholder="{{ 'usuario.placeholderEmail' | translate }}" />
+                  @if (form.get('email')?.hasError('required') && form.get('email')?.touched) {
+                    <div class="invalid-feedback">
+                      {{ 'validation.required' | translate }}
+                    </div>
+                  }
+                  @if (form.get('email')?.hasError('email') && form.get('email')?.touched) {
+                    <div class="invalid-feedback">
+                      {{ 'validation.email' | translate }}
+                    </div>
+                  }
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="authProvider">{{ 'usuario.authProvider' | translate }} *</label>
+                  <select id="authProvider" class="form-control shared-select" formControlName="authProvider">
+                    <option value="Local">{{ 'usuario.localProvider' | translate }}</option>
+                    <option value="Google">Google</option>
+                  </select>
+                  <small class="form-text text-muted">{{ 'usuario.authProviderHelp' | translate }}</small>
+                </div>
+                <div class="form-group checkbox-group">
+                  <label class="checkbox-label">
+                    <input type="checkbox" formControlName="isActive" class="form-checkbox" />
+                    <span>{{ 'common.active' | translate }}</span>
+                  </label>
+                  <small class="form-text text-muted">{{ 'usuario.isActiveHelp' | translate }}</small>
+                </div>
+              </div>
+              @if (isLocalProvider) {
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label" for="password">{{ isEditMode ? ('usuario.newPassword' | translate) : ('usuario.password' | translate) }}{{ isEditMode ? '' : ' *' }}</label>
+                    <input id="password" type="password" class="form-control" formControlName="password"
+                      [class.is-invalid]="(form.get('password')?.invalid && form.get('password')?.touched) || (form.errors?.['passwordMismatch'] && form.get('confirmPassword')?.touched)" />
+                      @if (form.get('password')?.hasError('required') && form.get('password')?.touched) {
+                        <div class="invalid-feedback">
+                          {{ 'validation.required' | translate }}
+                        </div>
+                      }
+                      @if (form.get('password')?.hasError('minlength') && form.get('password')?.touched) {
+                        <div class="invalid-feedback">
+                          {{ 'usuario.passwordMinLength' | translate }}
+                        </div>
+                      }
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label" for="confirmPassword">{{ 'usuario.confirmPassword' | translate }}{{ isEditMode ? '' : ' *' }}</label>
+                      <input id="confirmPassword" type="password" class="form-control" formControlName="confirmPassword"
+                        [class.is-invalid]="form.errors?.['passwordMismatch'] && form.get('confirmPassword')?.touched" />
+                        @if (form.errors?.['passwordMismatch'] && form.get('confirmPassword')?.touched) {
+                          <div class="invalid-feedback">
+                            {{ 'usuario.passwordsDoNotMatch' | translate }}
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  } @else {
+                    <div class="form-group provider-hint">
+                      <small>{{ 'usuario.googlePasswordInfo' | translate }}</small>
+                    </div>
+                  }
+                  <div class="form-group">
+                    <label class="form-label">{{ 'usuario.roles' | translate }} *</label>
+                    <div class="roles-grid">
+                      @for (role of availableRoles; track role) {
+                        <label class="role-option">
+                          <input type="checkbox" [checked]="hasRole(role)" (change)="onRoleChange(role, $any($event.target).checked)" />
+                          <span>{{ role }}</span>
+                        </label>
+                      }
+                    </div>
+                    @if (form.get('roles')?.invalid && form.get('roles')?.touched) {
+                      <div class="invalid-feedback" style="display:block">
+                        {{ 'usuario.selectAtLeastOneRole' | translate }}
+                      </div>
+                    }
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label">{{ 'usuario.permissions' | translate }} *</label>
+                      <div class="roles-grid permissions-grid">
+                        @for (permission of availablePermissions; track permission) {
+                          <label class="role-option">
+                            <input type="checkbox" [checked]="hasPermission(permission)" (change)="onPermissionChange(permission, $any($event.target).checked)" />
+                            <span>{{ permission }}</span>
+                          </label>
+                        }
+                      </div>
+                      @if (form.get('permissions')?.invalid && form.get('permissions')?.touched) {
+                        <div class="invalid-feedback" style="display:block">
+                          {{ 'usuario.selectAtLeastOnePermission' | translate }}
+                        </div>
+                      }
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label" for="accessLevelsText">{{ 'usuario.accessLevelsLabel' | translate }}</label>
+                      <input id="accessLevelsText" type="text" class="form-control" formControlName="accessLevelsText"
+                        [placeholder]="'usuario.accessLevelsPlaceholder' | translate" />
+                        <small>{{ 'usuario.accessLevelsHelp' | translate }}</small>
+                      </div>
+                    </div>
+                    <div class="form-actions">
+                      <button type="button" class="btn btn-secondary" (click)="onCancel()" [disabled]="saving">
+                        ❌ {{ 'common.cancel' | translate }}
+                      </button>
+                      <button type="submit" class="btn btn-primary" [disabled]="saving || form.invalid">
+                        @if (!saving) {
+                          <span>💾 {{ 'common.save' | translate }}</span>
+                        }
+                        @if (saving) {
+                          <span>⏳ {{ 'common.saving' | translate }}</span>
+                        }
+                      </button>
+                    </div>
+                  </form>
+                }
 
-        <div class="form-group">
-          <label class="form-label" for="accessLevelsText">{{ 'usuario.accessLevelsLabel' | translate }}</label>
-          <input id="accessLevelsText" type="text" class="form-control" formControlName="accessLevelsText"
-                 [placeholder]="'usuario.accessLevelsPlaceholder' | translate" />
-          <small>{{ 'usuario.accessLevelsHelp' | translate }}</small>
-        </div>
-      </div>
-
-      <div class="form-actions">
-        <button type="button" class="btn btn-secondary" (click)="onCancel()" [disabled]="saving">
-          ❌ {{ 'common.cancel' | translate }}
-        </button>
-        <button type="submit" class="btn btn-primary" [disabled]="saving || form.invalid">
-          <span *ngIf="!saving">💾 {{ 'common.save' | translate }}</span>
-          <span *ngIf="saving">⏳ {{ 'common.saving' | translate }}</span>
-        </button>
-      </div>
-    </form>
-
-    <div *ngIf="loading" class="loading-container">
-      <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
-    </div>
-  </div>
-</div>
+                @if (loading) {
+                  <div class="loading-container">
+                    <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
+                  </div>
+                }
+              </div>
+            </div>

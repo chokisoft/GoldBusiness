@@ -8,10 +8,12 @@
     </div>
   </div>
 
-  <div class="alert alert-error" *ngIf="error">
-    <span class="alert-icon">⚠️</span>
-    {{ error }}
-  </div>
+  @if (error) {
+    <div class="alert alert-error">
+      <span class="alert-icon">⚠️</span>
+      {{ error }}
+    </div>
+  }
 
   <div class="card">
     <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" class="form-container">
@@ -24,291 +26,330 @@
           <div class="form-group">
             <label class="form-label">{{ 'clientes.codigo' | translate }} *</label>
             <input class="form-control"
-                   formControlName="codigo"
-                   maxlength="8"
-                   [class.is-invalid]="itemForm.get('codigo')?.invalid && itemForm.get('codigo')?.touched"
-                   placeholder="{{ 'clientes.placeholderCodigo' | translate }}" />
-            <small class="form-text">{{ 'clientes.codigoHelp' | translate }}</small>
-            <div class="invalid-feedback" *ngIf="itemForm.get('codigo')?.invalid && itemForm.get('codigo')?.touched">
-              {{ 'validation.codigo8Digitos' | translate }}
+              formControlName="codigo"
+              maxlength="8"
+              [class.is-invalid]="itemForm.get('codigo')?.invalid && itemForm.get('codigo')?.touched"
+              placeholder="{{ 'clientes.placeholderCodigo' | translate }}" />
+              <small class="form-text">{{ 'clientes.codigoHelp' | translate }}</small>
+              @if (itemForm.get('codigo')?.invalid && itemForm.get('codigo')?.touched) {
+                <div class="invalid-feedback">
+                  {{ 'validation.codigo8Digitos' | translate }}
+                </div>
+              }
             </div>
-          </div>
 
-          <div class="form-group">
-            <label class="form-label">{{ 'clientes.descripcion' | translate }} *</label>
-            <input class="form-control"
-                   formControlName="descripcion"
-                   maxlength="256"
-                   [class.is-invalid]="itemForm.get('descripcion')?.invalid && itemForm.get('descripcion')?.touched"
-                   placeholder="{{ 'clientes.placeholderDescripcion' | translate }}" />
-            <small class="form-text">{{ 'clientes.descripcionHelp' | translate }}</small>
-            <div class="invalid-feedback" *ngIf="itemForm.get('descripcion')?.invalid && itemForm.get('descripcion')?.touched">
-              {{ 'validation.required' | translate }}
+            <div class="form-group">
+              <label class="form-label">{{ 'clientes.descripcion' | translate }} *</label>
+              <input class="form-control"
+                formControlName="descripcion"
+                maxlength="256"
+                [class.is-invalid]="itemForm.get('descripcion')?.invalid && itemForm.get('descripcion')?.touched"
+                placeholder="{{ 'clientes.placeholderDescripcion' | translate }}" />
+                <small class="form-text">{{ 'clientes.descripcionHelp' | translate }}</small>
+                @if (itemForm.get('descripcion')?.invalid && itemForm.get('descripcion')?.touched) {
+                  <div class="invalid-feedback">
+                    {{ 'validation.required' | translate }}
+                  </div>
+                }
+              </div>
             </div>
-          </div>
-        </div>
 
-      </div>
-
-      <!-- Sección: Información Fiscal -->
-      <div class="form-section">
-        <h3 class="section-title">🧾 {{ 'fiscal.title' | translate }}</h3>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">{{ 'clientes.identificadorFiscal' | translate }}</label>
-            <input class="form-control"
-                   formControlName="identificadorFiscal"
-                   maxlength="30"
-                   placeholder="{{ 'clientes.placeholderIdentificadorFiscal' | translate }}" />
-            <small class="form-text">{{ 'clientes.identificadorFiscalHelp' | translate }}</small>
           </div>
 
-          <div class="form-group">
-            <label class="form-label">{{ 'clientes.tasaIva' | translate }} *</label>
-            <input class="form-control"
-                   formControlName="tasaIva"
-                   type="text"
-                   inputmode="decimal"
-                   pattern="[0-9]+([\.,][0-9]{1,2})?"
-                   placeholder="{{ 'clientes.tasaIvaPlaceholder' | translate }}"
-                   autocomplete="off" />
-            <small class="form-text">{{ 'clientes.tasaIvaHelp' | translate }}</small>
-          </div>
-        </div>
+          <!-- Sección: Información Fiscal -->
+          <div class="form-section">
+            <h3 class="section-title">🧾 {{ 'fiscal.title' | translate }}</h3>
 
-        <div class="form-row form-row-clientProve">
-          <div class="form-group">
-            <label for="tipoIdentificadorFiscal">{{ 'fiscal.tipoIdentificadorFiscal' | translate }}</label>
-            <select id="tipoIdentificadorFiscal"
-                    formControlName="tipoIdentificadorFiscal"
-                    class="shared-select">
-              <option [ngValue]="null">{{ 'fiscal.placeholderTipoIdentificadorFiscal' | translate }}</option>
-              <option *ngFor="let tipo of tiposIdentificacionFiscal" [ngValue]="tipo.value">
-                {{ tipo.label }}
-              </option>
-            </select>
-            <small class="form-text">{{ 'fiscal.tipoIdentificadorFiscalHelp' | translate }}</small>
-          </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">{{ 'clientes.identificadorFiscal' | translate }}</label>
+                <input class="form-control"
+                  formControlName="identificadorFiscal"
+                  maxlength="30"
+                  placeholder="{{ 'clientes.placeholderIdentificadorFiscal' | translate }}" />
+                  <small class="form-text">{{ 'clientes.identificadorFiscalHelp' | translate }}</small>
+                </div>
 
-          <div class="form-group">
-            <label for="regimenFiscal">{{ 'fiscal.regimenFiscal' | translate }}</label>
-            <select id="regimenFiscal"
-                    formControlName="regimenFiscal"
-                    class="shared-select">
-              <option [ngValue]="null">{{ 'fiscal.placeholderRegimenFiscal' | translate }}</option>
-              <option *ngFor="let regimen of regimenesFiscales" [ngValue]="regimen.value">
-                {{ regimen.label }}
-              </option>
-            </select>
-            <small class="form-text">{{ 'fiscal.regimenFiscalHelp' | translate }}</small>
-          </div>
+                <div class="form-group">
+                  <label class="form-label">{{ 'clientes.tasaIva' | translate }} *</label>
+                  <input class="form-control"
+                    formControlName="tasaIva"
+                    type="text"
+                    inputmode="decimal"
+                    pattern="[0-9]+([\.,][0-9]{1,2})?"
+                    placeholder="{{ 'clientes.tasaIvaPlaceholder' | translate }}"
+                    autocomplete="off" />
+                    <small class="form-text">{{ 'clientes.tasaIvaHelp' | translate }}</small>
+                  </div>
+                </div>
 
-          <div class="form-group">
-            <label for="codigoPaisIso">{{ 'fiscal.codigoPaisIso' | translate }}</label>
-            <input type="text"
-                   id="codigoPaisIso"
-                   formControlName="codigoPaisIso"
-                   class="shared-input"
-                   maxlength="3"
-                   placeholder="{{ 'fiscal.placeholderCodigoPaisIso' | translate }}">
-            <small class="form-text">{{ 'fiscal.codigoPaisIsoHelp' | translate }}</small>
-          </div>
-        </div>
+                <div class="form-row form-row-clientProve">
+                  <div class="form-group">
+                    <label for="tipoIdentificadorFiscal">{{ 'fiscal.tipoIdentificadorFiscal' | translate }}</label>
+                    <select id="tipoIdentificadorFiscal"
+                      formControlName="tipoIdentificadorFiscal"
+                      class="shared-select">
+                      <option [ngValue]="null">{{ 'fiscal.placeholderTipoIdentificadorFiscal' | translate }}</option>
+                      @for (tipo of tiposIdentificacionFiscal; track tipo) {
+                        <option [ngValue]="tipo.value">
+                          {{ tipo.label }}
+                        </option>
+                      }
+                    </select>
+                    <small class="form-text">{{ 'fiscal.tipoIdentificadorFiscalHelp' | translate }}</small>
+                  </div>
 
-        <div class="form-row form-row-checkboxes">
-          <div class="checkbox-group">
-            <input type="checkbox"
-                   id="exentoIva"
-                   formControlName="exentoIva"
-                   class="form-checkbox">
-            <label for="exentoIva">{{ 'fiscal.exentoIva' | translate }}</label>
-            <small class="form-text">{{ 'fiscal.exentoIvaHelp' | translate }}</small>
-          </div>
+                  <div class="form-group">
+                    <label for="regimenFiscal">{{ 'fiscal.regimenFiscal' | translate }}</label>
+                    <select id="regimenFiscal"
+                      formControlName="regimenFiscal"
+                      class="shared-select">
+                      <option [ngValue]="null">{{ 'fiscal.placeholderRegimenFiscal' | translate }}</option>
+                      @for (regimen of regimenesFiscales; track regimen) {
+                        <option [ngValue]="regimen.value">
+                          {{ regimen.label }}
+                        </option>
+                      }
+                    </select>
+                    <small class="form-text">{{ 'fiscal.regimenFiscalHelp' | translate }}</small>
+                  </div>
 
-          <div class="checkbox-group">
-            <input type="checkbox"
-                   id="extranjero"
-                   formControlName="extranjero"
-                   class="form-checkbox">
-            <label for="extranjero">{{ 'fiscal.extranjero' | translate }}</label>
-            <small class="form-text">{{ 'fiscal.extranjeroHelp' | translate }}</small>
-          </div>
+                  <div class="form-group">
+                    <label for="codigoPaisIso">{{ 'fiscal.codigoPaisIso' | translate }}</label>
+                    <input type="text"
+                      id="codigoPaisIso"
+                      formControlName="codigoPaisIso"
+                      class="shared-input"
+                      maxlength="3"
+                      placeholder="{{ 'fiscal.placeholderCodigoPaisIso' | translate }}">
+                      <small class="form-text">{{ 'fiscal.codigoPaisIsoHelp' | translate }}</small>
+                    </div>
+                  </div>
 
-          <div class="checkbox-group">
-            <input type="checkbox"
-                   id="validarIdentificadorFiscal"
-                   formControlName="validarIdentificadorFiscal"
-                   class="form-checkbox">
-            <label for="validarIdentificadorFiscal">{{ 'fiscal.validarIdentificadorFiscal' | translate }}</label>
-            <small class="form-text">{{ 'fiscal.validarIdentificadorFiscalHelp' | translate }}</small>
-          </div>
+                  <div class="form-row form-row-checkboxes">
+                    <div class="checkbox-group">
+                      <input type="checkbox"
+                        id="exentoIva"
+                        formControlName="exentoIva"
+                        class="form-checkbox">
+                        <label for="exentoIva">{{ 'fiscal.exentoIva' | translate }}</label>
+                        <small class="form-text">{{ 'fiscal.exentoIvaHelp' | translate }}</small>
+                      </div>
 
-          <div class="checkbox-group">
-            <input type="checkbox"
-                   id="inversionSujetoPasivo"
-                   formControlName="inversionSujetoPasivo"
-                   class="form-checkbox">
-            <label for="inversionSujetoPasivo">{{ 'fiscal.inversionSujetoPasivo' | translate }}</label>
-            <small class="form-text">{{ 'fiscal.inversionSujetoPasivoHelp' | translate }}</small>
-          </div>
-        </div>
-      </div>
+                      <div class="checkbox-group">
+                        <input type="checkbox"
+                          id="extranjero"
+                          formControlName="extranjero"
+                          class="form-checkbox">
+                          <label for="extranjero">{{ 'fiscal.extranjero' | translate }}</label>
+                          <small class="form-text">{{ 'fiscal.extranjeroHelp' | translate }}</small>
+                        </div>
 
-      <!-- Sección: Información Bancaria -->
-      <div class="form-section">
-        <h3 class="section-title">🏦 {{ 'clientes.infoBancaria' | translate }}</h3>
+                        <div class="checkbox-group">
+                          <input type="checkbox"
+                            id="validarIdentificadorFiscal"
+                            formControlName="validarIdentificadorFiscal"
+                            class="form-checkbox">
+                            <label for="validarIdentificadorFiscal">{{ 'fiscal.validarIdentificadorFiscal' | translate }}</label>
+                            <small class="form-text">{{ 'fiscal.validarIdentificadorFiscalHelp' | translate }}</small>
+                          </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">{{ 'clientes.iban' | translate }}</label>
-            <input class="form-control"
-                   formControlName="iban"
-                   maxlength="27"
-                   placeholder="{{ 'clientes.placeholderIban' | translate }}" />
-            <small class="form-text">{{ 'clientes.ibanHelp' | translate }}</small>
-          </div>
+                          <div class="checkbox-group">
+                            <input type="checkbox"
+                              id="inversionSujetoPasivo"
+                              formControlName="inversionSujetoPasivo"
+                              class="form-checkbox">
+                              <label for="inversionSujetoPasivo">{{ 'fiscal.inversionSujetoPasivo' | translate }}</label>
+                              <small class="form-text">{{ 'fiscal.inversionSujetoPasivoHelp' | translate }}</small>
+                            </div>
+                          </div>
+                        </div>
 
-          <div class="form-group">
-            <label class="form-label">{{ 'clientes.bicoSwift' | translate }}</label>
-            <input class="form-control"
-                   formControlName="bicoSwift"
-                   maxlength="11"
-                   placeholder="{{ 'clientes.placeholderBicoSwift' | translate }}" />
-            <small class="form-text">{{ 'clientes.bicoSwiftHelp' | translate }}</small>
-          </div>
-        </div>
-      </div>
+                        <!-- Sección: Información Bancaria -->
+                        <div class="form-section">
+                          <h3 class="section-title">🏦 {{ 'clientes.infoBancaria' | translate }}</h3>
 
-      <!-- Sección: Información de Ubicación -->
-      <div class="form-section">
-        <h3 class="section-title">📍 {{ 'clientes.infoUbicacion' | translate }}</h3>
+                          <div class="form-row">
+                            <div class="form-group">
+                              <label class="form-label">{{ 'clientes.iban' | translate }}</label>
+                              <input class="form-control"
+                                formControlName="iban"
+                                maxlength="27"
+                                placeholder="{{ 'clientes.placeholderIban' | translate }}" />
+                                <small class="form-text">{{ 'clientes.ibanHelp' | translate }}</small>
+                              </div>
 
-        <div class="form-group">
-          <label class="form-label">{{ 'clientes.direccion' | translate }}</label>
-          <textarea class="form-control"
-                    formControlName="direccion"
-                    rows="2"
-                    placeholder="{{ 'clientes.placeholderDireccion' | translate }}"></textarea>
-          <small class="form-text">{{ 'clientes.direccionHelp' | translate }}</small>
-        </div>
+                              <div class="form-group">
+                                <label class="form-label">{{ 'clientes.bicoSwift' | translate }}</label>
+                                <input class="form-control"
+                                  formControlName="bicoSwift"
+                                  maxlength="11"
+                                  placeholder="{{ 'clientes.placeholderBicoSwift' | translate }}" />
+                                  <small class="form-text">{{ 'clientes.bicoSwiftHelp' | translate }}</small>
+                                </div>
+                              </div>
+                            </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">{{ 'clientes.pais' | translate }}</label>
-          <select class="form-control shared-select" formControlName="paisId" [attr.aria-disabled]="itemForm.get('paisId')?.disabled">
-              <option [ngValue]="null">{{ 'common.select' | translate }}</option>
-              <option *ngFor="let p of paises" [ngValue]="p.id">{{ p.descripcion }}</option>
-            </select>
-            <small class="form-text" *ngIf="paises.length === 0">{{ 'cliente.noPaisesDisponibles' | translate }}</small>
-            <small class="form-text" *ngIf="paises.length > 0">{{ 'cliente.paisHelp' | translate }}</small>
-          </div>
+                            <!-- Sección: Información de Ubicación -->
+                            <div class="form-section">
+                              <h3 class="section-title">📍 {{ 'clientes.infoUbicacion' | translate }}</h3>
 
-          <div class="form-group">
-            <label class="form-label">{{ 'clientes.provincia' | translate }}</label>
-          <select class="form-control shared-select" formControlName="provinciaId" [attr.aria-disabled]="itemForm.get('provinciaId')?.disabled">
-              <option [ngValue]="null">{{ 'common.select' | translate }}</option>
-              <option *ngFor="let prov of provincias" [ngValue]="prov.id">{{ prov.descripcion }}</option>
-            </select>
-            <ng-container *ngIf="provincias.length === 0; else provHelp">
-              <small class="form-text" *ngIf="!itemForm.get('paisId')?.value">{{ 'cliente.selectPaisToSeeProvincias' | translate }}</small>
-            </ng-container>
-            <ng-template #provHelp>
-              <small class="form-text">{{ 'cliente.provinciaHelp' | translate }}</small>
-            </ng-template>
-          </div>
-        </div>
+                              <div class="form-group">
+                                <label class="form-label">{{ 'clientes.direccion' | translate }}</label>
+                                <textarea class="form-control"
+                                  formControlName="direccion"
+                                  rows="2"
+                                placeholder="{{ 'clientes.placeholderDireccion' | translate }}"></textarea>
+                                <small class="form-text">{{ 'clientes.direccionHelp' | translate }}</small>
+                              </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">{{ 'clientes.municipio' | translate }}</label>
-            <select class="form-control shared-select" formControlName="municipioId" [attr.aria-disabled]="itemForm.get('municipioId')?.disabled">
-              <option [ngValue]="null">{{ 'common.select' | translate }}</option>
-              <option *ngFor="let mun of municipios" [ngValue]="mun.id">{{ mun.descripcion }}</option>
-            </select>
-            <ng-container *ngIf="municipios.length === 0; else munHelp">
-              <small class="form-text" *ngIf="!itemForm.get('provinciaId')?.value">{{ 'cliente.selectProvinciaToSeeMunicipios' | translate }}</small>
-            </ng-container>
-            <ng-template #munHelp>
-              <small class="form-text">{{ 'cliente.municipioHelp' | translate }}</small>
-            </ng-template>
-          </div>
+                              <div class="form-row">
+                                <div class="form-group">
+                                  <label class="form-label">{{ 'clientes.pais' | translate }}</label>
+                                  <select class="form-control shared-select" formControlName="paisId" [attr.aria-disabled]="itemForm.get('paisId')?.disabled">
+                                    <option [ngValue]="null">{{ 'common.select' | translate }}</option>
+                                    @for (p of paises; track p) {
+                                      <option [ngValue]="p.id">{{ p.descripcion }}</option>
+                                    }
+                                  </select>
+                                  @if (paises.length === 0) {
+                                    <small class="form-text">{{ 'cliente.noPaisesDisponibles' | translate }}</small>
+                                  }
+                                  @if (paises.length > 0) {
+                                    <small class="form-text">{{ 'cliente.paisHelp' | translate }}</small>
+                                  }
+                                </div>
 
-          <div class="form-group">
-            <label class="form-label">{{ 'clientes.codigoPostal' | translate }}</label>
-          <select class="form-control shared-select" formControlName="codigoPostalId" [attr.aria-disabled]="itemForm.get('codigoPostalId')?.disabled">
-              <option [ngValue]="null">{{ 'common.select' | translate }}</option>
-              <option *ngFor="let cp of codigosPostales" [ngValue]="cp.id">{{ cp.codigo }}</option>
-            </select>
-            <ng-container *ngIf="codigosPostales.length === 0; else cpHelp">
-              <small class="form-text" *ngIf="!itemForm.get('municipioId')?.value">{{ 'cliente.selectMunicipioToSeeCodigosPostales' | translate }}</small>
-            </ng-container>
-            <ng-template #cpHelp>
-              <small class="form-text">{{ 'cliente.codigoPostalHelp' | translate }}</small>
-            </ng-template>
-          </div>
-        </div>
-      </div>
+                                <div class="form-group">
+                                  <label class="form-label">{{ 'clientes.provincia' | translate }}</label>
+                                  <select class="form-control shared-select" formControlName="provinciaId" [attr.aria-disabled]="itemForm.get('provinciaId')?.disabled">
+                                    <option [ngValue]="null">{{ 'common.select' | translate }}</option>
+                                    @for (prov of provincias; track prov) {
+                                      <option [ngValue]="prov.id">{{ prov.descripcion }}</option>
+                                    }
+                                  </select>
+                                  @if (provincias.length === 0) {
+                                    @if (!itemForm.get('paisId')?.value) {
+                                      <small class="form-text">{{ 'cliente.selectPaisToSeeProvincias' | translate }}</small>
+                                    }
+                                  } @else {
+                                    <small class="form-text">{{ 'cliente.provinciaHelp' | translate }}</small>
+                                  }
+                                </div>
+                              </div>
 
-      <!-- Sección: Información de Contacto -->
-      <div class="form-section">
-        <h3 class="section-title">📞 {{ 'clientes.infoContacto' | translate }}</h3>
+                              <div class="form-row">
+                                <div class="form-group">
+                                  <label class="form-label">{{ 'clientes.municipio' | translate }}</label>
+                                  <select class="form-control shared-select" formControlName="municipioId" [attr.aria-disabled]="itemForm.get('municipioId')?.disabled">
+                                    <option [ngValue]="null">{{ 'common.select' | translate }}</option>
+                                    @for (mun of municipios; track mun) {
+                                      <option [ngValue]="mun.id">{{ mun.descripcion }}</option>
+                                    }
+                                  </select>
+                                  @if (municipios.length === 0) {
+                                    @if (!itemForm.get('provinciaId')?.value) {
+                                      <small class="form-text">{{ 'cliente.selectProvinciaToSeeMunicipios' | translate }}</small>
+                                    }
+                                  } @else {
+                                    <small class="form-text">{{ 'cliente.municipioHelp' | translate }}</small>
+                                  }
+                                </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">{{ 'clientes.email' | translate }}</label>
-            <input class="form-control"
-                   formControlName="email"
-                   type="email"
-                   placeholder="{{ 'clientes.placeholderEmail' | translate }}" />
-            <small class="form-text">{{ 'clientes.emailHelp' | translate }}</small>
-          </div>
+                                <div class="form-group">
+                                  <label class="form-label">{{ 'clientes.codigoPostal' | translate }}</label>
+                                  <select class="form-control shared-select" formControlName="codigoPostalId" [attr.aria-disabled]="itemForm.get('codigoPostalId')?.disabled">
+                                    <option [ngValue]="null">{{ 'common.select' | translate }}</option>
+                                    @for (cp of codigosPostales; track cp) {
+                                      <option [ngValue]="cp.id">{{ cp.codigo }}</option>
+                                    }
+                                  </select>
+                                  @if (codigosPostales.length === 0) {
+                                    @if (!itemForm.get('municipioId')?.value) {
+                                      <small class="form-text">{{ 'cliente.selectMunicipioToSeeCodigosPostales' | translate }}</small>
+                                    }
+                                  } @else {
+                                    <small class="form-text">{{ 'cliente.codigoPostalHelp' | translate }}</small>
+                                  }
+                                </div>
+                              </div>
+                            </div>
 
-          <div class="form-group">
-            <label class="form-label">{{ 'clientes.telefono' | translate }}</label>
-            <input id="telefono"
-                   type="tel"
-                   class="form-control"
-                   formControlName="telefono"
-                   maxlength="50"
-                   [class.is-invalid]="itemForm.get('telefono')?.invalid && itemForm.get('telefono')?.touched"
-                   placeholder="{{ 'clientes.placeholderTelefono' | translate }}" />
-            <div class="form-text" *ngIf="selectedPais">{{ selectedPais.formatoEjemplo }} <small>({{ selectedPais.formatoTelefono }})</small></div>
-            <small class="form-text" *ngIf="!selectedPais">{{ 'clientes.telefonoHelp' | translate }}</small>
-            <div class="invalid-feedback" *ngIf="itemForm.get('telefono')?.touched">
-              <div *ngIf="itemForm.get('telefono')?.hasError('telefonoInvalid')">{{ 'clientes.telefonoInvalido' | translate }}</div>
-              <div *ngIf="itemForm.get('telefono')?.hasError('maxlength')">{{ 'validation.maxLength' | translate:[50] }}</div>
-            </div>
-          </div>
-        </div>
+                            <!-- Sección: Información de Contacto -->
+                            <div class="form-section">
+                              <h3 class="section-title">📞 {{ 'clientes.infoContacto' | translate }}</h3>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">{{ 'clientes.web' | translate }}</label>
-            <input class="form-control"
-                   formControlName="web"
-                   type="url"
-                   maxlength="256"
-                   placeholder="{{ 'clientes.placeholderWeb' | translate }}" />
-            <small class="form-text">{{ 'clientes.webHelp' | translate }}</small>
-          </div>
-          <div class="form-group"></div>
-        </div>
-      </div>
+                              <div class="form-row">
+                                <div class="form-group">
+                                  <label class="form-label">{{ 'clientes.email' | translate }}</label>
+                                  <input class="form-control"
+                                    formControlName="email"
+                                    type="email"
+                                    placeholder="{{ 'clientes.placeholderEmail' | translate }}" />
+                                    <small class="form-text">{{ 'clientes.emailHelp' | translate }}</small>
+                                  </div>
 
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <!-- 🎬 BOTONES DE ACCIÓN -->
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <div class="form-actions">
-        <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="loading || saving">
-          ❌ {{ 'common.cancel' | translate }}
-        </button>
-        <button type="submit" class="btn btn-primary" [disabled]="loading || saving || form.invalid || loadingCuentas">
-          <span *ngIf="!loading && !saving">💾 {{ 'common.save' | translate }}</span>
-          <span *ngIf="loading && !saving">⏳ {{ 'common.loading' | translate }}</span>
-          <span *ngIf="saving">⏳ {{ 'common.saving' | translate }}</span>
-        </button>
-      </div>
-    </form>
-  </div>
-</div>
+                                  <div class="form-group">
+                                    <label class="form-label">{{ 'clientes.telefono' | translate }}</label>
+                                    <input id="telefono"
+                                      type="tel"
+                                      class="form-control"
+                                      formControlName="telefono"
+                                      maxlength="50"
+                                      [class.is-invalid]="itemForm.get('telefono')?.invalid && itemForm.get('telefono')?.touched"
+                                      placeholder="{{ 'clientes.placeholderTelefono' | translate }}" />
+                                      @if (selectedPais) {
+                                        <div class="form-text">{{ selectedPais.formatoEjemplo }} <small>({{ selectedPais.formatoTelefono }})</small></div>
+                                      }
+                                      @if (!selectedPais) {
+                                        <small class="form-text">{{ 'clientes.telefonoHelp' | translate }}</small>
+                                      }
+                                      @if (itemForm.get('telefono')?.touched) {
+                                        <div class="invalid-feedback">
+                                          @if (itemForm.get('telefono')?.hasError('telefonoInvalid')) {
+                                            <div>{{ 'clientes.telefonoInvalido' | translate }}</div>
+                                          }
+                                          @if (itemForm.get('telefono')?.hasError('maxlength')) {
+                                            <div>{{ 'validation.maxLength' | translate:[50] }}</div>
+                                          }
+                                        </div>
+                                      }
+                                    </div>
+                                  </div>
+
+                                  <div class="form-row">
+                                    <div class="form-group">
+                                      <label class="form-label">{{ 'clientes.web' | translate }}</label>
+                                      <input class="form-control"
+                                        formControlName="web"
+                                        type="url"
+                                        maxlength="256"
+                                        placeholder="{{ 'clientes.placeholderWeb' | translate }}" />
+                                        <small class="form-text">{{ 'clientes.webHelp' | translate }}</small>
+                                      </div>
+                                      <div class="form-group"></div>
+                                    </div>
+                                  </div>
+
+                                  <!-- ═══════════════════════════════════════════════════════════════ -->
+                                  <!-- 🎬 BOTONES DE ACCIÓN -->
+                                  <!-- ═══════════════════════════════════════════════════════════════ -->
+                                  <div class="form-actions">
+                                    <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="loading || saving">
+                                      ❌ {{ 'common.cancel' | translate }}
+                                    </button>
+                                    <button type="submit" class="btn btn-primary" [disabled]="loading || saving || form.invalid || loadingCuentas">
+                                      @if (!loading && !saving) {
+                                        <span>💾 {{ 'common.save' | translate }}</span>
+                                      }
+                                      @if (loading && !saving) {
+                                        <span>⏳ {{ 'common.loading' | translate }}</span>
+                                      }
+                                      @if (saving) {
+                                        <span>⏳ {{ 'common.saving' | translate }}</span>
+                                      }
+                                    </button>
+                                  </div>
+                                </form>
+                              </div>
+                            </div>

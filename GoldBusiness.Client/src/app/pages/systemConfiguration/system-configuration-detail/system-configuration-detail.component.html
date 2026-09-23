@@ -19,144 +19,164 @@
     </div>
   </div>
 
-  <div class="alert alert-error" *ngIf="error">
-    <span class="alert-icon">⚠️</span>
-    {{ error }}
-  </div>
-
-  <div class="card" *ngIf="!loading && config">
-    <div class="card-header">
-      📊 {{ 'systemConfig.infoBasica' | translate }}
-      <span style="float:right;">
-        <span class="badge badge-success" *ngIf="config.activo">
-          ✅ {{ 'systemConfig.activo' | translate }}
-        </span>
-        <span class="badge badge-secondary" *ngIf="!config.activo">
-          ⚠️ {{ 'systemConfig.cancelado' | translate }}
-        </span>
-      </span>
+  @if (error) {
+    <div class="alert alert-error">
+      <span class="alert-icon">⚠️</span>
+      {{ error }}
     </div>
-    <div class="card-body">
-      <!-- Información del sistema -->
-      <div class="info-section">
-        <h3 class="section-title">🔐 {{ 'systemConfig.infoSistema' | translate }}</h3>
-        <div class="info-grid">
-          <div class="info-item">
-            <span class="info-label">{{ 'systemConfig.codigoSistema' | translate }}</span>
-            <span class="info-value-large">{{ config.codigoSistema }}</span>
-          </div>
+  }
 
-          <!-- Licencia ocupa dos columnas -->
-          <div class="info-item" style="grid-column: span 2;">
-            <span class="info-label">{{ 'systemConfig.licencia' | translate }}</span>
-            <span class="info-value" style="white-space:pre-wrap; word-break:break-word;">
-              {{ config.licencia }}
+  @if (!loading && config) {
+    <div class="card">
+      <div class="card-header">
+        📊 {{ 'systemConfig.infoBasica' | translate }}
+        <span style="float:right;">
+          @if (config.activo) {
+            <span class="badge badge-success">
+              ✅ {{ 'systemConfig.activo' | translate }}
             </span>
-          </div>
-
-          <!-- Fecha de caducidad -->
-          <div class="info-item">
-            <span class="info-label">{{ 'systemConfig.caducidad' | translate }}</span>
-            <span class="info-value">
-              <span class="badge badge-info">{{ config.caducidad | localizedDate:'short' }}</span>
+          }
+          @if (!config.activo) {
+            <span class="badge badge-secondary">
+              ⚠️ {{ 'systemConfig.cancelado' | translate }}
             </span>
-          </div>
-
-          <!-- Estado -->
-          <div class="info-item">
-            <span class="info-label">{{ 'systemConfig.estado' | translate }}</span>
-            <div class="info-value">
-              <span class="badge badge-success" *ngIf="config.estadoLicencia === 'Vigente'">
-                <span class="badge-icon">✅</span> {{ 'systemConfig.vigente' | translate }}
+          }
+        </span>
+      </div>
+      <div class="card-body">
+        <!-- Información del sistema -->
+        <div class="info-section">
+          <h3 class="section-title">🔐 {{ 'systemConfig.infoSistema' | translate }}</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">{{ 'systemConfig.codigoSistema' | translate }}</span>
+              <span class="info-value-large">{{ config.codigoSistema }}</span>
+            </div>
+            <!-- Licencia ocupa dos columnas -->
+            <div class="info-item" style="grid-column: span 2;">
+              <span class="info-label">{{ 'systemConfig.licencia' | translate }}</span>
+              <span class="info-value" style="white-space:pre-wrap; word-break:break-word;">
+                {{ config.licencia }}
               </span>
-              <span class="badge badge-warning" *ngIf="config.estadoLicencia === 'Por vencer'">
-                <span class="badge-icon">⚠️</span> {{ 'systemConfig.porVencer' | translate }}
+            </div>
+            <!-- Fecha de caducidad -->
+            <div class="info-item">
+              <span class="info-label">{{ 'systemConfig.caducidad' | translate }}</span>
+              <span class="info-value">
+                <span class="badge badge-info">{{ config.caducidad | localizedDate:'short' }}</span>
               </span>
-              <span class="badge badge-danger" *ngIf="config.estadoLicencia === 'Vencida'">
-                <span class="badge-icon">❌</span> {{ 'systemConfig.vencida' | translate }}
-              </span>
+            </div>
+            <!-- Estado -->
+            <div class="info-item">
+              <span class="info-label">{{ 'systemConfig.estado' | translate }}</span>
+              <div class="info-value">
+                @if (config.estadoLicencia === 'Vigente') {
+                  <span class="badge badge-success">
+                    <span class="badge-icon">✅</span> {{ 'systemConfig.vigente' | translate }}
+                  </span>
+                }
+                @if (config.estadoLicencia === 'Por vencer') {
+                  <span class="badge badge-warning">
+                    <span class="badge-icon">⚠️</span> {{ 'systemConfig.porVencer' | translate }}
+                  </span>
+                }
+                @if (config.estadoLicencia === 'Vencida') {
+                  <span class="badge badge-danger">
+                    <span class="badge-icon">❌</span> {{ 'systemConfig.vencida' | translate }}
+                  </span>
+                }
+              </div>
             </div>
           </div>
         </div>
-      </div>
-
-      <div class="divider"></div>
-
-      <!-- Información del negocio -->
-      <div class="info-section">
-        <h3 class="section-title">🏢 {{ 'systemConfig.infoNegocio' | translate }}</h3>
-        <div class="info-grid">
-          <div class="info-item info-item-full">
-            <span class="info-label">{{ 'systemConfig.nombreNegocio' | translate }}</span>
-            <span class="info-value">{{ config.nombreNegocio }}</span>
-          </div>
-
-          <div class="info-item info-item-full" *ngIf="config.direccion">
-            <span class="info-label">{{ 'systemConfig.direccion' | translate }}</span>
-            <span class="info-value">{{ config.direccion }}</span>
-          </div>
-
-          <!-- Municipio / Provincia (misma línea) -->
-          <div class="info-item" *ngIf="config.municipio">
-            <span class="info-label">{{ 'systemConfig.municipio' | translate }}</span>
-            <span class="info-value">{{ config.municipio }}</span>
-          </div>
-          <div class="info-item" *ngIf="config.provincia">
-            <span class="info-label">{{ 'systemConfig.provincia' | translate }}</span>
-            <span class="info-value">{{ config.provincia }}</span>
-          </div>
-
-          <!-- País / Código Postal (misma línea) -->
-          <div class="info-item">
-            <span class="info-label">{{ 'systemConfig.pais' | translate }}</span>
-            <span class="info-value">{{ selectedPais?.descripcion || paisDescripcion || '-' }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'systemConfig.codPostal' | translate }}</span>
-            <span class="info-value">{{ postalCode || '-' }}</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="divider"></div>
-
-      <!-- Información de contacto -->
-      <div class="info-section">
-        <h3 class="section-title">📞 {{ 'systemConfig.infoContacto' | translate }}</h3>
-        <div class="info-grid">
-          <div class="info-item" *ngIf="config.email">
-            <span class="info-label">{{ 'systemConfig.email' | translate }}</span>
-            <span class="info-value"><a [href]="'mailto:' + config.email">{{ config.email }}</a></span>
-          </div>
-          <div class="info-item" *ngIf="config.telefono">
-            <span class="info-label">{{ 'systemConfig.telefono' | translate }}</span>
-            <span class="info-value"><a [href]="'tel:' + config.telefono">{{ config.telefono | localizedPhone:selectedPais }}</a></span>
-          </div>
-          <div class="info-item" *ngIf="config.web">
-            <span class="info-label">{{ 'systemConfig.web' | translate }}</span>
-            <span class="info-value"><a [href]="config.web" target="_blank" rel="noopener noreferrer">{{ config.web }}</a></span>
+        <div class="divider"></div>
+        <!-- Información del negocio -->
+        <div class="info-section">
+          <h3 class="section-title">🏢 {{ 'systemConfig.infoNegocio' | translate }}</h3>
+          <div class="info-grid">
+            <div class="info-item info-item-full">
+              <span class="info-label">{{ 'systemConfig.nombreNegocio' | translate }}</span>
+              <span class="info-value">{{ config.nombreNegocio }}</span>
+            </div>
+            @if (config.direccion) {
+              <div class="info-item info-item-full">
+                <span class="info-label">{{ 'systemConfig.direccion' | translate }}</span>
+                <span class="info-value">{{ config.direccion }}</span>
+              </div>
+            }
+            <!-- Municipio / Provincia (misma línea) -->
+            @if (config.municipio) {
+              <div class="info-item">
+                <span class="info-label">{{ 'systemConfig.municipio' | translate }}</span>
+                <span class="info-value">{{ config.municipio }}</span>
+              </div>
+            }
+            @if (config.provincia) {
+              <div class="info-item">
+                <span class="info-label">{{ 'systemConfig.provincia' | translate }}</span>
+                <span class="info-value">{{ config.provincia }}</span>
+              </div>
+            }
+            <!-- País / Código Postal (misma línea) -->
+            <div class="info-item">
+              <span class="info-label">{{ 'systemConfig.pais' | translate }}</span>
+              <span class="info-value">{{ selectedPais?.descripcion || paisDescripcion || '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">{{ 'systemConfig.codPostal' | translate }}</span>
+              <span class="info-value">{{ postalCode || '-' }}</span>
+            </div>
           </div>
         </div>
-      </div>
-
-      <!-- Logo -->
-      <div class="info-section">
-        <h3 class="section-title">🖼️ {{ 'systemConfig.imagen' | translate }}</h3>
-        <div *ngIf="config.imagen && !logoError" class="logo-container">
-          <img [src]="getLogoUrl()" [alt]="config.nombreNegocio" class="company-logo-detail" (error)="onImageError($event)" />
-        </div>
-        <div *ngIf="!config.imagen || logoError" class="logo-placeholder">
-          <div class="placeholder-content">
-            <span class="placeholder-icon">🖼️</span>
-            <p class="placeholder-text">{{ 'systemConfig.noLogo' | translate }}</p>
+        <div class="divider"></div>
+        <!-- Información de contacto -->
+        <div class="info-section">
+          <h3 class="section-title">📞 {{ 'systemConfig.infoContacto' | translate }}</h3>
+          <div class="info-grid">
+            @if (config.email) {
+              <div class="info-item">
+                <span class="info-label">{{ 'systemConfig.email' | translate }}</span>
+                <span class="info-value"><a [href]="'mailto:' + config.email">{{ config.email }}</a></span>
+              </div>
+            }
+            @if (config.telefono) {
+              <div class="info-item">
+                <span class="info-label">{{ 'systemConfig.telefono' | translate }}</span>
+                <span class="info-value"><a [href]="'tel:' + config.telefono">{{ config.telefono | localizedPhone:selectedPais }}</a></span>
+              </div>
+            }
+            @if (config.web) {
+              <div class="info-item">
+                <span class="info-label">{{ 'systemConfig.web' | translate }}</span>
+                <span class="info-value"><a [href]="config.web" target="_blank" rel="noopener noreferrer">{{ config.web }}</a></span>
+              </div>
+            }
           </div>
         </div>
+        <!-- Logo -->
+        <div class="info-section">
+          <h3 class="section-title">🖼️ {{ 'systemConfig.imagen' | translate }}</h3>
+          @if (config.imagen && !logoError) {
+            <div class="logo-container">
+              <img [src]="getLogoUrl()" [alt]="config.nombreNegocio" class="company-logo-detail" (error)="onImageError($event)" />
+            </div>
+          }
+          @if (!config.imagen || logoError) {
+            <div class="logo-placeholder">
+              <div class="placeholder-content">
+                <span class="placeholder-icon">🖼️</span>
+                <p class="placeholder-text">{{ 'systemConfig.noLogo' | translate }}</p>
+              </div>
+            </div>
+          }
+        </div>
       </div>
-
     </div>
-  </div>
+  }
 
-  <div *ngIf="loading" class="loading-container">
-    <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
-  </div>
+  @if (loading) {
+    <div class="loading-container">
+      <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
+    </div>
+  }
 </div>

@@ -10,101 +10,107 @@
     </div>
   </div>
 
-  <div class="alert alert-error" *ngIf="error">
-    <span class="alert-icon">⚠️</span>
-    {{ error }}
-  </div>
-
-  <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" class="form-container" *ngIf="!loading">
-    <!-- Información Principal -->
-    <div class="card">
-      <div class="card-header">{{ 'moneda.mainInfo' | translate }}</div>
-      <div class="card-body">
-        <div class="form-row">
-          <!-- Código -->
-          <div class="form-group">
-            <label for="codigo" class="form-label">
-              {{ 'moneda.codigo' | translate }} *
-            </label>
-            <input type="text"
-                   id="codigo"
-                   formControlName="codigo"
-                   class="form-control"
-                   [class.is-invalid]="itemForm.get('codigo')?.invalid && itemForm.get('codigo')?.touched"
-                   [placeholder]="'moneda.codigoPlaceholder' | translate"
-                   maxlength="3" />
-            <div class="invalid-feedback" *ngIf="itemForm.get('codigo')?.hasError('required') && itemForm.get('codigo')?.touched">
-              {{ 'validation.required' | translate }}
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="descripcion" class="form-label">
-              {{ 'moneda.descripcion' | translate }} *
-            </label>
-            <input type="text"
-                   id="descripcion"
-                   formControlName="descripcion"
-                   class="form-control"
-                   [class.is-invalid]="itemForm.get('descripcion')?.invalid && itemForm.get('descripcion')?.touched"
-                   [placeholder]="'moneda.descripcionPlaceholder' | translate"
-                   maxlength="100" />
-            <div class="invalid-feedback" *ngIf="itemForm.get('descripcion')?.hasError('required') && itemForm.get('descripcion')?.touched">
-              {{ 'validation.required' | translate }}
-            </div>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <!-- Símbolo -->
-          <div class="form-group">
-            <label for="simbolo" class="form-label">
-              {{ 'moneda.simbolo' | translate }}
-            </label>
-            <input type="text"
-                   id="simbolo"
-                   formControlName="simbolo"
-                   class="form-control"
-                   [placeholder]="'moneda.simboloPlaceholder' | translate"
-                   maxlength="10" />
-          </div>
-
-          <div class="form-group">
-            <label for="cambio" class="form-label">
-              {{ 'moneda.cambio' | translate }}
-            </label>
-            <input type="number"
-                   id="cambio"
-                   formControlName="cambio"
-                   class="form-control"
-                   [placeholder]="'moneda.cambioPlaceholder' | translate"
-                   step="0.01"
-                   min="0" />
-          </div>
-        </div>
-      </div>
+  @if (error) {
+    <div class="alert alert-error">
+      <span class="alert-icon">⚠️</span>
+      {{ error }}
     </div>
+  }
 
-    <div class="card">
-      <div class="card-header">{{ 'common.actions' | translate }}</div>
-      <div class="card-footer">
-        <div class="button-group">
-          <button type="button" class="btn btn-secondary" (click)="onCancel()">
-            <span class="btn-icon">❌</span>
-            {{ 'common.cancel' | translate }}
-          </button>
-          <button type="submit"
-                  class="btn btn-primary"
-                  [disabled]="itemForm.invalid || saving">
-            <span class="btn-icon">💾</span>
-            {{ saving ? ('common.saving' | translate) : ('common.save' | translate) }}
-          </button>
+  @if (!loading) {
+    <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" class="form-container">
+      <!-- Información Principal -->
+      <div class="card">
+        <div class="card-header">{{ 'moneda.mainInfo' | translate }}</div>
+        <div class="card-body">
+          <div class="form-row">
+            <!-- Código -->
+            <div class="form-group">
+              <label for="codigo" class="form-label">
+                {{ 'moneda.codigo' | translate }} *
+              </label>
+              <input type="text"
+                id="codigo"
+                formControlName="codigo"
+                class="form-control"
+                [class.is-invalid]="itemForm.get('codigo')?.invalid && itemForm.get('codigo')?.touched"
+                [placeholder]="'moneda.codigoPlaceholder' | translate"
+                maxlength="3" />
+                @if (itemForm.get('codigo')?.hasError('required') && itemForm.get('codigo')?.touched) {
+                  <div class="invalid-feedback">
+                    {{ 'validation.required' | translate }}
+                  </div>
+                }
+              </div>
+              <div class="form-group">
+                <label for="descripcion" class="form-label">
+                  {{ 'moneda.descripcion' | translate }} *
+                </label>
+                <input type="text"
+                  id="descripcion"
+                  formControlName="descripcion"
+                  class="form-control"
+                  [class.is-invalid]="itemForm.get('descripcion')?.invalid && itemForm.get('descripcion')?.touched"
+                  [placeholder]="'moneda.descripcionPlaceholder' | translate"
+                  maxlength="100" />
+                  @if (itemForm.get('descripcion')?.hasError('required') && itemForm.get('descripcion')?.touched) {
+                    <div class="invalid-feedback">
+                      {{ 'validation.required' | translate }}
+                    </div>
+                  }
+                </div>
+              </div>
+              <div class="form-row">
+                <!-- Símbolo -->
+                <div class="form-group">
+                  <label for="simbolo" class="form-label">
+                    {{ 'moneda.simbolo' | translate }}
+                  </label>
+                  <input type="text"
+                    id="simbolo"
+                    formControlName="simbolo"
+                    class="form-control"
+                    [placeholder]="'moneda.simboloPlaceholder' | translate"
+                    maxlength="10" />
+                  </div>
+                  <div class="form-group">
+                    <label for="cambio" class="form-label">
+                      {{ 'moneda.cambio' | translate }}
+                    </label>
+                    <input type="number"
+                      id="cambio"
+                      formControlName="cambio"
+                      class="form-control"
+                      [placeholder]="'moneda.cambioPlaceholder' | translate"
+                      step="0.01"
+                      min="0" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header">{{ 'common.actions' | translate }}</div>
+                <div class="card-footer">
+                  <div class="button-group">
+                    <button type="button" class="btn btn-secondary" (click)="onCancel()">
+                      <span class="btn-icon">❌</span>
+                      {{ 'common.cancel' | translate }}
+                    </button>
+                    <button type="submit"
+                      class="btn btn-primary"
+                      [disabled]="itemForm.invalid || saving">
+                      <span class="btn-icon">💾</span>
+                      {{ saving ? ('common.saving' | translate) : ('common.save' | translate) }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          }
+
+          @if (loading) {
+            <div class="loading-container">
+              <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
+            </div>
+          }
         </div>
-      </div>
-    </div>
-  </form>
-
-  <div *ngIf="loading" class="loading-container">
-    <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
-  </div>
-</div>

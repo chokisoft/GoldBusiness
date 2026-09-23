@@ -8,235 +8,247 @@
     </p>
   </div>
 
-  <div class="alert alert-error" *ngIf="error">
-    <span class="alert-icon">⚠️</span>
-    {{ error }}
-  </div>
+  @if (error) {
+    <div class="alert alert-error">
+      <span class="alert-icon">⚠️</span>
+      {{ error }}
+    </div>
+  }
 
   <div class="card">
-    <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" class="form-container" *ngIf="!loading">
-      
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <!-- SECCIÓN 1: Información Básica -->
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <div class="form-section">
-        <h3 class="section-title">📍 {{ 'localidad.mainInfo' | translate }}</h3>
-        
-        <div class="form-row">
-          <div class="form-group">
-            <label for="establecimientoId" class="form-label">{{ 'localidad.establecimiento' | translate }} *</label>
-            <select id="establecimientoId"
-                    formControlName="establecimientoId"
-                    class="shared-select"
-                  [class.shared-disabled]="isEditMode"
-                  [attr.aria-disabled]="isEditMode ? 'true' : null"
-                    [class.is-invalid]="itemForm.get('establecimientoId')?.invalid && itemForm.get('establecimientoId')?.touched">
-              <option value="">{{ 'localidad.selectEstablecimiento' | translate }}</option>
-              <option *ngFor="let establecimiento of establecimientos" [ngValue]="establecimiento.id">
-                {{ establecimiento.codigo }} - {{ establecimiento.descripcion }}
-              </option>
-            </select>
-            <small class="form-text text-muted">{{ 'localidad.establecimientoHelp' | translate }}</small>
-            <div class="invalid-feedback" *ngIf="itemForm.get('establecimientoId')?.hasError('required') && itemForm.get('establecimientoId')?.touched">
-              {{ 'validation.required' | translate }}
+    @if (!loading) {
+      <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" class="form-container">
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- SECCIÓN 1: Información Básica -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <div class="form-section">
+          <h3 class="section-title">📍 {{ 'localidad.mainInfo' | translate }}</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="establecimientoId" class="form-label">{{ 'localidad.establecimiento' | translate }} *</label>
+              <select id="establecimientoId"
+                formControlName="establecimientoId"
+                class="shared-select"
+                [class.shared-disabled]="isEditMode"
+                [attr.aria-disabled]="isEditMode ? 'true' : null"
+                [class.is-invalid]="itemForm.get('establecimientoId')?.invalid && itemForm.get('establecimientoId')?.touched">
+                <option value="">{{ 'localidad.selectEstablecimiento' | translate }}</option>
+                @for (establecimiento of establecimientos; track establecimiento) {
+                  <option [ngValue]="establecimiento.id">
+                    {{ establecimiento.codigo }} - {{ establecimiento.descripcion }}
+                  </option>
+                }
+              </select>
+              <small class="form-text text-muted">{{ 'localidad.establecimientoHelp' | translate }}</small>
+              @if (itemForm.get('establecimientoId')?.hasError('required') && itemForm.get('establecimientoId')?.touched) {
+                <div class="invalid-feedback">
+                  {{ 'validation.required' | translate }}
+                </div>
+              }
             </div>
-          </div>
-
-          <div class="form-group">
-            <label for="codigo" class="form-label">{{ 'localidad.codigo' | translate }} *</label>
-            <input type="text"
-                   id="codigo"
-                   formControlName="codigo"
-                   class="form-control"
-                   [class.is-invalid]="itemForm.get('codigo')?.invalid && itemForm.get('codigo')?.touched"
-                   [placeholder]="'localidad.placeholderCodigo' | translate"
-                   maxlength="9" />
-            <small class="form-text text-muted">{{ 'localidad.codigoHelp' | translate }}</small>
-            <div class="invalid-feedback" *ngIf="itemForm.get('codigo')?.hasError('required') && itemForm.get('codigo')?.touched">
-              {{ 'validation.required' | translate }}
+            <div class="form-group">
+              <label for="codigo" class="form-label">{{ 'localidad.codigo' | translate }} *</label>
+              <input type="text"
+                id="codigo"
+                formControlName="codigo"
+                class="form-control"
+                [class.is-invalid]="itemForm.get('codigo')?.invalid && itemForm.get('codigo')?.touched"
+                [placeholder]="'localidad.placeholderCodigo' | translate"
+                maxlength="9" />
+                <small class="form-text text-muted">{{ 'localidad.codigoHelp' | translate }}</small>
+                @if (itemForm.get('codigo')?.hasError('required') && itemForm.get('codigo')?.touched) {
+                  <div class="invalid-feedback">
+                    {{ 'validation.required' | translate }}
+                  </div>
+                }
+                @if (itemForm.get('codigo')?.hasError('minlength') || itemForm.get('codigo')?.hasError('maxlength')) {
+                  <div class="invalid-feedback">
+                    {{ 'validation.exactLength' | translate: 9 }}
+                  </div>
+                }
+              </div>
             </div>
-            <div class="invalid-feedback" *ngIf="itemForm.get('codigo')?.hasError('minlength') || itemForm.get('codigo')?.hasError('maxlength')">
-              {{ 'validation.exactLength' | translate: 9 }}
+            <div class="form-row">
+              <div class="form-group form-group-full">
+                <label for="descripcion" class="form-label">{{ 'localidad.descripcion' | translate }} *</label>
+                <input type="text"
+                  id="descripcion"
+                  formControlName="descripcion"
+                  class="form-control"
+                  [class.is-invalid]="itemForm.get('descripcion')?.invalid && itemForm.get('descripcion')?.touched"
+                  [placeholder]="'localidad.placeholderDescripcion' | translate"
+                  maxlength="256" />
+                  <small class="form-text text-muted">{{ 'localidad.descripcionHelp' | translate }}</small>
+                  @if (itemForm.get('descripcion')?.hasError('required') && itemForm.get('descripcion')?.touched) {
+                    <div class="invalid-feedback">
+                      {{ 'validation.required' | translate }}
+                    </div>
+                  }
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group form-group-full">
-            <label for="descripcion" class="form-label">{{ 'localidad.descripcion' | translate }} *</label>
-            <input type="text"
-                   id="descripcion"
-                   formControlName="descripcion"
-                   class="form-control"
-                   [class.is-invalid]="itemForm.get('descripcion')?.invalid && itemForm.get('descripcion')?.touched"
-                   [placeholder]="'localidad.placeholderDescripcion' | translate"
-                   maxlength="256" />
-            <small class="form-text text-muted">{{ 'localidad.descripcionHelp' | translate }}</small>
-            <div class="invalid-feedback" *ngIf="itemForm.get('descripcion')?.hasError('required') && itemForm.get('descripcion')?.touched">
-              {{ 'validation.required' | translate }}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <!-- SECCIÓN 2: Tipo y Capacidades Operativas (ERP) -->
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <div class="form-section">
-        <h3 class="section-title">🏭 {{ 'localidad.tipoCapacidades' | translate }}</h3>
-        
-        <div class="form-row">
-          <div class="form-group">
-            <label for="tipo" class="form-label">{{ 'localidad.tipo' | translate }} *</label>
-            <select id="tipo"
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <!-- SECCIÓN 2: Tipo y Capacidades Operativas (ERP) -->
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <div class="form-section">
+              <h3 class="section-title">🏭 {{ 'localidad.tipoCapacidades' | translate }}</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="tipo" class="form-label">{{ 'localidad.tipo' | translate }} *</label>
+                  <select id="tipo"
                     formControlName="tipo"
                     class="shared-select"
                     [class.is-invalid]="itemForm.get('tipo')?.invalid && itemForm.get('tipo')?.touched">
-              <option *ngFor="let tipo of tiposLocalidad" [ngValue]="tipo.value">
-                {{ tipo.label }}
-              </option>
-            </select>
-            <small class="form-text text-muted">{{ 'localidad.tipoHelp' | translate }}</small>
-          </div>
-        </div>
-
-        <div class="form-row form-row-checkboxes">
-          <div class="checkbox-group">
-            <label class="checkbox-label">
-              <input type="checkbox" formControlName="permiteVentas" class="form-checkbox" />
-              <span> {{ 'localidad.permiteVentas' | translate }}</span>
-            </label>
-            <small class="form-text">{{ 'localidad.permiteVentasHelp' | translate }}</small>
-          </div>
-
-          <div class="checkbox-group">
-            <label class="checkbox-label">
-              <input type="checkbox" formControlName="permiteCompras" class="form-checkbox" />
-              <span> {{ 'localidad.permiteCompras' | translate }}</span>
-            </label>
-            <small class="form-text">{{ 'localidad.permiteComprasHelp' | translate }}</small>
-          </div>
-
-          <div class="checkbox-group">
-            <label class="checkbox-label">
-              <input type="checkbox" formControlName="permiteTransferencias" class="form-checkbox" />
-              <span> {{ 'localidad.permiteTransferencias' | translate }}</span>
-            </label>
-            <small class="form-text">{{ 'localidad.permiteTransferenciasHelp' | translate }}</small>
-          </div>
-
-          <div class="checkbox-group">
-            <label class="checkbox-label">
-              <input type="checkbox" formControlName="permiteAjustes" class="form-checkbox" />
-              <span> {{ 'localidad.permiteAjustes' | translate }}</span>
-            </label>
-            <small class="form-text">{{ 'localidad.permiteAjustesHelp' | translate }}</small>
-          </div>
-        </div>
-
-        <div class="form-row form-row-checkboxes">
-          <div class="checkbox-group">
-            <label class="checkbox-label">
-              <input type="checkbox" formControlName="requiereControlLotes" class="form-checkbox" />
-              <span> {{ 'localidad.requiereControlLotes' | translate }}</span>
-            </label>
-            <small class="form-text">{{ 'localidad.requiereControlLotesHelp' | translate }}</small>
-          </div>
-
-          <div class="checkbox-group">
-            <label class="checkbox-label">
-              <input type="checkbox" formControlName="requiereNumerosSerie" class="form-checkbox" />
-              <span> {{ 'localidad.requiereNumerosSerie' | translate }}</span>
-            </label>
-            <small class="form-text">{{ 'localidad.requiereNumerosSerieHelp' | translate }}</small>
-          </div>
-        </div>
-      </div>
-
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <!-- SECCIÓN 3: Cuentas Contables (GL Accounts) -->
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <div class="form-section">
-        <h3 class="section-title">💰 {{ 'localidad.cuentasContables' | translate }}</h3>
-        
-        <div class="form-row">
-          <div class="form-group">
-            <label for="cuentaInventarioId" class="form-label">{{ 'localidad.cuentaInventario' | translate }} *</label>
-            <select id="cuentaInventarioId"
+                    @for (tipo of tiposLocalidad; track tipo) {
+                      <option [ngValue]="tipo.value">
+                        {{ tipo.label }}
+                      </option>
+                    }
+                  </select>
+                  <small class="form-text text-muted">{{ 'localidad.tipoHelp' | translate }}</small>
+                </div>
+              </div>
+              <div class="form-row form-row-checkboxes">
+                <div class="checkbox-group">
+                  <label class="checkbox-label">
+                    <input type="checkbox" formControlName="permiteVentas" class="form-checkbox" />
+                    <span> {{ 'localidad.permiteVentas' | translate }}</span>
+                  </label>
+                  <small class="form-text">{{ 'localidad.permiteVentasHelp' | translate }}</small>
+                </div>
+                <div class="checkbox-group">
+                  <label class="checkbox-label">
+                    <input type="checkbox" formControlName="permiteCompras" class="form-checkbox" />
+                    <span> {{ 'localidad.permiteCompras' | translate }}</span>
+                  </label>
+                  <small class="form-text">{{ 'localidad.permiteComprasHelp' | translate }}</small>
+                </div>
+                <div class="checkbox-group">
+                  <label class="checkbox-label">
+                    <input type="checkbox" formControlName="permiteTransferencias" class="form-checkbox" />
+                    <span> {{ 'localidad.permiteTransferencias' | translate }}</span>
+                  </label>
+                  <small class="form-text">{{ 'localidad.permiteTransferenciasHelp' | translate }}</small>
+                </div>
+                <div class="checkbox-group">
+                  <label class="checkbox-label">
+                    <input type="checkbox" formControlName="permiteAjustes" class="form-checkbox" />
+                    <span> {{ 'localidad.permiteAjustes' | translate }}</span>
+                  </label>
+                  <small class="form-text">{{ 'localidad.permiteAjustesHelp' | translate }}</small>
+                </div>
+              </div>
+              <div class="form-row form-row-checkboxes">
+                <div class="checkbox-group">
+                  <label class="checkbox-label">
+                    <input type="checkbox" formControlName="requiereControlLotes" class="form-checkbox" />
+                    <span> {{ 'localidad.requiereControlLotes' | translate }}</span>
+                  </label>
+                  <small class="form-text">{{ 'localidad.requiereControlLotesHelp' | translate }}</small>
+                </div>
+                <div class="checkbox-group">
+                  <label class="checkbox-label">
+                    <input type="checkbox" formControlName="requiereNumerosSerie" class="form-checkbox" />
+                    <span> {{ 'localidad.requiereNumerosSerie' | translate }}</span>
+                  </label>
+                  <small class="form-text">{{ 'localidad.requiereNumerosSerieHelp' | translate }}</small>
+                </div>
+              </div>
+            </div>
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <!-- SECCIÓN 3: Cuentas Contables (GL Accounts) -->
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <div class="form-section">
+              <h3 class="section-title">💰 {{ 'localidad.cuentasContables' | translate }}</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="cuentaInventarioId" class="form-label">{{ 'localidad.cuentaInventario' | translate }} *</label>
+                  <select id="cuentaInventarioId"
                     formControlName="cuentaInventarioId"
                     class="shared-select"
                     [class.is-invalid]="itemForm.get('cuentaInventarioId')?.invalid && itemForm.get('cuentaInventarioId')?.touched">
-              <option value="">{{ 'localidad.selectCuenta' | translate }}</option>
-              <option *ngFor="let cuenta of cuentas" [ngValue]="cuenta.id">
-                {{ cuenta.codigo }} - {{ cuenta.descripcion }}
-              </option>
-            </select>
-            <small class="form-text text-muted">{{ 'localidad.cuentaInventarioHelp' | translate }}</small>
-          </div>
-
-          <div class="form-group">
-            <label for="cuentaCostoId" class="form-label">{{ 'localidad.cuentaCosto' | translate }} *</label>
-            <select id="cuentaCostoId"
+                    <option value="">{{ 'localidad.selectCuenta' | translate }}</option>
+                    @for (cuenta of cuentas; track cuenta) {
+                      <option [ngValue]="cuenta.id">
+                        {{ cuenta.codigo }} - {{ cuenta.descripcion }}
+                      </option>
+                    }
+                  </select>
+                  <small class="form-text text-muted">{{ 'localidad.cuentaInventarioHelp' | translate }}</small>
+                </div>
+                <div class="form-group">
+                  <label for="cuentaCostoId" class="form-label">{{ 'localidad.cuentaCosto' | translate }} *</label>
+                  <select id="cuentaCostoId"
                     formControlName="cuentaCostoId"
                     class="shared-select"
                     [class.is-invalid]="itemForm.get('cuentaCostoId')?.invalid && itemForm.get('cuentaCostoId')?.touched">
-              <option value="">{{ 'localidad.selectCuenta' | translate }}</option>
-              <option *ngFor="let cuenta of cuentas" [ngValue]="cuenta.id">
-                {{ cuenta.codigo }} - {{ cuenta.descripcion }}
-              </option>
-            </select>
-            <small class="form-text text-muted">{{ 'localidad.cuentaCostoHelp' | translate }}</small>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="cuentaVentaId" class="form-label">{{ 'localidad.cuentaVenta' | translate }} *</label>
-            <select id="cuentaVentaId"
+                    <option value="">{{ 'localidad.selectCuenta' | translate }}</option>
+                    @for (cuenta of cuentas; track cuenta) {
+                      <option [ngValue]="cuenta.id">
+                        {{ cuenta.codigo }} - {{ cuenta.descripcion }}
+                      </option>
+                    }
+                  </select>
+                  <small class="form-text text-muted">{{ 'localidad.cuentaCostoHelp' | translate }}</small>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="cuentaVentaId" class="form-label">{{ 'localidad.cuentaVenta' | translate }} *</label>
+                  <select id="cuentaVentaId"
                     formControlName="cuentaVentaId"
                     class="shared-select"
                     [class.is-invalid]="itemForm.get('cuentaVentaId')?.invalid && itemForm.get('cuentaVentaId')?.touched">
-              <option value="">{{ 'localidad.selectCuenta' | translate }}</option>
-              <option *ngFor="let cuenta of cuentas" [ngValue]="cuenta.id">
-                {{ cuenta.codigo }} - {{ cuenta.descripcion }}
-              </option>
-            </select>
-            <small class="form-text text-muted">{{ 'localidad.cuentaVentaHelp' | translate }}</small>
-          </div>
-
-          <div class="form-group">
-            <label for="cuentaDevolucionId" class="form-label">{{ 'localidad.cuentaDevolucion' | translate }} *</label>
-            <select id="cuentaDevolucionId"
+                    <option value="">{{ 'localidad.selectCuenta' | translate }}</option>
+                    @for (cuenta of cuentas; track cuenta) {
+                      <option [ngValue]="cuenta.id">
+                        {{ cuenta.codigo }} - {{ cuenta.descripcion }}
+                      </option>
+                    }
+                  </select>
+                  <small class="form-text text-muted">{{ 'localidad.cuentaVentaHelp' | translate }}</small>
+                </div>
+                <div class="form-group">
+                  <label for="cuentaDevolucionId" class="form-label">{{ 'localidad.cuentaDevolucion' | translate }} *</label>
+                  <select id="cuentaDevolucionId"
                     formControlName="cuentaDevolucionId"
                     class="shared-select"
                     [class.is-invalid]="itemForm.get('cuentaDevolucionId')?.invalid && itemForm.get('cuentaDevolucionId')?.touched">
-              <option value="">{{ 'localidad.selectCuenta' | translate }}</option>
-              <option *ngFor="let cuenta of cuentas" [ngValue]="cuenta.id">
-                {{ cuenta.codigo }} - {{ cuenta.descripcion }}
-              </option>
-            </select>
-            <small class="form-text text-muted">{{ 'localidad.cuentaDevolucionHelp' | translate }}</small>
-          </div>
+                    <option value="">{{ 'localidad.selectCuenta' | translate }}</option>
+                    @for (cuenta of cuentas; track cuenta) {
+                      <option [ngValue]="cuenta.id">
+                        {{ cuenta.codigo }} - {{ cuenta.descripcion }}
+                      </option>
+                    }
+                  </select>
+                  <small class="form-text text-muted">{{ 'localidad.cuentaDevolucionHelp' | translate }}</small>
+                </div>
+              </div>
+            </div>
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <!-- Botones de Acción -->
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <div class="form-actions">
+              <button type="button" class="btn btn-secondary" (click)="onCancel()" [disabled]="saving">
+                ❌ {{ 'common.cancel' | translate }}
+              </button>
+              <button type="submit" class="btn btn-primary" [disabled]="saving || itemForm.invalid">
+                @if (!saving) {
+                  <span>💾 {{ 'common.save' | translate }}</span>
+                }
+                @if (saving) {
+                  <span>⏳ {{ 'common.saving' | translate }}</span>
+                }
+              </button>
+            </div>
+          </form>
+        }
+      </div>
+
+      @if (loading) {
+        <div class="loading-container">
+          <div class="spinner"></div>
+          <p>{{ 'common.loading' | translate }}...</p>
         </div>
-      </div>
-
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <!-- Botones de Acción -->
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <div class="form-actions">
-        <button type="button" class="btn btn-secondary" (click)="onCancel()" [disabled]="saving">
-          ❌ {{ 'common.cancel' | translate }}
-        </button>
-        <button type="submit" class="btn btn-primary" [disabled]="saving || itemForm.invalid">
-          <span *ngIf="!saving">💾 {{ 'common.save' | translate }}</span>
-          <span *ngIf="saving">⏳ {{ 'common.saving' | translate }}</span>
-        </button>
-      </div>
-    </form>
-  </div>
-
-  <div *ngIf="loading" class="loading-container">
-    <div class="spinner"></div>
-    <p>{{ 'common.loading' | translate }}...</p>
-  </div>
-</div>
+      }
+    </div>

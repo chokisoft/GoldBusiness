@@ -1,13 +1,15 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { skip, finalize } from 'rxjs/operators';
 import { EstablecimientoDTO, EstablecimientoService } from '../../../services/establecimiento.service';
 import { LanguageService } from '../../../services/language.service';
 
 @Component({
-  selector: 'app-establecimiento-list',
-  templateUrl: './establecimiento-list.component.html',
-  styleUrls: ['./establecimiento-list.component.css']
+    selector: 'app-establecimiento-list',
+    templateUrl: './establecimiento-list.component.html',
+    styleUrls: ['./establecimiento-list.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class EstablecimientoListComponent implements OnInit, OnDestroy {
   establecimientos: EstablecimientoDTO[] = [];
@@ -25,6 +27,8 @@ export class EstablecimientoListComponent implements OnInit, OnDestroy {
 
   private languageSubscription?: Subscription;
   private searchDebounceTimer?: any;
+  showModal: boolean = false;
+  modalTitle: string = '';
 
   constructor(
     private establecimientoService: EstablecimientoService,
@@ -137,5 +141,33 @@ export class EstablecimientoListComponent implements OnInit, OnDestroy {
         }
       });
     }
+  }
+
+  openNewModal(): void {
+    this.modalTitle = 'establecimiento.newTitle';
+    this.showModal = true;
+    // optionally prevent navigation to route when modal opens
+  }
+
+  onModalClosed(): void {
+    this.showModal = false;
+  }
+
+  onModalConfirmed(): void {
+    // cerrar modal y recargar lista
+    this.showModal = false;
+    this.loadData(true);
+  }
+
+  onModalConfirmRequested(): void {
+    // buscar el componente hijo y disparar submit
+    const modalEl = document.querySelector('app-establecimiento-form') as any;
+    if (modalEl && typeof modalEl.triggerSubmit === 'function') {
+      modalEl.triggerSubmit();
+      return;
+    }
+
+    // fallback: emitir confirmed para que el form cierre si lo maneja
+    this.onModalConfirmed();
   }
 }

@@ -5,7 +5,7 @@
       <p class="page-subtitle">{{ 'establecimiento.detailSubtitle' | translate }}</p>
     </div>
     <div class="header-actions">
-      <button class="btn btn-warning" [routerLink]="['../editar', item?.id]">
+      <button class="btn btn-warning" [routerLink]="['../editar', $safeNavigationMigration(item?.id)]">
         <span class="btn-icon">✏️</span>
         {{ 'common.edit' | translate }}
       </button>
@@ -16,65 +16,76 @@
     </div>
   </div>
 
-  <div class="alert alert-error" *ngIf="error">
-    <span class="alert-icon">⚠️</span>
-    {{ error }}
-  </div>
+  @if (error) {
+    <div class="alert alert-error">
+      <span class="alert-icon">⚠️</span>
+      {{ error }}
+    </div>
+  }
 
-  <div class="card" *ngIf="!loading && item">
-    <div class="card-header">📊 {{ 'common.information' | translate }}</div>
-    <div class="card-body">
-      <div class="info-section">
-        <h3 class="section-title">🔑 {{ 'establecimiento.mainInfo' | translate }}</h3>
-        <div class="info-grid">
-          <div class="info-item">
-            <span class="info-label">{{ 'establecimiento.codigo' | translate }}</span>
-            <span class="info-value-large">{{ item.codigo }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'establecimiento.descripcion' | translate }}</span>
-            <span class="info-value">{{ item.descripcion }}</span>
-          </div>
-
-          <div class="info-item" *ngIf="item.direccion">
-            <span class="info-label">{{ 'establecimiento.direccion' | translate }}</span>
-            <span class="info-value">{{ item.direccion }}</span>
-          </div>
-
-          <!-- Municipio / Provincia -->
-          <div class="info-item" *ngIf="item.municipioDescripcion">
-            <span class="info-label">{{ 'establecimiento.municipio' | translate }}</span>
-            <span class="info-value">{{ item.municipioDescripcion }}</span>
-          </div>
-          <div class="info-item" *ngIf="item.provinciaDescripcion">
-            <span class="info-label">{{ 'establecimiento.provincia' | translate }}</span>
-            <span class="info-value">{{ item.provinciaDescripcion }}</span>
-          </div>
-
-          <!-- País / Código Postal (misma línea compacta) -->
-          <div class="info-item">
-            <span class="info-label">{{ 'establecimiento.pais' | translate }}</span>
-            <span class="info-value">{{ selectedPais?.descripcion || paisDescripcion || item.paisDescripcion || '-' }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'establecimiento.codigoPostal' | translate }}</span>
-            <span class="info-value">{{ postalCode || '-' }}</span>
-          </div>
-
-          <div class="info-item">
-            <span class="info-label">{{ 'establecimiento.activo' | translate }}</span>
-            <span class="info-value">
-              <ng-container *ngIf="item.activo; else inactiveIcon">✅</ng-container>
-              <ng-template #inactiveIcon>🚫</ng-template>
-              {{ item.activo ? ('common.yes' | translate) : ('common.no' | translate) }}
-            </span>
+  @if (!loading && item) {
+    <div class="card">
+      <div class="card-header">📊 {{ 'common.information' | translate }}</div>
+      <div class="card-body">
+        <div class="info-section">
+          <h3 class="section-title">🔑 {{ 'establecimiento.mainInfo' | translate }}</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">{{ 'establecimiento.codigo' | translate }}</span>
+              <span class="info-value-large">{{ item.codigo }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">{{ 'establecimiento.descripcion' | translate }}</span>
+              <span class="info-value">{{ item.descripcion }}</span>
+            </div>
+            @if (item.direccion) {
+              <div class="info-item">
+                <span class="info-label">{{ 'establecimiento.direccion' | translate }}</span>
+                <span class="info-value">{{ item.direccion }}</span>
+              </div>
+            }
+            <!-- Municipio / Provincia -->
+            @if (item.municipioDescripcion) {
+              <div class="info-item">
+                <span class="info-label">{{ 'establecimiento.municipio' | translate }}</span>
+                <span class="info-value">{{ item.municipioDescripcion }}</span>
+              </div>
+            }
+            @if (item.provinciaDescripcion) {
+              <div class="info-item">
+                <span class="info-label">{{ 'establecimiento.provincia' | translate }}</span>
+                <span class="info-value">{{ item.provinciaDescripcion }}</span>
+              </div>
+            }
+            <!-- País / Código Postal (misma línea compacta) -->
+            <div class="info-item">
+              <span class="info-label">{{ 'establecimiento.pais' | translate }}</span>
+              <span class="info-value">{{ selectedPais?.descripcion || paisDescripcion || item.paisDescripcion || '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">{{ 'establecimiento.codigoPostal' | translate }}</span>
+              <span class="info-value">{{ postalCode || '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">{{ 'establecimiento.activo' | translate }}</span>
+              <span class="info-value">
+                @if (item.activo) {
+                  ✅
+                } @else {
+                  🚫
+                }
+                {{ item.activo ? ('common.yes' | translate) : ('common.no' | translate) }}
+              </span>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  }
 
-  <div *ngIf="loading" class="loading-container">
-    <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
-  </div>
+  @if (loading) {
+    <div class="loading-container">
+      <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
+    </div>
+  }
 </div>

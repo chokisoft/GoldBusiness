@@ -20,51 +20,60 @@
   </div>
 
   <!-- ✅ Alert de error -->
-  <div class="alert alert-error" *ngIf="error">
-    <span class="alert-icon">⚠️</span>
-    {{ error }}
-  </div>
+  @if (error) {
+    <div class="alert alert-error">
+      <span class="alert-icon">⚠️</span>
+      {{ error }}
+    </div>
+  }
 
   <!-- ✅ Contenido principal -->
-  <div class="card" *ngIf="!loading && cuenta">
-    <div class="card-header">
-      📊 {{ 'common.information' | translate }}
-    </div>
-    <div class="card-body">
-      <!-- Información principal -->
-      <div class="info-section">
-        <h3 class="section-title">
-          🔑 {{ 'cuenta.mainInfo' | translate }}
-        </h3>
-        <div class="info-grid">
-          <div class="info-item">
-            <span class="info-label">{{ 'cuenta.codigo' | translate }}</span>
-            <span class="info-value-large">{{ cuenta.codigo }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'cuenta.subGrupoCuenta' | translate }}</span>
-            <span class="badge badge-info" *ngIf="cuenta.subGrupoCuentaCodigo">
-              {{ cuenta.subGrupoCuentaDescripcion }}
-            </span>
-          </div>
-          <div class="info-item" *ngIf="cuenta.grupoCuentaCodigo">
-            <span class="info-label">{{ 'cuenta.grupoCuenta' | translate }}</span>
-            <span class="badge badge-secondary">
-              {{ cuenta.grupoCuentaDescripcion }}
-            </span>
-          </div>
-          <div class="info-item info-item-full">
-            <span class="info-label">{{ 'cuenta.descripcion' | translate }}</span>
-            <span class="info-value">{{ cuenta.descripcion }}</span>
+  @if (!loading && cuenta) {
+    <div class="card">
+      <div class="card-header">
+        📊 {{ 'common.information' | translate }}
+      </div>
+      <div class="card-body">
+        <!-- Información principal -->
+        <div class="info-section">
+          <h3 class="section-title">
+            🔑 {{ 'cuenta.mainInfo' | translate }}
+          </h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">{{ 'cuenta.codigo' | translate }}</span>
+              <span class="info-value-large">{{ cuenta.codigo }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">{{ 'cuenta.subGrupoCuenta' | translate }}</span>
+              @if (cuenta.subGrupoCuentaCodigo) {
+                <span class="badge badge-info">
+                  {{ cuenta.subGrupoCuentaDescripcion }}
+                </span>
+              }
+            </div>
+            @if (cuenta.grupoCuentaCodigo) {
+              <div class="info-item">
+                <span class="info-label">{{ 'cuenta.grupoCuenta' | translate }}</span>
+                <span class="badge badge-secondary">
+                  {{ cuenta.grupoCuentaDescripcion }}
+                </span>
+              </div>
+            }
+            <div class="info-item info-item-full">
+              <span class="info-label">{{ 'cuenta.descripcion' | translate }}</span>
+              <span class="info-value">{{ cuenta.descripcion }}</span>
+            </div>
           </div>
         </div>
       </div>
-
     </div>
-  </div>
+  }
 
   <!-- ✅ Loading -->
-  <div *ngIf="loading" class="loading-container">
-    <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
-  </div>
+  @if (loading) {
+    <div class="loading-container">
+      <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
+    </div>
+  }
 </div>

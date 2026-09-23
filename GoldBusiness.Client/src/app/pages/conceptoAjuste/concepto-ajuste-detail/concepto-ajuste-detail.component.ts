@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { skip } from 'rxjs/operators';
@@ -6,9 +6,11 @@ import { ConceptoAjusteService, ConceptoAjusteDTO } from '../../../services/conc
 import { LanguageService } from '../../../services/language.service';
 
 @Component({
-  selector: 'app-concepto-ajuste-detail',
-  templateUrl: './concepto-ajuste-detail.component.html',
-  styleUrls: ['./concepto-ajuste-detail.component.css']
+    selector: 'app-concepto-ajuste-detail',
+    templateUrl: './concepto-ajuste-detail.component.html',
+    styleUrls: ['./concepto-ajuste-detail.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ConceptoAjusteDetailComponent implements OnInit, OnDestroy {
   conceptoAjuste: ConceptoAjusteDTO | null = null;

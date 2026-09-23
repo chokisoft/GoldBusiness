@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -9,9 +9,11 @@ import { TranslationService } from '../../../services/translation.service';
 import { LanguageService } from '../../../services/language.service';
 
 @Component({
-  selector: 'app-subgrupo-cuenta-form',
-  templateUrl: './subgrupo-cuenta-form.component.html',
-  styleUrls: ['./subgrupo-cuenta-form.component.css']
+    selector: 'app-subgrupo-cuenta-form',
+    templateUrl: './subgrupo-cuenta-form.component.html',
+    styleUrls: ['./subgrupo-cuenta-form.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SubGrupoCuentaFormComponent implements OnInit, OnDestroy {
   form: FormGroup;

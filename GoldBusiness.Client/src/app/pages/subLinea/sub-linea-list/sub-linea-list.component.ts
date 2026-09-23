@@ -1,13 +1,15 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { skip, finalize } from 'rxjs/operators';
 import { SubLineaService, SubLineaDTO } from '../../../services/sub-linea.service';
 import { LanguageService } from '../../../services/language.service';
 
 @Component({
-  selector: 'app-sub-linea-list',
-  templateUrl: './sub-linea-list.component.html',
-  styleUrls: ['./sub-linea-list.component.css']
+    selector: 'app-sub-linea-list',
+    templateUrl: './sub-linea-list.component.html',
+    styleUrls: ['./sub-linea-list.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SubLineaListComponent implements OnInit, OnDestroy {
   subLineas: SubLineaDTO[] = [];

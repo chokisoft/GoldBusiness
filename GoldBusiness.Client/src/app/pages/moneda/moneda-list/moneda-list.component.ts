@@ -1,13 +1,15 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { skip, finalize } from 'rxjs/operators';
 import { MonedaService, MonedaDTO } from '../../../services/moneda.service';
 import { LanguageService } from '../../../services/language.service';
 
 @Component({
-  selector: 'app-moneda-list',
-  templateUrl: './moneda-list.component.html',
-  styleUrls: ['./moneda-list.component.css']
+    selector: 'app-moneda-list',
+    templateUrl: './moneda-list.component.html',
+    styleUrls: ['./moneda-list.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class MonedaListComponent implements OnInit, OnDestroy {
   monedas: MonedaDTO[] = [];

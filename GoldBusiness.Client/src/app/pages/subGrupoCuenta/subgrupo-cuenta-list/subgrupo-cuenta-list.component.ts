@@ -1,13 +1,15 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { skip, finalize } from 'rxjs/operators';
 import { SubGrupoCuentaService, SubGrupoCuentaDTO } from '../../../services/subgrupo-cuenta.service';
 import { LanguageService } from '../../../services/language.service';
 
 @Component({
-  selector: 'app-subgrupo-cuenta-list',
-  templateUrl: './subgrupo-cuenta-list.component.html',
-  styleUrls: ['./subgrupo-cuenta-list.component.css']
+    selector: 'app-subgrupo-cuenta-list',
+    templateUrl: './subgrupo-cuenta-list.component.html',
+    styleUrls: ['./subgrupo-cuenta-list.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SubGrupoCuentaListComponent implements OnInit, OnDestroy {
   subGrupoCuentas: SubGrupoCuentaDTO[] = [];

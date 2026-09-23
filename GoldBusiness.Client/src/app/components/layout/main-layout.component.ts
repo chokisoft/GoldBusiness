@@ -1,10 +1,10 @@
-import { Component, OnInit, OnDestroy, Renderer2 } from '@angular/core';
+import { Component, OnInit, OnDestroy, Renderer2, ChangeDetectionStrategy } from '@angular/core';
 import { SidebarService } from '../../services/sidebar.service';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-main-layout',
-  template: `
+    selector: 'app-main-layout',
+    template: `
     <div class="main-layout">
       <app-navbar></app-navbar>
       <app-sidebar></app-sidebar>
@@ -13,7 +13,7 @@ import { Subscription } from 'rxjs';
       </main>
     </div>
   `,
-  styles: [`
+    styles: [`
     .main-layout {
       min-height: 100vh;
       background: #f5f6fa;
@@ -43,7 +43,9 @@ import { Subscription } from 'rxjs';
         width: 100%;
       }
     }
-  `]
+  `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class MainLayoutComponent implements OnInit, OnDestroy {
   private sidebarSubscription?: Subscription;

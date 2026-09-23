@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { Subscription } from 'rxjs';
@@ -8,9 +8,11 @@ import { LanguageService } from '../../../services/language.service';
 import { TranslationService } from '../../../services/translation.service';
 
 @Component({
-  selector: 'app-municipio-detail',
-  templateUrl: './municipio-detail.component.html',
-  styleUrls: ['./municipio-detail.component.css']
+    selector: 'app-municipio-detail',
+    templateUrl: './municipio-detail.component.html',
+    styleUrls: ['./municipio-detail.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class MunicipioDetailComponent implements OnInit, OnDestroy {
   item?: MunicipioDTO;

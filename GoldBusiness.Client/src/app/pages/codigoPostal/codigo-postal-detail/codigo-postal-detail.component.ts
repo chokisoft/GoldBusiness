@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { Subscription } from 'rxjs';
@@ -8,9 +8,11 @@ import { LanguageService } from '../../../services/language.service';
 import { TranslationService } from '../../../services/translation.service';
 
 @Component({
-  selector: 'app-codigo-postal-detail',
-  templateUrl: './codigo-postal-detail.component.html',
-  styleUrls: ['./codigo-postal-detail.component.css']
+    selector: 'app-codigo-postal-detail',
+    templateUrl: './codigo-postal-detail.component.html',
+    styleUrls: ['./codigo-postal-detail.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class CodigoPostalDetailComponent implements OnInit, OnDestroy {
   item?: CodigoPostalDTO;

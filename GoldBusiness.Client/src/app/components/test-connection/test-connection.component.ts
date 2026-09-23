@@ -1,12 +1,14 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { ApiService } from '../../services/api.service';
 import { TranslationService } from '../../services/translation.service';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-test-connection',
-  templateUrl: './test-connection.component.html',
-  styleUrls: ['./test-connection.component.css']
+    selector: 'app-test-connection',
+    templateUrl: './test-connection.component.html',
+    styleUrls: ['./test-connection.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class TestConnectionComponent implements OnInit, OnDestroy {
   apiResponse: any = null;

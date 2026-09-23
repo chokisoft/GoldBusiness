@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -20,9 +20,11 @@ import {
 } from '../../../services/fiscal.types';
 
 @Component({
-  selector: 'app-cliente-form',
-  templateUrl: './cliente-form.component.html',
-  styleUrls: ['./cliente-form.component.css']
+    selector: 'app-cliente-form',
+    templateUrl: './cliente-form.component.html',
+    styleUrls: ['./cliente-form.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ClienteFormComponent implements OnInit, OnDestroy {
   itemForm!: FormGroup; // ⭐ RENOMBRADO de clienteForm

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { skip } from 'rxjs/operators';
@@ -6,9 +6,11 @@ import { CuentaService, CuentaDTO } from '../../../services/cuenta.service';
 import { LanguageService } from '../../../services/language.service';
 
 @Component({
-  selector: 'app-cuenta-detail',
-  templateUrl: './cuenta-detail.component.html',
-  styleUrls: ['./cuenta-detail.component.css']
+    selector: 'app-cuenta-detail',
+    templateUrl: './cuenta-detail.component.html',
+    styleUrls: ['./cuenta-detail.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class CuentaDetailComponent implements OnInit, OnDestroy {
   cuenta: CuentaDTO | null = null;

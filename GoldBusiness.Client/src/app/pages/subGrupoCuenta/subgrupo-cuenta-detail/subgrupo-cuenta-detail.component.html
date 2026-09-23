@@ -20,56 +20,67 @@
   </div>
 
   <!-- ✅ Alert de error -->
-  <div class="alert alert-error" *ngIf="error">
-    <span class="alert-icon">⚠️</span>
-    {{ error }}
-  </div>
+  @if (error) {
+    <div class="alert alert-error">
+      <span class="alert-icon">⚠️</span>
+      {{ error }}
+    </div>
+  }
 
   <!-- ✅ Contenido principal -->
-  <div class="card" *ngIf="!loading && subgrupo">
-    <div class="card-header">
-      📊 {{ 'common.information' | translate }}
-    </div>
-    <div class="card-body">
-      <!-- Información principal -->
-      <div class="info-section">
-        <h3 class="section-title">
-          🔑 {{ 'subGrupoCuenta.mainInfo' | translate }}
-        </h3>
-        <div class="info-grid">
-          <div class="info-item">
-            <span class="info-label">{{ 'subGrupoCuenta.codigo' | translate }}</span>
-            <span class="info-value-large">{{ subgrupo.codigo }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'subGrupoCuenta.grupoCuenta' | translate }}</span>
-            <span class="badge badge-info" *ngIf="subgrupo.grupoCuentaCodigo">
-              {{ subgrupo.grupoCuentaDescripcion }}
-            </span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ 'subGrupoCuenta.tipo' | translate }}</span>
-            <span class="badge badge-success" *ngIf="subgrupo.deudora">
-              <span class="badge-icon">💰</span>
-              {{ 'subGrupoCuenta.deudora' | translate }}
-            </span>
-            <span class="badge badge-info" *ngIf="!subgrupo.deudora">
-              <span class="badge-icon">💵</span>
-              {{ 'subGrupoCuenta.acreedora' | translate }}
-            </span>
-          </div>
-          <div class="info-item info-item-full">
-            <span class="info-label">{{ 'subGrupoCuenta.descripcion' | translate }}</span>
-            <span class="info-value">{{ subgrupo.descripcion }}</span>
+  @if (!loading && subgrupo) {
+    <div class="card">
+      <div class="card-header">
+        📊 {{ 'common.information' | translate }}
+      </div>
+      <div class="card-body">
+        <!-- Información principal -->
+        <div class="info-section">
+          <h3 class="section-title">
+            🔑 {{ 'subGrupoCuenta.mainInfo' | translate }}
+          </h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">{{ 'subGrupoCuenta.codigo' | translate }}</span>
+              <span class="info-value-large">{{ subgrupo.codigo }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">{{ 'subGrupoCuenta.grupoCuenta' | translate }}</span>
+              @if (subgrupo.grupoCuentaCodigo) {
+                <span class="badge badge-info">
+                  {{ subgrupo.grupoCuentaDescripcion }}
+                </span>
+              }
+            </div>
+            <div class="info-item">
+              <span class="info-label">{{ 'subGrupoCuenta.tipo' | translate }}</span>
+              @if (subgrupo.deudora) {
+                <span class="badge badge-success">
+                  <span class="badge-icon">💰</span>
+                  {{ 'subGrupoCuenta.deudora' | translate }}
+                </span>
+              }
+              @if (!subgrupo.deudora) {
+                <span class="badge badge-info">
+                  <span class="badge-icon">💵</span>
+                  {{ 'subGrupoCuenta.acreedora' | translate }}
+                </span>
+              }
+            </div>
+            <div class="info-item info-item-full">
+              <span class="info-label">{{ 'subGrupoCuenta.descripcion' | translate }}</span>
+              <span class="info-value">{{ subgrupo.descripcion }}</span>
+            </div>
           </div>
         </div>
       </div>
-
     </div>
-  </div>
+  }
 
   <!-- ✅ Loading -->
-  <div *ngIf="loading" class="loading-container">
-    <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
-  </div>
+  @if (loading) {
+    <div class="loading-container">
+      <app-loader [translateKey]="'common.loading'" [center]="true" [size]="28" [inline]="false"></app-loader>
+    </div>
+  }
 </div>

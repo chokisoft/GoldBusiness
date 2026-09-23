@@ -3,8 +3,9 @@ import { LanguageService } from '../services/language.service';
 import { PaisDTO } from '../services/pais.service';
 
 @Pipe({
-  name: 'localizedPhone',
-  pure: false
+    name: 'localizedPhone',
+    pure: false,
+    standalone: false
 })
 export class LocalizedPhonePipe implements PipeTransform {
   constructor(private languageService: LanguageService) { }

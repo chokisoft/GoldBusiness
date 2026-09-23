@@ -1,13 +1,15 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { skip, finalize } from 'rxjs/operators';
 import { UnidadMedidaService, UnidadMedidaDTO } from '../../../services/unidad-medida.service';
 import { LanguageService } from '../../../services/language.service';
 
 @Component({
-  selector: 'app-unidad-medida-list',
-  templateUrl: './unidad-medida-list.component.html',
-  styleUrls: ['./unidad-medida-list.component.css']
+    selector: 'app-unidad-medida-list',
+    templateUrl: './unidad-medida-list.component.html',
+    styleUrls: ['./unidad-medida-list.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class UnidadMedidaListComponent implements OnInit, OnDestroy {
   // ✅ SOLO estas propiedades (eliminar filtered y paginated)

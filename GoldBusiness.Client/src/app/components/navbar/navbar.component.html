@@ -29,13 +29,17 @@
       <!-- Selector compacto en móvil -->
       <app-language-selector [forceCompact]="true"></app-language-selector>
 
-      <div class="user-info" *ngIf="currentUser$ | async as user" title="{{ user.fullName || user.userName }}">
-        <span class="user-icon">👤</span>
-        <div class="user-details">
-          <span class="user-name">{{ user.fullName || user.userName }}</span>
-          <span class="user-role" *ngIf="user.roles && user.roles.length > 0">{{ user.roles[0] }}</span>
+      @if (currentUser$ | async; as user) {
+        <div class="user-info" title="{{ user.fullName || user.userName }}">
+          <span class="user-icon">👤</span>
+          <div class="user-details">
+            <span class="user-name">{{ user.fullName || user.userName }}</span>
+            @if (user.roles && user.roles.length > 0) {
+              <span class="user-role">{{ user.roles[0] }}</span>
+            }
+          </div>
         </div>
-      </div>
+      }
 
       <button class="btn-logout" (click)="logout()" [title]="translations.logout">
         <span class="logout-icon">🚪</span>

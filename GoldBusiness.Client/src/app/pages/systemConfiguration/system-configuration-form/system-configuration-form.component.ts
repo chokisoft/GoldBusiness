@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -22,9 +22,11 @@ import {
 } from '../../../services/fiscal.types';
 
 @Component({
-  selector: 'app-system-configuration-form',
-  templateUrl: './system-configuration-form.component.html',
-  styleUrls: ['./system-configuration-form.component.css']
+    selector: 'app-system-configuration-form',
+    templateUrl: './system-configuration-form.component.html',
+    styleUrls: ['./system-configuration-form.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SystemConfigurationFormComponent implements OnInit, OnDestroy {
   form: FormGroup;

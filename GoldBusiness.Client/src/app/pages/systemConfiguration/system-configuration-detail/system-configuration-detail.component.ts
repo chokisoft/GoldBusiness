@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { skip } from 'rxjs/operators';
@@ -7,9 +7,11 @@ import { LanguageService } from '../../../services/language.service';
 import { PaisService, PaisDTO } from '../../../services/pais.service';
 
 @Component({
-  selector: 'app-system-configuration-detail',
-  templateUrl: './system-configuration-detail.component.html',
-  styleUrls: ['./system-configuration-detail.component.css']
+    selector: 'app-system-configuration-detail',
+    templateUrl: './system-configuration-detail.component.html',
+    styleUrls: ['./system-configuration-detail.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SystemConfigurationDetailComponent implements OnInit, OnDestroy {
   config: SystemConfigurationDTO | null = null;

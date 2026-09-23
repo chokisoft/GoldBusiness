@@ -5,10 +5,12 @@
     </h1>
   </div>
 
-  <div class="alert alert-error" *ngIf="error">
-    <span class="alert-icon">⚠️</span>
-    {{ error }}
-  </div>
+  @if (error) {
+    <div class="alert alert-error">
+      <span class="alert-icon">⚠️</span>
+      {{ error }}
+    </div>
+  }
 
   <div class="card">
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
@@ -16,43 +18,51 @@
         <div class="form-group">
           <label for="codigo" class="form-label">{{ 'grupoCuenta.codigo' | translate }} *</label>
           <input type="text"
-                 id="codigo"
-                 formControlName="codigo"
-                 class="form-control"
-                 [class.is-invalid]="form.get('codigo')?.invalid && form.get('codigo')?.touched"
-                 [placeholder]="'grupoCuenta.placeholderCodigo' | translate"
-                 maxlength="2" />
-          <small class="form-text text-muted">{{ 'grupoCuenta.codigoHelp' | translate }}</small>
-          <div class="invalid-feedback" *ngIf="form.get('codigo')?.invalid && form.get('codigo')?.touched">
-            {{ getErrorMessage('codigo') }}
+            id="codigo"
+            formControlName="codigo"
+            class="form-control"
+            [class.is-invalid]="form.get('codigo')?.invalid && form.get('codigo')?.touched"
+            [placeholder]="'grupoCuenta.placeholderCodigo' | translate"
+            maxlength="2" />
+            <small class="form-text text-muted">{{ 'grupoCuenta.codigoHelp' | translate }}</small>
+            @if (form.get('codigo')?.invalid && form.get('codigo')?.touched) {
+              <div class="invalid-feedback">
+                {{ getErrorMessage('codigo') }}
+              </div>
+            }
           </div>
-        </div>
 
-        <div class="form-group">
-          <label for="descripcion" class="form-label">{{ 'grupoCuenta.descripcion' | translate }} *</label>
-          <input type="text"
-                 id="descripcion"
-                 formControlName="descripcion"
-                 class="form-control"
-                 [class.is-invalid]="form.get('descripcion')?.invalid && form.get('descripcion')?.touched"
-                 [placeholder]="'grupoCuenta.placeholderDescripcion' | translate"
-                 maxlength="256" />
-          <small class="form-text text-muted">{{ 'grupoCuenta.descripcionHelp' | translate }}</small>
-          <div class="invalid-feedback" *ngIf="form.get('descripcion')?.invalid && form.get('descripcion')?.touched">
-            {{ getErrorMessage('descripcion') }}
+          <div class="form-group">
+            <label for="descripcion" class="form-label">{{ 'grupoCuenta.descripcion' | translate }} *</label>
+            <input type="text"
+              id="descripcion"
+              formControlName="descripcion"
+              class="form-control"
+              [class.is-invalid]="form.get('descripcion')?.invalid && form.get('descripcion')?.touched"
+              [placeholder]="'grupoCuenta.placeholderDescripcion' | translate"
+              maxlength="256" />
+              <small class="form-text text-muted">{{ 'grupoCuenta.descripcionHelp' | translate }}</small>
+              @if (form.get('descripcion')?.invalid && form.get('descripcion')?.touched) {
+                <div class="invalid-feedback">
+                  {{ getErrorMessage('descripcion') }}
+                </div>
+              }
+            </div>
           </div>
-        </div>
-      </div>
 
-      <div class="form-actions">
-        <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="loading || saving">
-          ❌ {{ 'common.cancel' | translate }}
-        </button>
-        <button type="submit" class="btn btn-primary" [disabled]="saving || form.invalid">
-          <span *ngIf="!saving">💾 {{ 'common.save' | translate }}</span>
-          <span *ngIf="saving">⏳ {{ 'common.saving' | translate }}</span>
-        </button>
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="loading || saving">
+              ❌ {{ 'common.cancel' | translate }}
+            </button>
+            <button type="submit" class="btn btn-primary" [disabled]="saving || form.invalid">
+              @if (!saving) {
+                <span>💾 {{ 'common.save' | translate }}</span>
+              }
+              @if (saving) {
+                <span>⏳ {{ 'common.saving' | translate }}</span>
+              }
+            </button>
+          </div>
+        </form>
       </div>
-    </form>
-  </div>
-</div>
+    </div>

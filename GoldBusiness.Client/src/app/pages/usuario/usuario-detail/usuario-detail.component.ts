@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { skip } from 'rxjs/operators';
@@ -6,9 +6,11 @@ import { UsuarioDTO, UsuarioService } from '../../../services/usuario.service';
 import { LanguageService } from '../../../services/language.service';
 
 @Component({
-  selector: 'app-usuario-detail',
-  templateUrl: './usuario-detail.component.html',
-  styleUrls: ['./usuario-detail.component.css']
+    selector: 'app-usuario-detail',
+    templateUrl: './usuario-detail.component.html',
+    styleUrls: ['./usuario-detail.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class UsuarioDetailComponent implements OnInit, OnDestroy {
   item: UsuarioDTO | null = null;
